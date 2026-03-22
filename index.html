@@ -24,765 +24,979 @@
   --parch-dk: #8A7A5A;
   --white:    #F5F0E8;
 }
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-
-body {
-  font-family:'Lato',sans-serif;
-  background-color:var(--bg);
-  color:var(--parch);
-  overflow-x:hidden;
-  /* subtle stone block texture */
-  background-image:
-    repeating-linear-gradient(0deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0) 3px,rgba(255,255,255,0.007) 3px,rgba(255,255,255,0.007) 4px),
-    repeating-linear-gradient(90deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0) 59px,rgba(255,255,255,0.005) 59px,rgba(255,255,255,0.005) 60px);
-}
+body{font-family:'Lato',sans-serif;background-color:var(--bg);color:var(--parch);overflow-x:hidden;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0) 3px,rgba(255,255,255,0.007) 3px,rgba(255,255,255,0.007) 4px),repeating-linear-gradient(90deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0) 59px,rgba(255,255,255,0.005) 59px,rgba(255,255,255,0.005) 60px)}
 
 /* ── RUNE PARTICLES ── */
 #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.rune{
-  position:absolute;
-  font-family:'IM Fell English',serif;
-  color:var(--gold);opacity:0;
-  animation:runeFloat linear infinite;
-  text-shadow:0 0 8px var(--gold-glow),0 0 20px rgba(201,168,76,0.25);
-  user-select:none;
-}
-@keyframes runeFloat{
-  0%  {transform:translateY(105vh) rotate(-8deg);opacity:0}
-  8%  {opacity:.3}
-  50% {transform:translateY(50vh) rotate(4deg);opacity:.18}
-  92% {opacity:.08}
-  100%{transform:translateY(-5vh) rotate(12deg);opacity:0}
-}
+.rune{position:absolute;font-family:'IM Fell English',serif;color:var(--gold);opacity:0;animation:runeFloat linear infinite;text-shadow:0 0 8px var(--gold-glow),0 0 20px rgba(201,168,76,0.25);user-select:none}
+@keyframes runeFloat{0%{opacity:0;transform:translateY(0) rotate(0deg)}10%{opacity:.35}80%{opacity:.20}100%{opacity:0;transform:translateY(-100vh) rotate(360deg)}}
 
 /* ── NAV ── */
-nav{
-  position:fixed;inset:0 0 auto;z-index:1000;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 3rem;height:64px;
-  background:rgba(10,8,6,.95);
-  border-bottom:1px solid rgba(138,110,47,.5);
-  backdrop-filter:blur(12px);
-  transition:height .3s;
-}
-nav::after{
-  content:'';position:absolute;bottom:-3px;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent 0%,var(--gold-d) 30%,var(--gold) 50%,var(--gold-d) 70%,transparent 100%);
-  opacity:.4;
-}
-nav.scrolled{height:52px}
-.nav-logo{
-  font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;
-  color:var(--gold);letter-spacing:.18em;text-transform:uppercase;
-  text-decoration:none;display:flex;align-items:center;gap:.6rem;
-}
-.nav-rune{font-family:'IM Fell English',serif;font-size:1.1rem;text-shadow:0 0 6px var(--gold-glow)}
-.nav-links{display:flex;gap:2.5rem;list-style:none}
-.nav-links a{
-  font-family:'Cinzel',serif;font-size:.7rem;
-  color:var(--parch-d);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;
-  transition:color .25s,text-shadow .25s;position:relative;
-}
-.nav-links a::after{
-  content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;
-  background:var(--gold);transform:scaleX(0);transform-origin:center;transition:transform .25s;
-}
-.nav-links a:hover{color:var(--gold);text-shadow:0 0 10px var(--gold-glow)}
-.nav-links a:hover::after{transform:scaleX(1)}
+nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,8,6,0.97) 0%,rgba(15,12,9,0.93) 100%);border-bottom:2px solid var(--gold-d);box-shadow:0 2px 20px rgba(0,0,0,0.8);padding:0}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:0;flex-wrap:wrap;padding:0 1rem}
+.nav-brand{font-family:'Uncial Antiqua',cursive;color:var(--gold);font-size:.85rem;padding:.7rem 1rem .7rem 0;margin-right:1rem;border-right:1px solid var(--gold-d);text-shadow:0 0 10px var(--gold-glow);white-space:nowrap}
+.nav-links{display:flex;flex-wrap:wrap;gap:0}
+.nav-links button{background:none;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--parch-d);letter-spacing:.08em;padding:.75rem .8rem;position:relative;transition:color .25s;text-transform:uppercase}
+.nav-links button::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold);transition:left .25s,right .25s}
+.nav-links button:hover,.nav-links button.active{color:var(--gold)}
+.nav-links button:hover::after,.nav-links button.active::after{left:10%;right:10%}
 
-/* ── ORNATE SVG DIVIDER ── */
-.ornate-div{width:100%;line-height:0;position:relative;z-index:1;overflow:hidden}
-.ornate-div svg{width:100%;height:50px;display:block}
+/* ── PAGE SYSTEM ── */
+.page{display:none;min-height:100vh;position:relative;z-index:1}
+.page.active{display:block}
 
 /* ── HERO ── */
-#hero{
-  position:relative;z-index:1;min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:7rem 2rem 5rem;
-  background:
-    radial-gradient(ellipse 80% 45% at 50% 0%,   rgba(107,15,15,.55) 0%,transparent 70%),
-    radial-gradient(ellipse 50% 50% at 20% 85%,  rgba(80,10,10,.3)  0%,transparent 60%),
-    radial-gradient(ellipse 50% 50% at 80% 85%,  rgba(80,10,10,.3)  0%,transparent 60%),
-    radial-gradient(ellipse 40% 60% at 50% 110%, rgba(201,168,76,.06) 0%,transparent 70%),
-    linear-gradient(180deg,#0D0A07 0%,#0A0806 60%,#080604 100%);
-}
-/* large faded heraldic shield */
-#hero::before{
-  content:'';position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-53%);
-  width:min(580px,70vw);height:min(680px,80vh);
-  clip-path:polygon(50% 0%,100% 18%,100% 70%,50% 100%,0% 70%,0% 18%);
-  background:radial-gradient(ellipse at 50% 35%,rgba(201,168,76,.07) 0%,rgba(201,168,76,.02) 50%,transparent 100%);
-  border:1px solid rgba(201,168,76,.07);z-index:0;
-}
-#hero::after{
-  content:'';position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-53%);
-  width:min(520px,63vw);height:min(610px,72vh);
-  clip-path:polygon(50% 0%,100% 18%,100% 70%,50% 100%,0% 70%,0% 18%);
-  border:1px solid rgba(201,168,76,.04);z-index:0;
-}
-#hero>*{position:relative;z-index:1}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 1.5rem 3rem;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(107,15,15,0.25) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 50% 60%,rgba(201,168,76,0.08) 0%,transparent 60%);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0deg,transparent 30deg,rgba(201,168,76,0.015) 30deg,rgba(201,168,76,0.015) 31deg)}
+.shield{width:140px;height:160px;margin:0 auto 2rem;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);background:linear-gradient(160deg,var(--crimson) 0%,var(--blood) 60%,#1A0505 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(107,15,15,0.7),0 0 60px rgba(107,15,15,0.3),inset 0 0 20px rgba(0,0,0,0.5);position:relative}
+.shield::before{content:'';position:absolute;inset:4px;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);border:2px solid var(--gold-d);background:transparent}
+.shield-sigil{font-size:3rem;filter:drop-shadow(0 0 10px var(--gold-glow))}
+.hero-eyebrow{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--gold-d);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.8rem}
+.hero h1{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.2rem,6vw,4.5rem);color:var(--gold);line-height:1.1;text-shadow:0 0 30px var(--gold-glow),0 0 60px rgba(201,168,76,0.3),2px 2px 4px rgba(0,0,0,0.9);margin-bottom:.5rem}
+.hero-subtitle{font-family:'Cinzel Decorative',cursive;font-size:clamp(.9rem,2vw,1.3rem);color:var(--parch-d);letter-spacing:.15em;margin-bottom:2rem}
+.hero-divider{width:320px;max-width:90%;height:20px;margin:.5rem auto 1.5rem;opacity:.7}
+.hero-meta{display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;margin-bottom:2rem}
+.hero-badge{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--parch);background:rgba(107,15,15,0.35);border:1px solid var(--gold-d);border-radius:3px;padding:.4rem .9rem;letter-spacing:.08em;text-shadow:0 1px 3px rgba(0,0,0,0.8)}
+.hero-badge span{color:var(--gold)}
+.countdown-label{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.6rem}
+.countdown{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
+.cd-unit{width:80px;height:95px;clip-path:polygon(50% 0%,100% 12%,100% 65%,50% 100%,0% 65%,0% 12%);background:linear-gradient(160deg,rgba(107,15,15,0.7),rgba(42,4,4,0.9));display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:0 0 15px rgba(107,15,15,0.5)}
+.cd-unit::before{content:'';position:absolute;inset:3px;clip-path:polygon(50% 0%,100% 12%,100% 65%,50% 100%,0% 65%,0% 12%);border:1px solid rgba(201,168,76,0.4)}
+.cd-num{font-family:'Cinzel Decorative',cursive;font-size:1.6rem;font-weight:700;color:var(--gold);text-shadow:0 0 15px var(--gold-glow);line-height:1}
+.cd-lbl{font-family:'Cinzel',serif;font-size:.5rem;font-weight:700;color:var(--parch-d);letter-spacing:.15em;text-transform:uppercase;margin-top:.2rem}
+.cta-btn{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--bg);background:linear-gradient(135deg,var(--gold-l),var(--gold),var(--gold-d));border:none;cursor:pointer;letter-spacing:.15em;text-transform:uppercase;padding:.9rem 2.5rem;clip-path:polygon(8px 0%,calc(100% - 8px) 0%,100% 50%,calc(100% - 8px) 100%,8px 100%,0% 50%);box-shadow:0 0 20px var(--gold-glow),0 4px 15px rgba(0,0,0,0.5);transition:transform .2s,box-shadow .2s}
+.cta-btn:hover{transform:scale(1.05);box-shadow:0 0 35px var(--gold-glow),0 6px 20px rgba(0,0,0,0.6)}
+.discord-banner{margin-top:2rem;display:inline-flex;align-items:center;gap:.7rem;background:rgba(88,101,242,0.15);border:1px solid rgba(88,101,242,0.5);border-radius:8px;padding:.6rem 1.2rem;font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:#9BA8FF;letter-spacing:.05em;text-decoration:none;transition:background .2s,border-color .2s}
+.discord-banner:hover{background:rgba(88,101,242,0.25);border-color:rgba(88,101,242,0.8)}
 
-.hero-eyebrow{
-  font-family:'Cinzel',serif;font-size:.76rem;
-  letter-spacing:.4em;color:var(--gold-d);
-  text-transform:uppercase;margin-bottom:1.5rem;
-}
-.hero-frame{
-  border:1px solid rgba(201,168,76,.28);
-  padding:2.5rem 4rem;position:relative;
-  background:rgba(10,8,6,.45);backdrop-filter:blur(4px);
-  margin-bottom:2rem;
-}
-.hfc{position:absolute;width:20px;height:20px;border-color:var(--gold);border-style:solid}
-.hfc.tl{top:-1px;left:-1px;border-width:2px 0 0 2px}
-.hfc.tr{top:-1px;right:-1px;border-width:2px 2px 0 0}
-.hfc.bl{bottom:-1px;left:-1px;border-width:0 0 2px 2px}
-.hfc.br{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
-.hero-frame-gem{
-  position:absolute;left:50%;transform:translateX(-50%);
-  font-family:'IM Fell English',serif;font-size:1rem;color:var(--gold);line-height:0;
-  text-shadow:0 0 8px var(--gold-glow);
-}
-.hero-frame-gem.top{top:-.5rem}.hero-frame-gem.bot{bottom:-.5rem}
+/* ── SECTION COMMON ── */
+.section{padding:5rem 1.5rem;max-width:1100px;margin:0 auto}
+.section-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold);text-align:center;margin-bottom:.5rem;text-shadow:0 0 20px rgba(201,168,76,0.4)}
+.section-sub{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--parch-dk);letter-spacing:.25em;text-transform:uppercase;text-align:center;margin-bottom:3rem}
+.ornament{display:block;margin:0 auto 2rem;opacity:.55;width:clamp(260px,60%,480px)}
 
-.hero-title{
-  font-family:'Uncial Antiqua','Cinzel Decorative',cursive;
-  font-size:clamp(2rem,5.5vw,4.2rem);line-height:1.2;color:var(--white);
-  text-shadow:0 0 50px rgba(201,168,76,.2),0 2px 6px rgba(0,0,0,.9),0 0 90px rgba(107,15,15,.25);
-  margin-bottom:.5rem;
-}
-.hero-title em{
-  color:var(--gold);font-style:normal;
-  text-shadow:0 0 25px var(--gold-glow),0 0 70px rgba(201,168,76,.3),0 2px 6px rgba(0,0,0,.9);
-}
-.hero-sub{
-  font-family:'Cinzel',serif;font-size:clamp(.88rem,2vw,1.25rem);
-  color:var(--parch-d);letter-spacing:.2em;margin:1rem 0 .4rem;
-}
-.hero-date{
-  font-family:'Cinzel',serif;font-size:clamp(.78rem,1.7vw,.98rem);
-  color:var(--crim-l);letter-spacing:.25em;text-transform:uppercase;
-}
+/* ── PARCHMENT SCROLL ── */
+.scroll{background:linear-gradient(160deg,#2A2018 0%,#1E1810 50%,#2A2018 100%);border:1px solid var(--gold-d);border-radius:4px;padding:2rem 2.5rem;margin-bottom:2rem;position:relative;box-shadow:inset 0 0 40px rgba(0,0,0,0.4),0 4px 20px rgba(0,0,0,0.5)}
+.scroll::before,.scroll::after{content:'';position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold-d),var(--gold),var(--gold-d),transparent)}
+.scroll::before{top:0}.scroll::after{bottom:0}
+.scroll h3{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.7rem;letter-spacing:.05em}
+.scroll p{font-size:.95rem;line-height:1.7;color:var(--parch-d);margin-bottom:.5rem}
+.scroll ul{list-style:none;padding:0}
+.scroll ul li{font-size:.92rem;line-height:1.7;color:var(--parch-d);padding:.2rem 0;padding-left:1.5rem;position:relative}
+.scroll ul li::before{content:'⚔';position:absolute;left:0;color:var(--gold-d);font-size:.75rem;top:.25rem}
 
-/* ── COUNTDOWN ── */
-.countdown{display:flex;gap:1.2rem;justify-content:center;margin:2.5rem 0}
-.countdown-item{display:flex;flex-direction:column;align-items:center}
-.cd-val{
-  font-family:'Cinzel',serif;font-size:clamp(1.7rem,4.2vw,2.9rem);font-weight:700;
-  color:var(--gold);
-  width:clamp(74px,11vw,104px);height:clamp(84px,12.5vw,114px);
-  display:flex;align-items:center;justify-content:center;
-  /* Shield clip-path */
-  clip-path:polygon(50% 0%,100% 13%,100% 72%,50% 100%,0% 72%,0% 13%);
-  background:linear-gradient(180deg,rgba(201,168,76,.12) 0%,rgba(201,168,76,.06) 100%);
-  text-shadow:0 0 18px var(--gold-glow);
-  box-shadow:inset 0 0 20px rgba(0,0,0,.4);
-}
-.cd-sep{
-  font-family:'Cinzel',serif;font-size:1.9rem;color:var(--gold-d);
-  align-self:flex-start;margin-top:.7rem;
-  animation:blink 1s step-end infinite;
-}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.cd-lbl{
-  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.22em;
-  color:var(--parch-dk);text-transform:uppercase;margin-top:.6rem;
-}
+/* ── STATS BAR ── */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--gold-d);border:1px solid var(--gold-d);border-radius:4px;overflow:hidden;margin:3rem 0}
+.stat{background:linear-gradient(160deg,rgba(30,24,16,.95),rgba(15,12,9,.98));padding:1.5rem 1rem;text-align:center}
+.stat-num{font-family:'Cinzel Decorative',cursive;font-size:1.8rem;color:var(--gold);text-shadow:0 0 15px var(--gold-glow)}
+.stat-lbl{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--parch-dk);letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem}
 
-/* ── HERO STATS ── */
-.hero-stats{display:flex;gap:3rem;justify-content:center;flex-wrap:wrap;margin-top:2rem}
-.hero-stat{display:flex;flex-direction:column;align-items:center;gap:.2rem}
-.hstat-n{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:var(--gold);text-shadow:0 0 12px var(--gold-glow)}
-.hstat-l{font-size:.7rem;letter-spacing:.12em;color:var(--parch-d);text-transform:uppercase}
+/* ── PROGRAMME ── */
+.programme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin:2rem 0}
+.round-card{background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:4px;padding:1.5rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:transform .2s,box-shadow .2s}
+.round-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.6),0 0 20px rgba(201,168,76,0.1)}
+.round-day{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.3rem}
+.round-title{font-family:'Cinzel Decorative',cursive;font-size:1.1rem;color:var(--gold);margin-bottom:.3rem;text-shadow:0 0 10px rgba(201,168,76,0.3)}
+.round-time{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:var(--parch);margin-bottom:.8rem}
+.round-desc{font-size:.85rem;color:var(--parch-dk);line-height:1.5}
 
-/* ── CTA BUTTON ── */
-.cta-btn{
-  display:inline-block;font-family:'Cinzel',serif;font-size:.82rem;
-  letter-spacing:.22em;text-transform:uppercase;
-  color:var(--bg);
-  background:linear-gradient(135deg,var(--gold-l) 0%,var(--gold) 45%,#9A7228 100%);
-  padding:1rem 2.5rem;border:none;cursor:pointer;text-decoration:none;
-  clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);
-  transition:all .25s;margin-top:2rem;
-  box-shadow:0 0 25px rgba(201,168,76,.28),inset 0 1px 0 rgba(255,255,255,.18);
-}
-.cta-btn:hover{
-  background:linear-gradient(135deg,#F2DC82 0%,var(--gold-l) 45%,var(--gold) 100%);
-  box-shadow:0 0 40px rgba(201,168,76,.55);transform:translateY(-2px);
-}
-.cta-btn.outline{
-  background:transparent;color:var(--gold);
-  border:1px solid var(--gold-d);clip-path:none;box-shadow:none;
-}
-.cta-btn.outline:hover{
-  background:rgba(201,168,76,.08);border-color:var(--gold);
-  box-shadow:0 0 18px rgba(201,168,76,.2);
-}
+/* ── SCORE TABLE ── */
+.score-table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.88rem}
+.score-table th{background:rgba(107,15,15,0.4);color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;text-align:center;border:1px solid rgba(201,168,76,0.2)}
+.score-table td{padding:.55rem 1rem;text-align:center;border:1px solid rgba(201,168,76,0.12);color:var(--parch-d);line-height:1.4}
+.score-table tr:nth-child(even) td{background:rgba(255,255,255,0.03)}
+.score-table .result-egal td{color:#A0D0A0}
+.score-table .result-marginale td{color:#D4C070}
+.score-table .result-retentissante td{color:#D08040}
+.score-table .result-critique td{color:#D04040}
+.score-winner{font-weight:700;color:var(--gold) !important}
+.score-loser{color:var(--parch-dk) !important}
 
-/* ── SECTION HELPERS ── */
-.sec-eye{
-  font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.4em;color:var(--gold-d);
-  text-transform:uppercase;text-align:center;display:block;margin-bottom:.6rem;
-}
-.sec-title{
-  font-family:'Cinzel Decorative',serif;font-size:clamp(1.4rem,3.4vw,2.35rem);
-  font-weight:700;color:var(--white);text-align:center;letter-spacing:.06em;
-  text-shadow:0 2px 4px rgba(0,0,0,.8),0 0 30px rgba(201,168,76,.12);
-}
-.sec-title em{color:var(--gold);font-style:normal}
-.sec-sub{
-  text-align:center;color:var(--parch-d);font-size:.93rem;line-height:1.78;
-  max-width:660px;margin:.8rem auto 3.5rem;
-}
-.title-block{text-align:center;padding:0 2rem;margin-bottom:3.5rem}
-/* banner rune flanks */
-.title-row{display:inline-flex;align-items:center;gap:1.2rem;margin-bottom:.5rem}
-.title-row::before,.title-row::after{content:'';display:block;width:55px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d))}
-.title-row::after{background:linear-gradient(90deg,var(--gold-d),transparent)}
-.t-rune{font-family:'IM Fell English',serif;font-size:1.2rem;color:var(--gold-d);text-shadow:0 0 6px var(--gold-glow)}
-
-/* ── FORMAT ── */
-#format{
-  position:relative;z-index:1;background-color:var(--bg2);padding:6rem 0;
-  background-image:linear-gradient(rgba(255,255,255,.006) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.006) 1px,transparent 1px);
-  background-size:80px 60px;
-}
-.format-grid{
-  max-width:1200px;margin:0 auto;padding:0 2rem;
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;
-}
-.format-card{
-  background:var(--bg3);border:1px solid rgba(201,168,76,.15);
-  padding:2rem 1.75rem;position:relative;
-  transition:border-color .3s,transform .2s,box-shadow .3s;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),inset 0 -1px 0 rgba(0,0,0,.4),inset 1px 0 0 rgba(255,255,255,.02),inset -1px 0 0 rgba(0,0,0,.3);
-}
-.format-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold-d) 40%,var(--gold-d) 60%,transparent);
-}
-.format-card:hover{border-color:rgba(201,168,76,.4);transform:translateY(-4px);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 35px rgba(0,0,0,.4),0 0 22px rgba(201,168,76,.07)}
-.card-icon{font-size:1.8rem;margin-bottom:.75rem;filter:drop-shadow(0 0 4px rgba(201,168,76,.3))}
-.card-title{font-family:'Cinzel',serif;font-size:.93rem;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:.75rem;text-transform:uppercase}
-.card-body{font-size:.87rem;line-height:1.76;color:var(--parch-d)}
-.card-body strong{color:var(--parch)}
-
-/* ── PROGRAMME / SCROLL ── */
-.scroll-wrap{max-width:800px;margin:4rem auto 0;padding:0 2rem}
-.scroll-body{
-  position:relative;
-  background:linear-gradient(180deg,#1C1608 0%,#1A1406 50%,#1C1608 100%);
-  border:1px solid rgba(201,168,76,.28);
-  padding:2.5rem 3rem;
-  box-shadow:inset 0 0 70px rgba(0,0,0,.5),inset 0 0 30px rgba(90,50,5,.18),0 6px 25px rgba(0,0,0,.55);
-}
-.scroll-body::before{content:'';position:absolute;inset:8px;border:1px solid rgba(201,168,76,.1);pointer-events:none}
-.scroll-cap{
-  text-align:center;font-family:'IM Fell English',serif;
-  color:var(--gold-d);font-size:1.5rem;letter-spacing:.5em;
-  text-shadow:0 0 6px var(--gold-glow);margin:.25rem 0 1.5rem;
-}
-.scroll-cap.b{margin:1.5rem 0 .25rem}
-.prog-title{
-  font-family:'Cinzel',serif;font-size:.98rem;color:var(--gold);
-  text-align:center;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2rem;
-}
-.timeline{position:relative;padding-left:2rem}
-.timeline::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:1px;
-  background:linear-gradient(180deg,transparent 0%,var(--crim-m) 15%,var(--gold-d) 50%,var(--crim-m) 85%,transparent 100%);
-}
-.tl-item{position:relative;margin-bottom:1.75rem;padding-left:1.5rem}
-.tl-item::before{
-  content:'◆';position:absolute;left:-8px;top:2px;
-  color:var(--gold);font-size:.65rem;text-shadow:0 0 6px var(--gold-glow);
-}
-.tl-day{font-family:'Cinzel',serif;font-size:.76rem;color:var(--crim-l);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem}
-.tl-ev{font-size:.87rem;color:var(--parch-d);line-height:1.62}
-.tl-ev strong{color:var(--parch)}
+/* ── RÈGLEMENT BLOCKS ── */
+.rules-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem;max-width:700px;margin-left:auto;margin-right:auto}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.rule-block{background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-left:3px solid var(--crimson);padding:1.5rem;border-radius:0 4px 4px 0;transition:border-left-color .2s}
+.rule-block:hover{border-left-color:var(--gold)}
+.rule-block h3{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--gold);margin-bottom:.8rem;letter-spacing:.05em;display:flex;align-items:center;gap:.5rem}
+.rule-block p,.rule-block li{font-size:.88rem;line-height:1.7;color:var(--parch-d)}
+.rule-block ul{list-style:none;padding:0}
+.rule-block ul li{padding:.2rem 0;padding-left:1.2rem;position:relative}
+.rule-block ul li::before{content:'›';position:absolute;left:0;color:var(--gold-d)}
+.rule-highlight{background:rgba(107,15,15,0.2);border:1px solid rgba(107,15,15,0.5);border-radius:4px;padding:1rem 1.5rem;margin:1.5rem 0;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch);text-align:center}
+.arbitre-card{text-align:center;padding:2rem;background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:4px;margin-top:2rem}
+.arbitre-card .arbitre-title{font-family:'Cinzel Decorative',cursive;font-size:1.1rem;color:var(--gold);margin-bottom:.5rem}
+.arbitre-card p{font-size:.9rem;color:var(--parch-d);line-height:1.6}
+.pairing-steps{counter-reset:step;list-style:none;padding:0;margin:.8rem 0}
+.pairing-steps li{counter-increment:step;padding:.5rem 0 .5rem 2.5rem;position:relative;font-size:.88rem;color:var(--parch-d);line-height:1.6;border-bottom:1px solid rgba(201,168,76,0.08)}
+.pairing-steps li::before{content:counter(step);position:absolute;left:0;top:.4rem;width:1.6rem;height:1.6rem;background:rgba(107,15,15,0.5);border:1px solid var(--gold-d);border-radius:50%;font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;color:var(--gold);display:flex;align-items:center;justify-content:center}
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem;margin:1rem 0}
+.scenario-card{background:rgba(30,24,16,.7);border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:.8rem 1rem}
+.scenario-card .sc-ronde{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem}
+.scenario-card .sc-table{font-size:.78rem;color:var(--parch-d);line-height:1.5}
+.scenario-card .sc-table strong{color:var(--parch)}
+.obj-sec-block{background:rgba(30,24,16,.6);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:.8rem 1rem;margin:.4rem 0;display:flex;gap:.8rem;align-items:flex-start}
+.obj-sec-icon{font-size:1.1rem;flex-shrink:0;margin-top:.1rem}
+.obj-sec-text{font-size:.85rem;color:var(--parch-d);line-height:1.5}
+.obj-sec-text strong{color:var(--gold-l);display:block;margin-bottom:.1rem;font-family:'Cinzel',serif;font-size:.78rem;font-weight:700}
 
 /* ── LIEU ── */
-#lieu{
-  position:relative;z-index:1;background-color:var(--bg);padding:6rem 0;
-  background-image:radial-gradient(ellipse at 0% 50%,rgba(107,15,15,.07) 0%,transparent 50%),radial-gradient(ellipse at 100% 50%,rgba(107,15,15,.07) 0%,transparent 50%);
-}
-.lieu-inner{max-width:1200px;margin:0 auto;padding:0 2rem}
-.lieu-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
-.lieu-name{font-family:'Cinzel Decorative',serif;font-size:1.6rem;color:var(--gold);margin-bottom:.4rem;text-shadow:0 0 20px rgba(201,168,76,.28)}
-.lieu-loc{font-size:.8rem;letter-spacing:.18em;color:var(--parch-d);text-transform:uppercase;margin-bottom:2rem}
-.lieu-feats{list-style:none;display:flex;flex-direction:column;gap:.88rem}
-.lieu-feats li{display:flex;align-items:flex-start;gap:.75rem;font-size:.9rem;color:var(--parch-d);line-height:1.5}
-.lieu-feats li::before{content:'⚔';color:var(--gold);font-size:.82rem;flex-shrink:0;margin-top:.15rem;text-shadow:0 0 5px var(--gold-glow)}
-.lieu-feats strong{color:var(--parch)}
-.lieu-vis{
-  position:relative;aspect-ratio:4/3;background:var(--bg3);
-  border:1px solid rgba(201,168,76,.2);
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-}
-.lieu-vis::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(201,168,76,.07) 0%,transparent 70%)}
-.l-corn{position:absolute;width:30px;height:30px;border-color:var(--gold);border-style:solid;opacity:.5}
-.l-corn.tl{top:10px;left:10px;border-width:1px 0 0 1px}
-.l-corn.tr{top:10px;right:10px;border-width:1px 1px 0 0}
-.l-corn.bl{bottom:10px;left:10px;border-width:0 0 1px 1px}
-.l-corn.br{bottom:10px;right:10px;border-width:0 1px 1px 0}
-.lieu-vis-content{position:relative;z-index:1;font-family:'Cinzel',serif;text-align:center;color:var(--gold-d)}
-.castle-ico{font-size:5rem;margin-bottom:.75rem;display:block;filter:drop-shadow(0 0 8px rgba(201,168,76,.2))}
-.lieu-vis-txt{font-size:.76rem;letter-spacing:.18em}
+.chateau-visual{width:100%;height:300px;border:1px solid var(--gold-d);border-radius:4px;margin-bottom:2rem;overflow:hidden;position:relative;background:linear-gradient(180deg,#0A1525 0%,#1A2A3A 30%,#2A1A10 60%,#1A1008 100%)}
+.chateau-sky{position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 30%,rgba(201,168,76,0.08) 0%,transparent 70%)}
+.chateau-stars{position:absolute;top:0;left:0;right:0;height:45%}
+.chateau-silhouette{position:absolute;bottom:0;left:0;right:0}
+.chateau-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2}
+.chateau-label h3{font-family:'Uncial Antiqua',cursive;font-size:1.8rem;color:var(--gold);text-shadow:0 0 20px var(--gold-glow),0 0 40px rgba(201,168,76,0.3);margin-bottom:.3rem}
+.chateau-label p{font-family:'Cinzel',serif;font-size:.75rem;color:var(--parch-dk);letter-spacing:.2em}
+.lieu-features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:2rem 0}
+.lieu-feat{background:rgba(30,24,16,.7);border:1px solid var(--gold-d);border-radius:4px;padding:1rem 1.2rem;display:flex;align-items:flex-start;gap:.7rem}
+.lieu-feat-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}
+.lieu-feat-text h4{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--gold);margin-bottom:.2rem}
+.lieu-feat-text p{font-size:.82rem;color:var(--parch-dk);line-height:1.4}
+.map-link{display:inline-flex;align-items:center;gap:.5rem;font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--gold);border:1px solid var(--gold-d);padding:.5rem 1.2rem;border-radius:3px;text-decoration:none;transition:background .2s;margin-top:.5rem}
+.map-link:hover{background:rgba(201,168,76,0.1)}
+
+/* ── ASSOCIATION ── */
+.assoc-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem;max-width:700px;margin-left:auto;margin-right:auto}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:2rem 0}
+.photo-item{aspect-ratio:4/3;overflow:hidden;border:1px solid var(--gold-d);border-radius:4px;background:rgba(30,24,16,.8);display:flex;align-items:center;justify-content:center;position:relative}
+.photo-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.photo-item:hover img{transform:scale(1.05)}
+.photo-placeholder{font-family:'Cinzel',serif;font-size:.75rem;color:var(--gold-d);text-align:center;padding:1rem}
+.army-badges{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:1.5rem 0}
+.army-badge{font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--parch-d);background:rgba(30,24,16,.8);border:1px solid var(--gold-d);border-radius:20px;padding:.3rem .8rem;letter-spacing:.05em}
+.bb-banner{background:linear-gradient(135deg,rgba(0,80,160,0.2),rgba(0,40,100,0.3));border:1px solid rgba(0,120,255,0.3);border-radius:4px;padding:1.5rem 2rem;margin-top:2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bb-icon{font-size:2rem;flex-shrink:0}
+.bb-text h3{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:#6ab4ff;margin-bottom:.4rem}
+.bb-text p{font-size:.85rem;color:var(--parch-dk);line-height:1.5}
 
 /* ── INSCRIPTIONS ── */
-#inscriptions{position:relative;z-index:1;background-color:var(--bg2);padding:6rem 0}
-.insc-inner{max-width:900px;margin:0 auto;padding:0 2rem}
-.tarif-cards{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem}
-.tarif-card{
-  background:var(--bg3);border:1px solid rgba(201,168,76,.18);
-  padding:2.5rem 2rem;text-align:center;position:relative;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),inset 0 -1px 0 rgba(0,0,0,.4);
-}
-.tarif-card.featured{
-  border-color:rgba(201,168,76,.5);
-  background:linear-gradient(155deg,rgba(201,168,76,.09) 0%,var(--bg3) 50%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 0 45px rgba(201,168,76,.09);
-}
-/* wax seal */
-.wax{
-  position:absolute;top:-18px;left:50%;transform:translateX(-50%);
-  width:38px;height:38px;
-  background:radial-gradient(circle,var(--crim-l) 0%,var(--crimson) 55%,var(--blood) 100%);
-  border-radius:50%;border:2px solid rgba(201,168,76,.38);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'IM Fell English',serif;font-size:.8rem;color:rgba(201,168,76,.8);
-  box-shadow:0 3px 10px rgba(0,0,0,.6),0 0 14px rgba(107,15,15,.4);
-}
-.tarif-lbl{font-family:'Cinzel',serif;font-size:.76rem;letter-spacing:.22em;color:var(--parch-d);text-transform:uppercase;margin-bottom:1rem}
-.tarif-price{font-family:'Cinzel',serif;font-size:3rem;font-weight:700;color:var(--gold);line-height:1;text-shadow:0 0 18px rgba(201,168,76,.3)}
-.tarif-unit{font-size:.76rem;color:var(--parch-d);margin-bottom:1.5rem}
-.tarif-inc{list-style:none;text-align:left;display:flex;flex-direction:column;gap:.6rem}
-.tarif-inc li{font-size:.83rem;color:var(--parch-d);display:flex;align-items:flex-start;gap:.5rem}
-.tarif-inc li::before{content:'✦';color:var(--gold);font-size:.68rem;margin-top:.16rem}
-.insc-notice{
-  background:var(--bg3);border:1px solid rgba(139,26,26,.35);border-left:3px solid var(--crim-m);
-  padding:1.5rem 2rem;margin-bottom:2rem;display:flex;align-items:flex-start;gap:1rem;
-  box-shadow:inset 0 0 35px rgba(107,15,15,.09);
-}
-.insc-icon{font-size:1.5rem;flex-shrink:0}
-.insc-text{font-size:.87rem;color:var(--parch-d);line-height:1.66}
-.insc-text strong{color:var(--parch)}
-.insc-cta{text-align:center}
+.price-card{max-width:500px;margin:0 auto 2rem;background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:2px solid var(--gold);border-radius:6px;padding:2.5rem 2rem;text-align:center;box-shadow:0 0 30px rgba(201,168,76,0.15),0 8px 30px rgba(0,0,0,0.5);position:relative;overflow:hidden}
+.price-card::before{content:'✦ OFFRE UNIQUE ✦';position:absolute;top:1rem;right:0;background:var(--crimson);color:var(--gold);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.15em;padding:.3rem 1rem .3rem 1.5rem;clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%)}
+.price-amount{font-family:'Cinzel Decorative',cursive;font-size:3rem;color:var(--gold);text-shadow:0 0 20px var(--gold-glow);line-height:1}
+.price-unit{font-size:.9rem;color:var(--parch-dk);margin-bottom:1.5rem}
+.price-includes{list-style:none;padding:0;text-align:left;margin-bottom:1.5rem}
+.price-includes li{font-size:.88rem;color:var(--parch-d);padding:.35rem 0;border-bottom:1px solid rgba(201,168,76,0.1);display:flex;align-items:center;gap:.5rem}
+.price-includes li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0}
+.inscr-btns{display:flex;flex-direction:column;gap:1rem;align-items:center;margin-top:2rem}
+.btn-paypal{display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;background:linear-gradient(135deg,#0070ba,#003087);color:#fff;border:none;cursor:pointer;padding:.85rem 2rem;border-radius:6px;text-decoration:none;letter-spacing:.08em;box-shadow:0 4px 15px rgba(0,0,0,0.4);transition:transform .2s,box-shadow .2s}
+.btn-paypal:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.5)}
+.btn-newrecruit{display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;background:transparent;color:var(--gold);border:2px solid var(--gold);cursor:pointer;padding:.8rem 2rem;border-radius:6px;text-decoration:none;letter-spacing:.08em;transition:background .2s,color .2s}
+.btn-newrecruit:hover{background:rgba(201,168,76,0.15)}
+.inscr-note{font-family:'IM Fell English',serif;font-size:.9rem;font-style:italic;color:var(--parch-dk);text-align:center;margin-top:1rem;line-height:1.6}
+.deadline-box{background:rgba(107,15,15,0.25);border:1px solid rgba(107,15,15,0.6);border-radius:4px;padding:1rem 1.5rem;text-align:center;margin:1.5rem 0;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch)}
+.deadline-box strong{color:var(--gold)}
+/* email anti-spam */
+.email-protected{cursor:pointer;color:var(--gold);border-bottom:1px dotted var(--gold-d);font-style:normal}
+.email-protected::after{content:attr(data-hint);font-size:.8em;color:var(--parch-dk)}
 
 /* ── SPONSORS ── */
-#sponsors{position:relative;z-index:1;background-color:var(--bg);padding:6rem 0}
-.spon-inner{max-width:1100px;margin:0 auto;padding:0 2rem}
-.spon-level{margin-bottom:3.5rem}
-.spon-lvl-title{
-  font-family:'Cinzel',serif;font-size:.76rem;letter-spacing:.35em;text-transform:uppercase;
-  text-align:center;margin-bottom:1.5rem;padding-bottom:.75rem;
-  border-bottom:1px solid rgba(201,168,76,.1);
-  display:flex;align-items:center;justify-content:center;gap:1rem;
-}
-.s-rune{font-family:'IM Fell English',serif;font-size:1rem;opacity:.65}
-.titre-lvl{color:var(--gold)}.or-lvl{color:var(--gold-d)}.silver-lvl{color:#A0A0A0}.bronze-lvl{color:#B07040}
-.spon-slots{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap}
-.spon-slot{
-  background:var(--bg3);border:1px dashed rgba(201,168,76,.2);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.15em;
-  color:rgba(201,168,76,.25);text-transform:uppercase;cursor:default;
-  transition:border-color .2s,background .2s;position:relative;
-}
-.spon-slot:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.04)}
-.spon-slot.titre{width:320px;height:80px}
-.spon-slot.titre::before{content:'◈';position:absolute;top:8px;left:12px;font-size:.6rem;color:rgba(201,168,76,.28)}
-.spon-slot.titre::after{content:'◈';position:absolute;bottom:8px;right:12px;font-size:.6rem;color:rgba(201,168,76,.28)}
-.spon-slot.or    {width:200px;height:65px}
-.spon-slot.argent{width:155px;height:55px}
-.spon-slot.bronze{width:125px;height:48px}
-.spon-cta{
-  text-align:center;margin-top:3rem;padding:2.5rem;background:var(--bg3);
-  border:1px solid rgba(201,168,76,.12);position:relative;
-}
-.spon-cta::before{
-  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:55%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);
-}
-.spon-cta p{color:var(--parch-d);font-size:.92rem;line-height:1.76;margin-bottom:1.5rem}
+.sponsor-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem}
+.sponsor-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
+.sponsor-tier{background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid;border-radius:4px;padding:1.5rem}
+.sponsor-tier.gold{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,0.1)}.sponsor-tier.silver{border-color:#A0A8B0}.sponsor-tier.bronze{border-color:#C07840}
+.sponsor-tier h3{font-family:'Cinzel Decorative',cursive;font-size:1rem;margin-bottom:.3rem}
+.sponsor-tier.gold h3{color:var(--gold)}.sponsor-tier.silver h3{color:#D0D8E0}.sponsor-tier.bronze h3{color:#E09060}
+.sponsor-tier .price-tag{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--parch-dk);margin-bottom:1rem;letter-spacing:.1em}
+.sponsor-tier ul{list-style:none;padding:0}
+.sponsor-tier ul li{font-size:.85rem;color:var(--parch-d);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,0.05);padding-left:1rem;position:relative}
+.sponsor-tier ul li::before{content:'▸';position:absolute;left:0;color:var(--gold-d)}
+.sponsor-contact{text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch-dk);line-height:2}
 
 /* ── FOOTER ── */
-footer{
-  background:var(--bg);border-top:1px solid rgba(201,168,76,.12);
-  padding:3.5rem 2rem;text-align:center;position:relative;z-index:1;
-}
-footer::before{
-  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent);
-}
-.foot-crest{font-size:2.5rem;margin-bottom:1rem;text-shadow:0 0 10px var(--gold-glow)}
-.foot-logo{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--gold);margin-bottom:.5rem;text-shadow:0 0 18px rgba(201,168,76,.28)}
-.foot-tag{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.22em;color:var(--parch-d);text-transform:uppercase;margin-bottom:2rem}
-.foot-runes{font-family:'IM Fell English',serif;font-size:1.2rem;letter-spacing:.5em;color:rgba(201,168,76,.18);margin:1.5rem 0;text-shadow:0 0 4px rgba(201,168,76,.08)}
-.foot-contact{font-size:.84rem;color:var(--parch-d);margin-bottom:.4rem}
-.foot-contact a{color:var(--gold);text-decoration:none}
-.foot-legal{font-size:.67rem;color:rgba(196,184,154,.33);margin-top:2rem;letter-spacing:.06em}
+footer{background:rgba(5,4,3,0.97);border-top:1px solid var(--gold-d);padding:2rem 1.5rem;text-align:center;position:relative;z-index:1}
+.footer-brand{font-family:'Uncial Antiqua',cursive;font-size:1rem;color:var(--gold);margin-bottom:.5rem;text-shadow:0 0 10px var(--gold-glow)}
+.footer-links{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin:.8rem 0}
+.footer-links button{background:none;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--parch-dk);letter-spacing:.08em;text-transform:uppercase;transition:color .2s;padding:.2rem .5rem}
+.footer-links button:hover{color:var(--gold)}
+footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 
-/* ── SCROLL REVEAL ── */
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
 .reveal.visible{opacity:1;transform:none}
 
 /* ── RESPONSIVE ── */
-@media(max-width:768px){
-  nav{padding:0 1.5rem}
-  .nav-links{display:none}
-  .hero-frame{padding:1.75rem 1.5rem}
-  #hero::before,#hero::after{display:none}
-  .lieu-grid{grid-template-columns:1fr}
-  .tarif-cards{grid-template-columns:1fr}
-  .countdown{gap:.6rem}
-  .cd-val{width:68px;height:78px;font-size:1.5rem}
-  .scroll-body{padding:1.5rem}
-  .hero-title{font-size:clamp(1.8rem,8vw,3rem)}
-}
+@media(max-width:600px){.nav-brand{display:none}.nav-links button{font-size:.65rem;padding:.65rem .5rem}.cd-unit{width:65px;height:78px}.cd-num{font-size:1.3rem}.section{padding:3rem 1rem}.scroll{padding:1.5rem 1.2rem}}
 </style>
 </head>
 <body>
-
-<!-- RUNE PARTICLES -->
 <div id="particles"></div>
 
 <!-- NAV -->
-<nav id="navbar">
-  <a class="nav-logo" href="#hero"><span class="nav-rune">ᚠ</span> Les Stratèges du Vieux Monde</a>
-  <ul class="nav-links">
-    <li><a href="#format">Format</a></li>
-    <li><a href="#lieu">Lieu</a></li>
-    <li><a href="#inscriptions">Inscriptions</a></li>
-    <li><a href="#sponsors">Partenaires</a></li>
-    <li><a href="#inscriptions"><span style="color:var(--gold)">S'inscrire</span></a></li>
-  </ul>
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">⚔ Les Stratèges du Vieux Monde</div>
+    <div class="nav-links">
+      <button onclick="showPage('accueil')" class="active" id="nav-accueil">Accueil</button>
+      <button onclick="showPage('format')" id="nav-format">Format</button>
+      <button onclick="showPage('reglement')" id="nav-reglement">Règlement</button>
+      <button onclick="showPage('lieu')" id="nav-lieu">Lieu</button>
+      <button onclick="showPage('association')" id="nav-association">Association</button>
+      <button onclick="showPage('inscriptions')" id="nav-inscriptions">Inscriptions</button>
+      <button onclick="showPage('sponsors')" id="nav-sponsors">Sponsors</button>
+    </div>
+  </div>
 </nav>
 
-<!-- HERO -->
-<header id="hero">
-  <p class="hero-eyebrow">Les Stratèges du Vieux Monde · Aube · France</p>
-
-  <div class="hero-frame">
-    <div class="hfc tl"></div><div class="hfc tr"></div>
-    <div class="hfc bl"></div><div class="hfc br"></div>
-    <div class="hero-frame-gem top">✦</div>
-    <div class="hero-frame-gem bot">✦</div>
-    <h1 class="hero-title">Tournoi<br><em>The Old World</em></h1>
-    <p class="hero-sub">Warhammer Fantasy Battles · Format Équipes</p>
-    <p class="hero-date">7 &amp; 8 Novembre 2026 · Château de Vaux · Aube</p>
-  </div>
-
-  <div class="countdown" id="countdown">
-    <div class="countdown-item"><div class="cd-val" id="cd-days">000</div><div class="cd-lbl">Jours</div></div>
-    <div class="cd-sep">:</div>
-    <div class="countdown-item"><div class="cd-val" id="cd-hours">00</div><div class="cd-lbl">Heures</div></div>
-    <div class="cd-sep">:</div>
-    <div class="countdown-item"><div class="cd-val" id="cd-min">00</div><div class="cd-lbl">Minutes</div></div>
-    <div class="cd-sep">:</div>
-    <div class="countdown-item"><div class="cd-val" id="cd-sec">00</div><div class="cd-lbl">Secondes</div></div>
-  </div>
-
-  <div class="hero-stats">
-    <div class="hero-stat"><span class="hstat-n">12</span><span class="hstat-l">Équipes</span></div>
-    <div class="hero-stat"><span class="hstat-n">60</span><span class="hstat-l">Guerriers</span></div>
-    <div class="hero-stat"><span class="hstat-n">3</span><span class="hstat-l">Rondes</span></div>
-    <div class="hero-stat"><span class="hstat-n">2000</span><span class="hstat-l">Points</span></div>
-  </div>
-
-  <a href="#inscriptions" class="cta-btn">⚔ Inscrire mon équipe ⚔</a>
-</header>
-
-<!-- ORNATE DIVIDER -->
-<div class="ornate-div" aria-hidden="true">
-<svg viewBox="0 0 800 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-  <line x1="0" y1="25" x2="265" y2="25" stroke="#8A6E2F" stroke-width="0.6" opacity=".8"/>
-  <line x1="535" y1="25" x2="800" y2="25" stroke="#8A6E2F" stroke-width="0.6" opacity=".8"/>
-  <path d="M270 25 Q282 13 298 25 Q282 37 270 25" fill="none" stroke="#C9A84C" stroke-width=".85" opacity=".9"/>
-  <path d="M530 25 Q518 13 502 25 Q518 37 530 25" fill="none" stroke="#C9A84C" stroke-width=".85" opacity=".9"/>
-  <path d="M306 25 L316 15 L326 25 L316 35 Z" fill="none" stroke="#C9A84C" stroke-width=".7" opacity=".8"/>
-  <path d="M494 25 L484 15 L474 25 L484 35 Z" fill="none" stroke="#C9A84C" stroke-width=".7" opacity=".8"/>
-  <!-- centre sword -->
-  <line x1="400" y1="9" x2="400" y2="41" stroke="#C9A84C" stroke-width="1" opacity=".88"/>
-  <line x1="391" y1="17" x2="409" y2="17" stroke="#C9A84C" stroke-width=".85" opacity=".8"/>
-  <path d="M397 7 L400 4 L403 7" fill="none" stroke="#C9A84C" stroke-width=".7"/>
-  <circle cx="400" cy="39" r="2.8" fill="none" stroke="#C9A84C" stroke-width=".7" opacity=".65"/>
-  <!-- diamond accents -->
-  <path d="M338 25 L344 19 L350 25 L344 31 Z" fill="#C9A84C" opacity=".5"/>
-  <path d="M450 25 L456 19 L462 25 L456 31 Z" fill="#C9A84C" opacity=".5"/>
-  <circle cx="360" cy="25" r="1.5" fill="#8A6E2F" opacity=".6"/>
-  <circle cx="370" cy="25" r="1.5" fill="#8A6E2F" opacity=".6"/>
-  <circle cx="380" cy="25" r="1.5" fill="#8A6E2F" opacity=".6"/>
-  <circle cx="420" cy="25" r="1.5" fill="#8A6E2F" opacity=".6"/>
-  <circle cx="430" cy="25" r="1.5" fill="#8A6E2F" opacity=".6"/>
-  <circle cx="440" cy="25" r="1.5" fill="#8A6E2F" opacity=".6"/>
-</svg>
-</div>
-
-<!-- FORMAT -->
-<div id="format">
-  <div class="title-block">
-    <span class="sec-eye">Compétition officielle</span>
-    <div class="title-row"><span class="t-rune">ᚲ</span><h2 class="sec-title">Format &amp; <em>Règlement</em></h2><span class="t-rune">ᚲ</span></div>
-    <p class="sec-sub">Un tournoi par équipes exigeant et convivial, dans les règles officielles de Warhammer: The Old World.</p>
-  </div>
-
-  <div class="format-grid">
-    <div class="format-card reveal"><div class="card-icon">⚔️</div><div class="card-title">Format par équipes</div><div class="card-body"><strong>12 équipes de 5 joueurs</strong> s'affrontent en 3 rondes. Chaque match oppose 5 joueurs simultanément — un par table. Le score final de l'équipe est la somme des résultats individuels.</div></div>
-    <div class="format-card reveal"><div class="card-icon">🗡️</div><div class="card-title">Format des listes</div><div class="card-body">Listes à <strong>2 000 points</strong> par joueur. Toutes les armées du Vieux Monde autorisées selon les publications officielles Games Workshop en vigueur au 1er octobre 2026.</div></div>
-    <div class="format-card reveal"><div class="card-icon">🏰</div><div class="card-title">Terrain de jeu</div><div class="card-body">Tables <strong>180 × 120 cm</strong>. Décors fournis par l'organisation et homologués. 30 tables simultanées. Disposition tirée au sort avant chaque ronde.</div></div>
-    <div class="format-card reveal"><div class="card-icon">📜</div><div class="card-title">Système de score</div><div class="card-body">Victoire majeure, victoire mineure, match nul selon les points de victoire du livre de règles. Bonus fair-play. Tiebreaker sur les points de victoire cumulés.</div></div>
-    <div class="format-card reveal"><div class="card-icon">🎨</div><div class="card-title">Peinture</div><div class="card-body"><strong>Peinture obligatoire</strong> (3 couleurs minimum). Un prix spécial "Meilleure Armée" est remis lors de la cérémonie. Vote de l'ensemble des participants.</div></div>
-    <div class="format-card reveal"><div class="card-icon">🏆</div><div class="card-title">Récompenses</div><div class="card-body">Trophées gravés pour les <strong>3 équipes du podium</strong>. Prix "Meilleure Armée", "Fair-Play" et surprises pour tous les participants.</div></div>
-  </div>
-
-  <!-- Programme Parchemin -->
-  <div class="scroll-wrap">
-    <div class="scroll-body reveal">
-      <div class="scroll-cap">⁕ &nbsp; ⁕ &nbsp; ⁕</div>
-      <div class="prog-title">Programme des Deux Jours</div>
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-day">Vendredi 6 novembre · Arrivée</div>
-          <div class="tl-ev">Arrivée des équipes, installation, dîner d'accueil au Château de Vaux</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-day">Samedi 7 novembre · Jour 1</div>
-          <div class="tl-ev"><strong>9h00</strong> — Ouverture officielle &amp; présentation des équipes<br><strong>9h30</strong> — Ronde 1 (2 000 pts · 4h)<br><strong>13h30</strong> — Déjeuner<br><strong>14h30</strong> — Ronde 2 (2 000 pts · 4h)<br><strong>20h00</strong> — Dîner de gala &amp; soirée conviviale</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-day">Dimanche 8 novembre · Jour 2 &amp; Final</div>
-          <div class="tl-ev"><strong>9h00</strong> — Ronde 3 &amp; finale (4h)<br><strong>13h00</strong> — Déjeuner<br><strong>14h30</strong> — Cérémonie de remise des prix 🏆<br><strong>16h00</strong> — Départ des équipes</div>
-        </div>
-      </div>
-      <div class="scroll-cap b">⁕ &nbsp; ⁕ &nbsp; ⁕</div>
+<!-- ══════════════════════════════════════
+     PAGE : ACCUEIL
+══════════════════════════════════════ -->
+<div class="page active" id="page-accueil">
+  <section class="hero">
+    <div class="shield"><span class="shield-sigil">⚔</span></div>
+    <p class="hero-eyebrow">Les Stratèges du Vieux Monde présentent</p>
+    <h1>Tournoi<br>The Old World</h1>
+    <p class="hero-subtitle">2026 · Édition Compétitive</p>
+    <svg class="hero-divider" viewBox="0 0 320 20" fill="none"><line x1="0" y1="10" x2="120" y2="10" stroke="#8A6E2F" stroke-width="1"/><polygon points="130,10 140,4 150,10 140,16" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="155" y1="10" x2="160" y2="10" stroke="#C9A84C" stroke-width="1.5"/><path d="M160,3 L163,10 L160,17 L157,10 Z" fill="#C9A84C"/><line x1="160" y1="10" x2="165" y2="10" stroke="#C9A84C" stroke-width="1.5"/><polygon points="170,10 180,4 190,10 180,16" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="200" y1="10" x2="320" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+    <div class="hero-meta">
+      <div class="hero-badge">🗓 <span>7–8 Novembre 2026</span></div>
+      <div class="hero-badge">📍 <span>Château de Vaux, Aube (10)</span></div>
+      <div class="hero-badge">⚔ <span>16 Équipes · Format 3v3</span></div>
+    </div>
+    <p class="countdown-label">✦ Compte à rebours ✦</p>
+    <div class="countdown">
+      <div class="cd-unit"><span class="cd-num" id="cd-j">--</span><span class="cd-lbl">Jours</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl">Heures</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl">Mins</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">Secs</span></div>
+    </div>
+    <button class="cta-btn" onclick="showPage('inscriptions')">S'inscrire au Tournoi</button>
+    <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="discord-banner">
+      <svg width="20" height="15" viewBox="0 0 71 55" fill="#9BA8FF"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>
+      Rejoindre le serveur Discord officiel
+    </a>
+  </section>
+  <div style="max-width:1100px;margin:0 auto;padding:3rem 1.5rem">
+    <div class="stats-bar reveal">
+      <div class="stat"><div class="stat-num">16</div><div class="stat-lbl">Équipes</div></div>
+      <div class="stat"><div class="stat-num">48</div><div class="stat-lbl">Commandants</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">Batailles</div></div>
+      <div class="stat"><div class="stat-num">2 000</div><div class="stat-lbl">Points / liste</div></div>
+    </div>
+    <div class="scroll reveal" style="text-align:center">
+      <h3>⚔ Bienvenue dans le Vieux Monde ⚔</h3>
+      <p>Seigneurs et généraux de renom, les Stratèges du Vieux Monde vous convoquent à la grande joute compétitive <em>Warhammer: The Old World</em> de l'Aube.</p>
+      <p>16 équipes de 3 joueurs s'affronteront en listes ouvertes, sur 4 rondes épiques, sous l'arbitrage de <strong style="color:var(--gold)">JB du Warfo</strong>. Le système de score suit le <strong style="color:var(--gold)">Guide du Jeu Égal (6-0)</strong> officiel de The Old World.</p>
+      <p>Le tout dans le cadre exceptionnel du <strong style="color:var(--gold)">Château de Vaux</strong>, demeure aristocratique au cœur de l'Aube.</p>
     </div>
   </div>
+  <footer>
+    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
+    <div class="footer-links">
+      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button>
+    </div>
+    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+    <p style="margin-top:.5rem">© 2026 Les Stratèges du Vieux Monde · Ruvigny, Aube (10)</p>
+  </footer>
 </div>
 
-<!-- ORNATE DIVIDER -->
-<div class="ornate-div" aria-hidden="true">
-<svg viewBox="0 0 800 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-  <line x1="0" y1="25" x2="265" y2="25" stroke="#8A6E2F" stroke-width="0.6" opacity=".8"/>
-  <line x1="535" y1="25" x2="800" y2="25" stroke="#8A6E2F" stroke-width="0.6" opacity=".8"/>
-  <path d="M270 25 Q282 13 298 25 Q282 37 270 25" fill="none" stroke="#C9A84C" stroke-width=".85" opacity=".9"/>
-  <path d="M530 25 Q518 13 502 25 Q518 37 530 25" fill="none" stroke="#C9A84C" stroke-width=".85" opacity=".9"/>
-  <path d="M338 25 L344 19 L350 25 L344 31 Z" fill="#C9A84C" opacity=".5"/>
-  <path d="M450 25 L456 19 L462 25 L456 31 Z" fill="#C9A84C" opacity=".5"/>
-  <circle cx="400" cy="25" r="5" fill="none" stroke="#C9A84C" stroke-width=".8" opacity=".7"/>
-  <circle cx="400" cy="25" r="2" fill="#C9A84C" opacity=".5"/>
-  <line x1="360" y1="25" x2="390" y2="25" stroke="#8A6E2F" stroke-width=".5" opacity=".6"/>
-  <line x1="410" y1="25" x2="440" y2="25" stroke="#8A6E2F" stroke-width=".5" opacity=".6"/>
-</svg>
-</div>
+<!-- ══════════════════════════════════════
+     PAGE : FORMAT
+══════════════════════════════════════ -->
+<div class="page" id="page-format">
+  <div class="section">
+    <h2 class="section-title">Format du Tournoi</h2>
+    <p class="section-sub">⚔ Règles & Programme ⚔</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
 
-<!-- LIEU -->
-<div id="lieu">
-  <div class="title-block">
-    <span class="sec-eye">Cadre d'exception</span>
-    <div class="title-row"><span class="t-rune">ᚺ</span><h2 class="sec-title">Le <em>Château de Vaux</em></h2><span class="t-rune">ᚺ</span></div>
-    <p class="sec-sub">Un domaine médiéval au cœur de l'Aube — pour un week-end dont vous vous souviendrez.</p>
-  </div>
-  <div class="lieu-inner">
-    <div class="lieu-grid reveal">
-      <div class="lieu-info">
-        <div class="lieu-name">Château de Vaux</div>
-        <div class="lieu-loc">📍 Fouchères · Aube (10) · 30 km de Troyes</div>
-        <ul class="lieu-feats">
-          <li><strong>La Grange (260 m²)</strong> — espace de jeu principal pour les 30 tables</li>
-          <li><strong>L'Orangerie (110 m²)</strong> — accueil, pesée des armées, podium</li>
-          <li><strong>90 couchages</strong> sur site — tout le monde logé ensemble</li>
-          <li><strong>Restaurant &amp; traiteur</strong> sur place pour les deux déjeuners et le dîner de gala</li>
-          <li><strong>Parc et jardins</strong> pour se ressourcer entre les rondes</li>
-          <li><strong>Parking privatif</strong> — accès facile depuis l'A5</li>
-        </ul>
-        <a href="https://www.chateau-vaux.com" target="_blank" class="cta-btn outline" style="margin-top:2rem">Voir le domaine →</a>
+    <div class="stats-bar reveal">
+      <div class="stat"><div class="stat-num">3v3</div><div class="stat-lbl">Format équipe</div></div>
+      <div class="stat"><div class="stat-num">2 000</div><div class="stat-lbl">Points par liste</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">Rondes</div></div>
+      <div class="stat"><div class="stat-num">6-0</div><div class="stat-lbl">Système GJE</div></div>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🛡 Concept Général</h3>
+      <p>Le tournoi oppose <strong>16 équipes de 3 joueurs</strong>. Chaque ronde, les capitaines gèrent les appariements via un système de pairing (voir Règlement). Les listes sont <strong>ouvertes</strong> : chaque joueur connaît les listes adverses avant le déploiement. Les domaines de magie sont fixés pour tout le week-end.</p>
+    </div>
+
+    <!-- SCORE DES PARTIES -->
+    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">Système de Score</h3>
+    <p class="section-sub">⚔ Guide du Jeu Égal — Différentiel de Points de Victoire ⚔</p>
+
+    <div class="scroll reveal">
+      <h3>⚔ Score des Parties (individuel)</h3>
+      <p style="margin-bottom:1rem">Calculez normalement vos <strong>points de victoire</strong> : unités détruites, en fuite ou à ≤25% de leur PU de départ, bannières, généraux, grande bannière, objectifs secondaires, déroute, objectifs spécifiques du scénario.</p>
+      <table class="score-table">
+        <thead>
+          <tr><th>Différentiel de PV</th><th>Résultat</th><th>Vainqueur</th><th>Perdant</th></tr>
+        </thead>
+        <tbody>
+          <tr class="result-egal"><td>0 à 300 pts</td><td>Égalité</td><td class="score-winner">3 pts</td><td class="score-winner">3 pts</td></tr>
+          <tr class="result-marginale"><td>301 à 750 pts</td><td>Victoire Marginale</td><td class="score-winner">4 pts</td><td class="score-loser">2 pts</td></tr>
+          <tr class="result-retentissante"><td>751 à 1 400 pts</td><td>Victoire Retentissante</td><td class="score-winner">5 pts</td><td class="score-loser">1 pt</td></tr>
+          <tr class="result-critique"><td>1 401 pts ou plus</td><td>Victoire Critique</td><td class="score-winner">6 pts</td><td class="score-loser">0 pt</td></tr>
+        </tbody>
+      </table>
+      <div class="rule-highlight" style="margin:1rem 0 0">⚠ Si au moins une armée <strong>déroute</strong> pendant la partie, le résultat est plafonné à une <strong>Victoire Marginale</strong> au maximum.</div>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🏆 Score des Rondes (équipe)</h3>
+      <p style="margin-bottom:1rem">Le score de ronde d'une équipe est la <strong>somme des scores individuels</strong> de ses 3 joueurs. Maximum par ronde : <strong>18 pts</strong>.</p>
+      <table class="score-table">
+        <thead>
+          <tr><th>Score d'équipe</th><th>Résultat de ronde</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>8 pts ou moins</td><td style="color:#D04040">Défaite</td></tr>
+          <tr><td>9 à 10 pts</td><td style="color:#D4C070">Égalité (Nul)</td></tr>
+          <tr><td>11 pts ou plus</td><td style="color:#A0D0A0">Victoire</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;font-size:.85rem;color:var(--parch-dk)">⚠ Toute partie non organisée dans les temps compte 0/0 pour les deux joueurs. Si une équipe n'organise pas 2 parties ou plus, les deux équipes reçoivent 0 point, comptant comme défaite.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>📊 Classement Général</h3>
+      <p>Le classement des équipes est établi sur la base <strong>Victoire / Nul / Défaite</strong>, avec les critères secondaires suivants, dans l'ordre :</p>
+      <ul>
+        <li>Somme des scores de ronde</li>
+        <li>SoS (Strength of Schedule — force des adversaires rencontrés)</li>
+        <li>Victoire directe sur l'adversaire</li>
+      </ul>
+    </div>
+
+    <!-- PROGRAMME -->
+    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">Programme des Rondes</h3>
+    <p class="section-sub">7 & 8 Novembre 2026</p>
+    <div class="programme-grid reveal">
+      <div class="round-card">
+        <div class="round-day">Samedi 7 novembre</div>
+        <div class="round-title">Ronde I</div>
+        <div class="round-time">☀ 8h30 – 12h30</div>
+        <div class="round-desc">Ouverture des hostilités. Accueil & café de bienvenue dès 8h.</div>
       </div>
-      <div class="lieu-vis">
-        <div class="l-corn tl"></div><div class="l-corn tr"></div>
-        <div class="l-corn bl"></div><div class="l-corn br"></div>
-        <div class="lieu-vis-content">
-          <span class="castle-ico">🏰</span>
-          <div class="lieu-vis-txt">Château de Vaux<br><span style="font-size:.62rem;opacity:.5">Fouchères · Aube</span></div>
-        </div>
+      <div class="round-card">
+        <div class="round-day">Samedi 7 novembre</div>
+        <div class="round-title">Ronde II</div>
+        <div class="round-time">☀ 13h30 – 17h30</div>
+        <div class="round-desc">Pause repas entre les deux rondes. Restauration incluse.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Samedi 7 novembre — Soirée</div>
+        <div class="round-title">Ronde III</div>
+        <div class="round-time">🌙 18h00 – 22h00</div>
+        <div class="round-desc">La bataille se prolonge aux chandelles. Activités communes le soir.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 novembre</div>
+        <div class="round-title">Ronde IV</div>
+        <div class="round-time">☀ 8h30 – 12h30</div>
+        <div class="round-desc">Grande finale — remise des prix en début d'après-midi.</div>
       </div>
     </div>
+
+    <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="discord-banner" style="display:inline-flex;margin-top:1rem">
+      <svg width="18" height="14" viewBox="0 0 71 55" fill="#9BA8FF"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>
+      Annonces et questions sur Discord
+    </a>
   </div>
+  <footer>
+    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+  </footer>
 </div>
 
-<!-- ORNATE DIVIDER -->
-<div class="ornate-div" aria-hidden="true">
-<svg viewBox="0 0 800 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-  <line x1="0" y1="25" x2="265" y2="25" stroke="#8A6E2F" stroke-width="0.6" opacity=".8"/>
-  <line x1="535" y1="25" x2="800" y2="25" stroke="#8A6E2F" stroke-width="0.6" opacity=".8"/>
-  <path d="M270 25 Q282 13 298 25 Q282 37 270 25" fill="none" stroke="#C9A84C" stroke-width=".85" opacity=".9"/>
-  <path d="M530 25 Q518 13 502 25 Q518 37 530 25" fill="none" stroke="#C9A84C" stroke-width=".85" opacity=".9"/>
-  <path d="M338 25 L344 19 L350 25 L344 31 Z" fill="#C9A84C" opacity=".5"/>
-  <path d="M450 25 L456 19 L462 25 L456 31 Z" fill="#C9A84C" opacity=".5"/>
-  <circle cx="400" cy="25" r="5" fill="none" stroke="#C9A84C" stroke-width=".8" opacity=".7"/>
-  <circle cx="400" cy="25" r="2" fill="#C9A84C" opacity=".5"/>
-  <line x1="360" y1="25" x2="390" y2="25" stroke="#8A6E2F" stroke-width=".5" opacity=".6"/>
-  <line x1="410" y1="25" x2="440" y2="25" stroke="#8A6E2F" stroke-width=".5" opacity=".6"/>
-</svg>
-</div>
+<!-- ══════════════════════════════════════
+     PAGE : RÈGLEMENT
+══════════════════════════════════════ -->
+<div class="page" id="page-reglement">
+  <div class="section">
+    <h2 class="section-title">Règlement du Tournoi</h2>
+    <p class="section-sub">⚔ Codex des Batailles ⚔</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
 
-<!-- INSCRIPTIONS -->
-<div id="inscriptions">
-  <div class="insc-inner">
-    <span class="sec-eye">Places limitées</span>
-    <div class="title-row" style="justify-content:center;display:flex"><span class="t-rune">ᛏ</span><h2 class="sec-title">Inscriptions</h2><span class="t-rune">ᛏ</span></div>
-    <p class="sec-sub" style="margin-top:.8rem"><strong style="color:var(--crim-l)">12 équipes maximum.</strong> Les inscriptions ouvrent en avril 2026. Réservez votre place dès maintenant.</p>
+    <p class="rules-intro">Le présent règlement est établi pour le Tournoi The Old World 2026 organisé par Les Stratèges du Vieux Monde. Il s'appuie sur les FAQ et Mises à Jour GW en vigueur à la <strong>date de blocage du format</strong> (arrêt au soir du samedi précédant la remise des listes). Les règles VO priment sur les traductions.</p>
 
-    <div class="tarif-cards">
-      <div class="tarif-card reveal">
-        <div class="tarif-lbl">Inscription joueur</div>
-        <div class="tarif-price">195<span style="font-size:1.2rem">€</span></div>
-        <div class="tarif-unit">par joueur · tout compris</div>
-        <ul class="tarif-inc">
-          <li>2 jours de tournoi compétitif</li>
-          <li>Hébergement vendredi &amp; samedi</li>
-          <li>2 déjeuners + 1 dîner de gala</li>
-          <li>Goodie bag officiel</li>
-        </ul>
-      </div>
-      <div class="tarif-card featured reveal">
-        <div class="wax">⚜</div>
-        <div class="tarif-lbl">Inscription équipe</div>
-        <div class="tarif-price">975<span style="font-size:1.2rem">€</span></div>
-        <div class="tarif-unit">par équipe de 5 · tout compris</div>
-        <ul class="tarif-inc">
-          <li>5 places de joueurs incluses</li>
-          <li>Réduction vs tarif individuel</li>
-          <li>Règlement en une seule fois</li>
-          <li>Priorité sur la liste d'attente</li>
+    <!-- I. INSCRIPTIONS & ARMÉES -->
+    <h3 class="section-title" style="font-size:1.2rem;margin-bottom:.5rem;margin-top:2rem">I. Inscriptions & Armées</h3>
+    <div class="rules-grid">
+      <div class="rule-block reveal">
+        <h3><span>📋</span> Inscription</h3>
+        <ul>
+          <li>Inscription via <strong>NewRecruit</strong> (gestion des listes et rondes) + paiement PayPal</li>
+          <li>Date limite d'inscription et de paiement : <strong>1er octobre 2026</strong></li>
+          <li>Date limite d'envoi des listes : <strong>31 octobre 2026 à minuit</strong></li>
+          <li>Listes saisies et enregistrées sur la page NewRecruit du tournoi</li>
+          <li>Toute équipe incomplète à la date limite sera désinscrite</li>
         </ul>
       </div>
+      <div class="rule-block reveal">
+        <h3><span>🛡</span> Composition des Équipes</h3>
+        <ul>
+          <li>3 joueurs par équipe, un capitaine désigné</li>
+          <li><strong>Chaque faction est unique par équipe</strong> — un seul joueur peut représenter une faction, quelle que soit la liste (Grande Armée, Croisade, Exilés…)</li>
+          <li>Les unités « mercenaires » ou provenant d'autres factions restent autorisées</li>
+          <li>Les alliés sont autorisés, mais un seul joueur par faction alliée</li>
+          <li>La langue des parties est le <strong>Français</strong></li>
+        </ul>
+      </div>
+      <div class="rule-block reveal">
+        <h3><span>⚔</span> Composition des Armées</h3>
+        <ul>
+          <li>Taille des listes : <strong>2 000 points</strong> par joueur (pas un de plus)</li>
+          <li>Toutes les armées (Forces Fantastiques, Hordes Sauvages, Cathay, Forces de Légendes) et journaux arcaniques autorisés</li>
+          <li>Restrictions <strong>Grand Melee & Combined Arms</strong> :<br>
+            — Aucune unité individuelle &gt; 25% du total (500 pts max, 501+ interdits)<br>
+            — 1 sorcier niv. 4 max, 2 sorciers niv. 3 max<br>
+            — Répétition unités : 0-3 mêmes personnages, 0-4 mêmes unités de base, 0-3 spéciales, 0-2 rares<br>
+            — Les personnages nommés/spéciaux ne comptent pas dans cette limitation
+          </li>
+          <li>Joueurs Vampires : <strong>pas de Machine de Mort</strong></li>
+          <li>Listes <strong>fixées pour tout le week-end</strong> — aucun changement entre les parties</li>
+        </ul>
+      </div>
+      <div class="rule-block reveal">
+        <h3><span>🎨</span> Modélisme, Peinture & WYSIWYG</h3>
+        <ul>
+          <li>Armées <strong>100% peintes</strong> obligatoire — toute figurine non peinte reste dans la mallette</li>
+          <li>WYSIWYG : ce que vous voyez est ce que vous jouez. Un Fantassin Impérial avec lance n'est pas un Fantassin Impérial avec épée</li>
+          <li>Tolérance sur les figurines d'état-major : un champion peut avoir un équipement différent si cela aide à le différencier, sans risque de confusion</li>
+          <li>Les armées à thèmes, conversions et anciens modèles sont encouragés — dans la limite du raisonnable et sans tentative de tromperie</li>
+          <li>Les socles doivent être peints au même titre que la figurine</li>
+          <li>Les <strong>Unit Fillers</strong> sont autorisés s'ils ne nuisent pas au jeu et restent dans le thème. En cas de litige, l'arbitrage sera défavorable au joueur utilisant un Unit Filler</li>
+          <li>Vérification WYSIWYG effectuée le matin du tournoi — les listes seront ajustées si nécessaire</li>
+        </ul>
+      </div>
     </div>
 
-    <div class="insc-notice reveal">
-      <div class="insc-icon">⚠️</div>
-      <div class="insc-text"><strong>Clôture des inscriptions : 15 octobre 2026.</strong> Les places sont attribuées par ordre d'arrivée des dossiers complets (liste d'armée + règlement). Une liste d'attente sera ouverte une fois les 12 équipes complètes.</div>
+    <!-- II. DÉROULEMENT D'UNE RONDE -->
+    <h3 class="section-title" style="font-size:1.2rem;margin-bottom:.5rem;margin-top:3rem">II. Déroulement d'une Ronde</h3>
+
+    <div class="scroll reveal">
+      <h3>⚖ Phase de Pairing (Appariements)</h3>
+      <p style="margin-bottom:.8rem">L'équipe la mieux classée est l'<strong>équipe A</strong>, l'autre est l'<strong>équipe B</strong>. Pour la première ronde, l'équipe A est désignée aléatoirement (D6).</p>
+      <ol class="pairing-steps">
+        <li>Les deux capitaines présentent <strong>simultanément</strong> une liste en défense. Celle de l'équipe A va en <strong>table 1</strong>, celle de l'équipe B en <strong>table 2</strong>.</li>
+        <li>Les deux capitaines proposent <strong>simultanément</strong> une liste en attaque, qui ira face à la liste en défense de l'équipe adverse.</li>
+        <li>Les deux capitaines annoncent <strong>simultanément</strong> quelle liste d'attaque a été choisie comme adversaire de leur liste en défense.</li>
+        <li>Les deux derniers joueurs (les « attaquants refusés ») s'affrontent en <strong>table 3</strong>. Le capitaine de l'équipe B choisit lequel de ses joueurs prendra le rôle d'attaquant ou de défenseur.</li>
+      </ol>
     </div>
-    <div class="insc-cta">
-      <a href="mailto:jean-sebastien.lefevre@vasa.fr?subject=Inscription%20Tournoi%20TOW%202026" class="cta-btn">Réserver ma place par email</a>
-      <p style="margin-top:1rem;font-size:.78rem;color:var(--parch-d);font-family:'Cinzel',serif;letter-spacing:.1em">Les inscriptions officielles ouvrent en Avril 2026</p>
+
+    <div class="scroll reveal">
+      <h3>🗺 Rotation des Scénarios <span style="font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--parch-dk);font-style:italic">(à confirmer)</span></h3>
+      <p style="margin-bottom:.8rem">Chaque table joue un scénario différent par ronde. Toutes les parties durent <strong>6 tours maximum</strong> (ou jusqu'à déroute si applicable).</p>
+      <div class="scenario-grid">
+        <div class="scenario-card">
+          <div class="sc-ronde">Ronde 1</div>
+          <div class="sc-table"><strong>Tables 1 & 2 :</strong> Upon Fields of Glory<br><strong>Table 3 :</strong> Rivages Brumeux</div>
+        </div>
+        <div class="scenario-card">
+          <div class="sc-ronde">Ronde 2</div>
+          <div class="sc-table"><strong>Tables 1 & 2 :</strong> King of the Hill<br><strong>Table 3 :</strong> Drawn Battlelines</div>
+        </div>
+        <div class="scenario-card">
+          <div class="sc-ronde">Ronde 3</div>
+          <div class="sc-table"><strong>Tables 1 & 2 :</strong> Chance Encounter<br><strong>Table 3 :</strong> Close Quarters</div>
+        </div>
+        <div class="scenario-card">
+          <div class="sc-ronde">Ronde 4</div>
+          <div class="sc-table"><strong>Tables 1 & 2 :</strong> Rivages Brumeux<br><strong>Table 3 :</strong> Encerclement</div>
+        </div>
+      </div>
+      <p style="font-size:.82rem;color:var(--parch-dk);margin-top:.8rem">Pour Rivages Brumeux, le défenseur est déterminé lors du pairing. Référez-vous au PDF des scénarios Rivages Brumeux pour la mise en place spécifique.</p>
+    </div>
+
+    <!-- PLACEMENT DES DÉCORS -->
+    <div class="scroll reveal">
+      <h3>🌲 Placement des Décors</h3>
+      <p style="margin-bottom:.8rem">Les décors sont placés par les joueurs depuis un pool commun. Chaque joueur choisit un pool de <strong>6 décors</strong> composé de :</p>
+      <ul>
+        <li>0 à 2 collines · 0 à 2 forêts · 0 à 2 champs (terrain difficile + obstacles bas)</li>
+        <li>0 à 2 murs (obstacles linéaires bas)</li>
+        <li>0 à 1 zone d'eau (terrain dangereux) · 0 à 2 rochers (infranchissables, bloquant LDV)</li>
+        <li>0 à 2 ruines (terrain dangereux bloquant LDV, couvert lourd)</li>
+      </ul>
+      <p style="margin-top:.8rem;font-size:.85rem;color:var(--parch-dk)">En cas d'objectifs Strategic Location, placez-les immédiatement. En cas de King of the Hill, placez la colline géante au centre. Chaque joueur place ensuite alternativement ses décors à plus de 12ps du centre, 3ps des objectifs et 3ps d'autres décors. L'attaquant peut faire dévier D3+1 éléments de décors.</p>
+      <p style="margin-top:.5rem;font-weight:700;color:var(--parch)">Générez ensuite les sorts de vos magiciens. Lancez 1D6 : le gagnant choisit sa zone de déploiement.</p>
+    </div>
+
+    <!-- OBJECTIFS SECONDAIRES -->
+    <div class="scroll reveal">
+      <h3>🎯 Objectifs Secondaires</h3>
+      <div class="obj-sec-block"><span class="obj-sec-icon">📍</span><div class="obj-sec-text"><strong>Strategic Locations "2", "3" ou "4"</strong>2, 3 ou 4 objectifs — règles MPG p.30. Rapporte <strong>30 pts à la fin du tour de chaque joueur</strong>.</div></div>
+      <div class="obj-sec-block"><span class="obj-sec-icon">⭐</span><div class="obj-sec-text"><strong>Special Feature</strong>Terrain infranchissable de 6ps bloquant les LDV, au centre. Règles MPG p.29. Rapporte <strong>200 pts en fin de partie</strong>.</div></div>
+      <div class="obj-sec-block"><span class="obj-sec-icon">🗺</span><div class="obj-sec-text"><strong>Domination</strong>Prise des quarts de table en fin de partie. Règles MPG p.30. Rapporte entre <strong>100 et 250 pts en fin de partie</strong>.</div></div>
+      <div class="obj-sec-block"><span class="obj-sec-icon">🎒</span><div class="obj-sec-text"><strong>Bagage Train</strong>Prise d'un objectif (socle 100×60). Règles MPG p.28. Rapporte <strong>100 ou 250 pts en fin de partie</strong>. Le défenseur place son objectif en premier.</div></div>
+      <div class="obj-sec-block"><span class="obj-sec-icon">🎲</span><div class="obj-sec-text"><strong>Objectifs Libres</strong> (Upon Fields of Glory uniquement)Chaque joueur choisit un objectif secondaire ci-dessus (y compris le nombre d'objectifs Strategic Location), en commençant par le défenseur. L'attaquant ne peut pas choisir le même que le défenseur.</div></div>
+      <div class="obj-sec-block"><span class="obj-sec-icon">💀</span><div class="obj-sec-text"><strong>Déroute</strong>Faire dérouter l'adversaire rapporte <strong>500 pts bonus</strong>. Si une armée déroute, le résultat de la partie est plafonné à Victoire Marginale.</div></div>
+    </div>
+
+    <!-- COACHING & FAIR-PLAY -->
+    <div class="rules-grid" style="margin-top:1.5rem">
+      <div class="rule-block reveal">
+        <h3><span>🤝</span> Fair-play & Conduite</h3>
+        <ul>
+          <li>Respect des adversaires, arbitres et organisateurs en toutes circonstances</li>
+          <li>Tout comportement irrespectueux peut entraîner disqualification sans remboursement</li>
+          <li>Les décisions arbitrales sont définitives et sans appel</li>
+          <li>Un <strong>prix du fair-play</strong> sera attribué par vote des participants</li>
+          <li>Un <strong>prix du plus beau painting</strong> sera décerné</li>
+        </ul>
+      </div>
+      <div class="rule-block reveal">
+        <h3><span>🗣</span> Coaching</h3>
+        <ul>
+          <li>Le coaching entre coéquipiers est <strong>autorisé</strong> pendant la phase de pairing</li>
+          <li>Une fois la partie commencée, les conseils extérieurs doivent rester discrets et ne pas perturber le déroulement</li>
+          <li>L'arbitre peut interdire le coaching s'il crée des tensions ou ralentit le jeu</li>
+        </ul>
+      </div>
+      <div class="rule-block reveal">
+        <h3><span>⏱</span> Gestion du Temps</h3>
+        <ul>
+          <li>Les rondes doivent se dérouler dans le temps imparti</li>
+          <li>Toute partie non organisée compte 0/0 pour les deux joueurs</li>
+          <li>Les rondes se jouent en respectant scrupuleusement les créneaux horaires</li>
+          <li>Retard de départ : merci de respecter le temps consacré à chaque activité</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule-highlight reveal">
+      ⚔ En cas de litige non résolu entre joueurs, l'arbitre <strong>JB du Warfo</strong> tranche souverainement. Sa décision est définitive.
+    </div>
+
+    <div class="arbitre-card reveal">
+      <div class="arbitre-title">⚖ Arbitre Officiel</div>
+      <p><strong style="color:var(--gold);font-size:1.1rem">JB du Warfo</strong></p>
+      <p style="margin-top:.5rem">Arbitre expérimenté de la communauté Warhammer francophone</p>
+      <p style="margin-top:.5rem">Contact arbitrage : <span class="email-protected" onclick="revealEmail(this,'arbitre')" data-hint=" [cliquer pour afficher]">✉ jb [at] warhammer-forum</span></p>
+      <p style="margin-top:.5rem;font-style:italic;color:var(--parch-dk)">"Les règles sont au service du jeu, pas l'inverse."</p>
+    </div>
+
+    <div style="text-align:center;margin-top:2rem">
+      <a href="https://newrecruit.eu" target="_blank" class="map-link">📋 Pack officiel complet sur NewRecruit</a>
     </div>
   </div>
+  <footer>
+    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+  </footer>
 </div>
 
-<!-- ORNATE DIVIDER -->
-<div class="ornate-div" aria-hidden="true">
-<svg viewBox="0 0 800 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-  <line x1="0" y1="25" x2="265" y2="25" stroke="#8A6E2F" stroke-width="0.6" opacity=".8"/>
-  <line x1="535" y1="25" x2="800" y2="25" stroke="#8A6E2F" stroke-width="0.6" opacity=".8"/>
-  <path d="M270 25 Q282 13 298 25 Q282 37 270 25" fill="none" stroke="#C9A84C" stroke-width=".85" opacity=".9"/>
-  <path d="M530 25 Q518 13 502 25 Q518 37 530 25" fill="none" stroke="#C9A84C" stroke-width=".85" opacity=".9"/>
-  <path d="M338 25 L344 19 L350 25 L344 31 Z" fill="#C9A84C" opacity=".5"/>
-  <path d="M450 25 L456 19 L462 25 L456 31 Z" fill="#C9A84C" opacity=".5"/>
-  <circle cx="400" cy="25" r="5" fill="none" stroke="#C9A84C" stroke-width=".8" opacity=".7"/>
-  <circle cx="400" cy="25" r="2" fill="#C9A84C" opacity=".5"/>
-  <line x1="360" y1="25" x2="390" y2="25" stroke="#8A6E2F" stroke-width=".5" opacity=".6"/>
-  <line x1="410" y1="25" x2="440" y2="25" stroke="#8A6E2F" stroke-width=".5" opacity=".6"/>
-</svg>
-</div>
+<!-- ══════════════════════════════════════
+     PAGE : LIEU
+══════════════════════════════════════ -->
+<div class="page" id="page-lieu">
+  <div class="section">
+    <h2 class="section-title">Le Lieu</h2>
+    <p class="section-sub">⚜ Château de Vaux · Aube (10) ⚜</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
 
-<!-- SPONSORS -->
-<div id="sponsors">
-  <div class="spon-inner">
-    <span class="sec-eye">Nos partenaires</span>
-    <div class="title-row" style="justify-content:center;display:flex"><span class="t-rune">ᛒ</span><h2 class="sec-title">Ils soutiennent <em>l'événement</em></h2><span class="t-rune">ᛒ</span></div>
-    <p class="sec-sub">Merci à nos partenaires qui rendent cet événement possible.</p>
-
-    <div class="spon-level reveal">
-      <div class="spon-lvl-title titre-lvl"><span class="s-rune">ᚷ</span> Sponsor Titre <span class="s-rune">ᚷ</span></div>
-      <div class="spon-slots"><div class="spon-slot titre">Votre marque ici</div></div>
-    </div>
-    <div class="spon-level reveal">
-      <div class="spon-lvl-title or-lvl"><span class="s-rune">ᚨ</span> Or <span class="s-rune">ᚨ</span></div>
-      <div class="spon-slots">
-        <div class="spon-slot or">Partenaire Or</div>
-        <div class="spon-slot or">Partenaire Or</div>
+    <!-- Castle Visual -->
+    <div class="chateau-visual reveal">
+      <div class="chateau-sky"></div>
+      <!-- Stars -->
+      <svg class="chateau-stars" viewBox="0 0 800 130" preserveAspectRatio="xMidYMid slice">
+        <circle cx="50" cy="20" r="1" fill="white" opacity=".6"/><circle cx="120" cy="40" r="1.5" fill="white" opacity=".5"/><circle cx="200" cy="15" r="1" fill="white" opacity=".7"/><circle cx="300" cy="35" r="1" fill="white" opacity=".4"/><circle cx="400" cy="10" r="1.5" fill="white" opacity=".6"/><circle cx="500" cy="30" r="1" fill="white" opacity=".5"/><circle cx="600" cy="18" r="1" fill="white" opacity=".7"/><circle cx="700" cy="42" r="1.5" fill="white" opacity=".4"/><circle cx="750" cy="12" r="1" fill="white" opacity=".6"/><circle cx="80" cy="60" r="1" fill="white" opacity=".3"/><circle cx="160" cy="75" r="1" fill="white" opacity=".5"/><circle cx="250" cy="55" r="1.5" fill="white" opacity=".4"/><circle cx="350" cy="80" r="1" fill="white" opacity=".6"/><circle cx="450" cy="65" r="1" fill="white" opacity=".3"/><circle cx="550" cy="85" r="1" fill="white" opacity=".5"/><circle cx="650" cy="58" r="1.5" fill="white" opacity=".4"/>
+        <!-- Moon -->
+        <circle cx="680" cy="28" r="18" fill="#F5E8C0" opacity=".15"/>
+        <circle cx="688" cy="24" r="15" fill="#1A2A3A" opacity=".85"/>
+      </svg>
+      <!-- Castle Silhouette SVG -->
+      <svg class="chateau-silhouette" viewBox="0 0 800 200" preserveAspectRatio="xMidYMax slice">
+        <!-- Ground -->
+        <rect x="0" y="170" width="800" height="30" fill="#0A0806"/>
+        <!-- Hills -->
+        <ellipse cx="150" cy="175" rx="200" ry="30" fill="#0F0C09"/>
+        <ellipse cx="650" cy="178" rx="180" ry="25" fill="#0F0C09"/>
+        <!-- Main body of castle -->
+        <rect x="280" y="100" width="240" height="75" fill="#1A1410"/>
+        <!-- Left tower -->
+        <rect x="240" y="70" width="55" height="105" fill="#1E1810"/>
+        <!-- Left tower battlements -->
+        <rect x="240" y="60" width="12" height="18" fill="#1E1810"/>
+        <rect x="256" y="60" width="12" height="18" fill="#1E1810"/>
+        <rect x="272" y="60" width="12" height="18" fill="#1E1810"/>
+        <rect x="240" y="70" width="55" height="5" fill="#2A2018"/>
+        <!-- Right tower -->
+        <rect x="505" y="70" width="55" height="105" fill="#1E1810"/>
+        <!-- Right tower battlements -->
+        <rect x="505" y="60" width="12" height="18" fill="#1E1810"/>
+        <rect x="521" y="60" width="12" height="18" fill="#1E1810"/>
+        <rect x="537" y="60" width="12" height="18" fill="#1E1810"/>
+        <rect x="505" y="70" width="55" height="5" fill="#2A2018"/>
+        <!-- Center tower (taller) -->
+        <rect x="355" y="40" width="90" height="135" fill="#201A14"/>
+        <!-- Center battlements -->
+        <rect x="355" y="28" width="14" height="20" fill="#201A14"/>
+        <rect x="373" y="28" width="14" height="20" fill="#201A14"/>
+        <rect x="391" y="28" width="14" height="20" fill="#201A14"/>
+        <rect x="409" y="28" width="14" height="20" fill="#201A14"/>
+        <rect x="427" y="28" width="14" height="20" fill="#201A14"/>
+        <rect x="355" y="40" width="90" height="5" fill="#2A2018"/>
+        <!-- Main body battlements -->
+        <rect x="285" y="92" width="10" height="14" fill="#1A1410"/>
+        <rect x="299" y="92" width="10" height="14" fill="#1A1410"/>
+        <rect x="313" y="92" width="10" height="14" fill="#1A1410"/>
+        <rect x="327" y="92" width="10" height="14" fill="#1A1410"/>
+        <rect x="456" y="92" width="10" height="14" fill="#1A1410"/>
+        <rect x="470" y="92" width="10" height="14" fill="#1A1410"/>
+        <rect x="484" y="92" width="10" height="14" fill="#1A1410"/>
+        <rect x="498" y="92" width="10" height="14" fill="#1A1410"/>
+        <!-- Gate arch -->
+        <rect x="370" y="135" width="60" height="40" fill="#0A0806"/>
+        <ellipse cx="400" cy="135" rx="30" ry="12" fill="#0A0806"/>
+        <!-- Windows lit gold -->
+        <rect x="260" y="95" width="14" height="18" rx="7" fill="rgba(201,168,76,0.2)"/>
+        <rect x="525" y="95" width="14" height="18" rx="7" fill="rgba(201,168,76,0.2)"/>
+        <rect x="375" y="65" width="14" height="20" rx="7" fill="rgba(201,168,76,0.25)"/>
+        <rect x="410" y="65" width="14" height="20" rx="7" fill="rgba(201,168,76,0.25)"/>
+        <rect x="310" y="118" width="12" height="16" rx="6" fill="rgba(201,168,76,0.15)"/>
+        <rect x="475" y="118" width="12" height="16" rx="6" fill="rgba(201,168,76,0.15)"/>
+        <!-- Wall left -->
+        <rect x="100" y="140" width="140" height="35" fill="#141008"/>
+        <rect x="100" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="118" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="136" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="154" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="172" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="190" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="208" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="226" y="133" width="14" height="12" fill="#141008"/>
+        <!-- Wall right -->
+        <rect x="560" y="140" width="140" height="35" fill="#141008"/>
+        <rect x="560" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="578" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="596" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="614" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="632" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="650" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="668" y="133" width="14" height="12" fill="#141008"/>
+        <rect x="686" y="133" width="14" height="12" fill="#141008"/>
+        <!-- Gold glow on windows -->
+        <rect x="260" y="95" width="14" height="18" rx="7" fill="rgba(201,168,76,0.1)" filter="url(#glow)"/>
+        <defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      </svg>
+      <div class="chateau-label">
+        <h3>Château de Vaux</h3>
+        <p>Aube (10) · France</p>
       </div>
     </div>
-    <div class="spon-level reveal">
-      <div class="spon-lvl-title silver-lvl">— Argent —</div>
-      <div class="spon-slots">
-        <div class="spon-slot argent">Argent</div>
-        <div class="spon-slot argent">Argent</div>
-        <div class="spon-slot argent">Argent</div>
-      </div>
-    </div>
-    <div class="spon-level reveal">
-      <div class="spon-lvl-title bronze-lvl">— Bronze —</div>
-      <div class="spon-slots">
-        <div class="spon-slot bronze">Bronze</div>
-        <div class="spon-slot bronze">Bronze</div>
-        <div class="spon-slot bronze">Bronze</div>
-        <div class="spon-slot bronze">Bronze</div>
-      </div>
+
+    <div class="scroll reveal">
+      <h3>🏰 Un Cadre d'Exception</h3>
+      <p>Le tournoi se tiendra au <strong>Château de Vaux</strong>, demeure aristocratique nichée au cœur de la campagne auboise. Ce lieu chargé d'histoire offre un cadre parfaitement en accord avec l'univers de Warhammer: The Old World — pierres séculaires, grandes salles et atmosphère médiévale garantie.</p>
+      <p>La capacité d'accueil permet de recevoir l'ensemble des 48 participants dans d'excellentes conditions, avec des espaces dédiés aux tables de jeu, à la restauration et à la convivialité.</p>
     </div>
 
-    <div class="spon-cta reveal">
-      <p>Vous souhaitez soutenir l'événement et bénéficier d'une visibilité auprès de la communauté Warhammer&nbsp;?<br>Notre dossier de sponsoring est disponible sur demande. Association loi 1901 — déduction fiscale de 60&nbsp;% sur l'IS.</p>
-      <a href="mailto:jean-sebastien.lefevre@vasa.fr?subject=Demande%20dossier%20sponsoring%20TOW%202026" class="cta-btn">Demander le dossier sponsor</a>
+    <div class="lieu-features reveal">
+      <div class="lieu-feat"><span class="lieu-feat-icon">⚔</span><div class="lieu-feat-text"><h4>Salle de Jeu</h4><p>Grande salle accueillant 16 tables de jeu simultanément</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🍽</span><div class="lieu-feat-text"><h4>Restauration</h4><p>Repas du midi samedi, soirée samedi et dimanche midi inclus</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🛏</span><div class="lieu-feat-text"><h4>Hébergement</h4><p>Nuit du samedi sur place incluse dans le PAF</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🚗</span><div class="lieu-feat-text"><h4>Accès & Parking</h4><p>Parking gratuit sur place, accès A5 / A26</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🌿</span><div class="lieu-feat-text"><h4>Parc & Jardins</h4><p>Espace extérieur pour les pauses entre rondes</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">📶</span><div class="lieu-feat-text"><h4>Connexion</h4><p>Wi-Fi disponible pour les listes et le suivi NewRecruit</p></div></div>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>📍 Comment Nous Rejoindre</h3>
+      <p><strong style="color:var(--gold)">Château de Vaux</strong> — Aube (10) — France</p>
+      <p style="margin-top:.8rem">Depuis Paris : ~1h30 par l'A5 direction Troyes, puis départementales.</p>
+      <p>Depuis Troyes : ~20 min. Gare SNCF de Troyes disponible.</p>
+      <p style="margin-top:.8rem;color:var(--parch-dk);font-style:italic">L'adresse précise et les instructions d'accès seront communiquées aux équipes inscrites après confirmation du paiement.</p>
+    </div>
+    <div style="text-align:center;margin-top:1rem">
+      <a href="https://www.google.com/maps/search/Château+de+Vaux+Aube" target="_blank" class="map-link">🗺 Voir sur Google Maps</a>
     </div>
   </div>
+  <footer>
+    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+  </footer>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="foot-crest">⚜</div>
-  <div class="foot-logo">Les Stratèges du Vieux Monde</div>
-  <div class="foot-tag">Tournoi The Old World 2026 · Château de Vaux · Aube</div>
-  <div class="foot-runes">ᚠ &nbsp; ᚢ &nbsp; ᚦ &nbsp; ᚨ &nbsp; ᚱ &nbsp; ᚲ &nbsp; ᚷ &nbsp; ᚹ &nbsp; ᚺ &nbsp; ᚾ</div>
-  <div class="foot-contact">Contact : <a href="mailto:jean-sebastien.lefevre@vasa.fr">jean-sebastien.lefevre@vasa.fr</a></div>
-  <div class="foot-legal">Association loi 1901 · Ruvigny (Aube) · Tous droits réservés · 2026</div>
-</footer>
+<!-- ══════════════════════════════════════
+     PAGE : ASSOCIATION
+══════════════════════════════════════ -->
+<div class="page" id="page-association">
+  <div class="section">
+    <h2 class="section-title">Notre Association</h2>
+    <p class="section-sub">⚔ Les Stratèges du Vieux Monde ⚔</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+    <p class="assoc-intro">Fondée dans l'Aube, Les Stratèges du Vieux Monde réunit des passionnés de jeux de figurines autour d'une même flamme : la camaraderie, le fair-play et le plaisir de peindre et jouer ensemble.</p>
+    <div class="scroll reveal">
+      <h3>🏰 Qui Sommes-Nous ?</h3>
+      <p>Basée à <strong>Ruvigny, Aube (10)</strong>, notre association loi 1901 rassemble des joueurs de tous niveaux. Nous organisons des soirées de jeu régulières, des tournois internes et participons aux événements de la communauté Warhammer francophone.</p>
+      <p style="margin-top:.8rem">Notre tournoi <em>The Old World 2026</em> représente notre première organisation d'un événement compétitif d'envergure régionale, en co-organisation avec les Tricasses French Hammer.</p>
+    </div>
+    <div class="photo-grid reveal">
+      <div class="photo-item">
+        <img src="./photos/tournoi1.jpg" alt="Tournoi The Old World" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="photo-placeholder" style="display:none">📸 Photo à venir</div>
+      </div>
+      <div class="photo-item">
+        <img src="./photos/tournoi2.jpg" alt="Tournoi The Old World" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="photo-placeholder" style="display:none">📸 Photo à venir</div>
+      </div>
+      <div class="photo-item">
+        <img src="./photos/tournoi3.jpg" alt="Tournoi The Old World" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="photo-placeholder" style="display:none">📸 Photo à venir</div>
+      </div>
+    </div>
+    <div class="scroll reveal">
+      <h3>⚔ Nos Jeux</h3>
+      <p>Les membres jouent principalement à <strong>Warhammer: The Old World</strong>, mais notre passion s'étend à tout l'univers Warhammer et aux jeux de figurines en général.</p>
+    </div>
+    <div class="army-badges reveal">
+      <span class="army-badge">🐉 Hauts Elfes</span><span class="army-badge">💀 Comtes Vampires</span><span class="army-badge">🗡 Empire</span><span class="army-badge">🧙 Elfes Sylvains</span><span class="army-badge">⚒ Nains</span><span class="army-badge">🌑 Guerriers du Chaos</span><span class="army-badge">🐗 Orques & Gobelins</span><span class="army-badge">☀ Rois des Tombes</span><span class="army-badge">🔥 Légions du Chaos</span><span class="army-badge">🛡 Bretonniens</span>
+    </div>
+    <div class="bb-banner reveal">
+      <span class="bb-icon">🏈</span>
+      <div class="bb-text">
+        <h3>Blood Bowl — Section Active !</h3>
+        <p>L'association possède également une section <strong>Blood Bowl</strong> très active, avec des ligues internes et des participations aux tournois régionaux. Rejoignez-nous pour le sport le plus violent du Vieux Monde !</p>
+      </div>
+    </div>
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>📬 Nous Rejoindre</h3>
+      <p>Passionné(e) de jeux de figurines dans l'Aube ? Contactez-nous !</p>
+      <p style="margin-top:.8rem">
+        ✉ <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">contact de l'organisation</span><br>
+        💬 <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" style="color:#9BA8FF">discord.gg/Q9y9v8EgqZ</a><br>
+        📍 Ruvigny, Aube (10)
+      </p>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+  </footer>
+</div>
 
+<!-- ══════════════════════════════════════
+     PAGE : INSCRIPTIONS
+══════════════════════════════════════ -->
+<div class="page" id="page-inscriptions">
+  <div class="section">
+    <h2 class="section-title">Inscriptions</h2>
+    <p class="section-sub">⚔ Rejoignez la Bataille ⚔</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <div class="price-card reveal">
+      <div class="price-amount">195 €</div>
+      <div class="price-unit">par joueur</div>
+      <ul class="price-includes">
+        <li>2 jours de tournoi compétitif (4 rondes)</li>
+        <li>Café de bienvenue le samedi matin</li>
+        <li>Repas du samedi midi inclus</li>
+        <li>Soirée conviviale du samedi (activités + collations)</li>
+        <li>Repas du dimanche midi inclus</li>
+        <li>Hébergement sur place — nuit du samedi</li>
+        <li>Accès aux tables, décors fournis</li>
+        <li>Lots et prix pour tous les participants</li>
+      </ul>
+    </div>
+
+    <div class="deadline-box reveal">
+      <strong>Date limite d'inscription & paiement :</strong> 1er octobre 2026<br>
+      <strong>Date limite d'envoi des listes :</strong> 31 octobre 2026 à minuit<br>
+      <span style="font-size:.8rem;color:var(--parch-dk)">Listes saisies sur la page NewRecruit du tournoi</span>
+    </div>
+
+    <div class="inscr-btns reveal">
+      <a id="paypal-btn" href="#" class="btn-paypal" onclick="openPaypal(event)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.067 8.478c.492.315.844.825.986 1.495.28 1.335-.357 2.82-1.587 3.49-.6.33-1.308.496-2.137.496H15.7l-.51 3.24H12.9l1.7-10.8h3.54c1.056 0 1.6.19 1.927.58z"/><path d="M6.31 6.9h4.33c1.055 0 1.944.14 2.66.42.716.28 1.25.7 1.596 1.26.347.56.52 1.25.52 2.07 0 .28-.024.56-.073.84-.254 1.47-.95 2.63-2.09 3.48-1.14.85-2.6 1.27-4.38 1.27H7.38L6.31 6.9zM16.7 3.6H9.56L7.2 18h3.4l.51-3.24h1.63c1.78 0 3.24-.42 4.38-1.27 1.14-.85 1.836-2.01 2.09-3.48.05-.28.073-.56.073-.84 0-.82-.173-1.51-.52-2.07-.346-.56-.88-.98-1.596-1.26C13.944 5.42 13.055 5.42 12 5.42H8.47L8.06 3.6z"/></svg>
+        Payer par PayPal
+      </a>
+      <a href="https://newrecruit.eu" target="_blank" class="btn-newrecruit">📋 S'inscrire via NewRecruit</a>
+    </div>
+
+    <p class="inscr-note reveal">
+      Pour le paiement PayPal, envoyez 195 € à l'adresse de l'organisation<br>
+      (<span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ afficher l'adresse PayPal</span>)<br>
+      avec la mention : <em>"Tournoi TOW 2026 — [Nom équipe] — [Votre nom]"</em>
+    </p>
+
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>ℹ Politique de Remboursement</h3>
+      <ul>
+        <li><strong style="color:var(--gold)">Remboursement 100%</strong> pour toute annulation avant le <strong>7 octobre 2026</strong> (1 mois avant l'événement)</li>
+        <li>Remboursement à 50% entre le 7 et le 31 octobre 2026</li>
+        <li>Aucun remboursement après le 31 octobre 2026</li>
+        <li>Transfert d'inscription à un autre joueur possible jusqu'au 31 octobre</li>
+        <li>La confirmation d'inscription vous sera envoyée par email sous 48h après réception du paiement</li>
+      </ul>
+    </div>
+
+    <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="discord-banner" style="display:inline-flex;margin-top:1.5rem">
+      <svg width="18" height="14" viewBox="0 0 71 55" fill="#9BA8FF"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>
+      Questions ? Rejoignez le Discord
+    </a>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE : SPONSORS
+══════════════════════════════════════ -->
+<div class="page" id="page-sponsors">
+  <div class="section">
+    <h2 class="section-title">Nos Partenaires</h2>
+    <p class="section-sub">⚜ Soutenir le Tournoi ⚜</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+    <p class="sponsor-intro">Notre tournoi réunit 48 passionnés de Warhammer pour un week-end inoubliable. Associez votre nom à cet événement compétitif et soutenez toute une communauté.</p>
+    <div class="sponsor-tiers reveal">
+      <div class="sponsor-tier gold">
+        <h3>⚜ Mécène Dragon d'Or</h3>
+        <div class="price-tag">À PARTIR DE 500 €</div>
+        <ul>
+          <li>Logo en grand format sur la bannière d'entrée</li>
+          <li>Mentions sur toutes les communications (site, Discord, réseaux)</li>
+          <li>Stand ou table d'exposition pendant le tournoi</li>
+          <li>Présentation orale lors de la remise des prix</li>
+          <li>Logo sur les lots remis aux vainqueurs</li>
+          <li>Invitation VIP pour 2 personnes</li>
+        </ul>
+      </div>
+      <div class="sponsor-tier silver">
+        <h3>🗡 Chevalier Argent</h3>
+        <div class="price-tag">À PARTIR DE 200 €</div>
+        <ul>
+          <li>Logo sur la bannière de salle de jeu</li>
+          <li>Mention sur le site et le Discord officiel</li>
+          <li>Flyers ou goodies inclus dans les lots participants</li>
+          <li>Remerciements lors de la remise des prix</li>
+        </ul>
+      </div>
+      <div class="sponsor-tier bronze">
+        <h3>🛡 Écuyer du Bronze</h3>
+        <div class="price-tag">À PARTIR DE 80 €</div>
+        <ul>
+          <li>Mention sur le site web officiel</li>
+          <li>Mention sur le Discord de l'association</li>
+          <li>Remerciements en début d'événement</li>
+        </ul>
+      </div>
+    </div>
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>🎁 Partenariat en Nature</h3>
+      <p>Vous préférez offrir des lots ou du matériel ? Vos dons seront intégrés aux prix du tournoi avec mention de votre enseigne.</p>
+      <ul>
+        <li>Figurines, peintures, décors de jeu</li>
+        <li>Bon d'achat boutique ou abonnements</li>
+        <li>Hébergement ou repas pris en charge</li>
+      </ul>
+    </div>
+    <div class="sponsor-contact reveal">
+      <p>Pour toute demande de partenariat :</p>
+      <p><strong style="color:var(--gold)">Jean-Sébastien Lefèvre</strong> — Président, Les Stratèges du Vieux Monde</p>
+      <p>✉ <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">contact de l'organisation</span></p>
+      <p>💬 <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" style="color:#9BA8FF">discord.gg/Q9y9v8EgqZ</a></p>
+      <p style="margin-top:1rem;font-style:italic;color:var(--parch-dk)">"Chaque soutien contribue à forger la légende de cet événement."</p>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════ SCRIPTS ══════════════════════════════════════ -->
 <script>
-/* ── RUNE PARTICLES ── */
-const RUNES = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛟ','ᛞ'];
-const pc = document.getElementById('particles');
-for(let i=0;i<35;i++){
-  const el = document.createElement('div');
-  el.className = 'rune';
-  el.textContent = RUNES[Math.floor(Math.random()*RUNES.length)];
-  el.style.cssText = `
-    left:${Math.random()*100}%;
-    font-size:${Math.random()*14+10}px;
-    animation-duration:${Math.random()*20+15}s;
-    animation-delay:${Math.random()*15}s;
-  `;
-  pc.appendChild(el);
+/* ── EMAIL ANTI-SPAM ── */
+// Adresses stockées en morceaux, jamais en clair dans le HTML
+const _em = {
+  contact: ['elladriel','hotmail','com'],
+  arbitre: ['jb','warhammer-forum','com']
+};
+function revealEmail(el, key) {
+  const p = _em[key];
+  const addr = p[0] + '\u0040' + p[1] + '.' + p[2];
+  el.textContent = addr;
+  el.style.cursor = 'default';
+  el.setAttribute('data-hint','');
+  // Also update PayPal button if contact
+  if (key === 'contact') {
+    const btn = document.getElementById('paypal-btn');
+    if (btn) btn.href = 'https://www.paypal.com/paypalme/' + p[0];
+  }
+}
+function openPaypal(e) {
+  e.preventDefault();
+  const p = _em.contact;
+  window.open('https://www.paypal.com/paypalme/' + p[0], '_blank');
 }
 
-/* ── NAVBAR SCROLL ── */
-const nav = document.getElementById('navbar');
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60),{passive:true});
+/* ── NAVIGATION ── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  const btn  = document.getElementById('nav-' + id);
+  if (page) page.classList.add('active');
+  if (btn)  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  setTimeout(triggerReveal, 100);
+}
+
+/* ── REVEAL ON SCROLL ── */
+function triggerReveal() {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => io.observe(el));
+}
 
 /* ── COUNTDOWN ── */
-const TARGET = new Date('2026-11-07T09:00:00');
-function pad(n,w=2){return String(n).padStart(w,'0')}
-function tick(){
-  const ms = TARGET - Date.now();
-  if(ms<=0){document.getElementById('countdown').innerHTML='<p style="font-family:\'Cinzel\',serif;color:var(--gold);font-size:1.5rem;letter-spacing:.2em">LE TOURNOI COMMENCE !</p>';return}
-  const s=Math.floor(ms/1000)%60, m=Math.floor(ms/60000)%60, h=Math.floor(ms/3600000)%24, d=Math.floor(ms/86400000);
-  document.getElementById('cd-days').textContent=pad(d,3);
-  document.getElementById('cd-hours').textContent=pad(h);
-  document.getElementById('cd-min').textContent=pad(m);
-  document.getElementById('cd-sec').textContent=pad(s);
+function updateCountdown() {
+  const target = new Date('2026-11-07T08:30:00');
+  const now    = new Date();
+  const diff   = target - now;
+  if (diff <= 0) {
+    ['cd-j','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000)  / 60000);
+  const s = Math.floor((diff % 60000)    / 1000);
+  document.getElementById('cd-j').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
 }
-tick(); setInterval(tick,1000);
+setInterval(updateCountdown, 1000);
+updateCountdown();
 
-/* ── SCROLL REVEAL ── */
-const obs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
-},{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+/* ── RUNE PARTICLES ── */
+(function spawnRunes() {
+  const runes = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛊᛏᛒᛖᛗᛚᛟᛞ'.split('');
+  const container = document.getElementById('particles');
+  const sizes  = [10, 12, 14, 16, 18, 22];
+  const speeds = [12, 16, 20, 25, 30, 38];
+  function create() {
+    const el = document.createElement('span');
+    el.className = 'rune';
+    el.textContent = runes[Math.floor(Math.random() * runes.length)];
+    const sz = sizes[Math.floor(Math.random() * sizes.length)];
+    const sp = speeds[Math.floor(Math.random() * speeds.length)];
+    const delay = Math.random() * sp;
+    el.style.cssText = `left:${Math.random()*100}vw;bottom:${Math.random()*-10}vh;font-size:${sz}px;animation-duration:${sp}s;animation-delay:${delay}s;`;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), (sp + delay) * 1000);
+  }
+  for (let i = 0; i < 30; i++) setTimeout(create, i * 400);
+  setInterval(create, 800);
+})();
+
+window.addEventListener('load', triggerReveal);
 </script>
 </body>
 </html>
