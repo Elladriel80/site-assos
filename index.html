@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tournoi The Old World 2026 — Les Stratèges du Vieux Monde</title>
+<title>InterRégion 2026 — The Old World · Fédération France The Old World × Les Stratèges du Vieux Monde</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Uncial+Antiqua&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -15,6 +15,8 @@
   --crim-m:   #8B1A1A;
   --crim-l:   #A82020;
   --blood:    #420808;
+  --teal:     #1B4A5A;
+  --teal-l:   #2A6878;
   --bg:       #0A0806;
   --bg2:      #0F0C09;
   --bg3:      #171210;
@@ -28,12 +30,10 @@
 html{scroll-behavior:smooth}
 body{font-family:'Lato',sans-serif;background-color:var(--bg);color:var(--parch);overflow-x:hidden;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0) 3px,rgba(255,255,255,0.007) 3px,rgba(255,255,255,0.007) 4px),repeating-linear-gradient(90deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0) 59px,rgba(255,255,255,0.005) 59px,rgba(255,255,255,0.005) 60px)}
 
-/* ── RUNE PARTICLES ── */
 #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .rune{position:absolute;font-family:'IM Fell English',serif;color:var(--gold);opacity:0;animation:runeFloat linear infinite;text-shadow:0 0 8px var(--gold-glow),0 0 20px rgba(201,168,76,0.25);user-select:none}
 @keyframes runeFloat{0%{opacity:0;transform:translateY(0) rotate(0deg)}10%{opacity:.35}80%{opacity:.20}100%{opacity:0;transform:translateY(-100vh) rotate(360deg)}}
 
-/* ── NAV ── */
 nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,8,6,0.97) 0%,rgba(15,12,9,0.93) 100%);border-bottom:2px solid var(--gold-d);box-shadow:0 2px 20px rgba(0,0,0,0.8);padding:0}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:0;flex-wrap:wrap;padding:0 1rem}
 .nav-brand{font-family:'Uncial Antiqua',cursive;color:var(--gold);font-size:.85rem;padding:.7rem 1rem .7rem 0;margin-right:1rem;border-right:1px solid var(--gold-d);text-shadow:0 0 10px var(--gold-glow);white-space:nowrap}
@@ -43,17 +43,26 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .nav-links button:hover,.nav-links button.active{color:var(--gold)}
 .nav-links button:hover::after,.nav-links button.active::after{left:10%;right:10%}
 
-/* ── PAGE SYSTEM ── */
 .page{display:none;min-height:100vh;position:relative;z-index:1}
 .page.active{display:block}
 
-/* ── HERO ── */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 1.5rem 3rem;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(107,15,15,0.25) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 50% 60%,rgba(201,168,76,0.08) 0%,transparent 60%);position:relative;overflow:hidden}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 1.5rem 3rem;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(107,15,15,0.25) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 50% 60%,rgba(27,74,90,0.15) 0%,transparent 60%);position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0deg,transparent 30deg,rgba(201,168,76,0.015) 30deg,rgba(201,168,76,0.015) 31deg)}
 .shield{width:140px;height:160px;margin:0 auto 2rem;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);background:linear-gradient(160deg,var(--crimson) 0%,var(--blood) 60%,#1A0505 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(107,15,15,0.7),0 0 60px rgba(107,15,15,0.3),inset 0 0 20px rgba(0,0,0,0.5);position:relative}
 .shield::before{content:'';position:absolute;inset:4px;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);border:2px solid var(--gold-d);background:transparent}
 .shield-sigil{font-size:3rem;filter:drop-shadow(0 0 10px var(--gold-glow))}
 .hero-eyebrow{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--gold-d);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.8rem}
+/* INTERREGION mega-banner — heritage Battle InterRegion */
+.ir-banner{margin:0 auto 1.8rem;max-width:920px;text-align:center;position:relative}
+.ir-convo{font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;color:var(--gold-d);letter-spacing:.5em;text-transform:uppercase;margin-bottom:.3rem}
+.ir-mega{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.6rem,9vw,6.2rem);line-height:.95;color:var(--gold);letter-spacing:.02em;text-shadow:0 0 35px var(--gold-glow),0 0 70px rgba(201,168,76,0.35),3px 3px 6px rgba(0,0,0,0.95);margin-bottom:.1rem;background:linear-gradient(180deg,#F0D478 0%,#C9A84C 45%,#8A6E2F 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(201,168,76,0.4))}
+.ir-edition{font-family:'Cinzel Decorative',cursive;font-size:clamp(1rem,2.4vw,1.6rem);font-weight:700;color:var(--crim-l);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.3rem;text-shadow:0 0 15px rgba(168,32,32,0.5),2px 2px 3px rgba(0,0,0,0.9)}
+.ir-game{font-family:'Cinzel',serif;font-size:clamp(.85rem,1.8vw,1.15rem);font-weight:700;color:var(--parch);letter-spacing:.35em;text-transform:uppercase;margin-bottom:1rem}
+.ir-roman{display:inline-block;font-family:'Cinzel Decorative',cursive;font-size:1rem;color:var(--gold);border:1.5px solid var(--gold-d);padding:.25rem .9rem;letter-spacing:.3em;margin:0 .5rem;background:rgba(107,15,15,0.2)}
+.ir-orgs{font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--parch-d);letter-spacing:.15em;margin-top:.5rem}
+.ir-orgs strong{color:var(--gold);font-weight:700}
+.ir-flourish{display:flex;align-items:center;justify-content:center;gap:.8rem;margin:.8rem 0;color:var(--gold-d);font-size:.9rem;letter-spacing:.4em}
+.ir-flourish::before,.ir-flourish::after{content:'';flex:1;max-width:140px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
 .hero h1{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.2rem,6vw,4.5rem);color:var(--gold);line-height:1.1;text-shadow:0 0 30px var(--gold-glow),0 0 60px rgba(201,168,76,0.3),2px 2px 4px rgba(0,0,0,0.9);margin-bottom:.5rem}
 .hero-subtitle{font-family:'Cinzel Decorative',cursive;font-size:clamp(.9rem,2vw,1.3rem);color:var(--parch-d);letter-spacing:.15em;margin-bottom:2rem}
 .hero-divider{width:320px;max-width:90%;height:20px;margin:.5rem auto 1.5rem;opacity:.7}
@@ -71,13 +80,11 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .discord-banner{margin-top:2rem;display:inline-flex;align-items:center;gap:.7rem;background:rgba(88,101,242,0.15);border:1px solid rgba(88,101,242,0.5);border-radius:8px;padding:.6rem 1.2rem;font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:#9BA8FF;letter-spacing:.05em;text-decoration:none;transition:background .2s,border-color .2s}
 .discord-banner:hover{background:rgba(88,101,242,0.25);border-color:rgba(88,101,242,0.8)}
 
-/* ── SECTION COMMON ── */
 .section{padding:5rem 1.5rem;max-width:1100px;margin:0 auto}
 .section-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold);text-align:center;margin-bottom:.5rem;text-shadow:0 0 20px rgba(201,168,76,0.4)}
 .section-sub{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--parch-dk);letter-spacing:.25em;text-transform:uppercase;text-align:center;margin-bottom:3rem}
 .ornament{display:block;margin:0 auto 2rem;opacity:.55;width:clamp(260px,60%,480px)}
 
-/* ── PARCHMENT SCROLL ── */
 .scroll{background:linear-gradient(160deg,#2A2018 0%,#1E1810 50%,#2A2018 100%);border:1px solid var(--gold-d);border-radius:4px;padding:2rem 2.5rem;margin-bottom:2rem;position:relative;box-shadow:inset 0 0 40px rgba(0,0,0,0.4),0 4px 20px rgba(0,0,0,0.5)}
 .scroll::before,.scroll::after{content:'';position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold-d),var(--gold),var(--gold-d),transparent)}
 .scroll::before{top:0}.scroll::after{bottom:0}
@@ -87,13 +94,34 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .scroll ul li{font-size:.92rem;line-height:1.7;color:var(--parch-d);padding:.2rem 0;padding-left:1.5rem;position:relative}
 .scroll ul li::before{content:'⚔';position:absolute;left:0;color:var(--gold-d);font-size:.75rem;top:.25rem}
 
-/* ── STATS BAR ── */
 .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--gold-d);border:1px solid var(--gold-d);border-radius:4px;overflow:hidden;margin:3rem 0}
 .stat{background:linear-gradient(160deg,rgba(30,24,16,.95),rgba(15,12,9,.98));padding:1.5rem 1rem;text-align:center}
 .stat-num{font-family:'Cinzel Decorative',cursive;font-size:1.8rem;color:var(--gold);text-shadow:0 0 15px var(--gold-glow)}
 .stat-lbl{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--parch-dk);letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem}
 
-/* ── PROGRAMME ── */
+/* AXES — 3 modes de jeu */
+.axes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
+.axe-card{background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-top:3px solid;border-radius:4px;padding:1.8rem 1.5rem;position:relative;transition:transform .2s,box-shadow .2s}
+.axe-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+.axe-card.competitif{border-top-color:var(--crim-l)}
+.axe-card.narratif{border-top-color:var(--gold)}
+.axe-card.libre{border-top-color:var(--teal-l)}
+.axe-cta{display:block;width:100%;margin-top:1.5rem;padding:.7rem 1rem;background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(201,168,76,.08));border:1px solid var(--gold-d);color:var(--gold);font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s}
+.axe-cta:hover{background:linear-gradient(135deg,rgba(201,168,76,.32),rgba(201,168,76,.18));color:var(--gold-l);box-shadow:0 0 12px rgba(201,168,76,.25)}
+.format-tabs{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0}
+.fmt-tab{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--parch-d);background:rgba(30,24,16,.6);border:1px solid var(--gold-d);padding:.6rem 1.1rem;cursor:pointer;border-radius:3px;transition:all .2s}
+.fmt-tab:hover{color:var(--gold);background:rgba(60,46,28,.85)}
+.fmt-tab.active{color:var(--bg);background:linear-gradient(135deg,var(--gold-l),var(--gold),var(--gold-d));border-color:var(--gold);box-shadow:0 0 12px var(--gold-glow)}
+.yt-btn{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,rgba(255,0,0,.18),rgba(255,0,0,.05));border:1px solid rgba(255,80,80,.5);padding:.7rem 1.4rem;color:#FF6060;font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;letter-spacing:.05em;text-decoration:none;border-radius:3px;transition:all .2s}
+.yt-btn:hover{background:linear-gradient(135deg,rgba(255,0,0,.35),rgba(255,0,0,.15));color:#FF8080;box-shadow:0 0 14px rgba(255,80,80,.35)}
+.axe-icon{font-size:2.2rem;margin-bottom:.5rem}
+.axe-title{font-family:'Cinzel Decorative',cursive;font-size:1.25rem;color:var(--gold);margin-bottom:.3rem}
+.axe-count{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--parch-dk);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem}
+.axe-desc{font-size:.9rem;color:var(--parch-d);line-height:1.6}
+.axe-card ul{list-style:none;padding:0;margin-top:.8rem}
+.axe-card ul li{font-size:.85rem;color:var(--parch-d);padding:.2rem 0;padding-left:1.2rem;position:relative;line-height:1.5}
+.axe-card ul li::before{content:'›';position:absolute;left:0;color:var(--gold-d);font-weight:700}
+
 .programme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin:2rem 0}
 .round-card{background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:4px;padding:1.5rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:transform .2s,box-shadow .2s}
 .round-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.6),0 0 20px rgba(201,168,76,0.1)}
@@ -102,19 +130,13 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .round-time{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:var(--parch);margin-bottom:.8rem}
 .round-desc{font-size:.85rem;color:var(--parch-dk);line-height:1.5}
 
-/* ── SCORE TABLE ── */
 .score-table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.88rem}
 .score-table th{background:rgba(107,15,15,0.4);color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;text-align:center;border:1px solid rgba(201,168,76,0.2)}
 .score-table td{padding:.55rem 1rem;text-align:center;border:1px solid rgba(201,168,76,0.12);color:var(--parch-d);line-height:1.4}
 .score-table tr:nth-child(even) td{background:rgba(255,255,255,0.03)}
-.score-table .result-egal td{color:#A0D0A0}
-.score-table .result-marginale td{color:#D4C070}
-.score-table .result-retentissante td{color:#D08040}
-.score-table .result-critique td{color:#D04040}
 .score-winner{font-weight:700;color:var(--gold) !important}
 .score-loser{color:var(--parch-dk) !important}
 
-/* ── RÈGLEMENT BLOCKS ── */
 .rules-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem;max-width:700px;margin-left:auto;margin-right:auto}
 .rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
 .rule-block{background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-left:3px solid var(--crimson);padding:1.5rem;border-radius:0 4px 4px 0;transition:border-left-color .2s}
@@ -125,55 +147,49 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .rule-block ul li{padding:.2rem 0;padding-left:1.2rem;position:relative}
 .rule-block ul li::before{content:'›';position:absolute;left:0;color:var(--gold-d)}
 .rule-highlight{background:rgba(107,15,15,0.2);border:1px solid rgba(107,15,15,0.5);border-radius:4px;padding:1rem 1.5rem;margin:1.5rem 0;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch);text-align:center}
-.arbitre-card{text-align:center;padding:2rem;background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:4px;margin-top:2rem}
-.arbitre-card .arbitre-title{font-family:'Cinzel Decorative',cursive;font-size:1.1rem;color:var(--gold);margin-bottom:.5rem}
-.arbitre-card p{font-size:.9rem;color:var(--parch-d);line-height:1.6}
-.pairing-steps{counter-reset:step;list-style:none;padding:0;margin:.8rem 0}
-.pairing-steps li{counter-increment:step;padding:.5rem 0 .5rem 2.5rem;position:relative;font-size:.88rem;color:var(--parch-d);line-height:1.6;border-bottom:1px solid rgba(201,168,76,0.08)}
-.pairing-steps li::before{content:counter(step);position:absolute;left:0;top:.4rem;width:1.6rem;height:1.6rem;background:rgba(107,15,15,0.5);border:1px solid var(--gold-d);border-radius:50%;font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;color:var(--gold);display:flex;align-items:center;justify-content:center}
-.scenario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem;margin:1rem 0}
-.scenario-card{background:rgba(30,24,16,.7);border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:.8rem 1rem}
-.scenario-card .sc-ronde{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem}
-.scenario-card .sc-table{font-size:.78rem;color:var(--parch-d);line-height:1.5}
-.scenario-card .sc-table strong{color:var(--parch)}
-.obj-sec-block{background:rgba(30,24,16,.6);border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:.8rem 1rem;margin:.4rem 0;display:flex;gap:.8rem;align-items:flex-start}
-.obj-sec-icon{font-size:1.1rem;flex-shrink:0;margin-top:.1rem}
-.obj-sec-text{font-size:.85rem;color:var(--parch-d);line-height:1.5}
-.obj-sec-text strong{color:var(--gold-l);display:block;margin-bottom:.1rem;font-family:'Cinzel',serif;font-size:.78rem;font-weight:700}
 
-/* ── LIEU ── */
-.chateau-visual{width:100%;height:300px;border:1px solid var(--gold-d);border-radius:4px;margin-bottom:2rem;overflow:hidden;position:relative;background:linear-gradient(180deg,#0A1525 0%,#1A2A3A 30%,#2A1A10 60%,#1A1008 100%)}
-.chateau-sky{position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 30%,rgba(201,168,76,0.08) 0%,transparent 70%)}
-.chateau-stars{position:absolute;top:0;left:0;right:0;height:45%}
-.chateau-silhouette{position:absolute;bottom:0;left:0;right:0}
-.chateau-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2}
-.chateau-label h3{font-family:'Uncial Antiqua',cursive;font-size:1.8rem;color:var(--gold);text-shadow:0 0 20px var(--gold-glow),0 0 40px rgba(201,168,76,0.3);margin-bottom:.3rem}
-.chateau-label p{font-family:'Cinzel',serif;font-size:.75rem;color:var(--parch-dk);letter-spacing:.2em}
+/* LIEU — visuel Lac d'Orient */
+.lac-visual{width:100%;height:340px;border:1px solid var(--gold-d);border-radius:4px;margin-bottom:2rem;overflow:hidden;position:relative;background:linear-gradient(180deg,#1A2438 0%,#2A4A60 25%,#3A6878 50%,#1B4A5A 70%,#0F2530 100%)}
+.lac-sky{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 30%,rgba(232,201,106,0.25) 0%,rgba(255,140,80,0.15) 30%,transparent 70%)}
+.lac-stars{position:absolute;top:0;left:0;right:0;height:35%}
+.lac-water{position:absolute;bottom:0;left:0;right:0;height:55%}
+.lac-label{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2}
+.lac-label h3{font-family:'Uncial Antiqua',cursive;font-size:1.8rem;color:var(--gold);text-shadow:0 0 20px var(--gold-glow),0 0 40px rgba(201,168,76,0.3);margin-bottom:.3rem}
+.lac-label p{font-family:'Cinzel',serif;font-size:.75rem;color:var(--parch);letter-spacing:.2em;text-shadow:0 0 10px rgba(0,0,0,0.8)}
+
 .lieu-features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:2rem 0}
 .lieu-feat{background:rgba(30,24,16,.7);border:1px solid var(--gold-d);border-radius:4px;padding:1rem 1.2rem;display:flex;align-items:flex-start;gap:.7rem}
 .lieu-feat-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}
 .lieu-feat-text h4{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--gold);margin-bottom:.2rem}
 .lieu-feat-text p{font-size:.82rem;color:var(--parch-dk);line-height:1.4}
+
+.lac-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:2rem 0;border-radius:6px;overflow:hidden}
+.lac-gallery a{display:block;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--gold-d);border-radius:4px;position:relative;background:rgba(30,24,16,.8);transition:transform .3s,box-shadow .3s}
+.lac-gallery a:hover{transform:scale(1.02);box-shadow:0 0 20px rgba(201,168,76,0.3)}
+.lac-gallery img{width:100%;height:100%;object-fit:cover;display:block}
+.lac-gallery a:first-child{grid-column:1/3;aspect-ratio:8/3}
+.lac-gallery .caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.85));color:var(--parch);font-family:'Cinzel',serif;font-size:.7rem;padding:1rem .8rem .5rem;letter-spacing:.05em}
+@media(max-width:600px){.lac-gallery{grid-template-columns:1fr}.lac-gallery a:first-child{grid-column:1;aspect-ratio:4/3}}
+
 .map-link{display:inline-flex;align-items:center;gap:.5rem;font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--gold);border:1px solid var(--gold-d);padding:.5rem 1.2rem;border-radius:3px;text-decoration:none;transition:background .2s;margin-top:.5rem}
 .map-link:hover{background:rgba(201,168,76,0.1)}
 
-/* ── ASSOCIATION ── */
 .assoc-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem;max-width:700px;margin-left:auto;margin-right:auto}
-.photo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:2rem 0}
-.photo-item{aspect-ratio:4/3;overflow:hidden;border:1px solid var(--gold-d);border-radius:4px;background:rgba(30,24,16,.8);display:flex;align-items:center;justify-content:center;position:relative}
-.photo-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
-.photo-item:hover img{transform:scale(1.05)}
-.photo-placeholder{font-family:'Cinzel',serif;font-size:.75rem;color:var(--gold-d);text-align:center;padding:1rem}
+.partners-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
+.partner-card{background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:4px;padding:1.5rem;text-align:center;transition:transform .2s,box-shadow .2s}
+.partner-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.partner-card:first-child{background:linear-gradient(160deg,rgba(107,15,15,.45),rgba(42,8,8,.85));border:2px solid var(--gold);box-shadow:0 0 25px rgba(201,168,76,0.25),inset 0 0 15px rgba(201,168,76,0.08);position:relative}
+.partner-card:first-child::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;background:linear-gradient(90deg,var(--gold-d),var(--gold-l),var(--gold-d))}
+.partner-card:first-child h3{color:var(--gold-l);font-size:1.2rem;text-shadow:0 0 15px var(--gold-glow)}
+.partner-card:first-child .partner-role{color:var(--gold-l);font-size:.7rem;letter-spacing:.25em}
+.partner-card h3{font-family:'Cinzel Decorative',cursive;font-size:1.05rem;color:var(--gold);margin-bottom:.5rem}
+.partner-card .partner-role{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.6rem}
+.partner-card p{font-size:.88rem;color:var(--parch-d);line-height:1.6}
 .army-badges{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:1.5rem 0}
 .army-badge{font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--parch-d);background:rgba(30,24,16,.8);border:1px solid var(--gold-d);border-radius:20px;padding:.3rem .8rem;letter-spacing:.05em}
-.bb-banner{background:linear-gradient(135deg,rgba(0,80,160,0.2),rgba(0,40,100,0.3));border:1px solid rgba(0,120,255,0.3);border-radius:4px;padding:1.5rem 2rem;margin-top:2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
-.bb-icon{font-size:2rem;flex-shrink:0}
-.bb-text h3{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:#6ab4ff;margin-bottom:.4rem}
-.bb-text p{font-size:.85rem;color:var(--parch-dk);line-height:1.5}
 
-/* ── INSCRIPTIONS ── */
 .price-card{max-width:500px;margin:0 auto 2rem;background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:2px solid var(--gold);border-radius:6px;padding:2.5rem 2rem;text-align:center;box-shadow:0 0 30px rgba(201,168,76,0.15),0 8px 30px rgba(0,0,0,0.5);position:relative;overflow:hidden}
-.price-card::before{content:'✦ OFFRE UNIQUE ✦';position:absolute;top:1rem;right:0;background:var(--crimson);color:var(--gold);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.15em;padding:.3rem 1rem .3rem 1.5rem;clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%)}
+.price-card::before{content:'✦ TOUT COMPRIS ✦';position:absolute;top:1rem;right:0;background:var(--crimson);color:var(--gold);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.15em;padding:.3rem 1rem .3rem 1.5rem;clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%)}
 .price-amount{font-family:'Cinzel Decorative',cursive;font-size:3rem;color:var(--gold);text-shadow:0 0 20px var(--gold-glow);line-height:1}
 .price-unit{font-size:.9rem;color:var(--parch-dk);margin-bottom:1.5rem}
 .price-includes{list-style:none;padding:0;text-align:left;margin-bottom:1.5rem}
@@ -187,11 +203,9 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .inscr-note{font-family:'IM Fell English',serif;font-size:.9rem;font-style:italic;color:var(--parch-dk);text-align:center;margin-top:1rem;line-height:1.6}
 .deadline-box{background:rgba(107,15,15,0.25);border:1px solid rgba(107,15,15,0.6);border-radius:4px;padding:1rem 1.5rem;text-align:center;margin:1.5rem 0;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch)}
 .deadline-box strong{color:var(--gold)}
-/* email anti-spam */
-.email-protected{cursor:pointer;color:var(--gold);border-bottom:1px dotted var(--gold-d);font-style:normal}
-.email-protected::after{content:attr(data-hint);font-size:.8em;color:var(--parch-dk)}
+.btn-contact{display:inline-flex;align-items:center;gap:.4rem;background:none;border:1px solid var(--gold-d);border-radius:3px;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--gold);padding:.3rem .8rem;letter-spacing:.05em;transition:background .2s}
+.btn-contact:hover{background:rgba(201,168,76,0.1)}
 
-/* ── SPONSORS ── */
 .sponsor-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem}
 .sponsor-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
 .sponsor-tier{background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid;border-radius:4px;padding:1.5rem}
@@ -204,7 +218,6 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .sponsor-tier ul li::before{content:'▸';position:absolute;left:0;color:var(--gold-d)}
 .sponsor-contact{text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch-dk);line-height:2}
 
-/* ── FOOTER ── */
 footer{background:rgba(5,4,3,0.97);border-top:1px solid var(--gold-d);padding:2rem 1.5rem;text-align:center;position:relative;z-index:1}
 .footer-brand{font-family:'Uncial Antiqua',cursive;font-size:1rem;color:var(--gold);margin-bottom:.5rem;text-shadow:0 0 10px var(--gold-glow)}
 .footer-links{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin:.8rem 0}
@@ -212,25 +225,21 @@ footer{background:rgba(5,4,3,0.97);border-top:1px solid var(--gold-d);padding:2r
 .footer-links button:hover{color:var(--gold)}
 footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 
-/* ── REVEAL ── */
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
 .reveal.visible{opacity:1;transform:none}
 
-/* ── RESPONSIVE ── */
 @media(max-width:600px){.nav-brand{display:none}.nav-links button{font-size:.65rem;padding:.65rem .5rem}.cd-unit{width:65px;height:78px}.cd-num{font-size:1.3rem}.section{padding:3rem 1rem}.scroll{padding:1.5rem 1.2rem}}
 </style>
 </head>
 <body>
 <div id="particles"></div>
 
-<!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <div class="nav-brand">⚔ Les Stratèges du Vieux Monde</div>
+    <div class="nav-brand">⚔ InterRégion 2026 — TOW</div>
     <div class="nav-links">
       <button onclick="showPage('accueil')" class="active" id="nav-accueil">Accueil</button>
       <button onclick="showPage('format')" id="nav-format">Format</button>
-      <button onclick="showPage('reglement')" id="nav-reglement">Règlement</button>
       <button onclick="showPage('lieu')" id="nav-lieu">Lieu</button>
       <button onclick="showPage('association')" id="nav-association">Association</button>
       <button onclick="showPage('inscriptions')" id="nav-inscriptions">Inscriptions</button>
@@ -239,20 +248,22 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
 </nav>
 
-<!-- ══════════════════════════════════════
-     PAGE : ACCUEIL
-══════════════════════════════════════ -->
+<!-- ACCUEIL -->
 <div class="page active" id="page-accueil">
   <section class="hero">
     <div class="shield"><span class="shield-sigil">⚔</span></div>
-    <p class="hero-eyebrow">Les Stratèges du Vieux Monde présentent</p>
-    <h1>Tournoi<br>The Old World</h1>
-    <p class="hero-subtitle">2026 · Édition Compétitive</p>
+    <div class="ir-banner">
+      <p class="ir-convo">✦ Convocation Officielle ✦</p>
+      <h1 class="ir-mega">InterRégion<br>2026</h1>
+      <div class="ir-flourish">⚜ <span class="ir-roman">II</span> Deuxième Édition ⚜</div>
+      <p class="ir-game">Grand Tournoi National<br>Warhammer : The Old World</p>
+      <p class="ir-orgs">Sous l'égide de la <strong>Fédération France The Old World</strong><br>en partenariat avec <strong>Les Stratèges du Vieux Monde</strong> · Aube (10)</p>
+    </div>
     <svg class="hero-divider" viewBox="0 0 320 20" fill="none"><line x1="0" y1="10" x2="120" y2="10" stroke="#8A6E2F" stroke-width="1"/><polygon points="130,10 140,4 150,10 140,16" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="155" y1="10" x2="160" y2="10" stroke="#C9A84C" stroke-width="1.5"/><path d="M160,3 L163,10 L160,17 L157,10 Z" fill="#C9A84C"/><line x1="160" y1="10" x2="165" y2="10" stroke="#C9A84C" stroke-width="1.5"/><polygon points="170,10 180,4 190,10 180,16" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="200" y1="10" x2="320" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
     <div class="hero-meta">
       <div class="hero-badge">🗓 <span>7–8 Novembre 2026</span></div>
-      <div class="hero-badge">📍 <span>Château de Vaux, Aube (10)</span></div>
-      <div class="hero-badge">⚔ <span>16 Équipes · Format 3v3</span></div>
+      <div class="hero-badge">🏞 <span>Mesnil-Saint-Père · Lac d'Orient</span></div>
+      <div class="hero-badge">⚔ <span>120 participants · 3 axes</span></div>
     </div>
     <p class="countdown-label">✦ Compte à rebours ✦</p>
     <div class="countdown">
@@ -261,7 +272,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl">Mins</span></div>
       <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">Secs</span></div>
     </div>
-    <button class="cta-btn" onclick="showPage('inscriptions')">S'inscrire au Tournoi</button>
+    <button class="cta-btn" onclick="showPage('inscriptions')">Rejoindre l'Event</button>
     <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="discord-banner">
       <svg width="20" height="15" viewBox="0 0 71 55" fill="#9BA8FF"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>
       Rejoindre le serveur Discord officiel
@@ -269,51 +280,220 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </section>
   <div style="max-width:1100px;margin:0 auto;padding:3rem 1.5rem">
     <div class="stats-bar reveal">
-      <div class="stat"><div class="stat-num">16</div><div class="stat-lbl">Équipes</div></div>
-      <div class="stat"><div class="stat-num">48</div><div class="stat-lbl">Commandants</div></div>
-      <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">Batailles</div></div>
-      <div class="stat"><div class="stat-num">2 000</div><div class="stat-lbl">Points / liste</div></div>
+      <div class="stat"><div class="stat-num">120</div><div class="stat-lbl">Participants</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-lbl">Axes de jeu</div></div>
+      <div class="stat"><div class="stat-num">60</div><div class="stat-lbl">Tables</div></div>
+      <div class="stat"><div class="stat-num">1 000</div><div class="stat-lbl">m² de salle</div></div>
     </div>
     <div class="scroll reveal" style="text-align:center">
-      <h3>⚔ Bienvenue dans le Vieux Monde ⚔</h3>
-      <p>Seigneurs et généraux de renom, les Stratèges du Vieux Monde vous convoquent à la grande joute compétitive <em>Warhammer: The Old World</em> de l'Aube.</p>
-      <p>16 équipes de 3 joueurs s'affronteront en listes ouvertes, sur 4 rondes épiques, sous l'arbitrage de <strong style="color:var(--gold)">JB du Warfo</strong>. Le système de score suit le <strong style="color:var(--gold)">Guide du Jeu Égal (6-0)</strong> officiel de The Old World.</p>
-      <p>Le tout dans le cadre exceptionnel du <strong style="color:var(--gold)">Château de Vaux</strong>, demeure aristocratique au cœur de l'Aube.</p>
+      <h3>⚔ Bienvenue à l'InterRégion 2026 ⚔</h3>
+      <p>Seigneurs, généraux et conteurs du Vieux Monde, la <strong style="color:var(--gold)">Fédération France The Old World</strong>, en partenariat avec l'association <strong style="color:var(--gold)">Les Stratèges du Vieux Monde</strong>, vous convoquent à la <strong>deuxième édition de l'InterRégion <em>Warhammer: The Old World</em></strong> au cœur du Parc Naturel Régional de la Forêt d'Orient.</p>
+      <p style="font-style:italic;color:var(--parch-dk);font-size:.85rem">Dans la lignée des grandes InterRégions de l'âge d'or de Battle, l'InterRégion 2026 réunit les meilleurs joueurs francophones autour d'un même week-end de jeu et de communauté.</p>
+      <p>Trois axes de jeu se côtoient sous le même toit : un <strong style="color:var(--gold)">tournoi compétitif par équipes</strong> (60 joueurs, 12 équipes de 5), une <strong style="color:var(--gold)">animation narrative</strong> orchestrée par <strong>Nimp'Games</strong> (10 joueurs), et un <strong style="color:var(--gold)">espace de jeu libre</strong> (50 joueurs) pour parties amicales et démonstrations.</p>
+      <p>Le tout dans la salle multi-usages 1 000 m² de la <strong style="color:var(--gold)">Maison des Lacs</strong> à Mesnil-Saint-Père, au bord du Lac d'Orient.</p>
     </div>
   </div>
   <footer>
-    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
     <div class="footer-links">
-      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button>
+      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button>
     </div>
-    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
-    <p style="margin-top:.5rem">© 2026 Les Stratèges du Vieux Monde · Ruvigny, Aube (10)</p>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+    <p style="margin-top:.5rem">© 2026 Fédération France The Old World × Les Stratèges du Vieux Monde · Mesnil-Saint-Père, Aube (10)</p>
   </footer>
 </div>
 
-<!-- ══════════════════════════════════════
-     PAGE : FORMAT
-══════════════════════════════════════ -->
+<!-- FORMAT -->
 <div class="page" id="page-format">
   <div class="section">
-    <h2 class="section-title">Format du Tournoi</h2>
-    <p class="section-sub">⚔ Règles & Programme ⚔</p>
+    <h2 class="section-title">Format de l'InterRégion</h2>
+    <p class="section-sub">⚔ Trois Axes · Une Communauté Nationale ⚔</p>
     <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
 
+    <p class="rules-intro">L'InterRégion 2026, organisée par la <strong>Fédération France The Old World</strong> en partenariat avec l'association <strong>Les Stratèges du Vieux Monde</strong>, propose trois manières de vivre Warhammer: The Old World sur un même week-end. Chacun trouve sa place — compétiteur, conteur ou simple passionné.</p>
+
+    <div class="axes-grid reveal">
+      <div class="axe-card competitif">
+        <div class="axe-icon">⚔</div>
+        <div class="axe-title">Tournoi Compétitif</div>
+        <div class="axe-count">12 équipes · 60 joueurs</div>
+        <p class="axe-desc">Format par équipes de 5 joueurs, <strong>4 rondes</strong> intenses sur le week-end, listes ouvertes 2 000 points. Système de scoring officiel Guide du Jeu Égal (6-0).</p>
+        <ul>
+          <li>12 équipes × 5 joueurs</li>
+          <li><strong>4 rondes</strong> (samedi 2 + dimanche 2)</li>
+          <li>Listes ouvertes, 2 000 pts</li>
+          <li>Pairing capitaines à 5 tables</li>
+          <li>Pilote sportif : Fédération France TOW</li>
+        </ul>
+        <button class="axe-cta" onclick="showPage('format-competitif')">Voir le détail compétitif →</button>
+      </div>
+      <div class="axe-card narratif">
+        <div class="axe-icon">📜</div>
+        <div class="axe-title">Animation Narrative</div>
+        <div class="axe-count">10 joueurs</div>
+        <p class="axe-desc">Tables dédiées au jeu narratif et immersif, animées par <strong>Nimp'Games</strong>. Scénarios sur mesure, mise en scène, expérience qualitative au-dessus du compétitif.</p>
+        <ul>
+          <li>Scénarios narratifs sur mesure</li>
+          <li>Tables thématiques décorées</li>
+          <li>Animation Nimp'Games</li>
+          <li>Pas de classement, expérience pure</li>
+          <li>Prix peinture & roleplay</li>
+        </ul>
+        <button class="axe-cta" onclick="showPage('format-narratif')">Voir le détail narratif →</button>
+      </div>
+      <div class="axe-card libre">
+        <div class="axe-icon">🎲</div>
+        <div class="axe-title">Jeu Libre</div>
+        <div class="axe-count">50 joueurs</div>
+        <p class="axe-desc">Espace ouvert pour parties amicales, démonstrations, initiation aux nouveaux venus. Pilote : Les Stratèges du Vieux Monde. Vos figurines, vos règles, votre rythme.</p>
+        <ul>
+          <li>Parties amicales tout format</li>
+          <li>Démonstrations & initiation</li>
+          <li>Tables disponibles tout le week-end</li>
+          <li>Pilote : Les Stratèges du Vieux Monde</li>
+          <li>Idéal accompagnateurs et débutants</li>
+        </ul>
+        <button class="axe-cta" onclick="showPage('format-libre')">Voir le détail jeu libre →</button>
+      </div>
+    </div>
+
     <div class="stats-bar reveal">
-      <div class="stat"><div class="stat-num">3v3</div><div class="stat-lbl">Format équipe</div></div>
+      <div class="stat"><div class="stat-num">5v5</div><div class="stat-lbl">Format compétitif</div></div>
+      <div class="stat"><div class="stat-num">120</div><div class="stat-lbl">Joueurs au total</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-lbl">Axes de jeu</div></div>
+      <div class="stat"><div class="stat-num">2j</div><div class="stat-lbl">de tournoi</div></div>
+    </div>
+
+    <p style="text-align:center;margin-top:2rem;color:var(--parch-dk);font-style:italic">Cliquez sur l'un des trois axes ci-dessus pour découvrir son fonctionnement détaillé, ses règles et son programme.</p>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+  </footer>
+</div>
+
+<!-- FORMAT — pages détaillées par axe -->
+<div class="page" id="page-format-competitif">
+  <div class="section">
+    <h2 class="section-title">⚔ Tournoi Compétitif</h2>
+    <p class="section-sub">12 équipes · 60 joueurs · 4 rondes · 2 000 points</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <div class="format-tabs reveal">
+      <button class="fmt-tab active" onclick="showPage('format-competitif')">⚔ Compétitif</button>
+      <button class="fmt-tab" onclick="showPage('format-narratif')">📜 Narratif</button>
+      <button class="fmt-tab" onclick="showPage('format-libre')">🎲 Jeu Libre</button>
+    </div>
+
+    <div class="scroll reveal" style="text-align:center;margin-top:2rem">
+      <h3>⚔ L'âme de l'InterRégion</h3>
+      <p>Le tournoi compétitif est le cœur sportif de l'InterRégion 2026. Douze équipes nationales, soixante joueurs, <strong style="color:var(--gold)">4 rondes (4 parties)</strong> sur le week-end pour départager les meilleures formations francophones de Warhammer : The Old World. Le format hérité de la grande époque des InterRégions Battle, adapté à la nouvelle édition.</p>
+      <p style="margin-top:.8rem;font-size:.92rem;color:var(--parch-dk);font-style:italic">Les joueurs compétitifs qui le souhaitent peuvent <strong>jouer également des parties en Jeu Libre</strong> sur leurs créneaux libres — l'InterRégion reste un week-end de communauté avant tout.</p>
+    </div>
+
+    <div class="stats-bar reveal">
+      <div class="stat"><div class="stat-num">5v5</div><div class="stat-lbl">Format compétitif</div></div>
       <div class="stat"><div class="stat-num">2 000</div><div class="stat-lbl">Points par liste</div></div>
-      <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">Rondes</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">Rondes (parties)</div></div>
       <div class="stat"><div class="stat-num">6-0</div><div class="stat-lbl">Système GJE</div></div>
     </div>
 
-    <div class="scroll reveal">
-      <h3>🛡 Concept Général</h3>
-      <p>Le tournoi oppose <strong>16 équipes de 3 joueurs</strong>. Chaque ronde, les capitaines gèrent les appariements via un système de pairing (voir Règlement). Les listes sont <strong>ouvertes</strong> : chaque joueur connaît les listes adverses avant le déploiement. Les domaines de magie sont fixés pour tout le week-end.</p>
+    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">I. Inscriptions & Armées</h3>
+    <p class="section-sub">⚔ Codex des Batailles ⚔</p>
+
+    <p class="rules-intro">Le présent règlement s'applique au volet <strong>compétitif</strong> de l'InterRégion 2026. Il s'appuie sur les FAQ et Mises à Jour GW en vigueur à la date de blocage du format. Les volets narratif et jeu libre suivent leurs règles propres communiquées séparément.</p>
+
+    <div class="rules-grid">
+      <div class="rule-block reveal">
+        <h3><span>📋</span> Inscription</h3>
+        <ul>
+          <li>Inscription via NewRecruit + paiement PayPal</li>
+          <li>Date limite inscription & paiement : <strong>1er octobre 2026</strong></li>
+          <li>Date limite envoi des listes : <strong>31 octobre 2026 minuit</strong></li>
+          <li>Listes saisies sur la page NewRecruit du tournoi</li>
+          <li>Toute équipe incomplète à la date limite sera désinscrite</li>
+        </ul>
+      </div>
+      <div class="rule-block reveal">
+        <h3><span>🛡</span> Composition des Équipes</h3>
+        <ul>
+          <li>5 joueurs par équipe, un capitaine désigné</li>
+          <li><strong>Chaque faction est unique par équipe</strong></li>
+          <li>Unités mercenaires/autres factions autorisées</li>
+          <li>Alliés autorisés, un seul joueur par faction alliée</li>
+          <li>Langue des parties : Français</li>
+        </ul>
+      </div>
+      <div class="rule-block reveal">
+        <h3><span>⚔</span> Composition des Armées</h3>
+        <ul>
+          <li>Taille : <strong>2 000 points</strong> par joueur</li>
+          <li>Restrictions Grand Melee & Combined Arms</li>
+          <li>Aucune unité &gt; 25% du total (500 pts max)</li>
+          <li>1 sorcier niv. 4 max, 2 niv. 3 max</li>
+          <li>Listes <strong>fixées tout le week-end</strong></li>
+        </ul>
+      </div>
+      <div class="rule-block reveal" style="grid-column:1/-1">
+        <h3><span>🎨</span> Modélisme, Peinture & WYSIWYG</h3>
+        <ul>
+          <li>Armées <strong>100% peintes</strong> obligatoire</li>
+          <li>WYSIWYG : ce que vous voyez est ce que vous jouez</li>
+          <li>Tolérance pour figurines d'état-major (différenciation)</li>
+          <li>Conversions et anciens modèles encouragés</li>
+          <li>Socles peints au même titre que les figurines</li>
+          <li>Vérification WYSIWYG le matin du tournoi</li>
+        </ul>
+      </div>
     </div>
 
-    <!-- SCORE DES PARTIES -->
-    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">Système de Score</h3>
+    <h3 class="section-title" style="font-size:1.3rem;margin-bottom:.5rem;margin-top:3rem">II. Déroulement d'une Ronde</h3>
+
+    <div class="scroll reveal">
+      <h3>⚖ Phase de Pairing (Appariements)</h3>
+      <p>L'équipe la mieux classée est l'<strong>équipe A</strong>, l'autre est l'<strong>équipe B</strong>. Pour la première ronde, l'équipe A est désignée aléatoirement (D6).</p>
+      <p style="margin-top:.8rem">Les capitaines présentent simultanément leurs listes en défense, puis attaque, table par table. Pairing détaillé identique aux tournois 5v5 standards de la communauté.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🗺 Scénarios <span style="font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--parch-dk);font-style:italic">(à confirmer)</span></h3>
+      <p>Chaque table joue un scénario différent par ronde. Toutes les parties durent <strong>6 tours maximum</strong>. La rotation des scénarios sera publiée sur le pack NewRecruit final.</p>
+    </div>
+
+    <div class="rules-grid" style="margin-top:1.5rem">
+      <div class="rule-block reveal">
+        <h3><span>🤝</span> Fair-play & Conduite</h3>
+        <ul>
+          <li>Respect des adversaires, arbitres et organisateurs</li>
+          <li>Décisions arbitrales définitives et sans appel</li>
+          <li>L'arbitre peut pénaliser tout comportement problématique</li>
+          <li>Prix du <strong>plus beau painting</strong> décerné</li>
+        </ul>
+      </div>
+      <div class="rule-block reveal">
+        <h3><span>🗣</span> Coaching</h3>
+        <ul>
+          <li>Coaching entre coéquipiers autorisé pendant le pairing</li>
+          <li>Conseils extérieurs discrets pendant les parties</li>
+          <li>L'arbitre peut interdire le coaching si besoin</li>
+        </ul>
+      </div>
+      <div class="rule-block reveal">
+        <h3><span>⏱</span> Gestion du Temps</h3>
+        <ul>
+          <li>Rondes dans les créneaux impartis</li>
+          <li>Toute partie non organisée : 0/0 pour les deux joueurs</li>
+          <li>Respect strict des horaires</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule-highlight reveal">
+      ⚔ En cas de litige non résolu entre joueurs, l'arbitre tranche souverainement. Sa décision est définitive.
+    </div>
+
+    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">III. Système de Score</h3>
     <p class="section-sub">⚔ Guide du Jeu Égal — Différentiel de Points de Victoire ⚔</p>
 
     <div class="scroll reveal">
@@ -324,10 +504,10 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
           <tr><th>Différentiel de PV</th><th>Résultat</th><th>Vainqueur</th><th>Perdant</th></tr>
         </thead>
         <tbody>
-          <tr class="result-egal"><td>0 à 300 pts</td><td>Égalité</td><td class="score-winner">3 pts</td><td class="score-winner">3 pts</td></tr>
-          <tr class="result-marginale"><td>301 à 750 pts</td><td>Victoire Marginale</td><td class="score-winner">4 pts</td><td class="score-loser">2 pts</td></tr>
-          <tr class="result-retentissante"><td>751 à 1 400 pts</td><td>Victoire Retentissante</td><td class="score-winner">5 pts</td><td class="score-loser">1 pt</td></tr>
-          <tr class="result-critique"><td>1 401 pts ou plus</td><td>Victoire Critique</td><td class="score-winner">6 pts</td><td class="score-loser">0 pt</td></tr>
+          <tr><td>0 à 300 pts</td><td>Égalité</td><td class="score-winner">3 pts</td><td class="score-winner">3 pts</td></tr>
+          <tr><td>301 à 750 pts</td><td>Victoire Marginale</td><td class="score-winner">4 pts</td><td class="score-loser">2 pts</td></tr>
+          <tr><td>751 à 1 400 pts</td><td>Victoire Retentissante</td><td class="score-winner">5 pts</td><td class="score-loser">1 pt</td></tr>
+          <tr><td>1 401 pts ou plus</td><td>Victoire Critique</td><td class="score-winner">6 pts</td><td class="score-loser">0 pt</td></tr>
         </tbody>
       </table>
       <div class="rule-highlight" style="margin:1rem 0 0">⚠ Si au moins une armée <strong>déroute</strong> pendant la partie, le résultat est plafonné à une <strong>Victoire Marginale</strong> au maximum.</div>
@@ -335,496 +515,388 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 
     <div class="scroll reveal">
       <h3>🏆 Score des Rondes (équipe)</h3>
-      <p style="margin-bottom:1rem">Le score de ronde d'une équipe est la <strong>somme des scores individuels</strong> de ses 3 joueurs. Maximum par ronde : <strong>18 pts</strong>.</p>
+      <p style="margin-bottom:1rem">Le score de ronde d'une équipe est la <strong>somme des scores individuels</strong> de ses 5 joueurs. Maximum par ronde : <strong>30 pts</strong>.</p>
       <table class="score-table">
-        <thead>
-          <tr><th>Score d'équipe</th><th>Résultat de ronde</th></tr>
-        </thead>
+        <thead><tr><th>Score d'équipe</th><th>Résultat de ronde</th></tr></thead>
         <tbody>
-          <tr><td>8 pts ou moins</td><td style="color:#D04040">Défaite</td></tr>
-          <tr><td>9 à 10 pts</td><td style="color:#D4C070">Égalité (Nul)</td></tr>
-          <tr><td>11 pts ou plus</td><td style="color:#A0D0A0">Victoire</td></tr>
+          <tr><td>13 pts ou moins</td><td style="color:#D04040">Défaite</td></tr>
+          <tr><td>14 à 16 pts</td><td style="color:#D4C070">Égalité (Nul)</td></tr>
+          <tr><td>17 pts ou plus</td><td style="color:#A0D0A0">Victoire</td></tr>
         </tbody>
       </table>
-      <p style="margin-top:1rem;font-size:.85rem;color:var(--parch-dk)">⚠ Toute partie non organisée dans les temps compte 0/0 pour les deux joueurs. Si une équipe n'organise pas 2 parties ou plus, les deux équipes reçoivent 0 point, comptant comme défaite.</p>
     </div>
 
-    <div class="scroll reveal">
-      <h3>📊 Classement Général</h3>
-      <p>Le classement des équipes est établi sur la base <strong>Victoire / Nul / Défaite</strong>, avec les critères secondaires suivants, dans l'ordre :</p>
-      <ul>
-        <li>Somme des scores de ronde</li>
-        <li>SoS (Strength of Schedule — force des adversaires rencontrés)</li>
-        <li>Victoire directe sur l'adversaire</li>
-      </ul>
-    </div>
+    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">IV. Programme du Week-end</h3>
+    <p class="section-sub">7 & 8 Novembre 2026 · 4 rondes · 4 parties</p>
 
-    <!-- PROGRAMME -->
-    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">Programme des Rondes</h3>
-    <p class="section-sub">7 & 8 Novembre 2026</p>
     <div class="programme-grid reveal">
       <div class="round-card">
-        <div class="round-day">Samedi 7 novembre</div>
-        <div class="round-title">Ronde I</div>
-        <div class="round-time">☀ 8h30 – 12h30</div>
-        <div class="round-desc">Ouverture des hostilités. Accueil & café de bienvenue dès 8h.</div>
-      </div>
-      <div class="round-card">
-        <div class="round-day">Samedi 7 novembre</div>
-        <div class="round-title">Ronde II</div>
-        <div class="round-time">☀ 13h30 – 17h30</div>
-        <div class="round-desc">Pause repas entre les deux rondes. Restauration incluse.</div>
-      </div>
-      <div class="round-card">
-        <div class="round-day">Samedi 7 novembre — Soirée</div>
-        <div class="round-title">Ronde III</div>
+        <div class="round-day">Vendredi 6 nov · soir</div>
+        <div class="round-title">Arrivée & Montage</div>
         <div class="round-time">🌙 18h00 – 22h00</div>
-        <div class="round-desc">La bataille se prolonge aux chandelles. Activités communes le soir.</div>
+        <div class="round-desc">Accueil des participants, installation des 60 tables, briefing capitaines, vérification WYSIWYG.</div>
       </div>
       <div class="round-card">
-        <div class="round-day">Dimanche 8 novembre</div>
-        <div class="round-title">Ronde IV</div>
-        <div class="round-time">☀ 8h30 – 12h30</div>
-        <div class="round-desc">Grande finale — remise des prix en début d'après-midi.</div>
+        <div class="round-day">Samedi 7 nov · matin</div>
+        <div class="round-title">Ronde I — Compétitif</div>
+        <div class="round-time">☀ 9h00 – 12h30</div>
+        <div class="round-desc">Café de bienvenue dès 8h30. Ouverture des hostilités. Narratif & Libre en parallèle.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Samedi 7 nov · midi</div>
+        <div class="round-title">Déjeuner & Pairing</div>
+        <div class="round-time">🍽 12h30 – 14h00</div>
+        <div class="round-desc">Déjeuner inclus dans la PAF. Annonce des appariements de la Ronde II.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Samedi 7 nov · après-midi</div>
+        <div class="round-title">Ronde II — Compétitif</div>
+        <div class="round-time">☀ 14h00 – 17h30</div>
+        <div class="round-desc">Soirée libre & convivialité au bord du lac. Restauration libre en village.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 nov · matin</div>
+        <div class="round-title">Ronde III — Compétitif</div>
+        <div class="round-time">☀ 9h00 – 12h30</div>
+        <div class="round-desc">Petit-déjeuner inclus dès 8h00. Reprise des hostilités. Narratif & Libre en parallèle.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 nov · midi</div>
+        <div class="round-title">Déjeuner & Pairing</div>
+        <div class="round-time">🍽 12h30 – 13h30</div>
+        <div class="round-desc">Déjeuner inclus. Annonce des appariements de la Ronde IV.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 nov · après-midi</div>
+        <div class="round-title">Ronde IV — Finale</div>
+        <div class="round-time">☀ 13h30 – 17h00</div>
+        <div class="round-desc">Dernière ronde décisive. Résolution du classement national.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 nov · clôture</div>
+        <div class="round-title">Remise des Prix</div>
+        <div class="round-time">🏆 17h15 – 18h00</div>
+        <div class="round-desc">Cérémonie : champion compétitif, prix peinture, prix narratif & roleplay, mot de clôture Fédération.</div>
       </div>
     </div>
 
-    <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="discord-banner" style="display:inline-flex;margin-top:1rem">
-      <svg width="18" height="14" viewBox="0 0 71 55" fill="#9BA8FF"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>
-      Annonces et questions sur Discord
-    </a>
-  </div>
-  <footer>
-    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
-    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
-  </footer>
-</div>
-
-<!-- ══════════════════════════════════════
-     PAGE : RÈGLEMENT
-══════════════════════════════════════ -->
-<div class="page" id="page-reglement">
-  <div class="section">
-    <h2 class="section-title">Règlement du Tournoi</h2>
-    <p class="section-sub">⚔ Codex des Batailles ⚔</p>
-    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
-
-    <p class="rules-intro">Le présent règlement est établi pour le Tournoi The Old World 2026 organisé par Les Stratèges du Vieux Monde. Il s'appuie sur les FAQ et Mises à Jour GW en vigueur à la <strong>date de blocage du format</strong> (arrêt au soir du samedi précédant la remise des listes). Les règles VO priment sur les traductions.</p>
-
-    <!-- I. INSCRIPTIONS & ARMÉES -->
-    <h3 class="section-title" style="font-size:1.2rem;margin-bottom:.5rem;margin-top:2rem">I. Inscriptions & Armées</h3>
-    <div class="rules-grid">
-      <div class="rule-block reveal">
-        <h3><span>📋</span> Inscription</h3>
-        <ul>
-          <li>Inscription via <strong>NewRecruit</strong> (gestion des listes et rondes) + paiement PayPal</li>
-          <li>Date limite d'inscription et de paiement : <strong>1er octobre 2026</strong></li>
-          <li>Date limite d'envoi des listes : <strong>31 octobre 2026 à minuit</strong></li>
-          <li>Listes saisies et enregistrées sur la page NewRecruit du tournoi</li>
-          <li>Toute équipe incomplète à la date limite sera désinscrite</li>
-        </ul>
-      </div>
-      <div class="rule-block reveal">
-        <h3><span>🛡</span> Composition des Équipes</h3>
-        <ul>
-          <li>3 joueurs par équipe, un capitaine désigné</li>
-          <li><strong>Chaque faction est unique par équipe</strong> — un seul joueur peut représenter une faction, quelle que soit la liste (Grande Armée, Croisade, Exilés…)</li>
-          <li>Les unités « mercenaires » ou provenant d'autres factions restent autorisées</li>
-          <li>Les alliés sont autorisés, mais un seul joueur par faction alliée</li>
-          <li>La langue des parties est le <strong>Français</strong></li>
-        </ul>
-      </div>
-      <div class="rule-block reveal">
-        <h3><span>⚔</span> Composition des Armées</h3>
-        <ul>
-          <li>Taille des listes : <strong>2 000 points</strong> par joueur (pas un de plus)</li>
-          <li>Toutes les armées (Forces Fantastiques, Hordes Sauvages, Cathay, Forces de Légendes) et journaux arcaniques autorisés</li>
-          <li>Restrictions <strong>Grand Melee & Combined Arms</strong> :<br>
-            — Aucune unité individuelle &gt; 25% du total (500 pts max, 501+ interdits)<br>
-            — 1 sorcier niv. 4 max, 2 sorciers niv. 3 max<br>
-            — Répétition unités : 0-3 mêmes personnages, 0-4 mêmes unités de base, 0-3 spéciales, 0-2 rares<br>
-            — Les personnages nommés/spéciaux ne comptent pas dans cette limitation
-          </li>
-          <li>Joueurs Vampires : <strong>pas de Machine de Mort</strong></li>
-          <li>Listes <strong>fixées pour tout le week-end</strong> — aucun changement entre les parties</li>
-        </ul>
-      </div>
-      <div class="rule-block reveal">
-        <h3><span>🎨</span> Modélisme, Peinture & WYSIWYG</h3>
-        <ul>
-          <li>Armées <strong>100% peintes</strong> obligatoire — toute figurine non peinte reste dans la mallette</li>
-          <li>WYSIWYG : ce que vous voyez est ce que vous jouez. Un Fantassin Impérial avec lance n'est pas un Fantassin Impérial avec épée</li>
-          <li>Tolérance sur les figurines d'état-major : un champion peut avoir un équipement différent si cela aide à le différencier, sans risque de confusion</li>
-          <li>Les armées à thèmes, conversions et anciens modèles sont encouragés — dans la limite du raisonnable et sans tentative de tromperie</li>
-          <li>Les socles doivent être peints au même titre que la figurine</li>
-          <li>Les <strong>Unit Fillers</strong> sont autorisés s'ils ne nuisent pas au jeu et restent dans le thème. En cas de litige, l'arbitrage sera défavorable au joueur utilisant un Unit Filler</li>
-          <li>Vérification WYSIWYG effectuée le matin du tournoi — les listes seront ajustées si nécessaire</li>
-        </ul>
-      </div>
+    <div class="scroll reveal" style="margin-top:1.5rem;background:linear-gradient(160deg,rgba(27,74,90,.35),rgba(15,37,48,.5));border-color:var(--teal-l)">
+      <h3 style="color:var(--teal-l)">🎲 Compétitif & Jeu Libre — passerelle ouverte</h3>
+      <p>L'InterRégion n'est pas qu'un week-end de pression sportive. Les joueurs compétitifs <strong>peuvent venir poser une partie de Jeu Libre</strong> sur leurs créneaux disponibles (vendredi soir, créneaux entre rondes si finis tôt, dimanche après les remises). De beaux décors, une partie amicale entre deux rondes ou en fin de tournoi pour décompresser — c'est aussi ça l'esprit InterRégion.</p>
     </div>
 
-    <!-- II. DÉROULEMENT D'UNE RONDE -->
-    <h3 class="section-title" style="font-size:1.2rem;margin-bottom:.5rem;margin-top:3rem">II. Déroulement d'une Ronde</h3>
-
-    <div class="scroll reveal">
-      <h3>⚖ Phase de Pairing (Appariements)</h3>
-      <p style="margin-bottom:.8rem">L'équipe la mieux classée est l'<strong>équipe A</strong>, l'autre est l'<strong>équipe B</strong>. Pour la première ronde, l'équipe A est désignée aléatoirement (D6).</p>
-      <ol class="pairing-steps">
-        <li>Les deux capitaines présentent <strong>simultanément</strong> une liste en défense. Celle de l'équipe A va en <strong>table 1</strong>, celle de l'équipe B en <strong>table 2</strong>.</li>
-        <li>Les deux capitaines proposent <strong>simultanément</strong> une liste en attaque, qui ira face à la liste en défense de l'équipe adverse.</li>
-        <li>Les deux capitaines annoncent <strong>simultanément</strong> quelle liste d'attaque a été choisie comme adversaire de leur liste en défense.</li>
-        <li>Les deux derniers joueurs (les « attaquants refusés ») s'affrontent en <strong>table 3</strong>. Le capitaine de l'équipe B choisit lequel de ses joueurs prendra le rôle d'attaquant ou de défenseur.</li>
-      </ol>
-    </div>
-
-    <div class="scroll reveal">
-      <h3>🗺 Rotation des Scénarios <span style="font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--parch-dk);font-style:italic">(à confirmer)</span></h3>
-      <p style="margin-bottom:.8rem">Chaque table joue un scénario différent par ronde. Toutes les parties durent <strong>6 tours maximum</strong> (ou jusqu'à déroute si applicable).</p>
-      <div class="scenario-grid">
-        <div class="scenario-card">
-          <div class="sc-ronde">Ronde 1</div>
-          <div class="sc-table"><strong>Tables 1 & 2 :</strong> Upon Fields of Glory<br><strong>Table 3 :</strong> Rivages Brumeux</div>
-        </div>
-        <div class="scenario-card">
-          <div class="sc-ronde">Ronde 2</div>
-          <div class="sc-table"><strong>Tables 1 & 2 :</strong> King of the Hill<br><strong>Table 3 :</strong> Drawn Battlelines</div>
-        </div>
-        <div class="scenario-card">
-          <div class="sc-ronde">Ronde 3</div>
-          <div class="sc-table"><strong>Tables 1 & 2 :</strong> Chance Encounter<br><strong>Table 3 :</strong> Close Quarters</div>
-        </div>
-        <div class="scenario-card">
-          <div class="sc-ronde">Ronde 4</div>
-          <div class="sc-table"><strong>Tables 1 & 2 :</strong> Rivages Brumeux<br><strong>Table 3 :</strong> Encerclement</div>
-        </div>
-      </div>
-      <p style="font-size:.82rem;color:var(--parch-dk);margin-top:.8rem">Pour Rivages Brumeux, le défenseur est déterminé lors du pairing. Référez-vous au PDF des scénarios Rivages Brumeux pour la mise en place spécifique.</p>
-    </div>
-
-    <!-- PLACEMENT DES DÉCORS -->
-    <div class="scroll reveal">
-      <h3>🌲 Placement des Décors</h3>
-      <p style="margin-bottom:.8rem">Les décors sont placés par les joueurs depuis un pool commun. Chaque joueur choisit un pool de <strong>6 décors</strong> composé de :</p>
-      <ul>
-        <li>0 à 2 collines · 0 à 2 forêts · 0 à 2 champs (terrain difficile + obstacles bas)</li>
-        <li>0 à 2 murs (obstacles linéaires bas)</li>
-        <li>0 à 1 zone d'eau (terrain dangereux) · 0 à 2 rochers (infranchissables, bloquant LDV)</li>
-        <li>0 à 2 ruines (terrain dangereux bloquant LDV, couvert lourd)</li>
-      </ul>
-      <p style="margin-top:.8rem;font-size:.85rem;color:var(--parch-dk)">En cas d'objectifs Strategic Location, placez-les immédiatement. En cas de King of the Hill, placez la colline géante au centre. Chaque joueur place ensuite alternativement ses décors à plus de 12ps du centre, 3ps des objectifs et 3ps d'autres décors. L'attaquant peut faire dévier D3+1 éléments de décors.</p>
-      <p style="margin-top:.5rem;font-weight:700;color:var(--parch)">Générez ensuite les sorts de vos magiciens. Lancez 1D6 : le gagnant choisit sa zone de déploiement.</p>
-    </div>
-
-    <!-- OBJECTIFS SECONDAIRES -->
-    <div class="scroll reveal">
-      <h3>🎯 Objectifs Secondaires</h3>
-      <div class="obj-sec-block"><span class="obj-sec-icon">📍</span><div class="obj-sec-text"><strong>Strategic Locations "2", "3" ou "4"</strong>2, 3 ou 4 objectifs — règles MPG p.30. Rapporte <strong>30 pts à la fin du tour de chaque joueur</strong>.</div></div>
-      <div class="obj-sec-block"><span class="obj-sec-icon">⭐</span><div class="obj-sec-text"><strong>Special Feature</strong>Terrain infranchissable de 6ps bloquant les LDV, au centre. Règles MPG p.29. Rapporte <strong>200 pts en fin de partie</strong>.</div></div>
-      <div class="obj-sec-block"><span class="obj-sec-icon">🗺</span><div class="obj-sec-text"><strong>Domination</strong>Prise des quarts de table en fin de partie. Règles MPG p.30. Rapporte entre <strong>100 et 250 pts en fin de partie</strong>.</div></div>
-      <div class="obj-sec-block"><span class="obj-sec-icon">🎒</span><div class="obj-sec-text"><strong>Bagage Train</strong>Prise d'un objectif (socle 100×60). Règles MPG p.28. Rapporte <strong>100 ou 250 pts en fin de partie</strong>. Le défenseur place son objectif en premier.</div></div>
-      <div class="obj-sec-block"><span class="obj-sec-icon">🎲</span><div class="obj-sec-text"><strong>Objectifs Libres</strong> (Upon Fields of Glory uniquement)Chaque joueur choisit un objectif secondaire ci-dessus (y compris le nombre d'objectifs Strategic Location), en commençant par le défenseur. L'attaquant ne peut pas choisir le même que le défenseur.</div></div>
-      <div class="obj-sec-block"><span class="obj-sec-icon">💀</span><div class="obj-sec-text"><strong>Déroute</strong>Faire dérouter l'adversaire rapporte <strong>500 pts bonus</strong>. Si une armée déroute, le résultat de la partie est plafonné à Victoire Marginale.</div></div>
-    </div>
-
-    <!-- COACHING & FAIR-PLAY -->
-    <div class="rules-grid" style="margin-top:1.5rem">
-      <div class="rule-block reveal">
-        <h3><span>🤝</span> Fair-play & Conduite</h3>
-        <ul>
-          <li>Respect des adversaires, arbitres et organisateurs en toutes circonstances</li>
-          <li>Tout comportement irrespectueux peut entraîner disqualification sans remboursement</li>
-          <li>Les décisions arbitrales sont définitives et sans appel</li>
-          <li>Un <strong>prix du fair-play</strong> sera attribué par vote des participants</li>
-          <li>Un <strong>prix du plus beau painting</strong> sera décerné</li>
-        </ul>
-      </div>
-      <div class="rule-block reveal">
-        <h3><span>🗣</span> Coaching</h3>
-        <ul>
-          <li>Le coaching entre coéquipiers est <strong>autorisé</strong> pendant la phase de pairing</li>
-          <li>Une fois la partie commencée, les conseils extérieurs doivent rester discrets et ne pas perturber le déroulement</li>
-          <li>L'arbitre peut interdire le coaching s'il crée des tensions ou ralentit le jeu</li>
-        </ul>
-      </div>
-      <div class="rule-block reveal">
-        <h3><span>⏱</span> Gestion du Temps</h3>
-        <ul>
-          <li>Les rondes doivent se dérouler dans le temps imparti</li>
-          <li>Toute partie non organisée compte 0/0 pour les deux joueurs</li>
-          <li>Les rondes se jouent en respectant scrupuleusement les créneaux horaires</li>
-          <li>Retard de départ : merci de respecter le temps consacré à chaque activité</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="rule-highlight reveal">
-      ⚔ En cas de litige non résolu entre joueurs, l'arbitre <strong>JB du Warfo</strong> tranche souverainement. Sa décision est définitive.
-    </div>
-
-    <div class="arbitre-card reveal">
-      <div class="arbitre-title">⚖ Arbitre Officiel</div>
-      <p><strong style="color:var(--gold);font-size:1.1rem">JB du Warfo</strong></p>
-      <p style="margin-top:.5rem">Arbitre expérimenté de la communauté Warhammer francophone</p>
-      <p style="margin-top:.5rem">Contact arbitrage : <span class="email-protected" onclick="revealEmail(this,'arbitre')" data-hint=" [cliquer pour afficher]">✉ jb [at] warhammer-forum</span></p>
-      <p style="margin-top:.5rem;font-style:italic;color:var(--parch-dk)">"Les règles sont au service du jeu, pas l'inverse."</p>
+    <div class="scroll reveal" style="margin-top:1.5rem">
+      <h3>🍽 Restauration</h3>
+      <p>La PAF de 65 € inclut <strong>2 petits-déjeuners</strong> (samedi & dimanche matin) et <strong>2 déjeuners</strong> (samedi & dimanche midi). Une <strong>buvette/snacking</strong> sera ouverte tout le week-end pour boissons et collations.</p>
+      <p>Le dîner du samedi soir est libre — restaurants et auberges sont disponibles à Mesnil-Saint-Père et autour du Lac d'Orient.</p>
     </div>
 
     <div style="text-align:center;margin-top:2rem">
-      <a href="https://newrecruit.eu" target="_blank" class="map-link">📋 Pack officiel complet sur NewRecruit</a>
+      <a href="https://www.newrecruit.eu/app/tournydetails/details?id=692b55e562dfaf774789302c" target="_blank" class="map-link">📋 Pack officiel complet sur NewRecruit</a>
     </div>
   </div>
   <footer>
-    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
-    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
   </footer>
 </div>
 
-<!-- ══════════════════════════════════════
-     PAGE : LIEU
-══════════════════════════════════════ -->
+<!-- AXE NARRATIF -->
+<div class="page" id="page-format-narratif">
+  <div class="section">
+    <h2 class="section-title">📜 Animation Narrative</h2>
+    <p class="section-sub">10 joueurs · animation Nimp'Games · scénarios immersifs</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <div class="format-tabs reveal">
+      <button class="fmt-tab" onclick="showPage('format-competitif')">⚔ Compétitif</button>
+      <button class="fmt-tab active" onclick="showPage('format-narratif')">📜 Narratif</button>
+      <button class="fmt-tab" onclick="showPage('format-libre')">🎲 Jeu Libre</button>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>📜 L'épopée narrative — un autre Vieux Monde</h3>
+      <p>Loin du fracas des points de victoire et de la pression du chronomètre, l'axe narratif de l'InterRégion 2026 propose <strong>une autre manière de jouer Warhammer : The Old World</strong>. Ici, on raconte des histoires.</p>
+      <p style="margin-top:.8rem">Chaque table est pensée comme une scène : décors thématiques, scénarios sur mesure, enjeux qui dépassent largement la victoire militaire. On y croise des sièges désespérés, des reliques convoitées, des duels d'honneur, des batailles de retraite où sauver ses troupes vaut plus que terrasser l'adversaire. Les listes d'armée sont taillées pour l'ambiance plus que pour l'optimisation, et les compositions « hors-méta » y sont les bienvenues — voire encouragées.</p>
+      <p style="margin-top:.8rem">Pas de classement final. Pas de scoring 6-0. Juste l'épopée, l'immersion, et la satisfaction de voir une partie devenir une histoire qu'on racontera longtemps.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🎬 Animé par Nimp'Games</h3>
+      <p>L'axe narratif est conçu et animé par <strong style="color:var(--gold)">Nimp'Games</strong>, créateurs de contenu Warhammer reconnus pour leur approche immersive et épique du hobby. Battle reports cinématographiques, scénarios narratifs, mises en scène léchées : ils ont fait du jeu narratif leur signature.</p>
+      <p style="margin-top:.8rem">Pour découvrir leur univers et leur ton avant l'événement, rendez-vous sur leur chaîne :</p>
+      <p style="margin-top:1rem;text-align:center">
+        <a href="https://www.youtube.com/@nimpgames" target="_blank" class="yt-btn">
+          <svg width="22" height="16" viewBox="0 0 24 17" fill="#FF0000" style="vertical-align:middle;margin-right:.5rem"><path d="M23.498 2.658a3.007 3.007 0 0 0-2.122-2.136C19.505.002 12 0 12 0S4.495.002 2.624.522A3.007 3.007 0 0 0 .502 2.658C0 4.541 0 8.5 0 8.5s0 3.959.502 5.842a3.007 3.007 0 0 0 2.122 2.136C4.495 16.998 12 17 12 17s7.505-.002 9.376-.522a3.007 3.007 0 0 0 2.122-2.136C24 12.459 24 8.5 24 8.5s0-3.959-.502-5.842zM9.546 12.123V4.877L15.818 8.5l-6.272 3.623z"/></svg>
+          youtube.com/@nimpgames
+        </a>
+      </p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>⚜ Ce qui vous attend</h3>
+      <ul>
+        <li><strong>Scénarios narratifs sur mesure</strong> écrits par Nimp'Games pour l'événement</li>
+        <li><strong>Tables thématiques décorées</strong> — sièges, ruines, ports, forêts hantées</li>
+        <li><strong>Animation continue</strong> par Nimp'Games le samedi et dimanche</li>
+        <li><strong>Pas de classement</strong> — l'expérience est l'objectif</li>
+        <li><strong>Prix peinture & roleplay</strong> attribués par les animateurs</li>
+        <li><strong>Listes flexibles</strong> — venez avec vos thèmes, vos ambiances, vos persos préférés</li>
+        <li><strong>Idéal pour ceux qui veulent jouer pour le plaisir de raconter</strong></li>
+      </ul>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:1.5rem;text-align:center">
+      <h3>🎨 Une expérience qualitative au-dessus du compétitif</h3>
+      <p style="font-style:italic">Le narratif n'est pas un sous-format. C'est un autre angle — celui où le hobby retrouve son geste fondateur : raconter des histoires avec des figurines, des dés, et des amis autour de la table.</p>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+  </footer>
+</div>
+
+<!-- AXE JEU LIBRE -->
+<div class="page" id="page-format-libre">
+  <div class="section">
+    <h2 class="section-title">🎲 Jeu Libre</h2>
+    <p class="section-sub">50 joueurs · de beaux décors · entre deux bières</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <div class="format-tabs reveal">
+      <button class="fmt-tab" onclick="showPage('format-competitif')">⚔ Compétitif</button>
+      <button class="fmt-tab" onclick="showPage('format-narratif')">📜 Narratif</button>
+      <button class="fmt-tab active" onclick="showPage('format-libre')">🎲 Jeu Libre</button>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:2rem;text-align:center">
+      <h3>🎲 Que du plaisir, que du fun</h3>
+      <p style="font-size:1.05rem;line-height:1.8">Jouer dans de beaux décors, avec des armées diverses et variées, quand vous voulez, <strong style="color:var(--gold)">entre deux bières</strong>. Aucune partie coupée. <strong>Que du plaisir et du fun.</strong></p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🍻 L'esprit du Jeu Libre</h3>
+      <p>Pas de chronomètre. Pas de classement. Pas de ronde imposée. L'axe Jeu Libre, c'est le hobby dans sa forme la plus simple et la plus joyeuse : on s'installe à une table, on déploie ses figurines, on joue, on rit, on remet ça.</p>
+      <p style="margin-top:.8rem">C'est aussi l'endroit où on retrouve les copains qu'on n'a pas vus depuis le dernier tournoi, où on initie un débutant à TOW, où on teste cette liste qu'on n'osait pas sortir en compétition, ou tout simplement où on prend le temps de finir tranquillement la partie sans le stress du tableau de scoring.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🎨 De beaux décors, des armées variées</h3>
+      <ul>
+        <li><strong>Tables disponibles tout le week-end</strong> — samedi & dimanche, vous gérez votre rythme</li>
+        <li><strong>Décors soignés</strong> mis à disposition par l'asso Les Stratèges du Vieux Monde</li>
+        <li><strong>Toutes les armées bienvenues</strong> — peu importe la faction, le thème ou le niveau de peinture</li>
+        <li><strong>Tous les formats</strong> — 1 000 pts, 1 500, 2 000, 2 500, scénarios spéciaux, parties à plusieurs joueurs</li>
+        <li><strong>Parties amicales & démonstrations</strong> — initiation aux nouveaux venus assurée par les bénévoles</li>
+        <li><strong>Aucune partie coupée</strong> — vous prenez le temps qu'il faut</li>
+      </ul>
+    </div>
+
+    <div class="scroll reveal" style="text-align:center">
+      <h3>🍺 Pour qui ?</h3>
+      <p>Pour les <strong>accompagnateurs</strong> qui viennent avec un compétiteur et veulent jouer aussi.<br>
+      Pour les <strong>débutants</strong> qui veulent découvrir TOW dans une ambiance détendue.<br>
+      Pour les <strong>vétérans</strong> qui ont fait trop de tournois et veulent juste profiter.<br>
+      Pour <strong>tous ceux qui aiment Warhammer pour ce qu'il est</strong> — un beau jeu, entre amis, autour d'une table.</p>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+  </footer>
+</div>
+
+
+<!-- LIEU -->
 <div class="page" id="page-lieu">
   <div class="section">
     <h2 class="section-title">Le Lieu</h2>
-    <p class="section-sub">⚜ Château de Vaux · Aube (10) ⚜</p>
+    <p class="section-sub">⚜ Maison des Lacs · Mesnil-Saint-Père · Lac d'Orient ⚜</p>
     <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
 
-    <!-- Castle Visual -->
-    <div class="chateau-visual reveal">
-      <div class="chateau-sky"></div>
-      <!-- Stars -->
-      <svg class="chateau-stars" viewBox="0 0 800 130" preserveAspectRatio="xMidYMid slice">
-        <circle cx="50" cy="20" r="1" fill="white" opacity=".6"/><circle cx="120" cy="40" r="1.5" fill="white" opacity=".5"/><circle cx="200" cy="15" r="1" fill="white" opacity=".7"/><circle cx="300" cy="35" r="1" fill="white" opacity=".4"/><circle cx="400" cy="10" r="1.5" fill="white" opacity=".6"/><circle cx="500" cy="30" r="1" fill="white" opacity=".5"/><circle cx="600" cy="18" r="1" fill="white" opacity=".7"/><circle cx="700" cy="42" r="1.5" fill="white" opacity=".4"/><circle cx="750" cy="12" r="1" fill="white" opacity=".6"/><circle cx="80" cy="60" r="1" fill="white" opacity=".3"/><circle cx="160" cy="75" r="1" fill="white" opacity=".5"/><circle cx="250" cy="55" r="1.5" fill="white" opacity=".4"/><circle cx="350" cy="80" r="1" fill="white" opacity=".6"/><circle cx="450" cy="65" r="1" fill="white" opacity=".3"/><circle cx="550" cy="85" r="1" fill="white" opacity=".5"/><circle cx="650" cy="58" r="1.5" fill="white" opacity=".4"/>
-        <!-- Moon -->
-        <circle cx="680" cy="28" r="18" fill="#F5E8C0" opacity=".15"/>
-        <circle cx="688" cy="24" r="15" fill="#1A2A3A" opacity=".85"/>
-      </svg>
-      <!-- Castle Silhouette SVG -->
-      <svg class="chateau-silhouette" viewBox="0 0 800 200" preserveAspectRatio="xMidYMax slice">
-        <!-- Ground -->
-        <rect x="0" y="170" width="800" height="30" fill="#0A0806"/>
-        <!-- Hills -->
-        <ellipse cx="150" cy="175" rx="200" ry="30" fill="#0F0C09"/>
-        <ellipse cx="650" cy="178" rx="180" ry="25" fill="#0F0C09"/>
-        <!-- Main body of castle -->
-        <rect x="280" y="100" width="240" height="75" fill="#1A1410"/>
-        <!-- Left tower -->
-        <rect x="240" y="70" width="55" height="105" fill="#1E1810"/>
-        <!-- Left tower battlements -->
-        <rect x="240" y="60" width="12" height="18" fill="#1E1810"/>
-        <rect x="256" y="60" width="12" height="18" fill="#1E1810"/>
-        <rect x="272" y="60" width="12" height="18" fill="#1E1810"/>
-        <rect x="240" y="70" width="55" height="5" fill="#2A2018"/>
-        <!-- Right tower -->
-        <rect x="505" y="70" width="55" height="105" fill="#1E1810"/>
-        <!-- Right tower battlements -->
-        <rect x="505" y="60" width="12" height="18" fill="#1E1810"/>
-        <rect x="521" y="60" width="12" height="18" fill="#1E1810"/>
-        <rect x="537" y="60" width="12" height="18" fill="#1E1810"/>
-        <rect x="505" y="70" width="55" height="5" fill="#2A2018"/>
-        <!-- Center tower (taller) -->
-        <rect x="355" y="40" width="90" height="135" fill="#201A14"/>
-        <!-- Center battlements -->
-        <rect x="355" y="28" width="14" height="20" fill="#201A14"/>
-        <rect x="373" y="28" width="14" height="20" fill="#201A14"/>
-        <rect x="391" y="28" width="14" height="20" fill="#201A14"/>
-        <rect x="409" y="28" width="14" height="20" fill="#201A14"/>
-        <rect x="427" y="28" width="14" height="20" fill="#201A14"/>
-        <rect x="355" y="40" width="90" height="5" fill="#2A2018"/>
-        <!-- Main body battlements -->
-        <rect x="285" y="92" width="10" height="14" fill="#1A1410"/>
-        <rect x="299" y="92" width="10" height="14" fill="#1A1410"/>
-        <rect x="313" y="92" width="10" height="14" fill="#1A1410"/>
-        <rect x="327" y="92" width="10" height="14" fill="#1A1410"/>
-        <rect x="456" y="92" width="10" height="14" fill="#1A1410"/>
-        <rect x="470" y="92" width="10" height="14" fill="#1A1410"/>
-        <rect x="484" y="92" width="10" height="14" fill="#1A1410"/>
-        <rect x="498" y="92" width="10" height="14" fill="#1A1410"/>
-        <!-- Gate arch -->
-        <rect x="370" y="135" width="60" height="40" fill="#0A0806"/>
-        <ellipse cx="400" cy="135" rx="30" ry="12" fill="#0A0806"/>
-        <!-- Windows lit gold -->
-        <rect x="260" y="95" width="14" height="18" rx="7" fill="rgba(201,168,76,0.2)"/>
-        <rect x="525" y="95" width="14" height="18" rx="7" fill="rgba(201,168,76,0.2)"/>
-        <rect x="375" y="65" width="14" height="20" rx="7" fill="rgba(201,168,76,0.25)"/>
-        <rect x="410" y="65" width="14" height="20" rx="7" fill="rgba(201,168,76,0.25)"/>
-        <rect x="310" y="118" width="12" height="16" rx="6" fill="rgba(201,168,76,0.15)"/>
-        <rect x="475" y="118" width="12" height="16" rx="6" fill="rgba(201,168,76,0.15)"/>
-        <!-- Wall left -->
-        <rect x="100" y="140" width="140" height="35" fill="#141008"/>
-        <rect x="100" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="118" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="136" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="154" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="172" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="190" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="208" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="226" y="133" width="14" height="12" fill="#141008"/>
-        <!-- Wall right -->
-        <rect x="560" y="140" width="140" height="35" fill="#141008"/>
-        <rect x="560" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="578" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="596" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="614" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="632" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="650" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="668" y="133" width="14" height="12" fill="#141008"/>
-        <rect x="686" y="133" width="14" height="12" fill="#141008"/>
-        <!-- Gold glow on windows -->
-        <rect x="260" y="95" width="14" height="18" rx="7" fill="rgba(201,168,76,0.1)" filter="url(#glow)"/>
-        <defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      </svg>
-      <div class="chateau-label">
-        <h3>Château de Vaux</h3>
-        <p>Aube (10) · France</p>
-      </div>
+    <!-- Vue aerienne reelle du Centre Sportif de l'Aube -->
+    <div class="lac-visual reveal" style="position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--gold-d);box-shadow:0 8px 30px rgba(0,0,0,0.6);margin-bottom:2rem">
+      <img src="mesnil_panorama_clean.png" alt="Vue aerienne du Centre Sportif de l'Aube - Cote Mesnil-Saint-Pere" style="width:100%;display:block;height:auto" loading="lazy" onerror="this.parentElement.innerHTML='<div style=&quot;height:280px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1B4A5A,#0F2530);color:var(--parch-dk);font-family:Cinzel,serif;text-align:center;padding:1rem&quot;>Maison des Lacs<br><small>Mesnil-Saint-Père · Aube (10)</small></div>'">
     </div>
 
     <div class="scroll reveal">
-      <h3>🏰 Un Cadre d'Exception</h3>
-      <p>Le tournoi se tiendra au <strong>Château de Vaux</strong>, demeure aristocratique nichée au cœur de la campagne auboise. Ce lieu chargé d'histoire offre un cadre parfaitement en accord avec l'univers de Warhammer: The Old World — pierres séculaires, grandes salles et atmosphère médiévale garantie.</p>
-      <p>La capacité d'accueil permet de recevoir l'ensemble des 48 participants dans d'excellentes conditions, avec des espaces dédiés aux tables de jeu, à la restauration et à la convivialité.</p>
+      <h3>🏞 Un Cadre d'Exception</h3>
+      <p>Le tournoi se tiendra à la <strong>Maison des Lacs</strong> du Centre Sportif de l'Aube, à <strong>Mesnil-Saint-Père</strong>, village emblématique du Parc Naturel Régional de la Forêt d'Orient. Niché au bord du <strong>Lac d'Orient</strong> (3e plus grand lac artificiel de France), le site offre une salle multi-usages de <strong>1 000 m²</strong> — bien au-delà de nos besoins (750 m² cibles) — et un cadre lacustre exceptionnel.</p>
+      <p>À 25 km de Troyes, le village de 467 habitants conjugue port de plaisance, plage, sentiers de randonnée et patrimoine local. Un écrin parfait pour un week-end de jeu prolongé.</p>
     </div>
 
     <div class="lieu-features reveal">
-      <div class="lieu-feat"><span class="lieu-feat-icon">⚔</span><div class="lieu-feat-text"><h4>Salle de Jeu</h4><p>Grande salle accueillant 16 tables de jeu simultanément</p></div></div>
-      <div class="lieu-feat"><span class="lieu-feat-icon">🍽</span><div class="lieu-feat-text"><h4>Restauration</h4><p>Repas du midi samedi, soirée samedi et dimanche midi inclus</p></div></div>
-      <div class="lieu-feat"><span class="lieu-feat-icon">🛏</span><div class="lieu-feat-text"><h4>Hébergement</h4><p>Nuit du samedi sur place incluse dans le PAF</p></div></div>
-      <div class="lieu-feat"><span class="lieu-feat-icon">🚗</span><div class="lieu-feat-text"><h4>Accès & Parking</h4><p>Parking gratuit sur place, accès A5 / A26</p></div></div>
-      <div class="lieu-feat"><span class="lieu-feat-icon">🌿</span><div class="lieu-feat-text"><h4>Parc & Jardins</h4><p>Espace extérieur pour les pauses entre rondes</p></div></div>
-      <div class="lieu-feat"><span class="lieu-feat-icon">📶</span><div class="lieu-feat-text"><h4>Connexion</h4><p>Wi-Fi disponible pour les listes et le suivi NewRecruit</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🏟</span><div class="lieu-feat-text"><h4>Salle 1 000 m²</h4><p>Multi-usages, capacité &gt; 60 tables, équipements sportifs intégrés</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🍽</span><div class="lieu-feat-text"><h4>Restauration</h4><p>2 petits-déj + 2 déjeuners inclus dans la PAF · buvette sur place</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🛏</span><div class="lieu-feat-text"><h4>Hébergement sur place</h4><p>Maison des Lacs — chambres au sein même du Centre Sportif <em style="color:var(--gold-d);font-size:.8em">(à confirmer)</em>, complétées par hôtels et gîtes à Mesnil-Saint-Père</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🚗</span><div class="lieu-feat-text"><h4>Accès & Parking</h4><p>Parking gratuit · 25 min de Troyes · A5/A26 à proximité</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🌲</span><div class="lieu-feat-text"><h4>Parc Naturel</h4><p>Forêt d'Orient · sentiers · plage · port de plaisance à 5 min</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🎲</span><div class="lieu-feat-text"><h4>Espaces dédiés</h4><p>Tournoi compétitif · animation narrative · jeu libre · convivialité</p></div></div>
     </div>
+
+    <p style="font-size:.78rem;color:var(--parch-dk);font-style:italic;text-align:center;margin-top:.5rem">Vue aérienne © VIP Studio 360 / Centre Sportif de l'Aube — l'événement aura lieu dans la salle multi-usages 1 000 m² du Centre Sportif.</p>
 
     <div class="scroll reveal">
       <h3>📍 Comment Nous Rejoindre</h3>
-      <p><strong style="color:var(--gold)">Château de Vaux</strong> — Aube (10) — France</p>
-      <p style="margin-top:.8rem">Depuis Paris : ~1h30 par l'A5 direction Troyes, puis départementales.</p>
-      <p>Depuis Troyes : ~20 min. Gare SNCF de Troyes disponible.</p>
-      <p style="margin-top:.8rem;color:var(--parch-dk);font-style:italic">L'adresse précise et les instructions d'accès seront communiquées aux équipes inscrites après confirmation du paiement.</p>
+      <p><strong style="color:var(--gold)">Maison des Lacs</strong> — Centre Sportif de l'Aube — Côté Lacs</p>
+      <p>10140 Mesnil-Saint-Père · Aube · Grand Est</p>
+      <p style="margin-top:.8rem"><strong>Depuis Paris</strong> : ~2h par l'A5 direction Troyes · sortie Lusigny-sur-Barse</p>
+      <p><strong>Depuis Troyes</strong> : 25 min par la D960 · gare SNCF de Troyes (puis covoiturage proposé)</p>
+      <p><strong>GPS</strong> : 48.2700° N · 4.3556° E (approximatif)</p>
+      <p style="margin-top:.8rem;color:var(--parch-dk);font-style:italic">Adresse précise et plan d'accès communiqués aux participants après confirmation.</p>
     </div>
     <div style="text-align:center;margin-top:1rem">
-      <a href="https://www.google.com/maps/search/Château+de+Vaux+Aube" target="_blank" class="map-link">🗺 Voir sur Google Maps</a>
+      <a href="https://www.google.com/maps/search/Maison+des+Lacs+Mesnil-Saint-Père" target="_blank" class="map-link">🗺 Voir sur Google Maps</a>
+      <a href="https://www.centre-sportif-aube.fr/974-lac-d-orient-port-mesnil.htm" target="_blank" class="map-link">🏟 Centre Sportif de l'Aube</a>
     </div>
   </div>
   <footer>
-    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
-    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
   </footer>
 </div>
 
-<!-- ══════════════════════════════════════
-     PAGE : ASSOCIATION
-══════════════════════════════════════ -->
+<!-- ASSOCIATION -->
 <div class="page" id="page-association">
   <div class="section">
-    <h2 class="section-title">Notre Association</h2>
-    <p class="section-sub">⚔ Les Stratèges du Vieux Monde ⚔</p>
+    <h2 class="section-title">Les Organisateurs</h2>
+    <p class="section-sub">⚔ Fédération France TOW × Stratèges du Vieux Monde × Nimp'Games ⚔</p>
     <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
-    <p class="assoc-intro">Fondée dans l'Aube, Les Stratèges du Vieux Monde réunit des passionnés de jeux de figurines autour d'une même flamme : la camaraderie, le fair-play et le plaisir de peindre et jouer ensemble.</p>
-    <div class="scroll reveal">
-      <h3>🏰 Qui Sommes-Nous ?</h3>
-      <p>Basée à <strong>Ruvigny, Aube (10)</strong>, notre association loi 1901 rassemble des joueurs de tous niveaux. Nous organisons des soirées de jeu régulières, des tournois internes et participons aux événements de la communauté Warhammer francophone.</p>
-      <p style="margin-top:.8rem">Notre tournoi <em>The Old World 2026</em> représente notre première organisation d'un événement compétitif d'envergure régionale, en co-organisation avec les Tricasses French Hammer.</p>
+
+    <p class="assoc-intro">L'InterRégion 2026 est portée par trois acteurs complémentaires de la communauté Warhammer : The Old World francophone — la <strong>Fédération France The Old World</strong> (porteur national & sportif), <strong>Les Stratèges du Vieux Monde</strong> (organisateur local & juridique) et <strong>Nimp'Games</strong> (animation narrative).</p>
+
+    <div class="partners-grid reveal">
+      <div class="partner-card">
+        <div class="partner-role">★ Porteur National ★</div>
+        <h3>Fédération France<br>The Old World</h3>
+        <p>Réseau national des joueurs et clubs Warhammer: The Old World. Garante du format InterRégion, du règlement sportif et du classement national. Apporte son réseau de bénévoles, son expertise compétitive et la légitimité historique héritée des grandes InterRégions de Battle.</p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">Organisateur local</div>
+        <h3>Les Stratèges<br>du Vieux Monde</h3>
+        <p>Association loi 1901 basée à Ruvigny (Aube). Hôte de l'édition 2026, porte tous les contrats locaux (lieu, prestataires, assurance) et la responsabilité civile de l'événement. Pilote l'axe Jeu Libre.</p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">Animation narrative</div>
+        <h3>Nimp'Games</h3>
+        <p>Intervenant spécialisé en jeu narratif Warhammer. Conçoit les scénarios, anime les tables thématiques et garantit une expérience immersive sur l'axe narratif.</p>
+      </div>
     </div>
-    <div class="photo-grid reveal">
-      <div class="photo-item">
-        <img src="./photos/tournoi1.jpg" alt="Tournoi The Old World" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="photo-placeholder" style="display:none">📸 Photo à venir</div>
-      </div>
-      <div class="photo-item">
-        <img src="./photos/tournoi2.jpg" alt="Tournoi The Old World" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="photo-placeholder" style="display:none">📸 Photo à venir</div>
-      </div>
-      <div class="photo-item">
-        <img src="./photos/tournoi3.jpg" alt="Tournoi The Old World" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="photo-placeholder" style="display:none">📸 Photo à venir</div>
-      </div>
-    </div>
+
     <div class="scroll reveal">
-      <h3>⚔ Nos Jeux</h3>
-      <p>Les membres jouent principalement à <strong>Warhammer: The Old World</strong>, mais notre passion s'étend à tout l'univers Warhammer et aux jeux de figurines en général.</p>
+      <h3>⚜ Fédération France The Old World</h3>
+      <p>Réseau national des clubs et joueurs <em>Warhammer: The Old World</em>. Héritière de l'esprit des grandes <strong>InterRégions Battle</strong>, la Fédération France TOW a pour mission de fédérer la communauté française autour d'un calendrier compétitif structuré et d'un format de tournoi de référence.</p>
+      <p style="margin-top:.8rem">L'<strong>InterRégion 2026</strong> est sa deuxième édition sous l'étendard The Old World — un événement national hébergé pour cette saison par l'association Les Stratèges du Vieux Monde dans l'Aube.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🏰 Les Stratèges du Vieux Monde — Hôte 2026</h3>
+      <p>Basée à <strong>Ruvigny, Aube (10)</strong>, notre association loi 1901 rassemble des passionnés de jeux de figurines de tous niveaux. Nous organisons des soirées de jeu régulières, des tournois internes et participons aux événements de la communauté Warhammer francophone.</p>
+      <p style="margin-top:.8rem">Hôtes de l'<strong>InterRégion 2026</strong>, nous sommes fiers d'accueillir cette deuxième édition au cœur du Parc Naturel Régional de la Forêt d'Orient, en partenariat avec la Fédération France The Old World.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>⚔ Nos Armées</h3>
+      <p>Les membres jouent à Warhammer: The Old World et représentent l'ensemble des factions du Vieux Monde :</p>
     </div>
     <div class="army-badges reveal">
       <span class="army-badge">🐉 Hauts Elfes</span><span class="army-badge">💀 Comtes Vampires</span><span class="army-badge">🗡 Empire</span><span class="army-badge">🧙 Elfes Sylvains</span><span class="army-badge">⚒ Nains</span><span class="army-badge">🌑 Guerriers du Chaos</span><span class="army-badge">🐗 Orques & Gobelins</span><span class="army-badge">☀ Rois des Tombes</span><span class="army-badge">🔥 Légions du Chaos</span><span class="army-badge">🛡 Bretonniens</span>
     </div>
-    <div class="bb-banner reveal">
-      <span class="bb-icon">🏈</span>
-      <div class="bb-text">
-        <h3>Blood Bowl — Section Active !</h3>
-        <p>L'association possède également une section <strong>Blood Bowl</strong> très active, avec des ligues internes et des participations aux tournois régionaux. Rejoignez-nous pour le sport le plus violent du Vieux Monde !</p>
-      </div>
-    </div>
+
     <div class="scroll reveal" style="margin-top:2rem">
       <h3>📬 Nous Rejoindre</h3>
       <p>Passionné(e) de jeux de figurines dans l'Aube ? Contactez-nous !</p>
       <p style="margin-top:.8rem">
-        ✉ <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">contact de l'organisation</span><br>
+        <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button><br>
         💬 <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" style="color:#9BA8FF">discord.gg/Q9y9v8EgqZ</a><br>
         📍 Ruvigny, Aube (10)
       </p>
     </div>
   </div>
   <footer>
-    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
-    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
   </footer>
 </div>
 
-<!-- ══════════════════════════════════════
-     PAGE : INSCRIPTIONS
-══════════════════════════════════════ -->
+<!-- INSCRIPTIONS -->
 <div class="page" id="page-inscriptions">
   <div class="section">
     <h2 class="section-title">Inscriptions</h2>
-    <p class="section-sub">⚔ Rejoignez la Bataille ⚔</p>
+    <p class="section-sub">⚔ Rejoindre l'Event ⚔</p>
     <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
 
     <div class="price-card reveal">
-      <div class="price-amount">195 €</div>
-      <div class="price-unit">par joueur</div>
+      <div class="price-amount">65 €</div>
+      <div class="price-unit">par participant · tout compris</div>
       <ul class="price-includes">
-        <li>2 jours de tournoi compétitif (4 rondes)</li>
+        <li>2 jours d'événement (samedi 7 + dimanche 8 nov)</li>
+        <li>Accès aux 3 axes : compétitif / narratif / jeu libre</li>
+        <li>2 petits-déjeuners (samedi & dimanche matin)</li>
+        <li>2 déjeuners (samedi & dimanche midi)</li>
         <li>Café de bienvenue le samedi matin</li>
-        <li>Repas du samedi midi inclus</li>
-        <li>Soirée conviviale du samedi (activités + collations)</li>
-        <li>Repas du dimanche midi inclus</li>
-        <li>Hébergement sur place — nuit du samedi</li>
-        <li>Accès aux tables, décors fournis</li>
-        <li>Lots et prix pour tous les participants</li>
+        <li>Tables, décors et matériel de jeu fournis</li>
+        <li>Goodies de bienvenue (pack 120 packs)</li>
+        <li>Lots et trophées (offerts par nos partenaires sponsors)</li>
       </ul>
+      <p style="font-size:.8rem;color:var(--parch-dk);font-style:italic;margin-top:.5rem">Hébergement et dîner du samedi soir non inclus — voir page Lieu pour les options sur place.</p>
     </div>
 
     <div class="deadline-box reveal">
       <strong>Date limite d'inscription & paiement :</strong> 1er octobre 2026<br>
-      <strong>Date limite d'envoi des listes :</strong> 31 octobre 2026 à minuit<br>
+      <strong>Date limite d'envoi des listes (compétitif) :</strong> 31 octobre 2026 à minuit<br>
       <span style="font-size:.8rem;color:var(--parch-dk)">Listes saisies sur la page NewRecruit du tournoi</span>
     </div>
 
     <div class="inscr-btns reveal">
+      <a href="https://www.newrecruit.eu/app/tournydetails/details?id=692b55e562dfaf774789302c" target="_blank" class="btn-newrecruit">📋 S'inscrire via NewRecruit</a>
       <a id="paypal-btn" href="#" class="btn-paypal" onclick="openPaypal(event)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.067 8.478c.492.315.844.825.986 1.495.28 1.335-.357 2.82-1.587 3.49-.6.33-1.308.496-2.137.496H15.7l-.51 3.24H12.9l1.7-10.8h3.54c1.056 0 1.6.19 1.927.58z"/><path d="M6.31 6.9h4.33c1.055 0 1.944.14 2.66.42.716.28 1.25.7 1.596 1.26.347.56.52 1.25.52 2.07 0 .28-.024.56-.073.84-.254 1.47-.95 2.63-2.09 3.48-1.14.85-2.6 1.27-4.38 1.27H7.38L6.31 6.9zM16.7 3.6H9.56L7.2 18h3.4l.51-3.24h1.63c1.78 0 3.24-.42 4.38-1.27 1.14-.85 1.836-2.01 2.09-3.48.05-.28.073-.56.073-.84 0-.82-.173-1.51-.52-2.07-.346-.56-.88-.98-1.596-1.26C13.944 5.42 13.055 5.42 12 5.42H8.47L8.06 3.6z"/></svg>
         Payer par PayPal
       </a>
-      <a href="https://newrecruit.eu" target="_blank" class="btn-newrecruit">📋 S'inscrire via NewRecruit</a>
     </div>
 
     <p class="inscr-note reveal">
-      Pour le paiement PayPal, envoyez 195 € à l'adresse de l'organisation<br>
-      (<span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ afficher l'adresse PayPal</span>)<br>
-      avec la mention : <em>"Tournoi TOW 2026 — [Nom équipe] — [Votre nom]"</em>
+      Pour le paiement PayPal, envoyez le montant à l'adresse ci-dessous :<br>
+      <button class="btn-contact" style="margin:.4rem 0" onclick="copyMail('contact', this)">📋 Copier l'adresse PayPal</button><br>
+      Mention obligatoire : <em>"Tournoi TOW 2026 — [Axe choisi] — [Votre nom]"</em>
     </p>
+
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>🎯 Choisir son axe</h3>
+      <p>Lors de l'inscription, vous précisez votre axe principal :</p>
+      <ul>
+        <li><strong style="color:var(--gold)">Compétitif</strong> — par équipes de 5, listes 2 000 pts (places limitées : 60)</li>
+        <li><strong style="color:var(--gold)">Narratif</strong> — animation Nimp'Games (places limitées : 10)</li>
+        <li><strong style="color:var(--gold)">Jeu libre</strong> — accès libre tout le week-end (50 places)</li>
+      </ul>
+      <p style="margin-top:.8rem;font-size:.85rem;color:var(--parch-dk)">Les passages d'un axe à l'autre sont possibles selon la disponibilité des tables — la PAF reste identique quel que soit l'axe choisi.</p>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>🏨 Hébergement</h3>
+      <p>L'hébergement n'est pas inclus dans la PAF. Plusieurs options sur place :</p>
+      <ul>
+        <li><strong>Centre Sportif de l'Aube</strong> — Résidence Côté Lacs sur place (réservation directe)</li>
+        <li><strong style="color:var(--gold)">Maison des Lacs — sur place</strong> : possibilité d'hébergement directement au sein du Centre Sportif de l'Aube <em style="color:var(--gold-d);font-size:.85em">(option en cours de confirmation)</em></li>
+        <li><strong>Hôtels & gîtes</strong> à Mesnil-Saint-Père et autour du Lac d'Orient</li>
+        <li><strong>Camping</strong> au bord du lac (saisonnier)</li>
+        <li><strong>Hôtels Troyes</strong> à 25 min en voiture (~85€/nuit)</li>
+      </ul>
+      <p style="margin-top:.8rem;font-size:.85rem;color:var(--parch-dk)">Une page dédiée avec liens directs sera communiquée aux inscrits.</p>
+    </div>
 
     <div class="scroll reveal" style="margin-top:2rem">
       <h3>ℹ Politique de Remboursement</h3>
       <ul>
-        <li><strong style="color:var(--gold)">Remboursement 100%</strong> pour toute annulation avant le <strong>7 octobre 2026</strong> (1 mois avant l'événement)</li>
-        <li>Remboursement à 50% entre le 7 et le 31 octobre 2026</li>
+        <li><strong style="color:var(--gold)">Remboursement 100%</strong> avant le 7 octobre 2026 (1 mois avant l'événement)</li>
+        <li>Remboursement 50% entre le 7 et le 31 octobre 2026</li>
         <li>Aucun remboursement après le 31 octobre 2026</li>
-        <li>Transfert d'inscription à un autre joueur possible jusqu'au 31 octobre</li>
-        <li>La confirmation d'inscription vous sera envoyée par email sous 48h après réception du paiement</li>
+        <li>Transfert d'inscription possible jusqu'au 31 octobre</li>
+        <li>Confirmation envoyée par email sous 48h après réception du paiement</li>
       </ul>
     </div>
 
@@ -834,41 +906,39 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     </a>
   </div>
   <footer>
-    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
-    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
   </footer>
 </div>
 
-<!-- ══════════════════════════════════════
-     PAGE : SPONSORS
-══════════════════════════════════════ -->
+<!-- SPONSORS -->
 <div class="page" id="page-sponsors">
   <div class="section">
     <h2 class="section-title">Nos Partenaires</h2>
-    <p class="section-sub">⚜ Soutenir le Tournoi ⚜</p>
+    <p class="section-sub">⚜ Soutenir l'Event ⚜</p>
     <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
-    <p class="sponsor-intro">Notre tournoi réunit 48 passionnés de Warhammer pour un week-end inoubliable. Associez votre nom à cet événement compétitif et soutenez toute une communauté.</p>
+    <p class="sponsor-intro">L'<strong>InterRégion 2026</strong> réunit 120 passionnés de Warhammer pour un week-end inoubliable au cœur du Parc Naturel Régional de la Forêt d'Orient. Deuxième édition sous l'étendard The Old World, l'événement s'inscrit dans l'héritage des grandes InterRégions de l'âge d'or de Battle. Associez votre nom à cet événement national de référence.</p>
     <div class="sponsor-tiers reveal">
       <div class="sponsor-tier gold">
         <h3>⚜ Mécène Dragon d'Or</h3>
         <div class="price-tag">À PARTIR DE 500 €</div>
         <ul>
-          <li>Logo en grand format sur la bannière d'entrée</li>
-          <li>Mentions sur toutes les communications (site, Discord, réseaux)</li>
-          <li>Stand ou table d'exposition pendant le tournoi</li>
+          <li>Logo grand format sur la bannière d'entrée</li>
+          <li>Mentions sur toutes les communications</li>
+          <li>Stand ou table d'exposition pendant l'event</li>
           <li>Présentation orale lors de la remise des prix</li>
           <li>Logo sur les lots remis aux vainqueurs</li>
-          <li>Invitation VIP pour 2 personnes</li>
+          <li>Invitation au repas de clôture</li>
         </ul>
       </div>
       <div class="sponsor-tier silver">
         <h3>🗡 Chevalier Argent</h3>
         <div class="price-tag">À PARTIR DE 200 €</div>
         <ul>
-          <li>Logo sur la bannière de salle de jeu</li>
-          <li>Mention sur le site et le Discord officiel</li>
-          <li>Flyers ou goodies inclus dans les lots participants</li>
+          <li>Logo sur la bannière de salle</li>
+          <li>Mention sur le site et le Discord</li>
+          <li>Flyers ou goodies dans les lots participants</li>
           <li>Remerciements lors de la remise des prix</li>
         </ul>
       </div>
@@ -878,125 +948,122 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
         <ul>
           <li>Mention sur le site web officiel</li>
           <li>Mention sur le Discord de l'association</li>
-          <li>Remerciements en début d'événement</li>
+          <li>Remerciements lors de la remise des lots</li>
         </ul>
       </div>
     </div>
     <div class="scroll reveal" style="margin-top:2rem">
       <h3>🎁 Partenariat en Nature</h3>
-      <p>Vous préférez offrir des lots ou du matériel ? Vos dons seront intégrés aux prix du tournoi avec mention de votre enseigne.</p>
+      <p>Vous préférez offrir des lots ou du matériel ? Vos dons seront intégrés aux prix de l'event avec mention de votre enseigne.</p>
       <ul>
         <li>Figurines, peintures, décors de jeu</li>
-        <li>Bon d'achat boutique ou abonnements</li>
+        <li>Bons d'achat boutique ou abonnements</li>
         <li>Hébergement ou repas pris en charge</li>
       </ul>
     </div>
     <div class="sponsor-contact reveal">
       <p>Pour toute demande de partenariat :</p>
       <p><strong style="color:var(--gold)">Jean-Sébastien Lefèvre</strong> — Président, Les Stratèges du Vieux Monde</p>
-      <p>✉ <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">contact de l'organisation</span></p>
+      <p><button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
       <p>💬 <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" style="color:#9BA8FF">discord.gg/Q9y9v8EgqZ</a></p>
       <p style="margin-top:1rem;font-style:italic;color:var(--parch-dk)">"Chaque soutien contribue à forger la légende de cet événement."</p>
     </div>
   </div>
   <footer>
-    <div class="footer-brand">⚔ Les Stratèges du Vieux Monde ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('reglement')">Règlement</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
-    <p>Contact : <span class="email-protected" onclick="revealEmail(this,'contact')" data-hint=" [cliquer pour afficher]">✉ contact de l'organisation</span></p>
+    <div class="footer-brand">⚔ InterRégion 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Association</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
   </footer>
 </div>
 
-<!-- ══════════════════════════════════════ SCRIPTS ══════════════════════════════════════ -->
 <script>
-/* ── EMAIL ANTI-SPAM ── */
-// Adresses stockées en morceaux, jamais en clair dans le HTML
 const _em = {
   contact: ['elladriel','hotmail','com'],
   arbitre: ['jb','warhammer-forum','com']
 };
-function revealEmail(el, key) {
+function openMail(key) {
   const p = _em[key];
-  const addr = p[0] + '\u0040' + p[1] + '.' + p[2];
-  el.textContent = addr;
-  el.style.cursor = 'default';
-  el.setAttribute('data-hint','');
-  // Also update PayPal button if contact
-  if (key === 'contact') {
-    const btn = document.getElementById('paypal-btn');
-    if (btn) btn.href = 'https://www.paypal.com/paypalme/' + p[0];
-  }
+  window.location.href = 'mailto:' + p[0] + '@' + p[1] + '.' + p[2];
+}
+function copyMail(key, btn) {
+  const p = _em[key];
+  const addr = p[0] + '@' + p[1] + '.' + p[2];
+  navigator.clipboard.writeText(addr).then(function() {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copié !';
+    btn.style.background = 'rgba(80,180,80,0.2)';
+    btn.style.borderColor = 'rgba(80,180,80,0.6)';
+    setTimeout(function(){ btn.innerHTML = orig; btn.style.background = ''; btn.style.borderColor = ''; }, 2000);
+  });
 }
 function openPaypal(e) {
   e.preventDefault();
-  const p = _em.contact;
-  window.open('https://www.paypal.com/paypalme/' + p[0], '_blank');
+  copyMail('contact', e.currentTarget);
+  alert('Adresse PayPal copiée. Ouvrez PayPal et envoyez le montant en mentionnant : "Tournoi TOW 2026 — [Axe] — [Votre nom]"');
 }
 
-/* ── NAVIGATION ── */
+/* ── PAGE NAVIGATION ── */
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
   document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
-  const page = document.getElementById('page-' + id);
-  const btn  = document.getElementById('nav-' + id);
-  if (page) page.classList.add('active');
-  if (btn)  btn.classList.add('active');
-  window.scrollTo({top: 0, behavior: 'smooth'});
-  setTimeout(triggerReveal, 100);
-}
-
-/* ── REVEAL ON SCROLL ── */
-function triggerReveal() {
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
-    });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal:not(.visible)').forEach(el => io.observe(el));
+  const navBtn = document.getElementById('nav-' + id);
+  if (navBtn) navBtn.classList.add('active');
+  window.scrollTo(0, 0);
+  observeReveals();
 }
 
 /* ── COUNTDOWN ── */
+const target = new Date('2026-11-07T08:30:00').getTime();
 function updateCountdown() {
-  const target = new Date('2026-11-07T08:30:00');
-  const now    = new Date();
-  const diff   = target - now;
+  const now = Date.now();
+  const diff = target - now;
   if (diff <= 0) {
-    ['cd-j','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00');
+    ['cd-j','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '0');
     return;
   }
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000)  / 60000);
-  const s = Math.floor((diff % 60000)    / 1000);
-  document.getElementById('cd-j').textContent = String(d).padStart(2,'0');
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-j').textContent = d;
   document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
   document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
   document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
 }
-setInterval(updateCountdown, 1000);
 updateCountdown();
+setInterval(updateCountdown, 1000);
 
-/* ── RUNE PARTICLES ── */
-(function spawnRunes() {
-  const runes = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛊᛏᛒᛖᛗᛚᛟᛞ'.split('');
-  const container = document.getElementById('particles');
-  const sizes  = [10, 12, 14, 16, 18, 22];
-  const speeds = [12, 16, 20, 25, 30, 38];
-  function create() {
-    const el = document.createElement('span');
-    el.className = 'rune';
-    el.textContent = runes[Math.floor(Math.random() * runes.length)];
-    const sz = sizes[Math.floor(Math.random() * sizes.length)];
-    const sp = speeds[Math.floor(Math.random() * speeds.length)];
-    const delay = Math.random() * sp;
-    el.style.cssText = `left:${Math.random()*100}vw;bottom:${Math.random()*-10}vh;font-size:${sz}px;animation-duration:${sp}s;animation-delay:${delay}s;`;
-    container.appendChild(el);
-    setTimeout(() => el.remove(), (sp + delay) * 1000);
-  }
-  for (let i = 0; i < 30; i++) setTimeout(create, i * 400);
-  setInterval(create, 800);
-})();
+/* ── REVEAL ON SCROLL ── */
+function observeReveals() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+}
+observeReveals();
 
-window.addEventListener('load', triggerReveal);
+/* ── RUNES PARTICLES ── */
+const runes = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛜ','ᛞ','ᛟ'];
+const partCtr = document.getElementById('particles');
+function spawnRune() {
+  const r = document.createElement('div');
+  r.className = 'rune';
+  r.textContent = runes[Math.floor(Math.random() * runes.length)];
+  r.style.left = Math.random() * 100 + 'vw';
+  r.style.bottom = '-3rem';
+  r.style.fontSize = (Math.random() * 1.2 + 0.8) + 'rem';
+  r.style.animationDuration = (Math.random() * 15 + 15) + 's';
+  partCtr.appendChild(r);
+  setTimeout(() => r.remove(), 30000);
+}
+setInterval(spawnRune, 2500);
+for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
 </script>
 </body>
 </html>
