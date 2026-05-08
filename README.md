@@ -1,4 +1,4 @@
-# InterRegion 2026 — The Old World
+# InterRegions 2026 — The Old World
 
 Site et outils de campagne pour le tournoi inter-régions Warhammer The Old World.
 
