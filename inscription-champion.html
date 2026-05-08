@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge ton Champion — InterRegion 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:     #C9A84C;
+  --gold-l:   #E8C96A;
+  --gold-d:   #8A6E2F;
+  --gold-glow: rgba(201,168,76,0.55);
+  --crimson:  #6B0F0F;
+  --crim-m:   #8B1A1A;
+  --crim-l:   #A82020;
+  --bg:       #0A0806;
+  --bg2:      #0F0C09;
+  --bg3:      #171210;
+  --bg4:      #1E1810;
+  --parch:    #E8DFC8;
+  --parch-d:  #C4B89A;
+  --parch-dk: #8A7A5A;
+  --white:    #F5F0E8;
+  --green:    #4a7a3e;
+  --red:      #a82020;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--bg);
+  color: var(--parch);
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.05), transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(107,15,15,0.08), transparent 50%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0) 0 3px, rgba(255,255,255,0.007) 3px 4px);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+header.banner {
+  text-align: center;
+  padding: 30px 20px 10px;
+  border-bottom: 2px solid var(--gold-d);
+  margin-bottom: 30px;
+}
+header h1 {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px var(--gold-glow), 2px 2px 4px rgba(0,0,0,0.9);
+  margin-bottom: 8px;
+}
+header .sub {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.4em;
+  color: var(--gold-d);
+  text-transform: uppercase;
+}
+header .epic {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  color: var(--parch-dk);
+  font-size: 0.95rem;
+  margin-top: 12px;
+}
+
+main {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.step {
+  background: linear-gradient(160deg, var(--bg3), var(--bg2));
+  border: 1px solid var(--gold-d);
+  border-radius: 6px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201,168,76,0.08);
+}
+.step h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--gold-d);
+}
+.step p { color: var(--parch-d); margin-bottom: 14px; line-height: 1.55; }
+.step .hint {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  color: var(--parch-dk);
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--gold-d);
+  text-transform: uppercase;
+  margin: 14px 0 4px;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--bg);
+  border: 1px solid var(--gold-d);
+  border-radius: 3px;
+  color: var(--parch);
+  font-family: 'Lato', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.18);
+}
+textarea { resize: vertical; min-height: 90px; font-family: 'IM Fell English', serif; font-size: 1rem; line-height: 1.5; }
+select option { background: var(--bg2); color: var(--parch); }
+
+.btn {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold), var(--gold-d));
+  color: var(--bg);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  box-shadow: 0 0 20px var(--gold-glow), 0 4px 15px rgba(0,0,0,0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  margin-top: 10px;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 0 30px var(--gold-glow), 0 6px 20px rgba(0,0,0,0.6); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn.secondary {
+  background: linear-gradient(135deg, var(--bg4), var(--bg3));
+  color: var(--parch);
+  border: 1px solid var(--gold-d);
+  box-shadow: none;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 3px;
+  margin: 12px 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.alert.error   { background: rgba(168,32,32,0.15); border: 1px solid var(--red); color: #f4c4c4; }
+.alert.success { background: rgba(74,122,62,0.15); border: 1px solid var(--green); color: #c4f4c4; }
+.alert.info    { background: rgba(201,168,76,0.10); border: 1px solid var(--gold-d); color: var(--parch); }
+
+.user-card {
+  background: var(--bg);
+  border: 1px solid var(--gold-d);
+  border-left: 3px solid var(--gold);
+  padding: 14px 18px;
+  border-radius: 3px;
+  margin-bottom: 20px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.user-card .name {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.user-card .meta { color: var(--parch-d); font-size: 0.88rem; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 22px;
+}
+@media (max-width: 720px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+.blason-panel {
+  background: var(--bg);
+  border: 2px solid var(--gold-d);
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+}
+.blason-panel svg#blason-preview {
+  width: 180px; height: 180px;
+  background: var(--bg2);
+  border: 1px solid var(--gold-d);
+  border-radius: 4px;
+}
+.blason-panel .controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 12px;
+  text-align: left;
+}
+.blason-panel .controls label { margin: 4px 0 2px; font-size: 0.65rem; }
+.blason-panel .controls select { padding: 4px 6px; font-size: 0.82rem; }
+.blason-panel .full { grid-column: 1 / -1; }
+.blason-panel .random {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: var(--gold-d);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.blason-panel .random:hover { color: var(--gold); }
+
+.parisian-redirect {
+  background: rgba(168,32,32,0.10);
+  border: 1px solid var(--crim-m);
+  border-radius: 3px;
+  padding: 14px 16px;
+  margin: 14px 0;
+}
+.parisian-redirect h4 {
+  font-family: 'Cinzel', serif;
+  color: var(--crim-l);
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.parisian-redirect p { font-size: 0.88rem; line-height: 1.45; }
+.parisian-redirect .options {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.parisian-redirect .opt {
+  flex: 1;
+  min-width: 130px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--gold-d);
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--parch);
+  transition: all 0.15s;
+}
+.parisian-redirect .opt:hover { background: var(--bg3); border-color: var(--gold); }
+.parisian-redirect .opt.selected {
+  background: linear-gradient(135deg, var(--crim-m), var(--crimson));
+  border-color: var(--gold);
+  color: var(--white);
+}
+.parisian-redirect .opt small {
+  display: block;
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  font-size: 0.72rem;
+  opacity: 0.75;
+  margin-top: 4px;
+}
+
+footer {
+  text-align: center;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  color: var(--parch-dk);
+  font-size: 0.88rem;
+  margin-top: 40px;
+  padding: 20px;
+  border-top: 1px solid var(--gold-d);
+}
+footer a { color: var(--gold-d); text-decoration: none; }
+footer a:hover { color: var(--gold); }
+
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--parch-dk);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header class="banner">
+  <h1>⚔ Forge ton Champion ⚔</h1>
+  <div class="sub">InterRegion 2026 · The Old World</div>
+  <div class="epic">« Que ton blason flotte sur les bannières des terres françaises »</div>
+</header>
+
+<main>
+
+  <!-- ÉTAPE 1 : Vérification email -->
+  <section class="step" id="step-email">
+    <h2>Étape I · Vérification du paiement</h2>
+    <p>Saisis l'email avec lequel tu t'es inscrit·e sur AssoConnect. Nous vérifions que ton paiement est bien enregistré avant de te laisser forger ton champion.</p>
+
+    <label for="email">Adresse email</label>
+    <input id="email" type="email" placeholder="ton@email.com" autocomplete="email">
+
+    <div id="email-feedback"></div>
+
+    <button class="btn" id="btn-check" onclick="checkEmail()">Continuer →</button>
+  </section>
+
+  <!-- ÉTAPE 2 : Forge -->
+  <section class="step" id="step-form" hidden>
+    <h2>Étape II · Forge ton champion</h2>
+
+    <div class="user-card" id="user-card"></div>
+
+    <div id="parisian-block" hidden></div>
+
+    <div class="form-grid">
+      <div>
+        <label for="pseudo">Pseudo de champion *</label>
+        <input id="pseudo" type="text" placeholder="Ex : Sir Gilles de Bordeleaux" maxlength="60">
+        <div class="hint">Le nom sous lequel tes adversaires te connaîtront sur le champ de bataille.</div>
+
+        <label for="faction">Faction (lore TOW)</label>
+        <select id="faction"></select>
+        <div class="hint">L'armée que tu jouera lors du tournoi. Tu pourras la modifier plus tard.</div>
+
+        <label for="region">Région d'allégeance</label>
+        <select id="region" disabled></select>
+        <div class="hint" id="region-hint">Déduite automatiquement de ton adresse postale.</div>
+
+        <label for="story">Ton histoire (optionnel)</label>
+        <textarea id="story" placeholder="Quelques lignes sur ton champion : son passé, sa quête, ses ennemis jurés…" maxlength="2000"></textarea>
+        <div class="hint">Visible sur la carte publique des inscrits. Markdown léger toléré (sauts de ligne).</div>
+      </div>
+
+      <div class="blason-panel">
+        <svg id="blason-preview" viewBox="-22 -22 44 44"></svg>
+        <div class="controls">
+          <div class="full">
+            <label>Forme</label>
+            <select id="b-shape" onchange="updateBlasonPreview()"></select>
+          </div>
+          <div class="full">
+            <label>Champ</label>
+            <select id="b-field" onchange="updateBlasonPreview()"></select>
+          </div>
+          <div>
+            <label>Couleur 1</label>
+            <select id="b-c1" onchange="updateBlasonPreview()"></select>
+          </div>
+          <div>
+            <label>Couleur 2</label>
+            <select id="b-c2" onchange="updateBlasonPreview()"></select>
+          </div>
+          <div class="full">
+            <label>Charge</label>
+            <select id="b-charge" onchange="updateBlasonPreview()"></select>
+          </div>
+          <div class="full">
+            <label>Couleur charge</label>
+            <select id="b-cc" onchange="updateBlasonPreview()"></select>
+          </div>
+        </div>
+        <a class="random" onclick="randomizeBlason()">🎲 Tirer un blason au hasard</a>
+      </div>
+    </div>
+
+    <div id="submit-feedback"></div>
+
+    <button class="btn" id="btn-submit" onclick="submitChampion()" style="margin-top:24px;">⚔ Engager mon champion</button>
+  </section>
+
+  <!-- ÉTAPE 3 : Confirmation -->
+  <section class="step" id="step-done" hidden>
+    <h2>⚜ Ton champion s'est levé ⚜</h2>
+    <div class="alert success">
+      <strong>Bienvenue dans la guerre des couronnes.</strong><br>
+      Ton blason flotte désormais sur les terres de France.
+    </div>
+    <div id="champ-summary"></div>
+    <p style="margin-top:18px;">
+      <a href="carte-inscrits.html" class="btn">🗺 Voir la carte des champions →</a>
+      <button class="btn secondary" onclick="editAgain()" style="margin-left:8px;">✏ Modifier mon champion</button>
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  Les Stratèges du Vieux Monde × Fédération France The Old World ·
+  <a href="https://inter-tow.netlify.app/">Retour à la page de l'événement</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ==========================================================================
+   CONFIG SUPABASE
+   ========================================================================== */
+const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ==========================================================================
+   CONSTANTES
+   ========================================================================== */
+
+const REGIONS_LIST = [
+  'Alsace', 'Aquitaine', 'Auvergne', 'Basse-Normandie', 'Bourgogne',
+  'Bretagne', 'Centre', 'Champagne-Ardenne', 'Corse', 'Franche-Comté',
+  'Haute-Normandie', 'Île-de-France', 'Languedoc-Roussillon', 'Limousin',
+  'Lorraine', 'Midi-Pyrénées', 'Nord-Pas-de-Calais', 'Pays de la Loire',
+  'Picardie', 'Poitou-Charentes', "Provence-Alpes-Côte d'Azur", 'Rhône-Alpes'
+];
+
+// Région IdF impossible à choisir (les parisiens sont redistribués)
+const CONQUERABLE_REGIONS = REGIONS_LIST.filter(r => r !== 'Île-de-France');
+
+// Code département (2 premiers chiffres du code postal) → région
+const DEPT_TO_REGION = {
+  '01':'Rhône-Alpes','02':'Picardie','03':'Auvergne','04':"Provence-Alpes-Côte d'Azur",
+  '05':"Provence-Alpes-Côte d'Azur",'06':"Provence-Alpes-Côte d'Azur",'07':'Rhône-Alpes',
+  '08':'Champagne-Ardenne','09':'Midi-Pyrénées','10':'Champagne-Ardenne',
+  '11':'Languedoc-Roussillon','12':'Midi-Pyrénées','13':"Provence-Alpes-Côte d'Azur",
+  '14':'Basse-Normandie','15':'Auvergne','16':'Poitou-Charentes','17':'Poitou-Charentes',
+  '18':'Centre','19':'Limousin','20':'Corse','21':'Bourgogne','22':'Bretagne',
+  '23':'Limousin','24':'Aquitaine','25':'Franche-Comté','26':'Rhône-Alpes',
+  '27':'Haute-Normandie','28':'Centre','29':'Bretagne','30':'Languedoc-Roussillon',
+  '31':'Midi-Pyrénées','32':'Midi-Pyrénées','33':'Aquitaine','34':'Languedoc-Roussillon',
+  '35':'Bretagne','36':'Centre','37':'Centre','38':'Rhône-Alpes','39':'Franche-Comté',
+  '40':'Aquitaine','41':'Centre','42':'Rhône-Alpes','43':'Auvergne',
+  '44':'Pays de la Loire','45':'Centre','46':'Midi-Pyrénées','47':'Aquitaine',
+  '48':'Languedoc-Roussillon','49':'Pays de la Loire','50':'Basse-Normandie',
+  '51':'Champagne-Ardenne','52':'Champagne-Ardenne','53':'Pays de la Loire',
+  '54':'Lorraine','55':'Lorraine','56':'Bretagne','57':'Lorraine','58':'Bourgogne',
+  '59':'Nord-Pas-de-Calais','60':'Picardie','61':'Basse-Normandie',
+  '62':'Nord-Pas-de-Calais','63':'Auvergne','64':'Aquitaine','65':'Midi-Pyrénées',
+  '66':'Languedoc-Roussillon','67':'Alsace','68':'Alsace','69':'Rhône-Alpes',
+  '70':'Franche-Comté','71':'Bourgogne','72':'Pays de la Loire','73':'Rhône-Alpes',
+  '74':'Rhône-Alpes','75':'Île-de-France','76':'Haute-Normandie','77':'Île-de-France',
+  '78':'Île-de-France','79':'Poitou-Charentes','80':'Picardie','81':'Midi-Pyrénées',
+  '82':'Midi-Pyrénées','83':"Provence-Alpes-Côte d'Azur",'84':"Provence-Alpes-Côte d'Azur",
+  '85':'Pays de la Loire','86':'Poitou-Charentes','87':'Limousin','88':'Lorraine',
+  '89':'Bourgogne','90':'Franche-Comté','91':'Île-de-France','92':'Île-de-France',
+  '93':'Île-de-France','94':'Île-de-France','95':'Île-de-France'
+};
+
+function postalToRegion(postal) {
+  if (!postal) return null;
+  const d = String(postal).padStart(5, '0').slice(0, 2);
+  return DEPT_TO_REGION[d] || null;
+}
+
+const FACTIONS = [
+  '— à choisir plus tard —',
+  'Empire', 'Bretonnia', 'Hauts Elfes', 'Elfes Sylvains', 'Elfes Noirs',
+  'Nains', 'Nains du Chaos', 'Skavens', 'Hommes Bêtes', 'Orques & Gobelins',
+  'Royaumes Ogres', 'Hommes-Lézards', 'Rois des Tombes', 'Comtes Vampires',
+  'Démons du Chaos', 'Guerriers du Chaos', 'Mercenaires de Tilée',
+  'Estaliens', 'Norses'
+];
+
+const TINCTURES = {
+  or: { name:'Or', hex:'#e7c878' }, argent: { name:'Argent', hex:'#ececec' },
+  gules: { name:'Gueules', hex:'#b13a3a' }, azure: { name:'Azur', hex:'#3a5a8a' },
+  sable: { name:'Sable', hex:'#1a1a1a' }, vert: { name:'Sinople', hex:'#3a7a3a' },
+  purpure: { name:'Pourpre', hex:'#6a3a7a' }, brown: { name:'Brun', hex:'#7a4a1a' },
+  white: { name:'Blanc', hex:'#fffaee' }, bordeaux: { name:'Bordeaux', hex:'#5e1a1a' }
+};
+const TINCTURE_LIGHTS = ['or','argent','white'];
+const TINCTURE_DARKS = ['gules','azure','sable','vert','purpure','bordeaux','brown'];
+
+const SHIELD_SHAPES = {
+  heater: { name:'Bouclier (heater)', path:'M -10 -12 L 10 -12 L 10 -2 Q 10 8 0 14 Q -10 8 -10 -2 Z' },
+  kite:   { name:'Normand (kite)',    path:'M -8 -12 L 8 -12 L 8 0 Q 8 11 0 16 Q -8 11 -8 0 Z' },
+  round:  { name:'Rondache',          path:'M 0 -12 A 12 12 0 1 1 -0.001 -12 Z' },
+  banner: { name:'Bannière',          path:'M -10 -13 L 10 -13 L 10 9 L 0 14 L -10 9 Z' },
+  square: { name:'Carré',             path:'M -11 -11 L 11 -11 L 11 11 L -11 11 Z' }
+};
+const FIELD_TYPES = {
+  plain:{name:'Uni'}, per_pale:{name:'Parti'}, per_fess:{name:'Coupé'},
+  quartered:{name:'Écartelé'}, per_bend:{name:'Tranché'}
+};
+const HERALDIC_CHARGES = {
+  none:{name:'Aucune',glyph:''}, fleur:{name:'Fleur de lys',glyph:'⚜'},
+  cross:{name:'Croix',glyph:'✚'}, crossPattee:{name:'Croix pattée',glyph:'✠'},
+  star5:{name:'Étoile 5 pts',glyph:'★'}, star6:{name:'Étoile 6 pts',glyph:'✶'},
+  star8:{name:'Étoile 8 pts',glyph:'✱'}, sparkle:{name:'Étincelle',glyph:'✦'},
+  sun:{name:'Soleil',glyph:'☉'}, moon:{name:'Lune',glyph:'☽'},
+  anchor:{name:'Ancre',glyph:'⚓'}, hammer:{name:'Marteau',glyph:'⚒'},
+  swords:{name:'Épées',glyph:'⚔'}, scales:{name:'Balance',glyph:'⚖'},
+  flag:{name:'Étendard',glyph:'⚑'}, crown:{name:'Couronne',glyph:'♛'},
+  diamond:{name:'Losange',glyph:'◆'}, triangle:{name:'Triangle',glyph:'▲'},
+  circle:{name:'Disque',glyph:'●'}, spiral:{name:'Rosace',glyph:'❀'},
+  bolt:{name:'Foudre',glyph:'⚡'}, flame:{name:'Flamme',glyph:'🜂'},
+  skull:{name:'Crâne',glyph:'☠'}
+};
+
+/* ==========================================================================
+   STATE
+   ========================================================================== */
+
+let currentUser = null;       // ligne de paid_users
+let currentChampion = null;   // ligne de champions (si déjà inscrit)
+let isParisian = false;
+let parisianRedirectChoice = null;
+let parisianOptions = [];
+
+/* ==========================================================================
+   HÉRALDIQUE — render & blason designer
+   ========================================================================== */
+
+function renderBlason(blason, cx, cy, size) {
+  if (!blason) return '';
+  const shape  = SHIELD_SHAPES[blason.shape] || SHIELD_SHAPES.heater;
+  const field  = blason.field || { type:'plain', color1:'#b13a3a', color2:'#ececec' };
+  const charge = blason.charge || { type:'none', color:'#e7c878' };
+  const c1 = field.color1, c2 = field.color2;
+  const clipId = 'clip_' + Math.random().toString(36).slice(2, 9);
+
+  let inner = '';
+  switch (field.type) {
+    case 'plain':
+      inner = `<rect x="-14" y="-14" width="28" height="32" fill="${c1}"/>`; break;
+    case 'per_pale':
+      inner = `<rect x="-14" y="-14" width="14" height="32" fill="${c1}"/>` +
+              `<rect x="0"   y="-14" width="14" height="32" fill="${c2}"/>`; break;
+    case 'per_fess':
+      inner = `<rect x="-14" y="-14" width="28" height="14" fill="${c1}"/>` +
+              `<rect x="-14" y="0"   width="28" height="18" fill="${c2}"/>`; break;
+    case 'quartered':
+      inner = `<rect x="-14" y="-14" width="14" height="14" fill="${c1}"/>` +
+              `<rect x="0"   y="-14" width="14" height="14" fill="${c2}"/>` +
+              `<rect x="-14" y="0"   width="14" height="18" fill="${c2}"/>` +
+              `<rect x="0"   y="0"   width="14" height="18" fill="${c1}"/>`; break;
+    case 'per_bend':
+      inner = `<rect x="-14" y="-14" width="28" height="32" fill="${c1}"/>` +
+              `<polygon points="-14,18 14,-14 14,18" fill="${c2}"/>`; break;
+    default:
+      inner = `<rect x="-14" y="-14" width="28" height="32" fill="${c1}"/>`;
+  }
+  const glyph = (HERALDIC_CHARGES[charge.type] || {}).glyph || '';
+  const chargeSvg = glyph
+    ? `<text x="0" y="3" text-anchor="middle" font-size="13" font-family="Arial,sans-serif"
+            fill="${charge.color}" paint-order="stroke" stroke="#1a0a04" stroke-width="0.6">${glyph}</text>`
+    : '';
+  return `<g transform="translate(${cx},${cy}) scale(${size})">
+    <defs><clipPath id="${clipId}"><path d="${shape.path}"/></clipPath></defs>
+    <g clip-path="url(#${clipId})">${inner}</g>
+    ${chargeSvg}
+    <path d="${shape.path}" fill="none" stroke="#1a0a04" stroke-width="1.1"/>
+  </g>`;
+}
+
+function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function getCurrentBlason() {
+  return {
+    shape: document.getElementById('b-shape').value,
+    field: {
+      type: document.getElementById('b-field').value,
+      color1: TINCTURES[document.getElementById('b-c1').value].hex,
+      color2: TINCTURES[document.getElementById('b-c2').value].hex
+    },
+    charge: {
+      type: document.getElementById('b-charge').value,
+      color: TINCTURES[document.getElementById('b-cc').value].hex
+    }
+  };
+}
+function updateBlasonPreview() {
+  const svg = document.getElementById('blason-preview');
+  if (!svg) return;
+  svg.innerHTML = renderBlason(getCurrentBlason(), 0, 0, 1.6);
+}
+function randomBlason() {
+  const lf = Math.random() < 0.5;
+  const c1 = pickRandom(lf ? TINCTURE_LIGHTS : TINCTURE_DARKS);
+  const c2 = pickRandom(lf ? TINCTURE_DARKS : TINCTURE_LIGHTS);
+  const cc = pickRandom(lf ? TINCTURE_DARKS : TINCTURE_LIGHTS);
+  return {
+    shape: pickRandom(Object.keys(SHIELD_SHAPES)),
+    field: { type: pickRandom(Object.keys(FIELD_TYPES)), color1: TINCTURES[c1].hex, color2: TINCTURES[c2].hex },
+    charge: { type: pickRandom(Object.keys(HERALDIC_CHARGES).filter(k => k !== 'none')), color: TINCTURES[cc].hex }
+  };
+}
+function randomizeBlason() {
+  const b = randomBlason();
+  const k = h => Object.keys(TINCTURES).find(x => TINCTURES[x].hex === h);
+  document.getElementById('b-shape').value  = b.shape;
+  document.getElementById('b-field').value  = b.field.type;
+  document.getElementById('b-c1').value     = k(b.field.color1);
+  document.getElementById('b-c2').value     = k(b.field.color2);
+  document.getElementById('b-charge').value = b.charge.type;
+  document.getElementById('b-cc').value     = k(b.charge.color);
+  updateBlasonPreview();
+}
+
+function setBlasonFromObject(b) {
+  if (!b || !b.shape) { randomizeBlason(); return; }
+  const k = h => Object.keys(TINCTURES).find(x => TINCTURES[x].hex === h) || 'gules';
+  document.getElementById('b-shape').value  = b.shape;
+  document.getElementById('b-field').value  = (b.field && b.field.type) || 'plain';
+  document.getElementById('b-c1').value     = k(b.field && b.field.color1);
+  document.getElementById('b-c2').value     = k(b.field && b.field.color2);
+  document.getElementById('b-charge').value = (b.charge && b.charge.type) || 'fleur';
+  document.getElementById('b-cc').value     = k(b.charge && b.charge.color);
+  updateBlasonPreview();
+}
+
+/* ==========================================================================
+   POPULATE SELECTS
+   ========================================================================== */
+
+function populateSelects() {
+  const fill = (id, obj) => {
+    document.getElementById(id).innerHTML = Object.entries(obj).map(([k, v]) =>
+      `<option value="${k}">${v.name || v}</option>`).join('');
+  };
+  fill('b-shape', SHIELD_SHAPES);
+  fill('b-field', FIELD_TYPES);
+  fill('b-charge', HERALDIC_CHARGES);
+  const tinctOpts = Object.entries(TINCTURES).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('');
+  ['b-c1','b-c2','b-cc'].forEach(id => document.getElementById(id).innerHTML = tinctOpts);
+  document.getElementById('b-c1').value = 'gules';
+  document.getElementById('b-c2').value = 'argent';
+  document.getElementById('b-cc').value = 'or';
+  document.getElementById('b-charge').value = 'fleur';
+
+  document.getElementById('faction').innerHTML = FACTIONS.map(f =>
+    `<option value="${f === '— à choisir plus tard —' ? '' : f}">${f}</option>`).join('');
+
+  // Région : sera réinitialisée à l'étape 2
+  document.getElementById('region').innerHTML = REGIONS_LIST.map(r =>
+    `<option value="${r}">${r}</option>`).join('');
+}
+
+/* ==========================================================================
+   ÉTAPE 1 — Vérification email
+   ========================================================================== */
+
+async function checkEmail() {
+  const emailInput = document.getElementById('email');
+  const email = emailInput.value.trim().toLowerCase();
+  const fb = document.getElementById('email-feedback');
+  const btn = document.getElementById('btn-check');
+
+  fb.innerHTML = '';
+  if (!email || !email.includes('@')) {
+    fb.innerHTML = '<div class="alert error">Email invalide.</div>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Vérification…';
+
+  try {
+    // 1. Chercher dans paid_users
+    const { data: paid, error: e1 } = await sb
+      .from('paid_users')
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (e1) throw e1;
+    if (!paid) {
+      fb.innerHTML = `<div class="alert error">
+        <strong>⚠ Email non reconnu.</strong><br>
+        Cet email n'apparaît pas dans la liste des inscrits AssoConnect. Vérifie que :<br>
+        • Tu as bien finalisé ton paiement sur AssoConnect.<br>
+        • Tu utilises le même email que celui du paiement.<br>
+        • L'organisateur a bien importé la dernière liste (ça peut prendre quelques heures après ton paiement).<br>
+        En cas de doute : contacte l'organisateur via la <a href="https://inter-tow.netlify.app/" style="color:var(--gold);">page de l'événement</a>.
+      </div>`;
+      return;
+    }
+
+    currentUser = paid;
+    isParisian = postalToRegion(paid.code_postal) === 'Île-de-France';
+
+    // 2. Vérifier si un champion existe déjà pour cet email
+    const { data: champ, error: e2 } = await sb
+      .from('champions')
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
+    if (e2) throw e2;
+    currentChampion = champ;
+
+    // 3. Préparer l'étape 2
+    await prepareForm();
+    document.getElementById('step-email').hidden = true;
+    document.getElementById('step-form').hidden = false;
+    document.getElementById('step-form').scrollIntoView({ behavior: 'smooth' });
+  } catch (err) {
+    console.error(err);
+    fb.innerHTML = `<div class="alert error">Erreur de connexion à la base : ${err.message || err}. Réessaie dans un instant.</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Continuer →';
+  }
+}
+
+/* ==========================================================================
+   ÉTAPE 2 — Préparation et soumission du formulaire
+   ========================================================================== */
+
+async function prepareForm() {
+  // User card
+  const u = currentUser;
+  const detectedRegion = postalToRegion(u.code_postal);
+  document.getElementById('user-card').innerHTML = `
+    <div class="name">${escapeHTML(u.prenom || '')} ${escapeHTML(u.nom || '')}</div>
+    <div class="meta">
+      ${escapeHTML(u.email)}<br>
+      ${u.code_postal ? `📮 ${escapeHTML(u.code_postal)} ${escapeHTML(u.ville || '')}` : '<i>Adresse non fournie</i>'}
+      ${detectedRegion ? `· région détectée : <strong style="color:var(--gold);">${detectedRegion}</strong>` : ''}
+      ${currentChampion ? '<br><span style="color:var(--gold);">⚜ Tu as déjà un champion enregistré — édition en cours.</span>' : ''}
+    </div>
+  `;
+
+  // Configuration de la région
+  const regionSelect = document.getElementById('region');
+  const regionHint = document.getElementById('region-hint');
+  const parisBlock = document.getElementById('parisian-block');
+
+  if (isParisian) {
+    // Pour les parisiens : redistribuer entre 3 régions les moins peuplées
+    parisianOptions = await getLeastPopulatedRegions(3);
+    regionSelect.innerHTML = parisianOptions.map(r => `<option value="${r}">${r}</option>`).join('');
+    regionSelect.disabled = false;
+    regionHint.innerHTML = `<strong style="color:var(--crim-l);">Parisien·ne détecté·e</strong> — l'Île-de-France est zone neutre, choisis une des 3 régions les moins pourvues à rejoindre.`;
+    parisBlock.hidden = false;
+    parisBlock.innerHTML = `
+      <div class="parisian-redirect">
+        <h4>⚔ Tu es de la zone parisienne</h4>
+        <p>L'Île-de-France est <strong>la zone neutre</strong> du Vieux Monde — elle ne participe pas aux conquêtes. Tu vas combattre pour l'une des trois régions les moins pourvues en champions :</p>
+        <div class="options" id="paris-options">
+          ${parisianOptions.map(r => `<div class="opt" onclick="selectParisOption('${r}')">${r}<small>en attente d'un champion</small></div>`).join('')}
+        </div>
+      </div>
+    `;
+    // Sélection par défaut sur la première
+    parisianRedirectChoice = parisianOptions[0];
+    setTimeout(() => selectParisOption(parisianOptions[0]), 0);
+  } else if (detectedRegion) {
+    regionSelect.innerHTML = `<option value="${detectedRegion}">${detectedRegion}</option>`;
+    regionSelect.disabled = true;
+    regionHint.innerHTML = `Déduite de ton code postal (${escapeHTML(u.code_postal)}). Si c'est faux, contacte l'organisateur.`;
+    parisBlock.hidden = true;
+  } else {
+    // Pas de code postal : on laisse choisir librement parmi les 21 conquérables
+    regionSelect.innerHTML = CONQUERABLE_REGIONS.map(r => `<option value="${r}">${r}</option>`).join('');
+    regionSelect.disabled = false;
+    regionHint.innerHTML = `Aucun code postal détecté — choisis ta région d'allégeance librement.`;
+    parisBlock.hidden = true;
+  }
+
+  // Pré-remplissage si un champion existe déjà
+  if (currentChampion) {
+    document.getElementById('pseudo').value = currentChampion.pseudo || '';
+    document.getElementById('faction').value = currentChampion.faction || '';
+    document.getElementById('region').value = currentChampion.region || '';
+    document.getElementById('story').value = currentChampion.story || '';
+    if (currentChampion.is_parisian_redistributed && parisianOptions.includes(currentChampion.region)) {
+      selectParisOption(currentChampion.region);
+    }
+    setBlasonFromObject(currentChampion.blason);
+    document.getElementById('btn-submit').textContent = '✓ Mettre à jour mon champion';
+  } else {
+    document.getElementById('pseudo').value = `${u.prenom || ''} ${u.nom || ''}`.trim();
+    randomizeBlason();
+    document.getElementById('btn-submit').textContent = '⚔ Engager mon champion';
+  }
+}
+
+async function getLeastPopulatedRegions(n) {
+  const { data, error } = await sb.from('champions').select('region');
+  if (error) {
+    console.warn(error);
+    return CONQUERABLE_REGIONS.slice(0, n);
+  }
+  const counts = {};
+  CONQUERABLE_REGIONS.forEach(r => counts[r] = 0);
+  for (const row of data) {
+    if (counts[row.region] !== undefined) counts[row.region]++;
+  }
+  return Object.entries(counts).sort((a, b) => a[1] - b[1]).slice(0, n).map(([r]) => r);
+}
+
+function selectParisOption(region) {
+  parisianRedirectChoice = region;
+  document.getElementById('region').value = region;
+  document.querySelectorAll('#paris-options .opt').forEach(el => {
+    el.classList.toggle('selected', el.textContent.startsWith(region));
+  });
+}
+
+async function submitChampion() {
+  const fb = document.getElementById('submit-feedback');
+  const btn = document.getElementById('btn-submit');
+  fb.innerHTML = '';
+
+  const pseudo = document.getElementById('pseudo').value.trim();
+  if (!pseudo) {
+    fb.innerHTML = '<div class="alert error">Le pseudo de champion est obligatoire.</div>';
+    return;
+  }
+  const faction = document.getElementById('faction').value;
+  const region = document.getElementById('region').value;
+  if (!region) {
+    fb.innerHTML = '<div class="alert error">Région obligatoire.</div>';
+    return;
+  }
+  const story = document.getElementById('story').value.trim();
+  const blason = getCurrentBlason();
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Enregistrement…';
+
+  try {
+    const payload = {
+      email: currentUser.email,
+      pseudo, faction: faction || null, region,
+      is_parisian_redistributed: !!isParisian,
+      blason, story: story || null, heroes: []
+    };
+    const { data, error } = await sb
+      .from('champions')
+      .upsert(payload, { onConflict: 'email' })
+      .select()
+      .single();
+    if (error) throw error;
+
+    currentChampion = data;
+    showDone();
+  } catch (err) {
+    console.error(err);
+    fb.innerHTML = `<div class="alert error">Erreur lors de l'enregistrement : ${err.message || err}.</div>`;
+    btn.disabled = false;
+    btn.innerHTML = currentChampion ? '✓ Mettre à jour mon champion' : '⚔ Engager mon champion';
+  }
+}
+
+/* ==========================================================================
+   ÉTAPE 3 — Confirmation
+   ========================================================================== */
+
+function showDone() {
+  document.getElementById('step-form').hidden = true;
+  document.getElementById('step-done').hidden = false;
+
+  const c = currentChampion;
+  const blasonSvg = `<svg viewBox="-22 -22 44 44" style="width:120px;height:120px;background:var(--bg2);border:1px solid var(--gold-d);border-radius:4px;">
+    ${renderBlason(c.blason, 0, 0, 1.6)}
+  </svg>`;
+
+  document.getElementById('champ-summary').innerHTML = `
+    <div style="display:flex;gap:18px;align-items:center;background:var(--bg);border:1px solid var(--gold-d);border-radius:4px;padding:14px;">
+      ${blasonSvg}
+      <div style="flex:1;">
+        <div style="font-family:Cinzel;font-size:1.3rem;color:var(--gold);font-weight:600;">${escapeHTML(c.pseudo)}</div>
+        ${c.faction ? `<div style="margin-top:4px;color:var(--parch-d);">⚔ ${escapeHTML(c.faction)}</div>` : ''}
+        <div style="margin-top:4px;">📍 ${escapeHTML(c.region)}${c.is_parisian_redistributed ? ' <span style="color:var(--crim-l);font-size:0.85rem;">(parisien redistribué)</span>' : ''}</div>
+        ${c.story ? `<div style="margin-top:8px;font-family:'IM Fell English',serif;font-style:italic;color:var(--parch-d);font-size:0.92rem;line-height:1.5;">${escapeHTML(c.story)}</div>` : ''}
+      </div>
+    </div>
+  `;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function editAgain() {
+  document.getElementById('step-done').hidden = true;
+  document.getElementById('step-form').hidden = false;
+  document.getElementById('btn-submit').disabled = false;
+  document.getElementById('btn-submit').textContent = '✓ Mettre à jour mon champion';
+  document.getElementById('submit-feedback').innerHTML = '';
+  document.getElementById('step-form').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ==========================================================================
+   UTILS
+   ========================================================================== */
+function escapeHTML(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+/* ==========================================================================
+   INIT
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  populateSelects();
+  randomizeBlason();
+  // Pré-remplir l'email si présent dans l'URL (ex. lien depuis email AssoConnect)
+  const params = new URLSearchParams(location.search);
+  const presetEmail = params.get('email');
+  if (presetEmail) {
+    document.getElementById('email').value = presetEmail;
+  }
+  // Submit Enter sur le champ email
+  document.getElementById('email').addEventListener('keypress', e => {
+    if (e.key === 'Enter') checkEmail();
+  });
+});
+</script>
+</body>
+</html>
