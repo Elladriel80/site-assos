@@ -229,6 +229,31 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 .reveal.visible{opacity:1;transform:none}
 
 @media(max-width:600px){.nav-brand{display:none}.nav-links button{font-size:.65rem;padding:.65rem .5rem}.cd-unit{width:65px;height:78px}.cd-num{font-size:1.3rem}.section{padding:3rem 1rem}.scroll{padding:1.5rem 1.2rem}}
+
+.champ-section{background:linear-gradient(160deg,rgba(42,32,24,.6),rgba(23,18,16,.85));border:1px solid var(--gold-d);border-top:3px solid var(--gold);border-radius:4px;padding:1.6rem 1.2rem}
+.champ-section h3{font-family:'Cinzel',serif;font-size:1.15rem;color:var(--gold);letter-spacing:.15em;text-align:center;text-transform:uppercase;margin-bottom:.6rem;text-shadow:0 0 12px var(--gold-glow)}
+.champ-carousel-wrap{position:relative;overflow:hidden;mask-image:linear-gradient(90deg,transparent 0,black 6%,black 94%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0,black 6%,black 94%,transparent 100%)}
+.champ-carousel{display:flex;gap:14px;width:max-content;padding:8px 4px}
+.champ-carousel.scrolling{animation:champScroll 80s linear infinite}
+.champ-carousel-wrap:hover .champ-carousel.scrolling{animation-play-state:paused}
+@keyframes champScroll{0%{transform:translateX(0)}100%{transform:translateX(calc(-50% - 7px))}}
+.champ-card{flex-shrink:0;width:140px;background:linear-gradient(180deg,rgba(15,12,9,.85),rgba(10,8,6,.95));border:1px solid var(--gold-d);border-radius:4px;padding:10px 8px;text-align:center;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.champ-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 4px 16px var(--gold-glow)}
+.champ-card svg{width:70px;height:70px;background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.3);border-radius:3px;padding:4px;display:block;margin:0 auto}
+.champ-card .ch-name{font-family:'Cinzel',serif;font-weight:600;color:var(--gold);font-size:.82rem;margin-top:8px;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.champ-card .ch-region{font-size:.68rem;color:var(--parch-dk);margin-top:2px;letter-spacing:.05em}
+.champ-modal-overlay{position:fixed;inset:0;background:rgba(10,8,6,.88);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(3px)}
+.champ-modal-overlay.show{display:flex}
+.champ-modal{background:linear-gradient(160deg,rgba(23,18,16,.98),rgba(10,8,6,.99));border:2px solid var(--gold);border-radius:6px;padding:28px 24px;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 0 40px rgba(201,168,76,.35),0 10px 50px rgba(0,0,0,.85)}
+.champ-modal h2{font-family:'Cinzel Decorative',cursive;color:var(--gold);text-align:center;margin-bottom:12px;font-size:1.5rem;letter-spacing:.08em;text-shadow:0 0 16px var(--gold-glow)}
+.champ-modal .blason-display{text-align:center;margin:8px 0 16px}
+.champ-modal .blason-display svg{width:130px;height:130px;background:rgba(0,0,0,.3);border:2px solid var(--gold-d);border-radius:4px;padding:8px;display:block;margin:0 auto}
+.champ-modal .info-row{display:flex;gap:10px;margin:8px 0;font-size:.92rem;color:var(--parch)}
+.champ-modal .info-row .lbl{font-family:'Cinzel',serif;font-weight:600;font-size:.72rem;letter-spacing:.12em;color:var(--gold-d);text-transform:uppercase;min-width:90px;flex-shrink:0;padding-top:2px}
+.champ-modal .story{font-family:'IM Fell English',serif;font-style:italic;color:var(--parch);font-size:1rem;line-height:1.55;margin-top:16px;padding:14px 16px;background:rgba(0,0,0,.3);border-left:3px solid var(--gold);border-radius:3px;white-space:pre-wrap}
+.champ-modal .close-btn{display:block;margin:18px auto 0;padding:9px 26px;font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;background:rgba(30,24,16,.8);color:var(--parch);border:1px solid var(--gold-d);border-radius:3px;cursor:pointer;transition:background .15s,border-color .15s}
+.champ-modal .close-btn:hover{background:rgba(50,40,28,.9);border-color:var(--gold)}
+
 </style>
 </head>
 <body>
@@ -877,10 +902,6 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <strong>Date limite d'inscription & paiement :</strong> 1er octobre 2026<br>
       <strong>Date limite d'envoi des listes (compétitif) :</strong> 31 octobre 2026 à minuit<br>
       <span style="font-size:.8rem;color:var(--parch-dk)">Listes saisies sur la page NewRecruit du tournoi</span>
-    </div>
-
-    <div class="inscr-btns reveal">
-      <a href="https://www.newrecruit.eu/app/tournydetails/details?id=692b55e562dfaf774789302c" target="_blank" class="btn-newrecruit">📋 S'inscrire via NewRecruit (axe compétitif)</a>
     </div>
 
     <div class="payment-section reveal" style="margin-top:2rem">
