@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carte des Champions — InterRegions 2026</title>
+<title>Carte des joueurs — InterRegions 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
@@ -335,7 +335,7 @@ footer a:hover { color: var(--gold); }
 <body>
 
 <header class="banner">
-  <h1>🗺 Carte des Champions 🗺</h1>
+  <h1>🗺 Carte des joueurs 🗺</h1>
   <div class="sub">InterRegions 2026 · The Old World</div>
   <div class="actions">
     <a href="inscription-champion.html">⚜ Rejoindre la guerre</a>
@@ -769,7 +769,7 @@ function openChampionModal(id) {
       <span class="lbl">Allégeance</span>
       <span class="val" style="color:${ALLIANCES[alliance]?.color || '#888'};font-weight:600;">${allianceName}</span>
     </div>
-    ${ch.story ? `<div class="story">${escapeHTML(ch.story)}</div>` : '<div style="font-style:italic;color:var(--parch-dk);text-align:center;margin-top:12px;font-family:\'IM Fell English\',serif;">Ce champion garde son histoire pour lui…</div>'}
+    ${ch.story ? `<div class="story">${escapeHTML(ch.story)}</div>` : '<div style="font-style:italic;color:var(--parch-dk);text-align:center;margin-top:12px;font-family:\'IM Fell English\',serif;">Ce joueur garde son histoire pour lui…</div>'}
     <button class="close-btn" onclick="closeModal()">Fermer</button>
   `;
   document.getElementById('modal-champion').classList.add('show');
@@ -817,7 +817,7 @@ function renderRegionPanel() {
     · 👥 ${here.length} champion(s)
   </div>`;
   if (here.length === 0) {
-    html += '<div class="empty">Aucun champion dans cette région.</div>';
+    html += '<div class="empty">Aucun joueur dans cette région.</div>';
   } else {
     html += here.map(ch => championRow(ch, true)).join('');
   }
@@ -852,7 +852,7 @@ function renderChampList() {
   list.sort((a, b) => (a.pseudo || '').localeCompare(b.pseudo || ''));
   cnt.textContent = `(${list.length}${filter ? ' / ' + champions.length : ''})`;
   if (list.length === 0) {
-    c.innerHTML = '<div class="empty">Aucun champion enrôlé pour le moment.<br><a href="inscription-champion.html" style="color:var(--gold);">Rejoindre la guerre →</a></div>';
+    c.innerHTML = '<div class="empty">Aucun joueur inscrit pour le moment.<br><a href="inscription-champion.html" style="color:var(--gold);">Rejoindre la guerre →</a></div>';
     return;
   }
   c.innerHTML = list.slice(0, 200).map(ch => championRow(ch, false)).join('');

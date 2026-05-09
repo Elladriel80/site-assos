@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forge ton Champion — InterRegions 2026</title>
+<title>Inscris ton joueur — InterRegions 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
@@ -314,7 +314,7 @@ footer a:hover { color: var(--gold); }
 <body>
 
 <header class="banner">
-  <h1>⚔ Forge ton Champion ⚔</h1>
+  <h1>⚔ Inscris ton joueur ⚔</h1>
   <div class="sub">InterRegions 2026 · The Old World</div>
   <div class="epic">« Que ton blason flotte sur les bannières des terres françaises »</div>
 </header>
@@ -324,7 +324,7 @@ footer a:hover { color: var(--gold); }
   <!-- ÉTAPE 1 : Vérification email -->
   <section class="step" id="step-email">
     <h2>Étape I · Vérification du paiement</h2>
-    <p>Saisis l'email avec lequel tu t'es inscrit·e sur AssoConnect. Nous vérifions que ton paiement est bien enregistré avant de te laisser forger ton champion.</p>
+    <p>Saisis l'email avec lequel tu t'es inscrit·e sur AssoConnect. Nous vérifions que ton paiement est bien enregistré avant de te laisser inscrire ton joueur.</p>
 
     <label for="email">Adresse email</label>
     <input id="email" type="email" placeholder="ton@email.com" autocomplete="email">
@@ -336,7 +336,7 @@ footer a:hover { color: var(--gold); }
 
   <!-- ÉTAPE 2 : Forge -->
   <section class="step" id="step-form" hidden>
-    <h2>Étape II · Forge ton champion</h2>
+    <h2>Étape II · Crée ton joueur</h2>
 
     <div class="user-card" id="user-card"></div>
 
@@ -344,7 +344,7 @@ footer a:hover { color: var(--gold); }
 
     <div class="form-grid">
       <div>
-        <label for="pseudo">Pseudo de champion *</label>
+        <label for="pseudo">Pseudo de joueur *</label>
         <input id="pseudo" type="text" placeholder="Ex : Sir Gilles de Bordeleaux" maxlength="60">
         <div class="hint">Le nom sous lequel tes adversaires te connaîtront sur le champ de bataille.</div>
 
@@ -357,7 +357,7 @@ footer a:hover { color: var(--gold); }
         <div class="hint" id="region-hint">Déduite automatiquement de ton adresse postale.</div>
 
         <label for="story">Ton histoire (optionnel)</label>
-        <textarea id="story" placeholder="Quelques lignes sur ton champion : son passé, sa quête, ses ennemis jurés…" maxlength="2000"></textarea>
+        <textarea id="story" placeholder="Quelques lignes sur ton joueur : son passé, sa quête, ses ennemis jurés…" maxlength="2000"></textarea>
         <div class="hint">Visible sur la carte publique des inscrits. Markdown léger toléré (sauts de ligne).</div>
       </div>
 
@@ -395,12 +395,12 @@ footer a:hover { color: var(--gold); }
 
     <div id="submit-feedback"></div>
 
-    <button class="btn" id="btn-submit" onclick="submitChampion()" style="margin-top:24px;">⚔ Engager mon champion</button>
+    <button class="btn" id="btn-submit" onclick="submitChampion()" style="margin-top:24px;">⚔ Inscrire mon joueur</button>
   </section>
 
   <!-- ÉTAPE 3 : Confirmation -->
   <section class="step" id="step-done" hidden>
-    <h2>⚜ Ton champion s'est levé ⚜</h2>
+    <h2>⚜ Tu es inscrit ⚜</h2>
     <div class="alert success">
       <strong>Bienvenue dans la guerre des couronnes.</strong><br>
       Ton blason flotte désormais sur les terres de France.
@@ -422,8 +422,8 @@ footer a:hover { color: var(--gold); }
     </div>
 
     <p style="margin-top:18px;">
-      <a href="carte-inscrits.html" class="btn">🗺 Voir la carte des champions →</a>
-      <button class="btn secondary" onclick="editAgain()" style="margin-left:8px;">✏ Modifier mon champion</button>
+      <a href="carte-inscrits.html" class="btn">🗺 Voir la carte des joueurs →</a>
+      <button class="btn secondary" onclick="editAgain()" style="margin-left:8px;">✏ Modifier mon joueur</button>
     </p>
   </section>
 
@@ -812,7 +812,7 @@ async function prepareForm() {
   } else {
     document.getElementById('pseudo').value = `${u.prenom || ''} ${u.nom || ''}`.trim();
     randomizeBlason();
-    document.getElementById('btn-submit').textContent = '⚔ Engager mon champion';
+    document.getElementById('btn-submit').textContent = '⚔ Inscrire mon joueur';
   }
 }
 
@@ -880,7 +880,7 @@ async function submitChampion() {
     console.error(err);
     fb.innerHTML = `<div class="alert error">Erreur lors de l'enregistrement : ${err.message || err}.</div>`;
     btn.disabled = false;
-    btn.innerHTML = currentChampion ? '✓ Mettre à jour mon champion' : '⚔ Engager mon champion';
+    btn.innerHTML = currentChampion ? '✓ Mettre à jour mon champion' : '⚔ Inscrire mon joueur';
   }
 }
 
