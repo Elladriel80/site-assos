@@ -225,6 +225,7 @@
     <button data-tab="champions">⚔️ Champions</button>
     <button data-tab="payeurs">💰 Payeurs</button>
     <button data-tab="relances">📧 Relances</button>
+    <button data-tab="carte">🗺 Carte</button>
     <button data-tab="demo">🎭 Démo</button>
   </nav>
 
@@ -247,6 +248,7 @@
       <h2>Champions inscrits</h2>
       <div class="toolbar">
         <input type="search" class="search" id="search-champions" placeholder="Rechercher par pseudo, email, région…" />
+        <button id="forge-champion" class="primary">+ Forger un champion</button>
         <button id="refresh-champions">↻ Rafraîchir</button>
         <span class="count" id="count-champions"></span>
       </div>
@@ -319,6 +321,14 @@
       </table>
     </section>
 
+    <section data-pane="carte" hidden>
+      <h2>Carte du tournoi</h2>
+      <p style="color:var(--text-dim);max-width:60ch">
+        Vue intégrée de <code>carte-inscrits.html</code>. Pour ouvrir en plein écran dans un nouvel onglet : <a href="carte-inscrits.html" target="_blank">→ ouvrir la carte</a>.
+      </p>
+      <iframe id="carte-frame" src="carte-inscrits.html" style="width:100%; height:78vh; border:1px solid var(--border); border-radius:3px; background:#000;"></iframe>
+    </section>
+
     <section data-pane="demo" hidden>
       <h2>Mode démo (présentation équipe)</h2>
       <div class="banner warn">
@@ -349,9 +359,38 @@ const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
 const FORGE_URL = 'https://inter-tow.netlify.app/inscription-champion.html';
 
+// Liste canonique des 22 régions (synchro avec inscription-champion.html)
+const REGIONS_LIST = [
+  'Alsace', 'Aquitaine', 'Auvergne', 'Basse-Normandie', 'Bourgogne',
+  'Bretagne', 'Centre', 'Champagne-Ardenne', 'Corse', 'Franche-Comté',
+  'Haute-Normandie', 'Île-de-France', 'Languedoc-Roussillon', 'Limousin',
+  'Lorraine', 'Midi-Pyrénées', 'Nord-Pas-de-Calais', 'Pays de la Loire',
+  'Picardie', 'Poitou-Charentes', "Provence-Alpes-Côte d'Azur", 'Rhône-Alpes'
+];
+const CONQUERABLE_REGIONS = REGIONS_LIST.filter(r => r !== 'Île-de-France');
+
+// Mapping région → alliance (synchro avec carte-inscrits.html)
+const ALLIANCES = {
+  A: { name: 'Alliance A', color: '#3b82f6', devise: 'Honneur du Nord' },
+  B: { name: 'Alliance B', color: '#dc2626', devise: 'Force du Sud' },
+  C: { name: 'Alliance C', color: '#16a34a', devise: 'Vigilance du Centre' },
+  D: { name: 'Alliance D', color: '#ca8a04', devise: 'Noblesse de l\'Ouest' },
+  IDF: { name: 'Île-de-France', color: '#888888', devise: 'Neutre' }
+};
+const REGION_TO_ALLIANCE = {
+  'Alsace': 'A', 'Bretagne': 'A', 'Basse-Normandie': 'A', 'Rhône-Alpes': 'A', 'Corse': 'A',
+  'Nord-Pas-de-Calais': 'B', 'Bourgogne': 'B', "Provence-Alpes-Côte d'Azur": 'B', 'Aquitaine': 'B', 'Midi-Pyrénées': 'B',
+  'Picardie': 'C', 'Haute-Normandie': 'C', 'Centre': 'C', 'Franche-Comté': 'C', 'Auvergne': 'C',
+  'Lorraine': 'D', 'Pays de la Loire': 'D', 'Champagne-Ardenne': 'D', 'Poitou-Charentes': 'D', 'Languedoc-Roussillon': 'D', 'Limousin': 'D',
+  'Île-de-France': 'IDF'
+};
+
+// Régions utilisées pour le seed démo (2 par alliance, équilibré visuellement)
 const DEMO_REGIONS = [
-  'Bretagne', 'Aquitaine', 'Provence-Alpes-Côte d\'Azur', 'Alsace',
-  'Nord-Pas-de-Calais', 'Rhône-Alpes', 'Pays de la Loire', 'Champagne-Ardenne'
+  'Bretagne', 'Rhône-Alpes',                  // A
+  'Aquitaine', "Provence-Alpes-Côte d'Azur",  // B
+  'Picardie', 'Centre',                       // C
+  'Pays de la Loire', 'Champagne-Ardenne'     // D
 ];
 const DEMO_FACTIONS = [
   'Empire', 'Bretonnia', 'Hauts Elfes', 'Orques & Gobelins',
@@ -559,32 +598,113 @@ $('#tbody-champions').addEventListener('click', async (e) => {
   }
 
   if (btn.dataset.action === 'edit-champion') {
-    const result = await modal(`
-      <h2>Éditer le champion</h2>
-      <label><span>Pseudo</span><input id="m-pseudo" value="${escapeHtml(champ.pseudo)}"></label>
-      <label><span>Email (clé)</span><input id="m-email" value="${escapeHtml(champ.email)}"></label>
-      <label><span>Région</span><input id="m-region" value="${escapeHtml(champ.region)}"></label>
-      <label><span>Faction</span><input id="m-faction" value="${escapeHtml(champ.faction || '')}"></label>
-      <label><span>Story (background du champion)</span><textarea id="m-story" rows="3">${escapeHtml(champ.story || '')}</textarea></label>
-      <div class="modal-actions">
-        <button onclick="closeModal(null)">Annuler</button>
-        <button class="primary" onclick="closeModal({
-          pseudo: document.getElementById('m-pseudo').value,
-          email: document.getElementById('m-email').value,
-          region: document.getElementById('m-region').value,
-          faction: document.getElementById('m-faction').value,
-          story: document.getElementById('m-story').value
-        })">Enregistrer</button>
-      </div>
-    `);
+    const result = await modal(championFormHtml(champ, false));
     if (!result) return;
-    const { error } = await sb.from('champions').update(result).eq('id', id);
+    const { addToPaid, ...payload } = result;
+    const { error } = await sb.from('champions').update(payload).eq('id', id);
     if (error) return showBanner('err', 'Mise à jour échouée : ' + error.message);
     showBanner('ok', 'Champion mis à jour.');
     await loadChampions();
     refreshDashboard();
   }
 });
+
+// ============================ Forge admin (création) =====================
+function championFormHtml(champ, isNew) {
+  const c = champ || {};
+  const opts = REGIONS_LIST.map(r => {
+    const al = REGION_TO_ALLIANCE[r];
+    const tag = al === 'IDF' ? ' — neutre' : ` — Alliance ${al}`;
+    const sel = c.region === r ? 'selected' : '';
+    return `<option value="${escapeHtml(r)}" ${sel}>${escapeHtml(r)}${tag}</option>`;
+  }).join('');
+  return `
+    <h2>${isNew ? '⚒ Forger un nouveau champion' : '✎ Éditer le champion'}</h2>
+    <label><span>Email (clé) ${isNew ? '*' : '(non modifiable)'}</span>
+      <input id="m-email" type="email" value="${escapeHtml(c.email || '')}" ${isNew ? 'required' : 'readonly'} />
+    </label>
+    ${isNew ? `
+    <label style="display:flex;align-items:center;gap:0.5em;margin-top:-0.5em">
+      <input type="checkbox" id="m-add-paid" style="width:auto" checked>
+      <span style="margin:0">Ajouter aussi à <code>paid_users</code> (sinon la personne ne pourra plus auto-éditer son champion)</span>
+    </label>` : ''}
+    <label><span>Pseudo *</span><input id="m-pseudo" value="${escapeHtml(c.pseudo || '')}" required></label>
+    <label><span>Faction</span><input id="m-faction" value="${escapeHtml(c.faction || '')}" placeholder="Empire, Bretonnia, ..."></label>
+    <label><span>Région *</span><select id="m-region" required>${opts}</select></label>
+    <div style="font-size:0.85rem;color:var(--text-dim);margin:-0.5em 0 1em;display:flex;align-items:center;gap:0.4em;flex-wrap:wrap">
+      Forcer alliance (pioche aléatoire dans l'alliance) :
+      <button type="button" onclick="adminPickRegion('A')" style="padding:0.2em 0.6em;background:#3b82f6;color:white;border:0">A</button>
+      <button type="button" onclick="adminPickRegion('B')" style="padding:0.2em 0.6em;background:#dc2626;color:white;border:0">B</button>
+      <button type="button" onclick="adminPickRegion('C')" style="padding:0.2em 0.6em;background:#16a34a;color:white;border:0">C</button>
+      <button type="button" onclick="adminPickRegion('D')" style="padding:0.2em 0.6em;background:#ca8a04;color:white;border:0">D</button>
+    </div>
+    <label><span>Story (background du champion)</span><textarea id="m-story" rows="3">${escapeHtml(c.story || '')}</textarea></label>
+    <label style="display:flex;align-items:center;gap:0.5em">
+      <input type="checkbox" id="m-parisian" style="width:auto" ${c.is_parisian_redistributed ? 'checked' : ''}>
+      <span style="margin:0">Marqué comme « parisien redistribué » (info indicative seulement)</span>
+    </label>
+    <div class="modal-actions">
+      <button onclick="closeModal(null)">Annuler</button>
+      <button class="primary" onclick="(() => {
+        const email = document.getElementById('m-email').value.trim().toLowerCase();
+        const pseudo = document.getElementById('m-pseudo').value.trim();
+        const region = document.getElementById('m-region').value;
+        if (!email || !pseudo || !region) { alert('Email, pseudo et région sont obligatoires.'); return; }
+        closeModal({
+          email, pseudo, region,
+          faction: document.getElementById('m-faction').value.trim() || null,
+          story: document.getElementById('m-story').value.trim() || null,
+          is_parisian_redistributed: document.getElementById('m-parisian').checked,
+          addToPaid: ${isNew} && document.getElementById('m-add-paid')?.checked
+        });
+      })()">${isNew ? '⚒ Forger' : '✓ Enregistrer'}</button>
+    </div>
+  `;
+}
+
+window.adminPickRegion = (allianceLetter) => {
+  const regions = Object.entries(REGION_TO_ALLIANCE)
+    .filter(([_, a]) => a === allianceLetter)
+    .map(([r]) => r);
+  if (!regions.length) return;
+  const pick = regions[Math.floor(Math.random() * regions.length)];
+  const sel = document.getElementById('m-region');
+  if (sel) sel.value = pick;
+};
+
+$('#forge-champion').addEventListener('click', async () => {
+  const result = await modal(championFormHtml({}, true));
+  if (!result) return;
+  const { addToPaid, ...champPayload } = result;
+
+  // Si demandé : insérer d'abord dans paid_users (upsert pour idempotence)
+  if (addToPaid) {
+    const { error: errPaid } = await sb.from('paid_users').upsert(
+      { email: champPayload.email, prenom: 'Forgé', nom: champPayload.pseudo },
+      { onConflict: 'email' }
+    );
+    if (errPaid) {
+      showBanner('err', 'Échec ajout paid_users : ' + errPaid.message);
+      return;
+    }
+  }
+
+  // Insérer le champion
+  const { error } = await sb.from('champions').insert({ ...champPayload, heroes: [] });
+  if (error) return showBanner('err', 'Forge échouée : ' + error.message);
+  showBanner('ok', `Champion forgé : ${champPayload.pseudo} (${champPayload.region})`);
+  await loadAll();
+});
+
+async function copyForgeLink(email) {
+  const url = `${FORGE_URL}?email=${encodeURIComponent(email)}`;
+  try {
+    await navigator.clipboard.writeText(url);
+    showBanner('ok', `Lien copié dans le presse-papier (${email})`);
+  } catch {
+    window.prompt('Copie ce lien manuellement (Ctrl+C) :', url);
+  }
+}
 
 function renderPayeurs() {
   const q = ($('#search-payeurs').value || '').toLowerCase();
@@ -607,6 +727,7 @@ function renderPayeurs() {
       <td class="muted">${escapeHtml(p.ville || '—')}</td>
       <td class="muted">${formatDate(p.imported_at)}</td>
       <td><div class="actions">
+        <button data-action="copy-link" data-email="${escapeHtml(p.email)}">📋 Lien</button>
         <button data-action="delete-payeur" data-id="${escapeHtml(p.id)}" class="danger">Suppr.</button>
       </div></td>
     </tr>
@@ -644,6 +765,9 @@ $('#add-payeur').addEventListener('click', async () => {
 });
 
 $('#tbody-payeurs').addEventListener('click', async (e) => {
+  const copyBtn = e.target.closest('button[data-action="copy-link"]');
+  if (copyBtn) { await copyForgeLink(copyBtn.dataset.email); return; }
+
   const btn = e.target.closest('button[data-action="delete-payeur"]');
   if (!btn) return;
   const id = btn.dataset.id;
@@ -691,11 +815,17 @@ Les Stratèges du Vieux Monde × Fédération France The Old World`);
         <td class="muted">${formatDate(p.imported_at)}</td>
         <td><div class="actions">
           <a href="${mailto}"><button>✉ Mail</button></a>
-          <a href="${FORGE_URL}?email=${encodeURIComponent(p.email)}" target="_blank"><button class="ghost">🔗 Lien forge</button></a>
+          <button data-action="copy-link" data-email="${escapeHtml(p.email)}">📋 Copier lien</button>
         </div></td>
       </tr>`;
   }).join('');
 }
+
+$('#tbody-relances').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-action="copy-link"]');
+  if (!btn) return;
+  await copyForgeLink(btn.dataset.email);
+});
 
 function logDemo(line) {
   const el = $('#demo-log');
