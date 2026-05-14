@@ -1110,16 +1110,26 @@ async function regenerateTerritories() {
     for (const [regName, here] of Object.entries(byRegion)) {
       const c = regionCentroids[regName];
       if (!c) continue;
+      const ally = REGION_TO_ALLIANCE[regName];
+      if (!ally || ally === 'IDF') continue;
       const anchors = layoutChampionPositions(here.length, c[0], c[1]);
       for (let i = 0; i < here.length; i++) {
         const ch = here[i];
         const [ax, ay] = anchors[i];
         for (let idx = 0; idx < 5; idx++) {
           const [ox, oy] = SEED_OFFSETS[idx];
-          const jx = (Math.random() - 0.5) * 3; // jitter anti-dégénéré
+          const jx = (Math.random() - 0.5) * 3;
           const jy = (Math.random() - 0.5) * 3;
+          // Payload complet : si la cell n'existe pas (champion créé hors trigger),
+          // l'upsert l'insère ; si elle existe, seules les colonnes du payload sont
+          // mises à jour (NOT NULL préservé).
           updates.push({
             id: ch.email + '#' + idx,
+            cluster_owner_email: ch.email,
+            cluster_index: idx,
+            current_alliance: ally,
+            current_owner_email: ch.email,
+            original_alliance: ally,
             seed_x: Number((ax + ox + jx).toFixed(2)),
             seed_y: Number((ay + oy + jy).toFixed(2))
           });
