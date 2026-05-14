@@ -146,6 +146,42 @@ header .actions a:hover, header .actions button:hover { transform: translateY(-1
   width: 100%; height: auto;
   max-height: 78vh;
   display: block;
+  cursor: grab;
+  touch-action: none;
+}
+.map-frame svg#map.dragging { cursor: grabbing; }
+.map-zoom-controls {
+  position: absolute;
+  top: 16px; right: 16px;
+  display: flex; flex-direction: column;
+  gap: 4px;
+  z-index: 20;
+  background: rgba(10,8,6,0.85);
+  border: 1px solid var(--gold-d);
+  border-radius: 4px;
+  padding: 4px;
+  user-select: none;
+}
+.map-zoom-controls button {
+  width: 32px; height: 32px;
+  background: var(--bg3);
+  color: var(--parch);
+  border: 1px solid var(--gold-d);
+  border-radius: 2px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+.map-zoom-controls button:hover { background: var(--gold-d); color: #000; }
+.map-zoom-level {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  margin-top: 2px;
+  letter-spacing: 0.05em;
 }
 .map-tooltip {
   position: absolute;
@@ -350,6 +386,12 @@ footer a:hover { color: var(--gold); }
 
     <div class="map-frame">
       <div class="map-tooltip" id="map-tooltip"></div>
+      <div class="map-zoom-controls">
+        <button id="zoom-in" title="Zoomer (ou molette de souris)" aria-label="Zoomer">+</button>
+        <button id="zoom-out" title="Dézoomer" aria-label="Dézoomer">−</button>
+        <button id="zoom-reset" title="Vue complète" aria-label="Réinitialiser">⛶</button>
+        <div class="map-zoom-level" id="zoom-level">100%</div>
+      </div>
       <svg id="map" viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid meet"></svg>
     </div>
   </main>
@@ -889,9 +931,167 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('champ-list').innerHTML = '<div class="empty"><span class="spinner"></span> Chargement…</div>';
   renderScoreboard();
   renderMap();
+  setupMapZoom();
   champions = await fetchChampions();
   renderAll();
 });
+
+/* ==========================================================================
+   ZOOM & PAN sur la carte (manipulation viewBox SVG)
+   ========================================================================== */
+function setupMapZoom() {
+  const svg = document.getElementById('map');
+  if (!svg) return;
+
+  const ORIG = { x: 0, y: 0, w: 1000, h: 900 };
+  let vb = { ...ORIG };
+  const MIN_W = 100;       // zoom max = 10×
+  const MAX_W = ORIG.w;    // zoom min = vue complète
+
+  function apply() {
+    svg.setAttribute('viewBox', `${vb.x.toFixed(2)} ${vb.y.toFixed(2)} ${vb.w.toFixed(2)} ${vb.h.toFixed(2)}`);
+    const pct = Math.round(MAX_W / vb.w * 100);
+    const lvl = document.getElementById('zoom-level');
+    if (lvl) lvl.textContent = pct + '%';
+  }
+
+  function clamp() {
+    vb.x = Math.max(ORIG.x, Math.min(vb.x, ORIG.x + ORIG.w - vb.w));
+    vb.y = Math.max(ORIG.y, Math.min(vb.y, ORIG.y + ORIG.h - vb.h));
+  }
+
+  function zoomAt(cx, cy, factor) {
+    const newW = Math.max(MIN_W, Math.min(MAX_W, vb.w * factor));
+    const newH = newW * (ORIG.h / ORIG.w);
+    const rx = (cx - vb.x) / vb.w;
+    const ry = (cy - vb.y) / vb.h;
+    vb.x = cx - rx * newW;
+    vb.y = cy - ry * newH;
+    vb.w = newW; vb.h = newH;
+    clamp(); apply();
+  }
+
+  function svgPoint(clientX, clientY) {
+    const pt = svg.createSVGPoint();
+    pt.x = clientX; pt.y = clientY;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return { x: ORIG.w / 2, y: ORIG.h / 2 };
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  // ─── Wheel zoom ─────────────────────────────────────────────
+  svg.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const p = svgPoint(e.clientX, e.clientY);
+    const factor = e.deltaY < 0 ? 0.85 : 1.18;
+    zoomAt(p.x, p.y, factor);
+  }, { passive: false });
+
+  // ─── Pan via drag (souris) ──────────────────────────────────
+  let dragging = false, dragStart = null, moved = false;
+
+  svg.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    const r = svg.getBoundingClientRect();
+    dragging = true; moved = false;
+    dragStart = {
+      cx: e.clientX, cy: e.clientY,
+      vbx: vb.x, vby: vb.y,
+      sx: vb.w / r.width,
+      sy: vb.h / r.height
+    };
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - dragStart.cx;
+    const dy = e.clientY - dragStart.cy;
+    if (!moved && Math.hypot(dx, dy) > 3) {
+      moved = true;
+      svg.classList.add('dragging');
+    }
+    if (!moved) return;
+    vb.x = dragStart.vbx - dx * dragStart.sx;
+    vb.y = dragStart.vby - dy * dragStart.sy;
+    clamp(); apply();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    svg.classList.remove('dragging');
+    // Garder `moved` à true brièvement pour bloquer le click qui va suivre
+    setTimeout(() => { moved = false; }, 0);
+  });
+
+  // Bloquer le click si on a dragué (capture phase pour précéder les handlers existants)
+  svg.addEventListener('click', (e) => {
+    if (moved) { e.stopPropagation(); e.preventDefault(); }
+  }, true);
+
+  // ─── Pan/zoom tactile (mobile) — pinch + 1-finger drag ──────
+  let touchState = null;
+  svg.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      const r = svg.getBoundingClientRect();
+      touchState = {
+        type: 'pan',
+        cx: e.touches[0].clientX, cy: e.touches[0].clientY,
+        vbx: vb.x, vby: vb.y,
+        sx: vb.w / r.width, sy: vb.h / r.height
+      };
+    } else if (e.touches.length === 2) {
+      const [a, b] = e.touches;
+      touchState = {
+        type: 'pinch',
+        dist: Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY),
+        midClient: { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 },
+        midSvg: svgPoint((a.clientX + b.clientX) / 2, (a.clientY + b.clientY) / 2),
+        startW: vb.w
+      };
+    }
+  }, { passive: true });
+
+  svg.addEventListener('touchmove', (e) => {
+    if (!touchState) return;
+    if (touchState.type === 'pan' && e.touches.length === 1) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - touchState.cx;
+      const dy = e.touches[0].clientY - touchState.cy;
+      vb.x = touchState.vbx - dx * touchState.sx;
+      vb.y = touchState.vby - dy * touchState.sy;
+      clamp(); apply();
+    } else if (touchState.type === 'pinch' && e.touches.length === 2) {
+      e.preventDefault();
+      const [a, b] = e.touches;
+      const newDist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+      const factor = touchState.dist / newDist;
+      const targetW = Math.max(MIN_W, Math.min(MAX_W, touchState.startW * factor));
+      const targetH = targetW * (ORIG.h / ORIG.w);
+      const rx = (touchState.midSvg.x - vb.x) / vb.w;
+      const ry = (touchState.midSvg.y - vb.y) / vb.h;
+      vb.x = touchState.midSvg.x - rx * targetW;
+      vb.y = touchState.midSvg.y - ry * targetH;
+      vb.w = targetW; vb.h = targetH;
+      clamp(); apply();
+    }
+  }, { passive: false });
+
+  svg.addEventListener('touchend', () => { touchState = null; }, { passive: true });
+
+  // ─── Boutons UI ─────────────────────────────────────────────
+  document.getElementById('zoom-in')?.addEventListener('click', () => {
+    zoomAt(vb.x + vb.w / 2, vb.y + vb.h / 2, 0.75);
+  });
+  document.getElementById('zoom-out')?.addEventListener('click', () => {
+    zoomAt(vb.x + vb.w / 2, vb.y + vb.h / 2, 1.33);
+  });
+  document.getElementById('zoom-reset')?.addEventListener('click', () => {
+    vb = { ...ORIG }; apply();
+  });
+
+  apply();
+}
 
 // Fermer modal au clic sur overlay ou Escape
 document.addEventListener('click', evt => {
