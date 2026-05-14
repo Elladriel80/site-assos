@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Admin — InterRégions 2026</title>
+<style>
+  :root {
+    --bg: #1a1410;
+    --bg-2: #241c16;
+    --bg-3: #2d241c;
+    --border: #3b2f25;
+    --text: #e8dcc9;
+    --text-dim: #a99680;
+    --gold: #c9a35d;
+    --gold-bright: #e8c280;
+    --danger: #c0392b;
+    --danger-bright: #e74c3c;
+    --ok: #5a8a5a;
+    --warn: #c9883a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; color: var(--gold-bright); margin: 0 0 0.5em; }
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.2rem; }
+  a { color: var(--gold); }
+  button {
+    font: inherit;
+    background: var(--bg-3);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.5em 1em;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  button:hover:not(:disabled) { background: var(--border); border-color: var(--gold); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.primary { background: var(--gold); color: var(--bg); border-color: var(--gold-bright); font-weight: bold; }
+  button.primary:hover:not(:disabled) { background: var(--gold-bright); }
+  button.danger { background: var(--danger); color: white; border-color: var(--danger); }
+  button.danger:hover:not(:disabled) { background: var(--danger-bright); border-color: var(--danger-bright); }
+  button.ghost { background: transparent; }
+  input, select, textarea {
+    font: inherit;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.5em 0.75em;
+    border-radius: 3px;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
+  label { display: block; margin-bottom: 1em; }
+  label > span { display: block; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 0.25em; }
+
+  header.topbar {
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    padding: 1em 1.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1em;
+  }
+  header.topbar h1 { margin: 0; }
+  header.topbar .user { color: var(--text-dim); font-size: 0.9rem; }
+  header.topbar .user strong { color: var(--gold); }
+
+  nav.tabs {
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5em;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  nav.tabs button {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    padding: 0.75em 1.25em;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  nav.tabs button:hover { background: var(--bg-3); color: var(--text); }
+  nav.tabs button.active { color: var(--gold-bright); border-bottom-color: var(--gold); }
+
+  main { padding: 1.5em; max-width: 1400px; margin: 0 auto; }
+
+  .toolbar {
+    display: flex;
+    gap: 0.75em;
+    align-items: center;
+    margin-bottom: 1em;
+    flex-wrap: wrap;
+  }
+  .toolbar input.search { width: 320px; max-width: 100%; }
+  .toolbar .count { color: var(--text-dim); margin-left: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  th, td { padding: 0.6em 0.8em; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: var(--bg-3); color: var(--gold); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(201, 163, 93, 0.04); }
+  td .actions { display: flex; gap: 0.4em; }
+  td .actions button { padding: 0.3em 0.6em; font-size: 0.85rem; }
+  td.muted { color: var(--text-dim); }
+  td.email { font-family: 'Menlo', 'Consolas', monospace; font-size: 0.85rem; }
+
+  .empty-state { padding: 3em 1em; text-align: center; color: var(--text-dim); }
+
+  .login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2em;
+  }
+  .login-card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2em;
+    max-width: 380px;
+    width: 100%;
+  }
+  .login-card h1 { text-align: center; margin-bottom: 1.5em; }
+
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    padding: 1em;
+  }
+  .modal {
+    background: var(--bg-2);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 1.5em;
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-actions { display: flex; gap: 0.75em; justify-content: flex-end; margin-top: 1em; }
+
+  .banner {
+    padding: 0.75em 1em;
+    border-radius: 3px;
+    margin-bottom: 1em;
+    border: 1px solid;
+  }
+  .banner.ok { background: rgba(90,138,90,0.15); border-color: var(--ok); color: #b8d6b8; }
+  .banner.err { background: rgba(192,57,43,0.15); border-color: var(--danger); color: #f3a89e; }
+  .banner.warn { background: rgba(201,136,58,0.15); border-color: var(--warn); color: #e6c89a; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1em; margin-bottom: 1.5em; }
+  .stat {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1em;
+  }
+  .stat .label { color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat .value { font-size: 2rem; color: var(--gold-bright); font-family: Georgia, serif; }
+
+  [hidden] { display: none !important; }
+  .spinner { display: inline-block; width: 1em; height: 1em; border: 2px solid var(--gold); border-right-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: -2px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="view-login" class="login-wrap">
+  <form id="login-form" class="login-card">
+    <h1>⚔️ Admin InterRégions</h1>
+    <div id="login-error" class="banner err" hidden></div>
+    <label>
+      <span>Email</span>
+      <input type="email" id="login-email" autocomplete="email" required />
+    </label>
+    <label>
+      <span>Mot de passe</span>
+      <input type="password" id="login-password" autocomplete="current-password" required />
+    </label>
+    <button type="submit" class="primary" style="width:100%" id="login-submit">Se connecter</button>
+    <p style="color:var(--text-dim);font-size:0.8rem;text-align:center;margin-top:1.5em">
+      Compte créé dans Supabase Dashboard.<br>
+      Mot de passe oublié ? → réinitialisation via Dashboard Auth.
+    </p>
+  </form>
+</div>
+
+<div id="view-admin" hidden>
+  <header class="topbar">
+    <h1>⚔️ Admin InterRégions 2026</h1>
+    <div>
+      <span class="user">Connecté : <strong id="admin-email"></strong></span>
+      <button id="logout-btn" class="ghost" style="margin-left:1em">Se déconnecter</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="dashboard" class="active">📊 Tableau de bord</button>
+    <button data-tab="champions">⚔️ Champions</button>
+    <button data-tab="payeurs">💰 Payeurs</button>
+    <button data-tab="relances">📧 Relances</button>
+    <button data-tab="demo">🎭 Démo</button>
+  </nav>
+
+  <main>
+    <div id="global-banner" class="banner" hidden></div>
+
+    <section data-pane="dashboard">
+      <div class="stats">
+        <div class="stat"><div class="label">Payeurs</div><div class="value" id="stat-paid">—</div></div>
+        <div class="stat"><div class="label">Champions forgés</div><div class="value" id="stat-champions">—</div></div>
+        <div class="stat"><div class="label">À relancer</div><div class="value" id="stat-relance">—</div></div>
+        <div class="stat"><div class="label">Régions occupées</div><div class="value" id="stat-regions">—</div></div>
+      </div>
+      <div class="banner warn" style="margin-top:1em">
+        💡 <strong>Pour la démo équipe</strong> : onglet « Démo » → bouton « Injecter 8 champions fictifs » pour avoir une carte vivante à montrer. Puis « Nettoyer les données démo » pour revenir à l'état réel.
+      </div>
+    </section>
+
+    <section data-pane="champions" hidden>
+      <h2>Champions inscrits</h2>
+      <div class="toolbar">
+        <input type="search" class="search" id="search-champions" placeholder="Rechercher par pseudo, email, région…" />
+        <button id="refresh-champions">↻ Rafraîchir</button>
+        <span class="count" id="count-champions"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Pseudo</th>
+            <th>Email</th>
+            <th>Région</th>
+            <th>Faction</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-champions">
+          <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section data-pane="payeurs" hidden>
+      <h2>Payeurs (whitelist AssoConnect)</h2>
+      <div class="toolbar">
+        <input type="search" class="search" id="search-payeurs" placeholder="Rechercher par nom, prénom, email…" />
+        <button id="add-payeur">+ Ajouter un payeur</button>
+        <button id="refresh-payeurs">↻ Rafraîchir</button>
+        <span class="count" id="count-payeurs"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Code postal</th>
+            <th>Ville</th>
+            <th>Importé le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-payeurs">
+          <tr><td colspan="7" class="empty-state">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section data-pane="relances" hidden>
+      <h2>À relancer — payeurs sans champion forgé</h2>
+      <p style="color:var(--text-dim);max-width:60ch">
+        Ces personnes ont payé sur AssoConnect mais n'ont pas (encore) rempli la forge.
+        Le bouton « ✉ Mail » ouvre ton client mail avec un brouillon pré-rempli incluant le lien forge personnalisé.
+      </p>
+      <div class="toolbar">
+        <button id="refresh-relances">↻ Rafraîchir</button>
+        <span class="count" id="count-relances"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Payé le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-relances">
+          <tr><td colspan="5" class="empty-state">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section data-pane="demo" hidden>
+      <h2>Mode démo (présentation équipe)</h2>
+      <div class="banner warn">
+        ⚠️ <strong>Les données « démo » sont reconnaissables à leur email se terminant par <code>@interregions-2026.local</code></strong>. Le bouton « Nettoyer » ne supprime que ces lignes — tes vrais inscrits ne sont jamais touchés.
+      </div>
+      <p style="max-width:60ch">
+        Injecter 8 champions fictifs répartis dans 8 régions différentes, avec leurs payeurs associés. Idéal pour montrer la carte vivante à l'équipe avant que les vraies inscriptions ne remplissent la base.
+      </p>
+      <div style="display:flex; gap:1em; flex-wrap:wrap">
+        <button class="primary" id="seed-demo">🎭 Injecter 8 champions fictifs</button>
+        <button class="danger" id="clear-demo">🧹 Nettoyer les données démo</button>
+      </div>
+      <div id="demo-log" style="margin-top:1em; font-family:Menlo,Consolas,monospace; font-size:0.85rem; color:var(--text-dim); white-space:pre-wrap"></div>
+    </section>
+
+  </main>
+</div>
+
+<div id="modal-host"></div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// =========================================================================
+// CONFIG — clés extraites de carte-inscrits.html (publiques, safe)
+// =========================================================================
+const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
+const FORGE_URL = 'https://inter-tow.netlify.app/inscription-champion.html';
+
+const DEMO_REGIONS = [
+  'Bretagne', 'Aquitaine', 'Provence-Alpes-Côte d\'Azur', 'Alsace',
+  'Nord-Pas-de-Calais', 'Rhône-Alpes', 'Pays de la Loire', 'Champagne-Ardenne'
+];
+const DEMO_FACTIONS = [
+  'Empire', 'Bretonnia', 'Hauts Elfes', 'Orques & Gobelins',
+  'Rois des Tombes', 'Nains', 'Royaumes Ogres', 'Hommes Lézards'
+];
+const DEMO_PSEUDOS = [
+  'Mordrek le Hardi', 'Dame Ysolde', 'Théoden d\'Avelorn', 'Grimgor Têtefer',
+  'Khâtep le Liche', 'Borin Barbe-Rouge', 'Greasus le Gras', 'Lord Mazdamundi'
+];
+const DEMO_EMAIL_SUFFIX = '@interregions-2026.local';
+
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true }
+});
+
+let state = { user: null, champions: [], payeurs: [], activeTab: 'dashboard' };
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function showBanner(type, msg, timeout = 4000) {
+  const b = $('#global-banner');
+  b.className = 'banner ' + type;
+  b.textContent = msg;
+  b.hidden = false;
+  if (timeout) setTimeout(() => { b.hidden = true; }, timeout);
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('fr-FR') + ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function modal(html) {
+  return new Promise((resolve) => {
+    const host = $('#modal-host');
+    host.innerHTML = `<div class="modal-backdrop"><div class="modal">${html}</div></div>`;
+    host._resolve = resolve;
+  });
+}
+function closeModal(value) {
+  const host = $('#modal-host');
+  if (host._resolve) host._resolve(value);
+  host.innerHTML = '';
+  host._resolve = null;
+}
+window.closeModal = closeModal;
+
+async function checkSession() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { showLogin(); return; }
+
+  const { data: isAdmin, error } = await sb.rpc('is_admin');
+  if (error || !isAdmin) {
+    await sb.auth.signOut();
+    showLogin('Compte authentifié mais pas admin. Demande à un admin de t\'ajouter dans la table admin_users.');
+    return;
+  }
+
+  state.user = session.user;
+  showAdmin();
+}
+
+function showLogin(errorMsg) {
+  $('#view-login').hidden = false;
+  $('#view-admin').hidden = true;
+  if (errorMsg) {
+    $('#login-error').textContent = errorMsg;
+    $('#login-error').hidden = false;
+  }
+}
+
+function showAdmin() {
+  $('#view-login').hidden = true;
+  $('#view-admin').hidden = false;
+  $('#admin-email').textContent = state.user.email;
+  switchTab('dashboard');
+  loadAll();
+}
+
+$('#login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const submit = $('#login-submit');
+  submit.disabled = true; submit.innerHTML = '<span class="spinner"></span> Connexion…';
+  $('#login-error').hidden = true;
+
+  const email = $('#login-email').value.trim();
+  const password = $('#login-password').value;
+
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    $('#login-error').textContent = error.message || 'Échec de connexion.';
+    $('#login-error').hidden = false;
+    submit.disabled = false; submit.textContent = 'Se connecter';
+    return;
+  }
+  submit.textContent = 'Vérification…';
+  await checkSession();
+  submit.disabled = false; submit.textContent = 'Se connecter';
+});
+
+$('#logout-btn').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  state.user = null;
+  $('#view-admin').hidden = true;
+  $('#view-login').hidden = false;
+  $('#login-email').value = '';
+  $('#login-password').value = '';
+});
+
+$$('nav.tabs button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+
+function switchTab(tab) {
+  state.activeTab = tab;
+  $$('nav.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  $$('section[data-pane]').forEach(s => s.hidden = (s.dataset.pane !== tab));
+}
+
+async function loadAll() {
+  await Promise.all([loadChampions(), loadPayeurs()]);
+  refreshDashboard();
+  renderRelances();
+}
+
+async function loadChampions() {
+  $('#tbody-champions').innerHTML = '<tr><td colspan="6" class="empty-state">Chargement…</td></tr>';
+  const { data, error } = await sb.from('champions').select('*').order('created_at', { ascending: false });
+  if (error) { showBanner('err', 'Erreur chargement champions : ' + error.message); return; }
+  state.champions = data || [];
+  renderChampions();
+}
+
+async function loadPayeurs() {
+  $('#tbody-payeurs').innerHTML = '<tr><td colspan="7" class="empty-state">Chargement…</td></tr>';
+  const { data, error } = await sb.from('paid_users').select('*').order('imported_at', { ascending: false });
+  if (error) { showBanner('err', 'Erreur chargement payeurs : ' + error.message); return; }
+  state.payeurs = data || [];
+  renderPayeurs();
+}
+
+$('#refresh-champions').addEventListener('click', loadChampions);
+$('#refresh-payeurs').addEventListener('click', loadPayeurs);
+$('#refresh-relances').addEventListener('click', loadAll);
+
+function refreshDashboard() {
+  $('#stat-paid').textContent = state.payeurs.length;
+  $('#stat-champions').textContent = state.champions.length;
+  const champEmails = new Set(state.champions.map(c => (c.email || '').toLowerCase()));
+  const relance = state.payeurs.filter(p => !champEmails.has((p.email || '').toLowerCase()));
+  $('#stat-relance').textContent = relance.length;
+  const regions = new Set(state.champions.map(c => c.region).filter(Boolean));
+  $('#stat-regions').textContent = regions.size;
+}
+
+function renderChampions() {
+  const q = ($('#search-champions').value || '').toLowerCase();
+  const rows = state.champions.filter(c => {
+    if (!q) return true;
+    return [c.pseudo, c.email, c.region, c.faction].some(v => (v || '').toLowerCase().includes(q));
+  });
+  $('#count-champions').textContent = `${rows.length} / ${state.champions.length}`;
+  const tbody = $('#tbody-champions');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Aucun champion.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(c => `
+    <tr data-id="${escapeHtml(c.id)}">
+      <td><strong>${escapeHtml(c.pseudo)}</strong></td>
+      <td class="email">${escapeHtml(c.email)}</td>
+      <td>${escapeHtml(c.region)}${c.is_parisian_redistributed ? ' <span style="color:var(--warn)">(redist.)</span>' : ''}</td>
+      <td class="muted">${escapeHtml(c.faction || '—')}</td>
+      <td class="muted">${formatDate(c.created_at)}</td>
+      <td><div class="actions">
+        <button data-action="edit-champion" data-id="${escapeHtml(c.id)}">Éditer</button>
+        <button data-action="delete-champion" data-id="${escapeHtml(c.id)}" class="danger">Suppr.</button>
+      </div></td>
+    </tr>
+  `).join('');
+}
+
+$('#search-champions').addEventListener('input', renderChampions);
+
+$('#tbody-champions').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-action]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const champ = state.champions.find(c => c.id === id);
+  if (!champ) return;
+
+  if (btn.dataset.action === 'delete-champion') {
+    if (!confirm(`Supprimer le champion « ${champ.pseudo} » (${champ.email}) ?\n\nLa ligne paid_users n'est PAS supprimée — la personne pourra reforger son champion si elle le souhaite.`)) return;
+    const { error } = await sb.from('champions').delete().eq('id', id);
+    if (error) return showBanner('err', 'Suppression échouée : ' + error.message);
+    showBanner('ok', 'Champion supprimé.');
+    await loadChampions();
+    refreshDashboard(); renderRelances();
+    return;
+  }
+
+  if (btn.dataset.action === 'edit-champion') {
+    const result = await modal(`
+      <h2>Éditer le champion</h2>
+      <label><span>Pseudo</span><input id="m-pseudo" value="${escapeHtml(champ.pseudo)}"></label>
+      <label><span>Email (clé)</span><input id="m-email" value="${escapeHtml(champ.email)}"></label>
+      <label><span>Région</span><input id="m-region" value="${escapeHtml(champ.region)}"></label>
+      <label><span>Faction</span><input id="m-faction" value="${escapeHtml(champ.faction || '')}"></label>
+      <label><span>Story (background du champion)</span><textarea id="m-story" rows="3">${escapeHtml(champ.story || '')}</textarea></label>
+      <div class="modal-actions">
+        <button onclick="closeModal(null)">Annuler</button>
+        <button class="primary" onclick="closeModal({
+          pseudo: document.getElementById('m-pseudo').value,
+          email: document.getElementById('m-email').value,
+          region: document.getElementById('m-region').value,
+          faction: document.getElementById('m-faction').value,
+          story: document.getElementById('m-story').value
+        })">Enregistrer</button>
+      </div>
+    `);
+    if (!result) return;
+    const { error } = await sb.from('champions').update(result).eq('id', id);
+    if (error) return showBanner('err', 'Mise à jour échouée : ' + error.message);
+    showBanner('ok', 'Champion mis à jour.');
+    await loadChampions();
+    refreshDashboard();
+  }
+});
+
+function renderPayeurs() {
+  const q = ($('#search-payeurs').value || '').toLowerCase();
+  const rows = state.payeurs.filter(p => {
+    if (!q) return true;
+    return [p.prenom, p.nom, p.email, p.ville, p.code_postal].some(v => (v || '').toLowerCase().includes(q));
+  });
+  $('#count-payeurs').textContent = `${rows.length} / ${state.payeurs.length}`;
+  const tbody = $('#tbody-payeurs');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Aucun payeur.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(p => `
+    <tr data-id="${escapeHtml(p.id)}">
+      <td>${escapeHtml(p.prenom || '—')}</td>
+      <td><strong>${escapeHtml(p.nom || '—')}</strong></td>
+      <td class="email">${escapeHtml(p.email)}</td>
+      <td class="muted">${escapeHtml(p.code_postal || '—')}</td>
+      <td class="muted">${escapeHtml(p.ville || '—')}</td>
+      <td class="muted">${formatDate(p.imported_at)}</td>
+      <td><div class="actions">
+        <button data-action="delete-payeur" data-id="${escapeHtml(p.id)}" class="danger">Suppr.</button>
+      </div></td>
+    </tr>
+  `).join('');
+}
+
+$('#search-payeurs').addEventListener('input', renderPayeurs);
+
+$('#add-payeur').addEventListener('click', async () => {
+  const result = await modal(`
+    <h2>Ajouter un payeur manuel</h2>
+    <p style="color:var(--text-dim);margin-top:-0.5em">Pour les inscriptions hors AssoConnect (espèces, virement, etc.)</p>
+    <label><span>Email *</span><input id="p-email" type="email" required></label>
+    <label><span>Prénom</span><input id="p-prenom"></label>
+    <label><span>Nom</span><input id="p-nom"></label>
+    <label><span>Code postal</span><input id="p-cp"></label>
+    <label><span>Ville</span><input id="p-ville"></label>
+    <div class="modal-actions">
+      <button onclick="closeModal(null)">Annuler</button>
+      <button class="primary" onclick="closeModal({
+        email: document.getElementById('p-email').value.trim().toLowerCase(),
+        prenom: document.getElementById('p-prenom').value.trim() || null,
+        nom: document.getElementById('p-nom').value.trim() || null,
+        code_postal: document.getElementById('p-cp').value.trim() || null,
+        ville: document.getElementById('p-ville').value.trim() || null
+      })">Ajouter</button>
+    </div>
+  `);
+  if (!result || !result.email) return;
+  const { error } = await sb.from('paid_users').insert(result);
+  if (error) return showBanner('err', 'Ajout échoué : ' + error.message);
+  showBanner('ok', `Payeur ajouté : ${result.email}`);
+  await loadPayeurs();
+  refreshDashboard(); renderRelances();
+});
+
+$('#tbody-payeurs').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-action="delete-payeur"]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const p = state.payeurs.find(x => x.id === id);
+  if (!p) return;
+  const champEmails = new Set(state.champions.map(c => (c.email || '').toLowerCase()));
+  const hasChampion = champEmails.has((p.email || '').toLowerCase());
+  let msg = `Supprimer le payeur « ${p.prenom || ''} ${p.nom || ''} » (${p.email}) ?`;
+  if (hasChampion) msg += `\n\n⚠️ Cette personne a forgé un champion. Le champion existant sera conservé mais ne pourra plus être édité par la personne (puisqu'elle ne sera plus dans la whitelist).`;
+  if (!confirm(msg)) return;
+  const { error } = await sb.from('paid_users').delete().eq('id', id);
+  if (error) return showBanner('err', 'Suppression échouée : ' + error.message);
+  showBanner('ok', 'Payeur supprimé.');
+  await loadPayeurs();
+  refreshDashboard(); renderRelances();
+});
+
+function renderRelances() {
+  const champEmails = new Set(state.champions.map(c => (c.email || '').toLowerCase()));
+  const relance = state.payeurs.filter(p => !champEmails.has((p.email || '').toLowerCase()));
+  $('#count-relances').textContent = `${relance.length} à relancer`;
+  const tbody = $('#tbody-relances');
+  if (!relance.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">🎉 Tous les payeurs ont forgé leur champion.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = relance.map(p => {
+    const subject = encodeURIComponent('InterRégions 2026 — Finalise ton inscription');
+    const body = encodeURIComponent(
+`Bonjour ${p.prenom || ''},
+
+Merci pour ton inscription au tournoi InterRégions 2026 (7-8 nov, Troyes) !
+Il te reste une étape pour finaliser : forger ton champion (blason + région d'origine).
+
+👉 Forge ton champion : ${FORGE_URL}?email=${encodeURIComponent(p.email)}
+
+À très vite sur les tables,
+Les Stratèges du Vieux Monde × Fédération France The Old World`);
+    const mailto = `mailto:${encodeURIComponent(p.email)}?subject=${subject}&body=${body}`;
+    return `
+      <tr>
+        <td>${escapeHtml(p.prenom || '—')}</td>
+        <td><strong>${escapeHtml(p.nom || '—')}</strong></td>
+        <td class="email">${escapeHtml(p.email)}</td>
+        <td class="muted">${formatDate(p.imported_at)}</td>
+        <td><div class="actions">
+          <a href="${mailto}"><button>✉ Mail</button></a>
+          <a href="${FORGE_URL}?email=${encodeURIComponent(p.email)}" target="_blank"><button class="ghost">🔗 Lien forge</button></a>
+        </div></td>
+      </tr>`;
+  }).join('');
+}
+
+function logDemo(line) {
+  const el = $('#demo-log');
+  el.textContent = (el.textContent ? el.textContent + '\n' : '') + line;
+}
+function clearDemoLog() { $('#demo-log').textContent = ''; }
+
+$('#seed-demo').addEventListener('click', async () => {
+  if (!confirm('Injecter 8 payeurs + 8 champions fictifs ?\nLes emails se termineront par @interregions-2026.local pour les distinguer facilement.')) return;
+  clearDemoLog();
+  const btn = $('#seed-demo'); btn.disabled = true;
+
+  const payeurs = DEMO_PSEUDOS.map((_, i) => ({
+    email: `demo-${i+1}${DEMO_EMAIL_SUFFIX}`,
+    prenom: 'Demo',
+    nom: DEMO_PSEUDOS[i].split(' ')[0],
+    code_postal: '10000',
+    ville: 'Troyes'
+  }));
+  logDemo(`→ Insertion de ${payeurs.length} payeurs démo…`);
+  const { error: e1 } = await sb.from('paid_users').upsert(payeurs, { onConflict: 'email' });
+  if (e1) { logDemo('✖ Échec payeurs : ' + e1.message); btn.disabled = false; return; }
+  logDemo('✓ Payeurs ok');
+
+  const champions = DEMO_PSEUDOS.map((pseudo, i) => ({
+    email: `demo-${i+1}${DEMO_EMAIL_SUFFIX}`,
+    pseudo,
+    faction: DEMO_FACTIONS[i],
+    region: DEMO_REGIONS[i],
+    is_parisian_redistributed: false,
+    blason: null,
+    story: 'Champion démo généré pour présentation équipe.',
+    heroes: []
+  }));
+  logDemo(`→ Insertion de ${champions.length} champions démo…`);
+  const { error: e2 } = await sb.from('champions').upsert(champions, { onConflict: 'email' });
+  if (e2) { logDemo('✖ Échec champions : ' + e2.message + '\n💡 La valeur d\'une région est peut-être incorrecte. Vérifie la constante DEMO_REGIONS en haut du fichier admin.html.'); btn.disabled = false; return; }
+  logDemo('✓ Champions ok');
+  logDemo('✓ Seed démo terminé.');
+
+  showBanner('ok', '8 champions de démo injectés.');
+  await loadAll();
+  btn.disabled = false;
+});
+
+$('#clear-demo').addEventListener('click', async () => {
+  if (!confirm(`Supprimer TOUTES les données dont l'email se termine par ${DEMO_EMAIL_SUFFIX} ?\n\nLes vrais inscrits ne sont jamais touchés.`)) return;
+  clearDemoLog();
+  const btn = $('#clear-demo'); btn.disabled = true;
+
+  logDemo('→ Suppression des champions démo…');
+  const { error: e1, count: c1 } = await sb.from('champions').delete({ count: 'exact' }).like('email', `%${DEMO_EMAIL_SUFFIX}`);
+  if (e1) { logDemo('✖ Échec champions : ' + e1.message); btn.disabled = false; return; }
+  logDemo(`✓ ${c1 ?? '?'} champions supprimés`);
+
+  logDemo('→ Suppression des payeurs démo…');
+  const { error: e2, count: c2 } = await sb.from('paid_users').delete({ count: 'exact' }).like('email', `%${DEMO_EMAIL_SUFFIX}`);
+  if (e2) { logDemo('✖ Échec payeurs : ' + e2.message); btn.disabled = false; return; }
+  logDemo(`✓ ${c2 ?? '?'} payeurs supprimés`);
+  logDemo('✓ Nettoyage terminé.');
+
+  showBanner('ok', 'Données démo supprimées.');
+  await loadAll();
+  btn.disabled = false;
+});
+
+checkSession();
+</script>
+
+</body>
+</html>
