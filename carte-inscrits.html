@@ -478,6 +478,7 @@ const HERALDIC_CHARGES = {
    STATE
    ========================================================================== */
 let champions = [];           // toutes les inscriptions
+let cells     = [];           // territoires (Risk Géant) — 5 par champion
 let regionCentroids = {};
 let selectedRegion = null;
 
@@ -610,8 +611,17 @@ async function fetchChampions() {
   return data || [];
 }
 
+async function fetchCells() {
+  const { data, error } = await sb.from('cells').select('*');
+  if (error) {
+    console.warn('Cellules indisponibles (la migration phase 2a est-elle appliquée ?) :', error.message);
+    return [];
+  }
+  return data || [];
+}
+
 async function refreshChampions() {
-  champions = await fetchChampions();
+  [champions, cells] = await Promise.all([fetchChampions(), fetchCells()]);
   renderAll();
 }
 
@@ -639,6 +649,17 @@ function initCentroids() {
     const c = geoFeatureCentroid(feat);
     if (!isNaN(c[0])) regionCentroids[feat.properties.nom] = c;
   }
+}
+
+// Path SVG d'un hexagone flat-top centré en (cx, cy), rayon R (centre → sommet).
+// Côtés plats en haut/bas, sommets pointus à gauche/droite.
+function hexPath(cx, cy, R) {
+  const pts = [];
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i;  // 0°, 60°, 120°, ...
+    pts.push(`${(cx + R * Math.cos(a)).toFixed(2)},${(cy + R * Math.sin(a)).toFixed(2)}`);
+  }
+  return `M${pts.join(' L')} Z`;
 }
 
 function layoutChampionPositions(n, cx, cy) {
@@ -694,8 +715,26 @@ function renderMap() {
   }
   h += '</g>';
 
-  // 3. Champions à l'intérieur des régions (mini écussons)
-  h += '<g class="layer-champions">';
+  // 3. Cellules (hex contigus, 5 par champion) + blasons des champions au centre du cluster
+  // Le cluster suit le champion (sa position dépend de layoutChampionPositions), mais
+  // la couleur de chaque hex est current_alliance de la cellule (peut différer après cession).
+  const HEX_R = 5.5;
+  const HEX_S3_2 = Math.sqrt(3) * HEX_R / 2;
+  const HEX_3_2 = 3 * HEX_R / 2;
+  const HEX_OFFSETS = [
+    [0, 0],            // 0 : centre
+    [HEX_S3_2, -HEX_3_2],   // 1 : NE
+    [-HEX_S3_2, -HEX_3_2],  // 2 : NW
+    [HEX_S3_2, HEX_3_2],    // 3 : SE
+    [-HEX_S3_2, HEX_3_2]    // 4 : SW
+  ];
+  const cellsByOwner = {};
+  for (const cell of cells) {
+    const k = cell.cluster_owner_email;
+    if (!cellsByOwner[k]) cellsByOwner[k] = [];
+    cellsByOwner[k].push(cell);
+  }
+  h += '<g class="layer-cells">';
   for (const name of Object.keys(REGION_TO_ALLIANCE)) {
     if (REGION_TO_ALLIANCE[name] === 'IDF') continue;
     const c = regionCentroids[name];
@@ -706,8 +745,20 @@ function renderMap() {
     for (let i = 0; i < here.length; i++) {
       const ch = here[i];
       const [px, py] = positions[i];
+      const myCells = (cellsByOwner[ch.email] || []).slice().sort((a, b) => a.cluster_index - b.cluster_index);
+      // Hex (derrière le blason)
+      for (const cell of myCells) {
+        const off = HEX_OFFSETS[cell.cluster_index];
+        if (!off) continue;
+        const color = ALLIANCES[cell.current_alliance]?.color || '#888';
+        h += `<path class="cell-hex" data-cell-id="${escapeHTML(cell.id)}"
+                d="${hexPath(px + off[0], py + off[1], HEX_R)}"
+                fill="${color}" fill-opacity="0.82"
+                stroke="#1a0a04" stroke-width="0.4"/>`;
+      }
+      // Blason au centre du cluster (devant les hex)
       h += `<g class="champion-marker" data-id="${escapeHTML(ch.id)}">
-        ${renderBlason(ch.blason, px, py, 0.65)}
+        ${renderBlason(ch.blason, px, py, 0.55)}
       </g>`;
     }
   }
@@ -932,7 +983,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderScoreboard();
   renderMap();
   setupMapZoom();
-  champions = await fetchChampions();
+  [champions, cells] = await Promise.all([fetchChampions(), fetchCells()]);
   renderAll();
 });
 
@@ -1103,7 +1154,7 @@ document.addEventListener('keydown', evt => {
 
 // Refresh auto toutes les 60s
 setInterval(async () => {
-  champions = await fetchChampions();
+  [champions, cells] = await Promise.all([fetchChampions(), fetchCells()]);
   renderAll();
 }, 60000);
 </script>
