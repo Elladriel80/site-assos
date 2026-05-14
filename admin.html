@@ -392,6 +392,24 @@ const DEMO_REGIONS = [
   'Picardie', 'Centre',                       // C
   'Pays de la Loire', 'Champagne-Ardenne'     // D
 ];
+
+// Constantes héraldiques (synchro avec carte-inscrits.html)
+const TINCTURES_HEX = ['#e7c878','#ececec','#b13a3a','#3a5a8a','#1a1a1a','#3a7a3a','#6a3a7a','#7a4a1a','#fffaee','#5e1a1a'];
+const SHIELD_SHAPES_LIST = ['heater','kite','round','banner','square'];
+const FIELD_TYPES = ['plain','per_pale','per_fess','quartered','per_bend'];
+const CHARGES_LIST = ['fleur','cross','crossPattee','star5','star6','sparkle','sun','moon','anchor','hammer','swords','scales','crown','diamond','circle','spiral','bolt','flame','skull'];
+
+const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+function randomBlason() {
+  let c1, c2;
+  do { c1 = pickRandom(TINCTURES_HEX); c2 = pickRandom(TINCTURES_HEX); } while (c1 === c2);
+  return {
+    shape: pickRandom(SHIELD_SHAPES_LIST),
+    field: { type: pickRandom(FIELD_TYPES), color1: c1, color2: c2 },
+    charge: { type: pickRandom(CHARGES_LIST), color: pickRandom(TINCTURES_HEX) }
+  };
+}
 const DEMO_FACTIONS = [
   'Empire', 'Bretonnia', 'Hauts Elfes', 'Orques & Gobelins',
   'Rois des Tombes', 'Nains', 'Royaumes Ogres', 'Hommes Lézards'
@@ -620,6 +638,9 @@ function championFormHtml(champ, isNew) {
   }).join('');
   return `
     <h2>${isNew ? '⚒ Forger un nouveau champion' : '✎ Éditer le champion'}</h2>
+    <div style="background:rgba(201,136,58,0.15);border:1px solid var(--warn);padding:0.6em 0.8em;border-radius:3px;margin-bottom:1em;font-size:0.9rem;line-height:1.4">
+      🛡️ <strong>Blason :</strong> ce formulaire ne gère que les champs textuels. Pour ${isNew ? 'forger avec un blason complet (forme, tinctures, charge…)' : 'modifier le blason'}, clique sur <strong>« 🛡️ Forge complète »</strong> en bas — ça ouvre la page d'inscription standard dans un nouvel onglet.
+    </div>
     <label><span>Email (clé) ${isNew ? '*' : '(non modifiable)'}</span>
       <input id="m-email" type="email" value="${escapeHtml(c.email || '')}" ${isNew ? 'required' : 'readonly'} />
     </label>
@@ -643,8 +664,14 @@ function championFormHtml(champ, isNew) {
       <input type="checkbox" id="m-parisian" style="width:auto" ${c.is_parisian_redistributed ? 'checked' : ''}>
       <span style="margin:0">Marqué comme « parisien redistribué » (info indicative seulement)</span>
     </label>
-    <div class="modal-actions">
+    <div class="modal-actions" style="flex-wrap:wrap">
       <button onclick="closeModal(null)">Annuler</button>
+      <button type="button" onclick="(() => {
+        const email = document.getElementById('m-email').value.trim().toLowerCase();
+        if (!email) { alert('Email obligatoire avant d\\'ouvrir la forge complète.'); return; }
+        const addToPaid = ${isNew} && document.getElementById('m-add-paid')?.checked;
+        adminOpenForgeFor(email, addToPaid);
+      })()" title="Ouvre inscription-champion.html avec l'éditeur visuel de blason">🛡️ Forge complète</button>
       <button class="primary" onclick="(() => {
         const email = document.getElementById('m-email').value.trim().toLowerCase();
         const pseudo = document.getElementById('m-pseudo').value.trim();
@@ -657,10 +684,28 @@ function championFormHtml(champ, isNew) {
           is_parisian_redistributed: document.getElementById('m-parisian').checked,
           addToPaid: ${isNew} && document.getElementById('m-add-paid')?.checked
         });
-      })()">${isNew ? '⚒ Forger' : '✓ Enregistrer'}</button>
+      })()">${isNew ? '⚒ Forger (sans blason)' : '✓ Enregistrer'}</button>
     </div>
   `;
 }
+
+window.adminOpenForgeFor = async (email, addToPaid) => {
+  if (addToPaid) {
+    const { error } = await sb.from('paid_users').upsert(
+      { email, prenom: 'Forgé', nom: '—' },
+      { onConflict: 'email' }
+    );
+    if (error) {
+      alert('Erreur paid_users : ' + error.message);
+      return;
+    }
+  }
+  closeModal(null);
+  window.open(`${FORGE_URL}?email=${encodeURIComponent(email)}`, '_blank', 'noopener');
+  // Refresh des données après ~5 sec pour récupérer les changements éventuels
+  setTimeout(() => loadAll(), 5000);
+  showBanner('ok', `Forge ouverte pour ${email}. Les données se rafraîchiront dans quelques secondes.`);
+};
 
 window.adminPickRegion = (allianceLetter) => {
   const regions = Object.entries(REGION_TO_ALLIANCE)
@@ -689,10 +734,10 @@ $('#forge-champion').addEventListener('click', async () => {
     }
   }
 
-  // Insérer le champion
-  const { error } = await sb.from('champions').insert({ ...champPayload, heroes: [] });
+  // Insérer le champion (blason aléatoire par défaut, modifiable ensuite via "Forge complète")
+  const { error } = await sb.from('champions').insert({ ...champPayload, blason: randomBlason(), heroes: [] });
   if (error) return showBanner('err', 'Forge échouée : ' + error.message);
-  showBanner('ok', `Champion forgé : ${champPayload.pseudo} (${champPayload.region})`);
+  showBanner('ok', `Champion forgé : ${champPayload.pseudo} (${champPayload.region}) — blason aléatoire attribué`);
   await loadAll();
 });
 
@@ -856,7 +901,7 @@ $('#seed-demo').addEventListener('click', async () => {
     faction: DEMO_FACTIONS[i],
     region: DEMO_REGIONS[i],
     is_parisian_redistributed: false,
-    blason: null,
+    blason: randomBlason(),
     story: 'Champion démo généré pour présentation équipe.',
     heroes: []
   }));
