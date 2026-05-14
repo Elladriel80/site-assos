@@ -33,12 +33,14 @@ begin
   if not public.is_admin() then
     raise exception 'reset_map() : admin only';
   end if;
+  -- WHERE explicite obligatoire (Supabase bloque les UPDATE/DELETE sans WHERE)
   update public.cells set
     current_alliance = original_alliance,
     current_owner_email = cluster_owner_email,
     seed_x = null,
-    seed_y = null;
-  delete from public.battles;
+    seed_y = null
+  where id is not null;
+  delete from public.battles where id is not null;
 end;
 $$;
 

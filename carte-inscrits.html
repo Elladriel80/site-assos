@@ -425,6 +425,7 @@ footer a:hover { color: var(--gold); }
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/delaunator@5"></script>
 <script src="https://cdn.jsdelivr.net/npm/d3-delaunay@6"></script>
 <script>
 /* ==========================================================================
@@ -672,7 +673,9 @@ function layoutChampionPositions(n, cx, cy) {
   if (n === 0) return [];
   const cols = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(n))));
   const rows = Math.ceil(n / cols);
-  const sp = 16;
+  // sp = espacement entre anchors. Doit être > 2 × SEED_R sinon les clusters
+  // de Voronoï de 2 champions voisins se chevauchent dans la même région.
+  const sp = 22;
   const startX = cx - ((cols - 1) * sp) / 2;
   const startY = cy + 2 - ((rows - 1) * sp) / 2;
   const pos = [];
@@ -702,6 +705,14 @@ function renderMap() {
   h += '<rect x="5" width="2.5" height="10" fill="#16a34a"/>';
   h += '<rect x="7.5" width="2.5" height="10" fill="#ca8a04"/>';
   h += '</pattern>';
+  // Filtre "frontière organique" : déforme les bords des cellules avec un bruit
+  // de Perlin pour casser le côté géométrique du Voronoï natif.
+  // Appliqué aux cellules AVANT clip-path (via nested <g>), donc la silhouette
+  // de la région reste nette mais les frontières internes ondulent.
+  h += `<filter id="org-edge" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="7" result="turb"/>
+    <feDisplacementMap in="SourceGraphic" in2="turb" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>`;
   for (const feat of FRANCE_GEOJSON.features) {
     const name = feat.properties.nom;
     const ally = REGION_TO_ALLIANCE[name];
@@ -768,7 +779,11 @@ function renderMap() {
       const points = seeded.map(c => [Number(c.seed_x), Number(c.seed_y)]);
       const delaunay = d3.Delaunay.from(points);
       const voronoi = delaunay.voronoi([0, 0, 1000, 900]);
+      // Nested wrapper : <g clip> contient <g filter> qui contient les paths.
+      // Ordre SVG : filtre s'applique d'abord (déforme les bords), puis clip
+      // → frontières internes ondulées + silhouette extérieure nette.
       h += `<g clip-path="url(#clip-region-${regionSlug(regName)})">`;
+      h += `<g filter="url(#org-edge)">`;
       for (let i = 0; i < seeded.length; i++) {
         const cell = seeded[i];
         const path = voronoi.renderCell(i);
@@ -776,9 +791,9 @@ function renderMap() {
         const color = ALLIANCES[cell.current_alliance]?.color || '#888';
         h += `<path class="cell-vor" data-cell-id="${escapeHTML(cell.id)}"
                 d="${path}" fill="${color}" fill-opacity="0.78"
-                stroke="#1a0a04" stroke-width="0.5" stroke-linejoin="round"/>`;
+                stroke="#1a0a04" stroke-width="0.7" stroke-linejoin="round"/>`;
       }
-      h += '</g>';
+      h += '</g></g>';
     }
     // Blasons par-dessus, centrés sur la position layout du champion
     for (const name of Object.keys(REGION_TO_ALLIANCE)) {
@@ -1094,13 +1109,15 @@ async function regenerateTerritories() {
     const freshChampions = await fetchChampions();
 
     // 3. Calculer les seeds pour chaque cellule (5 par champion, en cluster)
-    const SEED_OFFSETS = [
-      [0, 0],       // centre
-      [10, 0],      // E
-      [-10, 0],     // W
-      [0, 10],      // S
-      [0, -10]      // N
-    ];
+    // 5 seeds en pentagone régulier autour du blason (aucun au centre).
+    // SEED_R doit être < (sp_anchors / 2) sinon clusters voisins se chevauchent.
+    // sp_anchors = 22 → SEED_R = 6 → distance min inter-cluster ≈ 10 unités.
+    const SEED_R = 6;
+    const SEED_OFFSETS = [];
+    for (let p = 0; p < 5; p++) {
+      const angle = (Math.PI * 2 * p / 5) - Math.PI / 2; // -90° puis +72° à chaque étape
+      SEED_OFFSETS.push([Math.cos(angle) * SEED_R, Math.sin(angle) * SEED_R]);
+    }
     const byRegion = {};
     for (const ch of freshChampions) {
       if (!ch.region || REGION_TO_ALLIANCE[ch.region] === 'IDF') continue;
