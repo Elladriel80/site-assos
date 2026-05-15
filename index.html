@@ -766,56 +766,104 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     <h2 class="section-title">🗺 Conquête</h2>
     <p class="section-sub">⚔ Un Risk géant à l'échelle de la France ⚔</p>
 
-    <div class="scroll reveal">
-      <h3>⚔ La méta-partie du week-end</h3>
-      <p>En parallèle des trois axes de jeu (Compétitif, Narratif, Libre), <strong style="color:var(--gold)">tous les participants prennent part à une partie géante de Risk</strong> sur la carte de France. Chaque champion défend les couleurs de sa région d'origine, et chaque bataille gagnée ou perdue déplace les frontières des alliances au fil du week-end.</p>
-      <p>À l'inscription, chaque joueur reçoit son <strong>blason personnalisé</strong> (forme, couleurs, charge héraldique) et <strong>5 territoires</strong> au cœur de sa région. Sa <strong>couleur d'alliance</strong> est déterminée automatiquement par sa région d'origine — 4 alliances se partagent les 22 régions pré-2016.</p>
+    <!-- ============ INTRO ============ -->
+    <div class="scroll reveal" style="max-width:720px;margin:2rem auto;text-align:left;line-height:1.75">
+      <p style="font-size:1.05rem;margin:0 0 1rem">
+        En parallèle des trois axes de jeu, <strong style="color:var(--gold)">chaque participant prend part à une partie géante de Risk</strong> sur la carte de France.
+      </p>
+      <p style="margin:0">
+        À l'inscription, tu reçois ton <strong>blason personnalisé</strong> et <strong>5 territoires</strong> au cœur de ta région. À chaque ronde, tes victoires et défaites <strong>repoussent les frontières des 4 alliances</strong> qui se disputent le Vieux Monde.
+      </p>
     </div>
 
-    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">⚜ Les 4 Alliances ⚜</h3>
-    <p class="section-sub">22 régions partagées en 4 camps · 1 zone neutre</p>
+    <!-- ============ LES 4 ALLIANCES ============ -->
+    <h3 class="section-title" style="font-size:1.5rem;margin-top:4rem;text-align:center">⚜ Les 4 Alliances ⚜</h3>
+    <p class="section-sub" style="text-align:center;margin-bottom:2rem">22 régions partagées en 4 camps</p>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1.5rem">
-      <div style="background:rgba(59,130,246,0.10);border:2px solid #3b82f6;padding:1rem 1.2rem;border-radius:6px">
-        <h3 style="color:#3b82f6;font-family:'Cinzel',serif;margin:0">⚜ Alliance A</h3>
-        <p style="font-style:italic;color:var(--parch-dk);margin:.2rem 0 .8rem;font-size:.9rem">Honneur du Nord</p>
-        <p style="font-size:.85rem;margin:0">Alsace · Bretagne · Basse-Normandie · Rhône-Alpes · Corse</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;max-width:1100px;margin:0 auto">
+
+      <!-- Alliance A -->
+      <div style="background:rgba(15,15,15,0.45);border:1px solid #3b82f6;border-left:5px solid #3b82f6;border-radius:6px;padding:1.5rem 1.6rem">
+        <h3 style="color:#3b82f6;font-family:'Cinzel',serif;margin:0;font-size:1.4rem;letter-spacing:.05em">Alliance A</h3>
+        <p style="font-style:italic;color:var(--parch-dk);margin:.3rem 0 1.1rem;font-size:.95rem">« Honneur du Nord »</p>
+        <ul style="margin:0;padding-left:1.3rem;font-size:.95rem;line-height:2;color:var(--parch)">
+          <li>Alsace</li>
+          <li>Bretagne</li>
+          <li>Basse-Normandie</li>
+          <li>Rhône-Alpes</li>
+          <li>Corse</li>
+        </ul>
       </div>
-      <div style="background:rgba(220,38,38,0.10);border:2px solid #dc2626;padding:1rem 1.2rem;border-radius:6px">
-        <h3 style="color:#dc2626;font-family:'Cinzel',serif;margin:0">⚜ Alliance B</h3>
-        <p style="font-style:italic;color:var(--parch-dk);margin:.2rem 0 .8rem;font-size:.9rem">Force du Sud</p>
-        <p style="font-size:.85rem;margin:0">Aquitaine · Bourgogne · Midi-Pyrénées · Nord-Pas-de-Calais · Provence-Alpes-Côte d'Azur</p>
+
+      <!-- Alliance B -->
+      <div style="background:rgba(15,15,15,0.45);border:1px solid #dc2626;border-left:5px solid #dc2626;border-radius:6px;padding:1.5rem 1.6rem">
+        <h3 style="color:#dc2626;font-family:'Cinzel',serif;margin:0;font-size:1.4rem;letter-spacing:.05em">Alliance B</h3>
+        <p style="font-style:italic;color:var(--parch-dk);margin:.3rem 0 1.1rem;font-size:.95rem">« Force du Sud »</p>
+        <ul style="margin:0;padding-left:1.3rem;font-size:.95rem;line-height:2;color:var(--parch)">
+          <li>Aquitaine</li>
+          <li>Bourgogne</li>
+          <li>Midi-Pyrénées</li>
+          <li>Nord-Pas-de-Calais</li>
+          <li>Provence-Alpes-Côte d'Azur</li>
+        </ul>
       </div>
-      <div style="background:rgba(22,163,74,0.10);border:2px solid #16a34a;padding:1rem 1.2rem;border-radius:6px">
-        <h3 style="color:#16a34a;font-family:'Cinzel',serif;margin:0">⚜ Alliance C</h3>
-        <p style="font-style:italic;color:var(--parch-dk);margin:.2rem 0 .8rem;font-size:.9rem">Vigilance du Centre</p>
-        <p style="font-size:.85rem;margin:0">Auvergne · Centre · Franche-Comté · Haute-Normandie · Picardie</p>
+
+      <!-- Alliance C -->
+      <div style="background:rgba(15,15,15,0.45);border:1px solid #16a34a;border-left:5px solid #16a34a;border-radius:6px;padding:1.5rem 1.6rem">
+        <h3 style="color:#16a34a;font-family:'Cinzel',serif;margin:0;font-size:1.4rem;letter-spacing:.05em">Alliance C</h3>
+        <p style="font-style:italic;color:var(--parch-dk);margin:.3rem 0 1.1rem;font-size:.95rem">« Vigilance du Centre »</p>
+        <ul style="margin:0;padding-left:1.3rem;font-size:.95rem;line-height:2;color:var(--parch)">
+          <li>Auvergne</li>
+          <li>Centre</li>
+          <li>Franche-Comté</li>
+          <li>Haute-Normandie</li>
+          <li>Picardie</li>
+        </ul>
       </div>
-      <div style="background:rgba(202,138,4,0.10);border:2px solid #ca8a04;padding:1rem 1.2rem;border-radius:6px">
-        <h3 style="color:#ca8a04;font-family:'Cinzel',serif;margin:0">⚜ Alliance D</h3>
-        <p style="font-style:italic;color:var(--parch-dk);margin:.2rem 0 .8rem;font-size:.9rem">Noblesse de l'Ouest</p>
-        <p style="font-size:.85rem;margin:0">Champagne-Ardenne · Languedoc-Roussillon · Limousin · Lorraine · Pays de la Loire · Poitou-Charentes</p>
+
+      <!-- Alliance D -->
+      <div style="background:rgba(15,15,15,0.45);border:1px solid #ca8a04;border-left:5px solid #ca8a04;border-radius:6px;padding:1.5rem 1.6rem">
+        <h3 style="color:#ca8a04;font-family:'Cinzel',serif;margin:0;font-size:1.4rem;letter-spacing:.05em">Alliance D</h3>
+        <p style="font-style:italic;color:var(--parch-dk);margin:.3rem 0 1.1rem;font-size:.95rem">« Noblesse de l'Ouest »</p>
+        <ul style="margin:0;padding-left:1.3rem;font-size:.95rem;line-height:2;color:var(--parch)">
+          <li>Champagne-Ardenne</li>
+          <li>Languedoc-Roussillon</li>
+          <li>Limousin</li>
+          <li>Lorraine</li>
+          <li>Pays de la Loire</li>
+          <li>Poitou-Charentes</li>
+        </ul>
       </div>
+
     </div>
 
-    <div style="margin-top:1.2rem;background:repeating-linear-gradient(45deg,rgba(59,130,246,0.06),rgba(59,130,246,0.06) 8px,rgba(220,38,38,0.06) 8px,rgba(220,38,38,0.06) 16px,rgba(22,163,74,0.06) 16px,rgba(22,163,74,0.06) 24px,rgba(202,138,4,0.06) 24px,rgba(202,138,4,0.06) 32px);border:2px dashed #aaa;padding:1rem 1.2rem;border-radius:6px">
-      <h3 style="color:#ccc;font-family:'Cinzel',serif;margin:0">🏛 Île-de-France — Zone Neutre</h3>
-      <p style="font-size:.95rem;margin-top:.8rem">Paris est le <strong>cœur du Royaume</strong> et ne participe pas à la conquête. <strong style="color:var(--gold)">Les Parisiens combattent pour l'une des 3 alliances les moins peuplées</strong> au moment de leur inscription — une redistribution automatique qui rééquilibre les camps les plus en difficulté et garantit que personne ne se retrouve seul à défendre sa zone d'origine.</p>
+    <!-- ============ IDF ZONE NEUTRE ============ -->
+    <div style="max-width:720px;margin:2.5rem auto 0;background:rgba(15,15,15,0.45);border:1px solid var(--gold-d);border-radius:6px;padding:1.5rem 1.8rem;text-align:center">
+      <h3 style="color:var(--gold-l);font-family:'Cinzel',serif;margin:0;font-size:1.25rem">🏛 Île-de-France · Zone Neutre</h3>
+      <p style="margin:1rem 0 0;font-size:.98rem;line-height:1.75">
+        Paris est le <strong>cœur du Royaume</strong> et ne participe pas à la conquête.
+      </p>
+      <p style="margin:.6rem 0 0;font-size:.98rem;line-height:1.75">
+        <strong style="color:var(--gold)">Les Parisiens combattent pour l'une des 3 alliances les moins peuplées</strong>, choisie à l'inscription — un mécanisme qui rééquilibre les camps en difficulté.
+      </p>
     </div>
 
-    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">⚔ La mécanique des batailles ⚔</h3>
-    <p class="section-sub">Chaque partie compte · chaque territoire se gagne</p>
+    <!-- ============ MECANIQUE ============ -->
+    <h3 class="section-title" style="font-size:1.5rem;margin-top:4rem;text-align:center">⚔ Mécanique des batailles ⚔</h3>
+    <p class="section-sub" style="text-align:center;margin-bottom:2rem">Chaque partie compte · chaque territoire se gagne</p>
 
-    <div class="scroll reveal">
-      <p>À chaque ronde, les résultats des parties (tous axes confondus) sont reportés sur la carte. <strong style="color:var(--gold)">Quand tu remportes une partie, tu prends 1 territoire à ton adversaire</strong> : la cellule de son cluster la plus proche du tien passe à ta couleur, créant une frontière qui progresse géographiquement vers son camp.</p>
-      <p>Au fil des <strong>5 rondes</strong>, la carte se redessine en temps réel. Certaines alliances s'étendent, d'autres reculent, et de nouvelles frontières apparaissent là où les batailles ont basculé. <strong>L'alliance vainqueure</strong> est celle qui contrôle le plus de territoires à la fin du week-end.</p>
-      <p style="font-style:italic;color:var(--parch-dk);font-size:.9rem">L'objectif n'est pas seulement de gagner ses parties — c'est aussi de défendre l'honneur de sa région et de tracer les nouvelles frontières du Vieux Monde aux côtés de ses alliés.</p>
+    <div class="scroll reveal" style="max-width:720px;margin:0 auto;line-height:1.8">
+      <p style="margin:0 0 1rem">À chaque ronde, les résultats de tes parties (tous axes confondus) sont reportés sur la carte.</p>
+      <p style="margin:0 0 1rem"><strong style="color:var(--gold)">Quand tu remportes une partie, tu prends 1 territoire à ton adversaire.</strong> La cellule de son cluster la plus proche du tien passe à ta couleur — une frontière qui progresse géographiquement vers son camp.</p>
+      <p style="margin:0 0 1rem">Au fil des <strong>5 rondes</strong>, la carte se redessine en temps réel. L'<strong style="color:var(--gold)">alliance victorieuse</strong> est celle qui contrôle le plus de territoires à la fin du week-end.</p>
+      <p style="margin:0;font-style:italic;color:var(--parch-dk);font-size:.92rem;border-top:1px solid var(--gold-d);padding-top:1rem">L'objectif n'est pas seulement de gagner ses parties — c'est aussi de défendre l'honneur de sa région et de tracer les nouvelles frontières du Vieux Monde aux côtés de ses alliés.</p>
     </div>
 
-    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">🗺 Carte vivante</h3>
-    <p class="section-sub">État courant des alliances — mis à jour au fil des inscriptions et des batailles</p>
+    <!-- ============ CARTE LIVE ============ -->
+    <h3 class="section-title" style="font-size:1.5rem;margin-top:4rem;text-align:center">🗺 Carte vivante</h3>
+    <p class="section-sub" style="text-align:center;margin-bottom:1.5rem">État courant des alliances · mis à jour au fil des inscriptions et des batailles</p>
 
-    <div style="margin-top:1rem;border:1px solid var(--gold-d);border-radius:4px;overflow:hidden;background:#000">
+    <div style="max-width:1100px;margin:0 auto;border:1px solid var(--gold-d);border-radius:6px;overflow:hidden;background:#000">
       <iframe src="carte-inscrits.html" style="width:100%;height:78vh;border:0;display:block" loading="lazy"></iframe>
     </div>
     <p style="text-align:center;margin-top:1rem">
