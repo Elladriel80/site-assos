@@ -224,6 +224,7 @@
     <button data-tab="dashboard" class="active">📊 Tableau de bord</button>
     <button data-tab="champions">⚔️ Champions</button>
     <button data-tab="payeurs">💰 Payeurs</button>
+    <button data-tab="equipes">🏆 Équipes</button>
     <button data-tab="relances">📧 Relances</button>
     <button data-tab="tournoi">⚔️ Tournoi</button>
     <button data-tab="carte">🗺 Carte</button>
@@ -307,6 +308,52 @@
         </thead>
         <tbody id="tbody-payeurs">
           <tr><td colspan="7" class="empty-state">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section data-pane="equipes" hidden>
+      <h2>Équipes</h2>
+      <p style="color:var(--text-dim);max-width:60ch">
+        Une ligne par capitaine (= payeur de type <code>equipe</code>). Le total compte le champion du capitaine + les coéquipiers invités via lien. Les équipes incomplètes sont affichées en haut.
+      </p>
+      <div class="toolbar">
+        <button id="refresh-equipes">↻ Rafraîchir</button>
+        <span class="count" id="count-equipes"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Capitaine</th>
+            <th>Email</th>
+            <th>Champion forgé ?</th>
+            <th>Coéquipiers</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-equipes">
+          <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
+        </tbody>
+      </table>
+
+      <h2 style="margin-top:2.5em">🔎 Incohérences</h2>
+      <p style="color:var(--text-dim);max-width:60ch">
+        Champions inscrits dont <strong>l'email n'est ni dans <code>paid_users</code>, ni rattaché à un capitaine via invitation</strong>. À vérifier le jour J (peut-être un faux compte, un test, ou un coéquipier dont le capitaine n'est pas encore importé).
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Pseudo</th>
+            <th>Email</th>
+            <th>Région</th>
+            <th>Invité par</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-incoherences">
+          <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
         </tbody>
       </table>
     </section>
@@ -614,6 +661,9 @@ function switchTab(tab) {
     populateTournoiSelects();
     loadCells();
     loadBattles();
+  }
+  if (tab === 'equipes') {
+    renderEquipes();
   }
 }
 
@@ -1245,6 +1295,98 @@ $('#t-tbody-battles').addEventListener('click', async (e) => {
   if (error) return showBanner('err', 'Erreur undo : ' + error.message);
   showBanner('ok', '⟲ Dernière bataille annulée');
   await Promise.all([loadCells(), loadBattles()]);
+});
+
+// =========================================================================
+// ONGLET ÉQUIPES + INCOHÉRENCES
+// =========================================================================
+function renderEquipes() {
+  // 1. Équipes : pour chaque payeur de type 'equipe'
+  const captains = state.payeurs.filter(p => p.inscription_type === 'equipe');
+  const teamData = captains.map(cap => {
+    const capEmail = (cap.email || '').toLowerCase();
+    const captainChamp = state.champions.find(c => (c.email || '').toLowerCase() === capEmail);
+    const teammates = state.champions.filter(c => (c.invited_by_email || '').toLowerCase() === capEmail);
+    const total = (captainChamp ? 1 : 0) + teammates.length;
+    const target = cap.expected_champions || 5;
+    return { cap, captainChamp, teammates, total, target };
+  }).sort((a, b) => {
+    const ratioA = a.total / a.target;
+    const ratioB = b.total / b.target;
+    return ratioA - ratioB; // incomplet en premier
+  });
+
+  $('#count-equipes').textContent = `${teamData.length} équipe${teamData.length > 1 ? 's' : ''}`;
+  const tbody = $('#tbody-equipes');
+  if (!teamData.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Aucune équipe. Importe un CSV AssoConnect contenant des inscriptions « équipe ».</td></tr>';
+  } else {
+    tbody.innerHTML = teamData.map(t => {
+      const cap = t.cap;
+      const capName = `${cap.prenom || ''} ${cap.nom || ''}`.trim() || '(sans nom)';
+      const capPseudo = t.captainChamp ? t.captainChamp.pseudo : '<em>pas encore forgé</em>';
+      const teammatesHtml = t.teammates.length
+        ? t.teammates.map(m => `<span style="background:rgba(201,163,93,0.12);padding:1px 7px;border-radius:3px;font-size:.82rem;margin:2px 2px 2px 0;display:inline-block">${escapeHtml(m.pseudo)}</span>`).join('')
+        : '<span class="muted">—</span>';
+      const ratio = t.total / t.target;
+      const statusColor = ratio >= 1 ? 'var(--ok)' : (ratio >= 0.5 ? 'var(--warn)' : 'var(--danger)');
+      const statusIcon = ratio >= 1 ? '✓ complète' : (t.total === 0 ? '✖ vide' : '⚠ incomplète');
+      const mailto = `mailto:${encodeURIComponent(cap.email)}?subject=${encodeURIComponent('InterRégions 2026 — Inscription de ton équipe')}&body=${encodeURIComponent(`Bonjour ${cap.prenom || ''},\n\nTu as payé pour une équipe de ${t.target} joueurs au tournoi InterRégions 2026. Actuellement, seulement ${t.total} champion${t.total > 1 ? 's sont inscrits' : ' est inscrit'} pour ton équipe.\n\nPour compléter ton équipe, va sur la forge :\nhttps://inter-tow.netlify.app/inscription-champion.html?email=${encodeURIComponent(cap.email)}\n\nUne fois sur la page de confirmation, génère des liens d'invitation pour tes coéquipiers et partage-les-leur.\n\nMerci !`)}`;
+      return `
+        <tr>
+          <td><strong>${escapeHtml(capName)}</strong>${cap.pseudo_assoconnect ? ` <span class="muted">[${escapeHtml(cap.pseudo_assoconnect)}]</span>` : ''}</td>
+          <td class="email">${escapeHtml(cap.email)}</td>
+          <td>${t.captainChamp ? `<strong>${escapeHtml(capPseudo)}</strong>` : capPseudo}</td>
+          <td>${teammatesHtml}</td>
+          <td><strong style="color:${statusColor}">${t.total} / ${t.target}</strong> <span style="color:${statusColor};font-size:.85rem">${statusIcon}</span></td>
+          <td>${ratio < 1 ? `<a href="${mailto}"><button>✉ Relancer</button></a>` : '<span class="muted">—</span>'}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  // 2. Incohérences : champions sans payeur valide
+  const payeurEmails = new Set(state.payeurs.map(p => (p.email || '').toLowerCase()));
+  const incoherences = state.champions.filter(c => {
+    const email = (c.email || '').toLowerCase();
+    const invitedBy = (c.invited_by_email || '').toLowerCase();
+    if (payeurEmails.has(email)) return false; // OK : champion = payeur
+    if (invitedBy && payeurEmails.has(invitedBy)) return false; // OK : coéquipier d'un payeur
+    return true; // Suspect
+  });
+  const tb2 = $('#tbody-incoherences');
+  if (!incoherences.length) {
+    tb2.innerHTML = '<tr><td colspan="6" class="empty-state">🎉 Aucune incohérence — tous les champions inscrits sont rattachés à un payeur.</td></tr>';
+  } else {
+    tb2.innerHTML = incoherences.map(c => `
+      <tr>
+        <td><strong>${escapeHtml(c.pseudo)}</strong></td>
+        <td class="email">${escapeHtml(c.email)}</td>
+        <td>${escapeHtml(c.region || '—')}</td>
+        <td class="muted">${escapeHtml(c.invited_by_email || '(personne)')}</td>
+        <td class="muted">${formatDate(c.created_at)}</td>
+        <td><button class="danger" data-action="delete-champion-inco" data-id="${escapeHtml(c.id)}">Suppr.</button></td>
+      </tr>`).join('');
+  }
+}
+
+$('#refresh-equipes').addEventListener('click', async () => {
+  await Promise.all([loadChampions(), loadPayeurs()]);
+  renderEquipes();
+});
+
+$('#tbody-incoherences').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-action="delete-champion-inco"]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const champ = state.champions.find(c => c.id === id);
+  if (!champ) return;
+  if (!confirm(`Supprimer le champion suspect « ${champ.pseudo} » (${champ.email}) ?\n\nLes 5 cellules associées seront aussi supprimées (CASCADE).`)) return;
+  const { error } = await sb.from('champions').delete().eq('id', id);
+  if (error) return showBanner('err', 'Suppression échouée : ' + error.message);
+  showBanner('ok', 'Champion suspect supprimé');
+  await loadChampions();
+  renderEquipes();
+  refreshDashboard();
 });
 
 // =========================================================================
