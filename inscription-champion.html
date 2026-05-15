@@ -421,6 +421,19 @@ footer a:hover { color: var(--gold); }
       </a>
     </div>
 
+    <!-- Section "Inviter mes coéquipiers" — uniquement en mode standard (capitaine ou solo) -->
+    <div id="invite-section" hidden style="margin-top:24px;padding:18px 20px;background:rgba(15,15,15,0.45);border:1px solid var(--gold-d);border-radius:4px">
+      <div style="font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">
+        👥 Tu joues en équipe ?
+      </div>
+      <p style="font-size:.95rem;line-height:1.55;color:var(--parch-d);margin-bottom:12px;">
+        Si tu es capitaine, génère un <strong style="color:var(--gold)">lien d'invitation personnel</strong> pour chacun de tes coéquipiers. Chaque lien permet à 1 personne de forger son champion sans avoir à payer (tu as déjà payé pour toute l'équipe).
+        <br><span style="font-size:.85rem;font-style:italic;color:var(--parch-dk);">Tu peux générer autant de liens que tu as de coéquipiers à inviter.</span>
+      </p>
+      <button id="btn-generate-invite" onclick="generateInvite()" class="btn">+ Générer un lien d'invitation</button>
+      <div id="invite-list" style="margin-top:12px;display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
     <p style="margin-top:18px;">
       <a href="carte-inscrits.html" class="btn">🗺 Voir la carte des joueurs →</a>
       <button class="btn secondary" onclick="editAgain()" style="margin-left:8px;">✏ Modifier mon joueur</button>
@@ -545,6 +558,8 @@ const HERALDIC_CHARGES = {
 let currentUser = null;       // ligne de paid_users
 let currentChampion = null;   // ligne de champions (si déjà inscrit)
 let isParisian = false;
+let inviteToken = null;       // si présent dans ?token=..., mode invité (skip check paid_users)
+let generatedInvites = [];    // tokens générés par le capitaine sur la page de confirmation
 let parisianRedirectChoice = null;
 let parisianOptions = [];
 
@@ -697,39 +712,75 @@ async function checkEmail() {
   btn.innerHTML = '<span class="spinner"></span>Vérification…';
 
   try {
-    // 1. Chercher dans paid_users
-    const { data: paid, error: e1 } = await sb
-      .from('paid_users')
-      .select('*')
-      .eq('email', email)
-      .maybeSingle();
+    if (inviteToken) {
+      // ============ MODE INVITÉ (coéquipier via lien capitaine) ============
+      // 1. Vérifier le token (existence + non utilisé)
+      const { data: invite, error: eT } = await sb
+        .from('team_invites')
+        .select('*')
+        .eq('token', inviteToken)
+        .maybeSingle();
+      if (eT) throw eT;
+      if (!invite) {
+        fb.innerHTML = `<div class="alert error"><strong>⚠ Lien d'invitation invalide.</strong><br>Le lien que tu as suivi n'existe pas. Demande à ton capitaine d'équipe de t'en regénérer un.</div>`;
+        return;
+      }
+      if (invite.used_at) {
+        fb.innerHTML = `<div class="alert error"><strong>⚠ Lien déjà utilisé.</strong><br>Ce lien a déjà servi à inscrire un champion. Demande à ton capitaine un nouveau lien si besoin.</div>`;
+        return;
+      }
+      // 2. Vérifier qu'aucun champion n'existe déjà pour cet email
+      const { data: existing, error: eC } = await sb
+        .from('champions')
+        .select('*')
+        .eq('email', email)
+        .maybeSingle();
+      if (eC) throw eC;
+      if (existing) {
+        fb.innerHTML = `<div class="alert error"><strong>⚠ Champion déjà existant.</strong><br>Un champion est déjà inscrit avec cet email (${escapeHTML(existing.pseudo)}). Utilise un autre email, ou demande à l'orga de te transmettre l'accès à ton inscription existante.</div>`;
+        return;
+      }
+      // 3. Construire un currentUser virtuel (pas de code postal → choix libre de région)
+      currentUser = { email, prenom: '', nom: '', code_postal: '', ville: '' };
+      isParisian = false;
+      currentChampion = null;
+    } else {
+      // ============ MODE STANDARD (capitaine ou solo, email AssoConnect) ============
+      // 1. Chercher dans paid_users
+      const { data: paid, error: e1 } = await sb
+        .from('paid_users')
+        .select('*')
+        .eq('email', email)
+        .maybeSingle();
 
-    if (e1) throw e1;
-    if (!paid) {
-      fb.innerHTML = `<div class="alert error">
-        <strong>⚠ Email non reconnu.</strong><br>
-        Cet email n'apparaît pas dans la liste des inscrits AssoConnect. Vérifie que :<br>
-        • Tu as bien finalisé ton paiement sur AssoConnect.<br>
-        • Tu utilises le même email que celui du paiement.<br>
-        • L'organisateur a bien importé la dernière liste (ça peut prendre quelques heures après ton paiement).<br>
-        En cas de doute : contacte l'organisateur via la <a href="https://inter-tow.netlify.app/" style="color:var(--gold);">page de l'événement</a>.
-      </div>`;
-      return;
+      if (e1) throw e1;
+      if (!paid) {
+        fb.innerHTML = `<div class="alert error">
+          <strong>⚠ Email non reconnu.</strong><br>
+          Cet email n'apparaît pas dans la liste des inscrits AssoConnect. Vérifie que :<br>
+          • Tu as bien finalisé ton paiement sur AssoConnect.<br>
+          • Tu utilises le même email que celui du paiement.<br>
+          • L'organisateur a bien importé la dernière liste (ça peut prendre quelques heures après ton paiement).<br>
+          • Si tu es un coéquipier (le capitaine a payé pour toi), demande-lui un <strong>lien d'invitation</strong>.<br>
+          En cas de doute : contacte l'organisateur via la <a href="https://inter-tow.netlify.app/" style="color:var(--gold);">page de l'événement</a>.
+        </div>`;
+        return;
+      }
+
+      currentUser = paid;
+      isParisian = postalToRegion(paid.code_postal) === 'Île-de-France';
+
+      // 2. Vérifier si un champion existe déjà pour cet email
+      const { data: champ, error: e2 } = await sb
+        .from('champions')
+        .select('*')
+        .eq('email', email)
+        .maybeSingle();
+      if (e2) throw e2;
+      currentChampion = champ;
     }
 
-    currentUser = paid;
-    isParisian = postalToRegion(paid.code_postal) === 'Île-de-France';
-
-    // 2. Vérifier si un champion existe déjà pour cet email
-    const { data: champ, error: e2 } = await sb
-      .from('champions')
-      .select('*')
-      .eq('email', email)
-      .maybeSingle();
-    if (e2) throw e2;
-    currentChampion = champ;
-
-    // 3. Préparer l'étape 2
+    // 3. Préparer l'étape 2 (commun aux 2 modes)
     await prepareForm();
     document.getElementById('step-email').hidden = true;
     document.getElementById('step-form').hidden = false;
@@ -861,20 +912,43 @@ async function submitChampion() {
   btn.innerHTML = '<span class="spinner"></span>Enregistrement…';
 
   try {
-    const payload = {
-      email: currentUser.email,
-      pseudo, faction: faction || null, region,
-      is_parisian_redistributed: !!isParisian,
-      blason, story: story || null, heroes: []
-    };
-    const { data, error } = await sb
-      .from('champions')
-      .upsert(payload, { onConflict: 'email' })
-      .select()
-      .single();
-    if (error) throw error;
-
-    currentChampion = data;
+    let savedChampion;
+    if (inviteToken) {
+      // ============ Mode invité : RPC forge_with_token ============
+      const { data: newId, error: errRpc } = await sb.rpc('forge_with_token', {
+        p_token: inviteToken,
+        p_email: currentUser.email,
+        p_pseudo: pseudo,
+        p_faction: faction || null,
+        p_region: region,
+        p_is_parisian_redistributed: !!isParisian,
+        p_blason: blason,
+        p_story: story || null,
+        p_heroes: []
+      });
+      if (errRpc) throw errRpc;
+      // Récupérer le champion créé pour l'afficher
+      const { data: fetched, error: errFetch } = await sb
+        .from('champions').select('*').eq('id', newId).single();
+      if (errFetch) throw errFetch;
+      savedChampion = fetched;
+    } else {
+      // ============ Mode standard : upsert direct ============
+      const payload = {
+        email: currentUser.email,
+        pseudo, faction: faction || null, region,
+        is_parisian_redistributed: !!isParisian,
+        blason, story: story || null, heroes: []
+      };
+      const { data, error } = await sb
+        .from('champions')
+        .upsert(payload, { onConflict: 'email' })
+        .select()
+        .single();
+      if (error) throw error;
+      savedChampion = data;
+    }
+    currentChampion = savedChampion;
     showDone();
   } catch (err) {
     console.error(err);
@@ -908,7 +982,61 @@ function showDone() {
       </div>
     </div>
   `;
+  // Section "Inviter mes coéquipiers" visible uniquement en mode standard
+  // (les coéquipiers eux-mêmes n'invitent pas — seul le capitaine paie et invite).
+  if (!inviteToken) {
+    document.getElementById('invite-section').hidden = false;
+    // Restaurer les invites déjà générés au cas où le user fait editAgain puis revient
+    renderInviteList();
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function generateInvite() {
+  const btn = document.getElementById('btn-generate-invite');
+  btn.disabled = true;
+  const origLbl = btn.textContent;
+  btn.innerHTML = '<span class="spinner"></span>Génération…';
+  try {
+    const { data: token, error } = await sb.rpc('generate_invite', {
+      p_inviter_email: currentUser.email
+    });
+    if (error) throw error;
+    const url = location.origin + location.pathname + '?token=' + encodeURIComponent(token);
+    generatedInvites.push({ token, url, copied: false });
+    renderInviteList();
+  } catch (err) {
+    alert('Erreur lors de la génération du lien : ' + (err.message || err));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = origLbl;
+  }
+}
+
+function renderInviteList() {
+  const list = document.getElementById('invite-list');
+  if (!list) return;
+  if (generatedInvites.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = generatedInvites.map((inv, i) => `
+    <div style="background:var(--bg);border:1px solid var(--gold-d);border-radius:3px;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span style="font-family:'Cinzel',serif;color:var(--gold);font-size:.85rem;letter-spacing:.05em">Lien #${i + 1}</span>
+      <code style="flex:1;min-width:200px;font-size:.78rem;word-break:break-all;color:var(--parch);background:transparent">${escapeHTML(inv.url)}</code>
+      <button class="btn secondary" type="button" data-i="${i}" onclick="copyInvite(this)" style="padding:6px 12px;font-size:.85rem">📋 ${inv.copied ? '✓ Copié' : 'Copier'}</button>
+    </div>
+  `).join('');
+}
+
+async function copyInvite(btn) {
+  const i = parseInt(btn.dataset.i);
+  const inv = generatedInvites[i];
+  if (!inv) return;
+  try {
+    await navigator.clipboard.writeText(inv.url);
+    inv.copied = true;
+    renderInviteList();
+  } catch {
+    window.prompt('Copie ce lien manuellement (Ctrl+C) :', inv.url);
+  }
 }
 
 function editAgain() {
@@ -935,12 +1063,31 @@ function escapeHTML(s) {
 document.addEventListener('DOMContentLoaded', () => {
   populateSelects();
   randomizeBlason();
-  // Pré-remplir l'email si présent dans l'URL (ex. lien depuis email AssoConnect)
   const params = new URLSearchParams(location.search);
-  const presetEmail = params.get('email');
-  if (presetEmail) {
-    document.getElementById('email').value = presetEmail;
+
+  // Mode invité (lien partagé par un capitaine d'équipe)
+  const token = params.get('token');
+  if (token) {
+    inviteToken = token;
+    // Bannière qui adapte le titre de l'étape 1 et son texte
+    const step = document.getElementById('step-email');
+    if (step) {
+      const h2 = step.querySelector('h2');
+      const p = step.querySelector('p');
+      if (h2) h2.textContent = 'Étape I · Inscription par invitation';
+      if (p) p.innerHTML = '<strong style="color:var(--gold)">Tu as été invité·e par ton capitaine d\'équipe</strong> pour rejoindre le tournoi. Saisis ton email personnel (pour qu\'on puisse t\'identifier dans la base) puis forge ton champion.';
+    }
+    // Bannière info en haut du feedback
+    const fb = document.getElementById('email-feedback');
+    if (fb) fb.innerHTML = '<div class="alert success" style="margin-bottom:12px"><strong>👥 Lien d\'invitation détecté.</strong><br>Tu n\'as pas besoin de payer — ton capitaine a payé pour ton équipe. Renseigne ton email pour continuer.</div>';
+  } else {
+    // Pré-remplir l'email si présent dans l'URL (ex. lien depuis email AssoConnect)
+    const presetEmail = params.get('email');
+    if (presetEmail) {
+      document.getElementById('email').value = presetEmail;
+    }
   }
+
   // Submit Enter sur le champ email
   document.getElementById('email').addEventListener('keypress', e => {
     if (e.key === 'Enter') checkEmail();
