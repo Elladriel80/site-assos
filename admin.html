@@ -1033,7 +1033,8 @@ function populateTournoiSelects() {
   $('#t-preview').hidden = true;
 }
 
-function autoPickCell(winnerEmail, loserAlliance) {
+function autoPickCell(winnerEmail, loserEmail, loserAlliance) {
+  // Centroïde du cluster du vainqueur
   const winSeeds = state.cells.filter(c =>
     c.cluster_owner_email === winnerEmail && c.seed_x != null && c.seed_y != null
   );
@@ -1041,18 +1042,35 @@ function autoPickCell(winnerEmail, loserAlliance) {
   const cx = winSeeds.reduce((s, c) => s + Number(c.seed_x), 0) / winSeeds.length;
   const cy = winSeeds.reduce((s, c) => s + Number(c.seed_y), 0) / winSeeds.length;
 
-  const losCells = state.cells.filter(c =>
+  function pickClosest(pool) {
+    let best = null, bestD2 = Infinity;
+    for (const c of pool) {
+      const dx = Number(c.seed_x) - cx;
+      const dy = Number(c.seed_y) - cy;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < bestD2) { bestD2 = d2; best = c; }
+    }
+    return best;
+  }
+
+  // 1ʳᵉ priorité : cellules POSSÉDÉES par le loser (current_owner_email = loser)
+  // → le perdant cède l'un de SES territoires actuels
+  const loserOwned = state.cells.filter(c =>
+    c.current_owner_email === loserEmail && c.seed_x != null && c.seed_y != null
+  );
+  if (loserOwned.length) {
+    return { cell: pickClosest(loserOwned), source: 'self' };
+  }
+
+  // Fallback : si le loser n'a plus aucune cellule à lui (extermination perso),
+  // on prend une cellule de son alliance (un autre membre du camp paie pour lui)
+  const allyCells = state.cells.filter(c =>
     c.current_alliance === loserAlliance && c.seed_x != null && c.seed_y != null
   );
-  if (!losCells.length) return null;
-  let best = null, bestD2 = Infinity;
-  for (const c of losCells) {
-    const dx = Number(c.seed_x) - cx;
-    const dy = Number(c.seed_y) - cy;
-    const d2 = dx * dx + dy * dy;
-    if (d2 < bestD2) { bestD2 = d2; best = c; }
+  if (allyCells.length) {
+    return { cell: pickClosest(allyCells), source: 'ally' };
   }
-  return best;
+  return null;
 }
 
 function updateBattlePreview() {
@@ -1084,24 +1102,48 @@ function updateBattlePreview() {
     return;
   }
 
-  const pick = autoPickCell(winEmail, losA);
-  if (!pick) {
+  const pickResult = autoPickCell(winEmail, losEmail, losA);
+  if (!pickResult) {
     $('#t-preview-text').innerHTML = `<span style="color:var(--danger)">❌ L'alliance <strong>${losA}</strong> n'a plus aucune cellule (déjà conquise totalement). Bataille impossible.</span>`;
     $('#t-override-wrap').style.display = 'none';
     $('#t-validate').disabled = true;
     $('#t-preview').hidden = false;
     return;
   }
-  const losCells = state.cells.filter(c => c.current_alliance === losA);
-  $('#t-cell-override').innerHTML = losCells.map(c => {
+  const pick = pickResult.cell;
+
+  // Dropdown override : cellules du loser EN PREMIER (groupe), puis reste alliance
+  const loserOwned = state.cells.filter(c => c.current_owner_email === losEmail);
+  const otherAllyCells = state.cells.filter(c =>
+    c.current_alliance === losA && c.current_owner_email !== losEmail
+  );
+  const opt = (c) => {
     const owner = state.champions.find(ch => ch.email === c.cluster_owner_email);
-    const ownerLabel = owner ? owner.pseudo : c.cluster_owner_email;
+    const cluster = owner ? owner.pseudo : c.cluster_owner_email;
+    const curOwner = state.champions.find(ch => ch.email === c.current_owner_email);
+    const curLabel = curOwner ? curOwner.pseudo : '(libre)';
     const sel = c.id === pick.id ? 'selected' : '';
-    return `<option value="${escapeHtml(c.id)}" ${sel}>${escapeHtml(ownerLabel)} · pos ${c.cluster_index} · ${escapeHtml(c.id)}</option>`;
-  }).join('');
+    return `<option value="${escapeHtml(c.id)}" ${sel}>cluster ${escapeHtml(cluster)} · pos ${c.cluster_index} · possédée par ${escapeHtml(curLabel)}</option>`;
+  };
+  let dropdownHtml = '';
+  if (loserOwned.length) {
+    dropdownHtml += `<optgroup label="🎯 Territoires de ${losCh.pseudo} (${loserOwned.length})">`;
+    dropdownHtml += loserOwned.map(opt).join('');
+    dropdownHtml += '</optgroup>';
+  }
+  if (otherAllyCells.length) {
+    dropdownHtml += `<optgroup label="🛡 Autres territoires de l'alliance ${losA} (${otherAllyCells.length})">`;
+    dropdownHtml += otherAllyCells.map(opt).join('');
+    dropdownHtml += '</optgroup>';
+  }
+  $('#t-cell-override').innerHTML = dropdownHtml;
+
   const winColor = ALLIANCES[winA]?.color;
   const losColor = ALLIANCES[losA]?.color;
-  $('#t-preview-text').innerHTML = `🎯 <strong style="color:${winColor}">${ALLIANCES[winA]?.name}</strong> grignote <strong style="color:${losColor}">${ALLIANCES[losA]?.name}</strong> — auto-pick : cellule <code>${escapeHtml(pick.id)}</code>.`;
+  const sourceTag = pickResult.source === 'self'
+    ? `<span style="color:var(--ok)">territoire personnel de ${escapeHtml(losCh.pseudo)}</span>`
+    : `<span style="color:var(--warn)">⚠ ${escapeHtml(losCh.pseudo)} exterminé personnellement — fallback sur un allié de ${losA}</span>`;
+  $('#t-preview-text').innerHTML = `🎯 <strong style="color:${winColor}">${escapeHtml(winCh.pseudo)}</strong> bat <strong style="color:${losColor}">${escapeHtml(losCh.pseudo)}</strong> → auto-pick : ${sourceTag}, cellule <code>${escapeHtml(pick.id)}</code>.`;
   $('#t-override-wrap').style.display = 'block';
   $('#t-validate').disabled = false;
   $('#t-preview').hidden = false;
