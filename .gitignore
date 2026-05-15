@@ -1,0 +1,25 @@
+# === Secrets / env locaux ===
+.env
+.env.local
+.env.*.local
+*.secret
+
+# === Outils dev ===
+.claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Dépendances (au cas où) ===
+node_modules/
+
+# === Logs et tmp ===
+*.log
+*.tmp
+*.bak
