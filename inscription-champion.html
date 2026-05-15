@@ -323,8 +323,8 @@ footer a:hover { color: var(--gold); }
 
   <!-- ÉTAPE 1 : Vérification email -->
   <section class="step" id="step-email">
-    <h2>Étape I · Vérification du paiement</h2>
-    <p>Saisis l'email avec lequel tu t'es inscrit·e sur AssoConnect. Nous vérifions que ton paiement est bien enregistré avant de te laisser inscrire ton joueur.</p>
+    <h2>Étape I · Identification</h2>
+    <p>Saisis ton email pour démarrer. Tu pourras ensuite forger ton champion (pseudo, région, blason).<br><span style="font-size:.88rem;color:var(--parch-dk);font-style:italic">L'organisateur vérifiera le jour J que tu fais bien partie des inscrits AssoConnect — si tu n'as pas payé, ta forge sera retirée.</span></p>
 
     <label for="email">Adresse email</label>
     <input id="email" type="email" placeholder="ton@email.com" autocomplete="email">
@@ -745,32 +745,27 @@ async function checkEmail() {
       isParisian = false;
       currentChampion = null;
     } else {
-      // ============ MODE STANDARD (capitaine ou solo, email AssoConnect) ============
-      // 1. Chercher dans paid_users
+      // ============ MODE STANDARD (inscription libre, tri orga le jour J) ============
+      // On regarde si l'email est dans paid_users uniquement pour pré-remplir
+      // les infos (adresse postale → détection région auto). Si pas trouvé,
+      // on continue quand même : le tri payeurs ↔ inscrits se fait côté orga.
       const { data: paid, error: e1 } = await sb
         .from('paid_users')
         .select('*')
         .eq('email', email)
         .maybeSingle();
-
       if (e1) throw e1;
-      if (!paid) {
-        fb.innerHTML = `<div class="alert error">
-          <strong>⚠ Email non reconnu.</strong><br>
-          Cet email n'apparaît pas dans la liste des inscrits AssoConnect. Vérifie que :<br>
-          • Tu as bien finalisé ton paiement sur AssoConnect.<br>
-          • Tu utilises le même email que celui du paiement.<br>
-          • L'organisateur a bien importé la dernière liste (ça peut prendre quelques heures après ton paiement).<br>
-          • Si tu es un coéquipier (le capitaine a payé pour toi), demande-lui un <strong>lien d'invitation</strong>.<br>
-          En cas de doute : contacte l'organisateur via la <a href="https://inter-tow.netlify.app/" style="color:var(--gold);">page de l'événement</a>.
-        </div>`;
-        return;
+
+      if (paid) {
+        currentUser = paid;
+        isParisian = postalToRegion(paid.code_postal) === 'Île-de-France';
+      } else {
+        // currentUser virtuel — pas de code postal connu, choix libre de région
+        currentUser = { email, prenom: '', nom: '', code_postal: '', ville: '' };
+        isParisian = false;
       }
 
-      currentUser = paid;
-      isParisian = postalToRegion(paid.code_postal) === 'Île-de-France';
-
-      // 2. Vérifier si un champion existe déjà pour cet email
+      // Vérifier si un champion existe déjà pour cet email
       const { data: champ, error: e2 } = await sb
         .from('champions')
         .select('*')
@@ -982,13 +977,9 @@ function showDone() {
       </div>
     </div>
   `;
-  // Section "Inviter mes coéquipiers" visible uniquement en mode standard
-  // (les coéquipiers eux-mêmes n'invitent pas — seul le capitaine paie et invite).
-  if (!inviteToken) {
-    document.getElementById('invite-section').hidden = false;
-    // Restaurer les invites déjà générés au cas où le user fait editAgain puis revient
-    renderInviteList();
-  }
+  // Section "Inviter mes coéquipiers" désactivée depuis la phase 4
+  // (inscription libre, plus besoin de tokens d'invitation pour les coéquipiers).
+  // Le bouton et le code restent dans le DOM pour réactivation future si besoin.
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
