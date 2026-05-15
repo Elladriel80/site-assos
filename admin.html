@@ -1271,25 +1271,43 @@ function parseImportFile(file) {
     reader.onload = (e) => {
       try {
         const wb = XLSX.read(e.target.result, { type: 'array' });
-        // Tester chaque feuille et garder celle avec le plus de rows non-vides.
-        // Skip aussi les lignes vides en début (header trouvé au scan).
+        console.log('[Import] Feuilles :', wb.SheetNames);
         let best = { rows: [], sheet: '', count: 0 };
         const sheetInfo = [];
         for (const name of wb.SheetNames) {
           const sheet = wb.Sheets[name];
-          const raw = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
-          // Drop trailing empty rows
-          const cleaned = raw.filter(r => r && r.some(c => String(c || '').trim() !== ''));
-          sheetInfo.push(`${name}=${cleaned.length}`);
+          // Méthode 1 : sheet_to_json standard
+          const raw1 = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
+          // Méthode 2 : parse manuel via !ref (plus robuste sur les fichiers exotiques)
+          let raw2 = [];
+          if (sheet['!ref']) {
+            const range = XLSX.utils.decode_range(sheet['!ref']);
+            for (let r = range.s.r; r <= range.e.r; r++) {
+              const row = [];
+              for (let c = range.s.c; c <= range.e.c; c++) {
+                const cell = sheet[XLSX.utils.encode_cell({ r, c })];
+                row.push(cell ? (cell.w !== undefined ? cell.w : cell.v) : '');
+              }
+              raw2.push(row);
+            }
+          }
+          console.log(`[Import] Feuille "${name}" — !ref:`, sheet['!ref'], '| sheet_to_json rows:', raw1.length, '| manual rows:', raw2.length);
+          if (raw1.length > 0) console.log('  sample_to_json[0]:', raw1[0], '[1]:', raw1[1]);
+          if (raw2.length > 0) console.log('  manual[0]:', raw2[0], '[1]:', raw2[1]);
+
+          // Garde la méthode qui a le plus de rows
+          const raw = raw2.length > raw1.length ? raw2 : raw1;
+          const cleaned = raw.filter(r => r && r.some(c => String(c == null ? '' : c).trim() !== ''));
+          sheetInfo.push(`"${name}" → ${cleaned.length} lignes utiles (sheet_to_json:${raw1.length} / manual:${raw2.length})`);
           if (cleaned.length > best.count) {
             best = { rows: cleaned, sheet: name, count: cleaned.length };
           }
         }
         if (best.count < 2) {
-          reject(new Error(`Pas de feuille avec des données exploitables. Feuilles trouvées : ${sheetInfo.join(', ')}`));
+          reject(new Error(`Pas de feuille avec des données exploitables. ${sheetInfo.join(' | ')}`));
           return;
         }
-        console.log('Import : feuille retenue', best.sheet, 'avec', best.count, 'lignes utiles. En-têtes :', best.rows[0]);
+        console.log('[Import] Feuille retenue :', best.sheet, '(' + best.count + ' lignes). En-têtes :', best.rows[0]);
         resolve(best.rows);
       } catch (err) { reject(err); }
     };
