@@ -225,6 +225,7 @@
     <button data-tab="champions">⚔️ Champions</button>
     <button data-tab="payeurs">💰 Payeurs</button>
     <button data-tab="relances">📧 Relances</button>
+    <button data-tab="tournoi">⚔️ Tournoi</button>
     <button data-tab="carte">🗺 Carte</button>
     <button data-tab="demo">🎭 Démo</button>
   </nav>
@@ -317,6 +318,68 @@
         </thead>
         <tbody id="tbody-relances">
           <tr><td colspan="5" class="empty-state">Chargement…</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section data-pane="tournoi" hidden>
+      <h2>Tournoi en cours — saisie des batailles</h2>
+      <div class="banner warn">
+        💡 Une bataille cède <strong>1 cellule du perdant au vainqueur</strong>. L'auto-pick choisit la cellule perdante la plus proche du cluster du vainqueur. Tu peux toujours override via le dropdown.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 120px;gap:1em;align-items:flex-end;margin-bottom:1em">
+        <label><span>🏆 Vainqueur</span><select id="t-winner"><option value="">— choisir —</option></select></label>
+        <label><span>💀 Vaincu</span><select id="t-loser"><option value="">— choisir —</option></select></label>
+        <label><span>Ronde</span><select id="t-round">
+          <option value="">—</option>
+          <option value="1">R1</option>
+          <option value="2">R2</option>
+          <option value="3">R3</option>
+          <option value="4">R4</option>
+          <option value="5">R5</option>
+        </select></label>
+      </div>
+
+      <div id="t-preview" hidden style="background:var(--bg-2);border:1px solid var(--gold);border-radius:3px;padding:1em;margin-bottom:1em">
+        <h3 style="margin-top:0">Cellule à céder</h3>
+        <p id="t-preview-text" style="margin:0 0 0.75em"></p>
+        <label id="t-override-wrap">
+          <span>Override manuel (cellule de l'alliance perdante)</span>
+          <select id="t-cell-override"></select>
+        </label>
+        <div style="margin-top:1em;display:flex;gap:0.75em">
+          <button class="primary" id="t-validate">⚔ Valider la bataille</button>
+          <button id="t-cancel">Annuler la saisie</button>
+        </div>
+      </div>
+
+      <h3 style="margin-top:2em">Historique des batailles</h3>
+      <div class="toolbar">
+        <select id="t-filter-round" class="search" style="width:auto;min-width:140px">
+          <option value="">Toutes rondes</option>
+          <option value="1">R1</option>
+          <option value="2">R2</option>
+          <option value="3">R3</option>
+          <option value="4">R4</option>
+          <option value="5">R5</option>
+        </select>
+        <button id="t-refresh-battles">↻ Rafraîchir</button>
+        <span class="count" id="t-count-battles"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Ronde</th>
+            <th>Date</th>
+            <th>Vainqueur</th>
+            <th>Vaincu</th>
+            <th>Cellule cédée</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="t-tbody-battles">
+          <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
         </tbody>
       </table>
     </section>
@@ -424,7 +487,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: true, autoRefreshToken: true }
 });
 
-let state = { user: null, champions: [], payeurs: [], activeTab: 'dashboard' };
+let state = { user: null, champions: [], payeurs: [], cells: [], battles: [], activeTab: 'dashboard' };
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -531,6 +594,11 @@ function switchTab(tab) {
   state.activeTab = tab;
   $$('nav.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   $$('section[data-pane]').forEach(s => s.hidden = (s.dataset.pane !== tab));
+  if (tab === 'tournoi') {
+    populateTournoiSelects();
+    loadCells();
+    loadBattles();
+  }
 }
 
 async function loadAll() {
@@ -935,6 +1003,190 @@ $('#clear-demo').addEventListener('click', async () => {
   showBanner('ok', 'Données démo supprimées.');
   await loadAll();
   btn.disabled = false;
+});
+
+// =========================================================================
+// ONGLET TOURNOI — saisie des batailles + auto-pick + historique
+// =========================================================================
+async function loadCells() {
+  const { data, error } = await sb.from('cells').select('*');
+  if (error) { showBanner('err', 'Erreur chargement cells : ' + error.message); return; }
+  state.cells = data || [];
+}
+
+async function loadBattles() {
+  const { data, error } = await sb.from('battles').select('*').order('created_at', { ascending: false });
+  if (error) { showBanner('err', 'Erreur chargement batailles : ' + error.message); return; }
+  state.battles = data || [];
+  renderBattles();
+}
+
+function populateTournoiSelects() {
+  const sortedChamps = [...state.champions].sort((a, b) => (a.pseudo || '').localeCompare(b.pseudo || ''));
+  const opts = ['<option value="">— choisir un champion —</option>']
+    .concat(sortedChamps.map(c => {
+      const ally = REGION_TO_ALLIANCE[c.region] || '?';
+      return `<option value="${escapeHtml(c.email)}">${escapeHtml(c.pseudo)} [${ally}] — ${escapeHtml(c.region)}</option>`;
+    })).join('');
+  $('#t-winner').innerHTML = opts;
+  $('#t-loser').innerHTML = opts;
+  $('#t-preview').hidden = true;
+}
+
+function autoPickCell(winnerEmail, loserAlliance) {
+  const winSeeds = state.cells.filter(c =>
+    c.cluster_owner_email === winnerEmail && c.seed_x != null && c.seed_y != null
+  );
+  if (!winSeeds.length) return null;
+  const cx = winSeeds.reduce((s, c) => s + Number(c.seed_x), 0) / winSeeds.length;
+  const cy = winSeeds.reduce((s, c) => s + Number(c.seed_y), 0) / winSeeds.length;
+
+  const losCells = state.cells.filter(c =>
+    c.current_alliance === loserAlliance && c.seed_x != null && c.seed_y != null
+  );
+  if (!losCells.length) return null;
+  let best = null, bestD2 = Infinity;
+  for (const c of losCells) {
+    const dx = Number(c.seed_x) - cx;
+    const dy = Number(c.seed_y) - cy;
+    const d2 = dx * dx + dy * dy;
+    if (d2 < bestD2) { bestD2 = d2; best = c; }
+  }
+  return best;
+}
+
+function updateBattlePreview() {
+  const winEmail = $('#t-winner').value;
+  const losEmail = $('#t-loser').value;
+  const round = $('#t-round').value;
+  if (!winEmail || !losEmail || !round) { $('#t-preview').hidden = true; return; }
+
+  if (winEmail === losEmail) {
+    $('#t-preview-text').innerHTML = '<span style="color:var(--danger)">⚠ Vainqueur et vaincu doivent être différents.</span>';
+    $('#t-override-wrap').style.display = 'none';
+    $('#t-validate').disabled = true;
+    $('#t-preview').hidden = false;
+    return;
+  }
+
+  const winCh = state.champions.find(c => c.email === winEmail);
+  const losCh = state.champions.find(c => c.email === losEmail);
+  if (!winCh || !losCh) { $('#t-preview').hidden = true; return; }
+
+  const winA = REGION_TO_ALLIANCE[winCh.region];
+  const losA = REGION_TO_ALLIANCE[losCh.region];
+
+  if (winA === losA) {
+    $('#t-preview-text').innerHTML = `🤝 Même alliance (<strong style="color:${ALLIANCES[winA]?.color}">${ALLIANCES[winA]?.name}</strong>) — la bataille sera loggée mais <strong>aucune cellule</strong> ne change de camp.`;
+    $('#t-override-wrap').style.display = 'none';
+    $('#t-validate').disabled = false;
+    $('#t-preview').hidden = false;
+    return;
+  }
+
+  const pick = autoPickCell(winEmail, losA);
+  if (!pick) {
+    $('#t-preview-text').innerHTML = `<span style="color:var(--danger)">❌ L'alliance <strong>${losA}</strong> n'a plus aucune cellule (déjà conquise totalement). Bataille impossible.</span>`;
+    $('#t-override-wrap').style.display = 'none';
+    $('#t-validate').disabled = true;
+    $('#t-preview').hidden = false;
+    return;
+  }
+  const losCells = state.cells.filter(c => c.current_alliance === losA);
+  $('#t-cell-override').innerHTML = losCells.map(c => {
+    const owner = state.champions.find(ch => ch.email === c.cluster_owner_email);
+    const ownerLabel = owner ? owner.pseudo : c.cluster_owner_email;
+    const sel = c.id === pick.id ? 'selected' : '';
+    return `<option value="${escapeHtml(c.id)}" ${sel}>${escapeHtml(ownerLabel)} · pos ${c.cluster_index} · ${escapeHtml(c.id)}</option>`;
+  }).join('');
+  const winColor = ALLIANCES[winA]?.color;
+  const losColor = ALLIANCES[losA]?.color;
+  $('#t-preview-text').innerHTML = `🎯 <strong style="color:${winColor}">${ALLIANCES[winA]?.name}</strong> grignote <strong style="color:${losColor}">${ALLIANCES[losA]?.name}</strong> — auto-pick : cellule <code>${escapeHtml(pick.id)}</code>.`;
+  $('#t-override-wrap').style.display = 'block';
+  $('#t-validate').disabled = false;
+  $('#t-preview').hidden = false;
+}
+
+['#t-winner', '#t-loser', '#t-round'].forEach(sel => {
+  document.querySelector(sel).addEventListener('change', updateBattlePreview);
+});
+
+$('#t-cancel').addEventListener('click', () => {
+  $('#t-winner').value = '';
+  $('#t-loser').value = '';
+  $('#t-round').value = '';
+  $('#t-preview').hidden = true;
+});
+
+$('#t-validate').addEventListener('click', async () => {
+  const winEmail = $('#t-winner').value;
+  const losEmail = $('#t-loser').value;
+  const round = parseInt($('#t-round').value);
+  if (!winEmail || !losEmail || !round) return showBanner('err', 'Remplis vainqueur, vaincu et ronde');
+  if (winEmail === losEmail) return showBanner('err', 'Vainqueur ≠ vaincu');
+
+  const winCh = state.champions.find(c => c.email === winEmail);
+  const losCh = state.champions.find(c => c.email === losEmail);
+  const winA = REGION_TO_ALLIANCE[winCh.region];
+  const losA = REGION_TO_ALLIANCE[losCh.region];
+  const sameAlliance = (winA === losA);
+  const cellId = sameAlliance ? null : ($('#t-cell-override').value || null);
+
+  const btn = $('#t-validate'); btn.disabled = true; const origLbl = btn.textContent;
+  btn.innerHTML = '<span class="spinner"></span> Enregistrement…';
+  const { error } = await sb.rpc('record_battle', {
+    p_winner_email: winEmail,
+    p_loser_email:  losEmail,
+    p_round:        round,
+    p_cell_id:      cellId
+  });
+  btn.disabled = false; btn.textContent = origLbl;
+  if (error) return showBanner('err', 'Erreur : ' + error.message);
+
+  showBanner('ok', sameAlliance ? 'Bataille enregistrée (même alliance, sans cession)' : `⚔ ${winCh.pseudo} grignote ${losCh.pseudo} — cellule conquise`);
+  $('#t-winner').value = '';
+  $('#t-loser').value = '';
+  $('#t-round').value = '';
+  $('#t-preview').hidden = true;
+  await Promise.all([loadCells(), loadBattles()]);
+});
+
+$('#t-refresh-battles').addEventListener('click', async () => { await loadBattles(); });
+$('#t-filter-round').addEventListener('change', renderBattles);
+
+function renderBattles() {
+  const filter = $('#t-filter-round').value;
+  const rows = filter ? state.battles.filter(b => String(b.round_number) === filter) : state.battles;
+  $('#t-count-battles').textContent = `${rows.length} batailles${filter ? ` (R${filter})` : ''}`;
+  const tbody = $('#t-tbody-battles');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Aucune bataille pour le moment.</td></tr>';
+    return;
+  }
+  const lastId = state.battles[0]?.id;
+  tbody.innerHTML = rows.map(b => {
+    const winCh = state.champions.find(c => c.email === b.winner_email);
+    const losCh = state.champions.find(c => c.email === b.loser_email);
+    const isLast = b.id === lastId;
+    return `<tr>
+      <td><strong>R${b.round_number || '?'}</strong></td>
+      <td class="muted">${formatDate(b.created_at)}</td>
+      <td>${winCh ? escapeHtml(winCh.pseudo) : escapeHtml(b.winner_email)}</td>
+      <td>${losCh ? escapeHtml(losCh.pseudo) : escapeHtml(b.loser_email)}</td>
+      <td class="muted email">${b.cell_transferred_id ? escapeHtml(b.cell_transferred_id) : '<em>même alliance</em>'}</td>
+      <td>${isLast ? `<button class="danger" data-action="undo-battle">⟲ Annuler</button>` : ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+$('#t-tbody-battles').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-action="undo-battle"]');
+  if (!btn) return;
+  if (!confirm('Annuler la dernière bataille ?\n\n• La cellule retrouve son propriétaire précédent.\n• L\'entrée est supprimée de l\'historique.')) return;
+  const { error } = await sb.rpc('undo_last_battle');
+  if (error) return showBanner('err', 'Erreur undo : ' + error.message);
+  showBanner('ok', '⟲ Dernière bataille annulée');
+  await Promise.all([loadCells(), loadBattles()]);
 });
 
 checkSession();
