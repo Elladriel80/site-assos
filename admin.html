@@ -1271,9 +1271,26 @@ function parseImportFile(file) {
     reader.onload = (e) => {
       try {
         const wb = XLSX.read(e.target.result, { type: 'array' });
-        const sheet = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
-        resolve(rows);
+        // Tester chaque feuille et garder celle avec le plus de rows non-vides.
+        // Skip aussi les lignes vides en début (header trouvé au scan).
+        let best = { rows: [], sheet: '', count: 0 };
+        const sheetInfo = [];
+        for (const name of wb.SheetNames) {
+          const sheet = wb.Sheets[name];
+          const raw = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
+          // Drop trailing empty rows
+          const cleaned = raw.filter(r => r && r.some(c => String(c || '').trim() !== ''));
+          sheetInfo.push(`${name}=${cleaned.length}`);
+          if (cleaned.length > best.count) {
+            best = { rows: cleaned, sheet: name, count: cleaned.length };
+          }
+        }
+        if (best.count < 2) {
+          reject(new Error(`Pas de feuille avec des données exploitables. Feuilles trouvées : ${sheetInfo.join(', ')}`));
+          return;
+        }
+        console.log('Import : feuille retenue', best.sheet, 'avec', best.count, 'lignes utiles. En-têtes :', best.rows[0]);
+        resolve(best.rows);
       } catch (err) { reject(err); }
     };
     reader.onerror = reject;
