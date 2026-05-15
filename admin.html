@@ -1278,7 +1278,7 @@ function parseImportFile(file) {
           const sheet = wb.Sheets[name];
           // Méthode 1 : sheet_to_json standard
           const raw1 = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
-          // Méthode 2 : parse manuel via !ref (plus robuste sur les fichiers exotiques)
+          // Méthode 2 : parse manuel via !ref
           let raw2 = [];
           if (sheet['!ref']) {
             const range = XLSX.utils.decode_range(sheet['!ref']);
@@ -1291,12 +1291,35 @@ function parseImportFile(file) {
               raw2.push(row);
             }
           }
-          console.log(`[Import] Feuille "${name}" — !ref:`, sheet['!ref'], '| sheet_to_json rows:', raw1.length, '| manual rows:', raw2.length);
+          // Méthode 3 : scan TOUTES les clés de cellules (ignore !ref qui peut mentir)
+          let raw3 = [];
+          let minR = Infinity, maxR = -Infinity, minC = Infinity, maxC = -Infinity;
+          for (const k of Object.keys(sheet)) {
+            if (k.startsWith('!')) continue;
+            const dec = XLSX.utils.decode_cell(k);
+            if (dec.r < minR) minR = dec.r;
+            if (dec.r > maxR) maxR = dec.r;
+            if (dec.c < minC) minC = dec.c;
+            if (dec.c > maxC) maxC = dec.c;
+          }
+          if (minR !== Infinity) {
+            for (let r = minR; r <= maxR; r++) {
+              const row = [];
+              for (let c = minC; c <= maxC; c++) {
+                const cell = sheet[XLSX.utils.encode_cell({ r, c })];
+                row.push(cell ? (cell.w !== undefined ? cell.w : cell.v) : '');
+              }
+              raw3.push(row);
+            }
+          }
+          console.log(`[Import] Feuille "${name}" — !ref:`, sheet['!ref'], '| sheet_to_json:', raw1.length, '| manual(!ref):', raw2.length, '| scan-cells:', raw3.length);
           if (raw1.length > 0) console.log('  sample_to_json[0]:', raw1[0], '[1]:', raw1[1]);
-          if (raw2.length > 0) console.log('  manual[0]:', raw2[0], '[1]:', raw2[1]);
+          if (raw3.length > 0) console.log('  scan-cells[0]:', raw3[0], '[1]:', raw3[1]);
 
           // Garde la méthode qui a le plus de rows
-          const raw = raw2.length > raw1.length ? raw2 : raw1;
+          let raw = raw1;
+          if (raw2.length > raw.length) raw = raw2;
+          if (raw3.length > raw.length) raw = raw3;
           const cleaned = raw.filter(r => r && r.some(c => String(c == null ? '' : c).trim() !== ''));
           sheetInfo.push(`"${name}" → ${cleaned.length} lignes utiles (sheet_to_json:${raw1.length} / manual:${raw2.length})`);
           if (cleaned.length > best.count) {
