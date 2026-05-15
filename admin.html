@@ -274,9 +274,24 @@
       <h2>Payeurs (whitelist AssoConnect)</h2>
       <div class="toolbar">
         <input type="search" class="search" id="search-payeurs" placeholder="Rechercher par nom, prénom, email…" />
+        <button id="import-payeurs" class="primary">📥 Importer Excel/CSV</button>
         <button id="add-payeur">+ Ajouter un payeur</button>
         <button id="refresh-payeurs">↻ Rafraîchir</button>
         <span class="count" id="count-payeurs"></span>
+      </div>
+
+      <!-- Panneau d'import (initialement caché, déroulé au clic sur "Importer") -->
+      <div id="import-panel" hidden style="background:var(--bg-2);border:1px solid var(--gold);border-radius:4px;padding:1.25em;margin-bottom:1em">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1em">
+          <h3 style="margin:0">📥 Importer un export AssoConnect</h3>
+          <button id="import-close" class="ghost">✕ Fermer</button>
+        </div>
+        <p style="color:var(--text-dim);font-size:0.9rem;margin:0 0 1em">
+          Formats acceptés : <code>.xlsx</code>, <code>.xls</code>, <code>.csv</code>. Détection automatique des colonnes par leur nom (Email participant, Prénom, Nom, Code postal, Ville, N° de transaction, Pseudo, Inscription Equipe / Jeu libre / Narratif).
+        </p>
+        <input type="file" id="import-file" accept=".xlsx,.xls,.csv" style="margin-bottom:1em" />
+        <div id="import-status" style="font-size:0.9rem;color:var(--text-dim)"></div>
+        <div id="import-diff" hidden></div>
       </div>
       <table>
         <thead>
@@ -414,6 +429,7 @@
 
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import * as XLSX from 'https://cdn.sheetjs.com/xlsx-latest/package/xlsx.mjs';
 
 // =========================================================================
 // CONFIG — clés extraites de carte-inscrits.html (publiques, safe)
@@ -1229,6 +1245,268 @@ $('#t-tbody-battles').addEventListener('click', async (e) => {
   if (error) return showBanner('err', 'Erreur undo : ' + error.message);
   showBanner('ok', '⟲ Dernière bataille annulée');
   await Promise.all([loadCells(), loadBattles()]);
+});
+
+// =========================================================================
+// IMPORT EXCEL/CSV (AssoConnect) avec diff avant application
+// =========================================================================
+function normalizeStr(s) {
+  return String(s || '').toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .trim();
+}
+function findCol(headers, candidates) {
+  const norm = headers.map(normalizeStr);
+  for (const cand of candidates) {
+    const n = normalizeStr(cand);
+    const idx = norm.findIndex(h => h && h.includes(n));
+    if (idx !== -1) return idx;
+  }
+  return -1;
+}
+
+function parseImportFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const wb = XLSX.read(e.target.result, { type: 'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
+        resolve(rows);
+      } catch (err) { reject(err); }
+    };
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function mapImportRows(rows) {
+  if (rows.length < 2) throw new Error('Fichier vide (pas de ligne de données)');
+  const headers = rows[0];
+  const cols = {
+    email_participant: findCol(headers, ['email ema', 'email participant', 'email du participant', 'mail participant']),
+    email_acheteur:    findCol(headers, ['email achete', 'email acheteur', 'email de l\'acheteur']),
+    transaction_id:    findCol(headers, ['n° de transac', 'no de transac', 'num de transac', 'numero de transac', 'transaction id', 'n de transac']),
+    prenom:            findCol(headers, ['prenom particip', 'prenom du particip', 'prénom particip', 'prenom']),
+    nom:               findCol(headers, ['nom particip', 'nom du particip']),
+    adresse:           findCol(headers, ['adresse']),
+    code_postal:       findCol(headers, ['code postal', 'cp']),
+    ville:             findCol(headers, ['ville']),
+    pseudo:            findCol(headers, ['pseudo']),
+    insc_equipe:       findCol(headers, ['inscription equipe', 'inscription équipe']),
+    insc_jeu_libre:    findCol(headers, ['jeu libre']),
+    insc_narratif:     findCol(headers, ['narratif']),
+  };
+  if (cols.email_participant === -1 && cols.email_acheteur === -1) {
+    throw new Error('Aucune colonne email détectée. Cherché : "Email participant" ou "Email acheteur"');
+  }
+  const mapped = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r || !r.length) continue;
+    const emailP = cols.email_participant !== -1 ? String(r[cols.email_participant] || '').trim().toLowerCase() : '';
+    const emailA = cols.email_acheteur    !== -1 ? String(r[cols.email_acheteur]    || '').trim().toLowerCase() : '';
+    const email = emailP || emailA;
+    if (!email || !email.includes('@')) continue;
+    const num = (idx) => idx !== -1 ? (parseFloat(String(r[idx] || '0').replace(',', '.')) || 0) : 0;
+    const valEquipe = num(cols.insc_equipe);
+    const valLibre  = num(cols.insc_jeu_libre);
+    const valNarr   = num(cols.insc_narratif);
+    let inscType = 'autre', expected = 1, montant = 0;
+    if (valEquipe > 0)     { inscType = 'equipe';    expected = 5; montant = valEquipe; }
+    else if (valLibre > 0) { inscType = 'jeu_libre'; expected = 1; montant = valLibre; }
+    else if (valNarr > 0)  { inscType = 'narratif';  expected = 1; montant = valNarr; }
+    const cell = (idx) => idx !== -1 ? (String(r[idx] || '').trim() || null) : null;
+    mapped.push({
+      email,
+      acheteur_email: emailA || null,
+      transaction_id: cell(cols.transaction_id),
+      prenom: cell(cols.prenom),
+      nom: cell(cols.nom),
+      adresse: cell(cols.adresse),
+      code_postal: cell(cols.code_postal),
+      ville: cell(cols.ville),
+      pseudo_assoconnect: cell(cols.pseudo),
+      inscription_type: inscType,
+      expected_champions: expected,
+      montant_eur: montant || null
+    });
+  }
+  return mapped;
+}
+
+const IMPORT_TRACKED_FIELDS = ['prenom','nom','adresse','code_postal','ville','inscription_type','expected_champions','montant_eur','pseudo_assoconnect','acheteur_email','transaction_id'];
+function compareImportRow(before, after) {
+  const changes = [];
+  for (const f of IMPORT_TRACKED_FIELDS) {
+    const v1 = before[f] == null ? '' : String(before[f]);
+    const v2 = after[f]  == null ? '' : String(after[f]);
+    if (v1 !== v2) changes.push({ field: f, before: v1, after: v2 });
+  }
+  return changes;
+}
+
+async function computeImportDiff(parsedRows) {
+  const { data: existing, error } = await sb.from('paid_users').select('*');
+  if (error) throw error;
+  const byTx = new Map(), byEmail = new Map();
+  for (const u of existing || []) {
+    if (u.transaction_id) byTx.set(u.transaction_id, u);
+    if (u.email) byEmail.set(u.email.toLowerCase(), u);
+  }
+  const ajouts = [], modifs = [], inchanges = [];
+  const seenTx = new Set(), seenEmail = new Set();
+  for (const row of parsedRows) {
+    let match = row.transaction_id ? byTx.get(row.transaction_id) : null;
+    if (!match) match = byEmail.get(row.email);
+    if (match) {
+      if (row.transaction_id) seenTx.add(row.transaction_id);
+      seenEmail.add(row.email);
+      const changes = compareImportRow(match, row);
+      if (changes.length === 0) inchanges.push({ before: match, after: row });
+      else modifs.push({ before: match, after: row, changes });
+    } else {
+      ajouts.push(row);
+    }
+  }
+  const suppressions = (existing || []).filter(u => {
+    if (u.transaction_id) return !seenTx.has(u.transaction_id);
+    return !seenEmail.has((u.email || '').toLowerCase());
+  });
+  return { ajouts, modifs, inchanges, suppressions };
+}
+
+function importRowLabel(r) {
+  const nom = ((r.prenom || '') + ' ' + (r.nom || '')).trim() || '—';
+  const t = r.inscription_type || '—';
+  const places = r.expected_champions > 1 ? ` (${r.expected_champions} places)` : '';
+  return { nom, type: t + places };
+}
+
+function renderImportDiffSection(title, rowsHtml) {
+  if (!rowsHtml.length) return '';
+  return `<details open style="margin-top:1em"><summary style="cursor:pointer;font-weight:bold;font-family:Georgia,serif;color:var(--gold);padding:.4em 0">${title}</summary>
+    <div style="margin-top:.5em;border:1px solid var(--border);border-radius:3px;overflow-x:auto">
+      <table style="margin:0"><thead><tr><th>Email</th><th>Nom</th><th>Type</th><th>Détails</th></tr></thead>
+      <tbody>${rowsHtml.join('')}</tbody></table>
+    </div>
+  </details>`;
+}
+
+function renderImportDiff(diff) {
+  const c = $('#import-diff');
+  c.hidden = false;
+  const ajoutsRows = diff.ajouts.map(a => {
+    const l = importRowLabel(a);
+    return `<tr><td class="email">${escapeHtml(a.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td class="muted">${a.transaction_id ? 'tx:'+escapeHtml(a.transaction_id) : ''}</td></tr>`;
+  });
+  const modifsRows = diff.modifs.map(m => {
+    const l = importRowLabel(m.after);
+    const changesHtml = m.changes.map(c => `<div><strong>${escapeHtml(c.field)}</strong> : <span style="color:#f3a89e">${escapeHtml(c.before || '—')}</span> → <span style="color:#b8d6b8">${escapeHtml(c.after || '—')}</span></div>`).join('');
+    return `<tr><td class="email">${escapeHtml(m.after.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td style="font-size:.82rem">${changesHtml}</td></tr>`;
+  });
+  const supprRows = diff.suppressions.map(s => {
+    const l = importRowLabel(s);
+    return `<tr><td class="email">${escapeHtml(s.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td class="muted">${s.transaction_id ? 'tx:'+escapeHtml(s.transaction_id) : ''}</td></tr>`;
+  });
+  c.innerHTML = `
+    <h3 style="margin-top:1.2em">Aperçu du diff</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5em;margin-bottom:1em">
+      <div class="banner ok"   style="margin:0;text-align:center">🟢 ${diff.ajouts.length} ajouts</div>
+      <div class="banner warn" style="margin:0;text-align:center">🟡 ${diff.modifs.length} modifs</div>
+      <div class="banner"      style="margin:0;text-align:center;background:rgba(100,100,100,0.15);border-color:#666;color:#bbb">⚪ ${diff.inchanges.length} inchangés</div>
+      <div class="banner err"  style="margin:0;text-align:center">🔴 ${diff.suppressions.length} suppr.</div>
+    </div>
+    ${renderImportDiffSection('🟢 Ajouts', ajoutsRows)}
+    ${renderImportDiffSection('🟡 Modifications', modifsRows)}
+    ${renderImportDiffSection('🔴 Suppressions (en base mais absents du fichier)', supprRows)}
+    <div style="display:flex;gap:.75em;margin-top:1.5em;flex-wrap:wrap">
+      <button class="primary" data-import-action="apply-safe" ${(diff.ajouts.length + diff.modifs.length === 0) ? 'disabled' : ''}>✓ Appliquer ajouts + modifs (${diff.ajouts.length + diff.modifs.length})</button>
+      ${diff.suppressions.length ? `<button class="danger" data-import-action="apply-all">⚠ Tout appliquer + supprimer ${diff.suppressions.length}</button>` : ''}
+      <button data-import-action="cancel">Annuler</button>
+    </div>`;
+}
+
+let pendingImportDiff = null;
+
+$('#import-payeurs').addEventListener('click', () => {
+  $('#import-panel').hidden = false;
+  $('#import-status').textContent = '';
+  $('#import-diff').hidden = true;
+  $('#import-diff').innerHTML = '';
+  $('#import-file').value = '';
+  $('#import-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+$('#import-close').addEventListener('click', () => {
+  $('#import-panel').hidden = true;
+  pendingImportDiff = null;
+});
+
+$('#import-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  $('#import-status').innerHTML = '<span class="spinner"></span> Lecture du fichier…';
+  $('#import-diff').hidden = true;
+  try {
+    const rows = await parseImportFile(file);
+    const mapped = mapImportRows(rows);
+    if (mapped.length === 0) throw new Error('Aucune ligne avec email valide trouvée');
+    $('#import-status').innerHTML = `<span class="spinner"></span> ${mapped.length} lignes lues, calcul du diff…`;
+    const diff = await computeImportDiff(mapped);
+    pendingImportDiff = diff;
+    $('#import-status').textContent = `✓ Fichier analysé — ${mapped.length} lignes traitées`;
+    renderImportDiff(diff);
+  } catch (err) {
+    console.error(err);
+    $('#import-status').innerHTML = `<span style="color:var(--danger)">✖ Erreur : ${escapeHtml(err.message || String(err))}</span>`;
+  }
+});
+
+$('#import-diff').addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-import-action]');
+  if (!btn) return;
+  const action = btn.dataset.importAction;
+  if (action === 'cancel') {
+    $('#import-panel').hidden = true;
+    pendingImportDiff = null;
+    return;
+  }
+  if (!pendingImportDiff) return;
+  const { ajouts, modifs, suppressions } = pendingImportDiff;
+  const toUpsert = [...ajouts, ...modifs.map(m => m.after)];
+  btn.disabled = true;
+  $('#import-status').innerHTML = '<span class="spinner"></span> Application en cours…';
+  try {
+    if (toUpsert.length) {
+      const { error } = await sb.from('paid_users').upsert(toUpsert, { onConflict: 'email' });
+      if (error) throw error;
+    }
+    let deletedCount = 0;
+    if (action === 'apply-all' && suppressions.length) {
+      if (!confirm(`Supprimer définitivement ${suppressions.length} paid_user(s) absent(s) du fichier ?\n\nCette action est irréversible.`)) {
+        btn.disabled = false;
+        $('#import-status').textContent = 'Suppressions annulées (ajouts/modifs déjà appliqués)';
+        return;
+      }
+      const emails = suppressions.map(s => s.email);
+      const { error } = await sb.from('paid_users').delete().in('email', emails);
+      if (error) throw error;
+      deletedCount = suppressions.length;
+    }
+    $('#import-status').innerHTML = `<span style="color:var(--ok)">✓ Import appliqué : ${toUpsert.length} insertions/MAJ${deletedCount ? `, ${deletedCount} suppressions` : ''}</span>`;
+    pendingImportDiff = null;
+    $('#import-diff').hidden = true;
+    await loadPayeurs();
+    refreshDashboard();
+    renderRelances();
+    showBanner('ok', `Import OK : ${toUpsert.length} payeurs ajoutés/modifiés${deletedCount ? `, ${deletedCount} supprimés` : ''}`);
+  } catch (err) {
+    console.error(err);
+    $('#import-status').innerHTML = `<span style="color:var(--danger)">✖ Erreur lors de l'application : ${escapeHtml(err.message || String(err))}</span>`;
+    btn.disabled = false;
+  }
 });
 
 checkSession();
