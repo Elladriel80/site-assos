@@ -135,22 +135,22 @@ footer a:hover { text-decoration:underline }
 
       <div class="stock-grid" id="stock-grid">
         <div class="stock-card">
-          <div class="stock-type">Simple</div>
+          <div class="stock-type">Simple · 1 pers</div>
           <div class="stock-num" id="stock-simple">—</div>
-          <div class="stock-sub">sur 1</div>
-          <span class="stock-price">56 € / pers · 2 nuits</span>
+          <div class="stock-sub">sur 1 chambre</div>
+          <span class="stock-price">60 € / chambre · 2 nuits</span>
         </div>
         <div class="stock-card">
-          <div class="stock-type">Double</div>
+          <div class="stock-type">Double · 2 pers</div>
           <div class="stock-num" id="stock-double">—</div>
-          <div class="stock-sub">sur 20</div>
-          <span class="stock-price">42 € / pers · 2 nuits</span>
+          <div class="stock-sub">sur 10 chambres</div>
+          <span class="stock-price">90 € / chambre · 2 nuits</span>
         </div>
         <div class="stock-card">
-          <div class="stock-type">Triple</div>
+          <div class="stock-type">Triple · 3 pers</div>
           <div class="stock-num" id="stock-triple">—</div>
-          <div class="stock-sub">sur 9</div>
-          <span class="stock-price">34 € / pers · 2 nuits</span>
+          <div class="stock-sub">sur 3 chambres</div>
+          <span class="stock-price">110 € / chambre · 2 nuits</span>
         </div>
       </div>
     </div>
@@ -178,11 +178,17 @@ footer a:hover { text-decoration:underline }
           <label for="f-type">Type de chambre *</label>
           <select id="f-type" name="room_type" required>
             <option value="">— Sélectionner —</option>
-            <option value="simple">Chambre simple · 56 € (1 place)</option>
-            <option value="double">Chambre double · 42 € / pers (20 places)</option>
-            <option value="triple">Chambre triple · 34 € / pers (9 places)</option>
+            <option value="simple">Chambre simple · 60 € · 1 personne · (1 chambre)</option>
+            <option value="double">Chambre double · 90 € · 2 personnes · (10 chambres)</option>
+            <option value="triple">Chambre triple · 110 € · 3 personnes · (3 chambres)</option>
           </select>
-          <span class="hint">Forfait 2 nuits (vendredi 6 → dimanche 8 novembre 2026). Tarif par personne.</span>
+          <span class="hint">Forfait 2 nuits (vendredi 6 → dimanche 8 novembre 2026). Tarif <strong>par chambre entière</strong>.</span>
+        </div>
+
+        <div class="field full" id="field-co" style="display:none">
+          <label for="f-co">Co-occupant(s) prévu(s) <span style="color:var(--parch-dk);font-weight:normal;text-transform:none;letter-spacing:0">(optionnel)</span></label>
+          <input id="f-co" name="co_occupants" type="text" placeholder="Ex : Jean Dupont, Marie Martin">
+          <span class="hint">Tu peux indiquer dès maintenant qui partagera la chambre avec toi. Modifiable plus tard.</span>
         </div>
       </div>
 
@@ -280,11 +286,12 @@ $('#form-reservation').addEventListener('submit', async (e) => {
   clearError();
   const fd = new FormData(e.target);
   const payload = {
-    p_nom:       (fd.get('nom')||'').trim(),
-    p_prenom:    (fd.get('prenom')||'').trim(),
-    p_email:     (fd.get('email')||'').trim().toLowerCase(),
-    p_telephone: (fd.get('telephone')||'').trim() || null,
-    p_room_type: fd.get('room_type'),
+    p_nom:            (fd.get('nom')||'').trim(),
+    p_prenom:         (fd.get('prenom')||'').trim(),
+    p_email:          (fd.get('email')||'').trim().toLowerCase(),
+    p_telephone:      (fd.get('telephone')||'').trim() || null,
+    p_room_type:      fd.get('room_type'),
+    p_co_occupants:   (fd.get('co_occupants')||'').trim() || null,
   };
 
   if (!payload.p_nom || !payload.p_prenom || !payload.p_email || !payload.p_room_type) {
@@ -312,6 +319,7 @@ $('#form-reservation').addEventListener('submit', async (e) => {
       <div class="row"><span class="lbl">Nom</span><span class="val">${escapeHtml(payload.p_prenom + ' ' + payload.p_nom)}</span></div>
       <div class="row"><span class="lbl">Email</span><span class="val">${escapeHtml(payload.p_email)}</span></div>
       <div class="row"><span class="lbl">Téléphone</span><span class="val">${escapeHtml(payload.p_telephone || '—')}</span></div>
+      ${payload.p_co_occupants ? `<div class="row"><span class="lbl">Co-occupant(s)</span><span class="val">${escapeHtml(payload.p_co_occupants)}</span></div>` : ''}
       <div class="row"><span class="lbl">Chambre</span><span class="val">${TYPE_LABEL[payload.p_room_type]} · 2 nuits</span></div>
       <div class="row"><span class="lbl">Montant</span><span class="val">${Number(row.amount_eur).toFixed(2).replace('.',',')} €</span></div>
     `;
@@ -344,6 +352,12 @@ function escapeHtml(s) {
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   })[c]);
 }
+
+// Affiche le champ co-occupants seulement pour double/triple
+document.getElementById('f-type').addEventListener('change', (e) => {
+  const show = ['double','triple'].includes(e.target.value);
+  document.getElementById('field-co').style.display = show ? '' : 'none';
+});
 
 loadStock();
 </script>

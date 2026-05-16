@@ -7,12 +7,12 @@
 --   - actions admin (annuler, marquer payé, créer sans paiement, lien custom)
 --   - stock restant calculé en temps réel
 --
--- Capacités hardcodées :
---   simple : 1 place
---   double : 20 places
---   triple : 9 places
--- Tarifs (par personne, forfait 2 nuits) :
---   simple : 56 € · double : 42 € · triple : 34 €
+-- Capacités hardcodées (chambres physiques) :
+--   simple : 1 chambre
+--   double : 10 chambres
+--   triple : 3 chambres
+-- Tarifs (par CHAMBRE, forfait 2 nuits) :
+--   simple : 60 € · double : 90 € · triple : 110 €
 --
 -- Toute manip post-migration passe par les RPCs — pas de SQL Editor à part ce
 -- one-shot.
@@ -100,14 +100,14 @@ create policy "Admin full access"
   with check (public.is_admin());
 
 -- =========================================================================
--- 3. Fonction utilitaire : tarif par type (forfait 2 nuits, par personne)
+-- 3. Fonction utilitaire : tarif par CHAMBRE (forfait 2 nuits)
 -- =========================================================================
 create or replace function public.room_amount(p_type text)
 returns numeric language sql immutable as $$
   select case p_type
-    when 'simple' then 56.0
-    when 'double' then 42.0
-    when 'triple' then 34.0
+    when 'simple' then 60.0
+    when 'double' then 90.0
+    when 'triple' then 110.0
   end::numeric;
 $$;
 
@@ -126,7 +126,7 @@ language sql
 stable
 as $$
   with cap(room_type, capacity) as (
-    values ('simple', 1), ('double', 20), ('triple', 9)
+    values ('simple', 1), ('double', 10), ('triple', 3)
   ),
   taken_cte as (
     select room_type, count(*)::int as taken
@@ -151,11 +151,12 @@ $$;
 -- Renvoie l'UUID de la résa créée + le montant.
 -- =========================================================================
 create or replace function public.create_reservation(
-  p_nom        text,
-  p_prenom     text,
-  p_email      text,
-  p_telephone  text,
-  p_room_type  text
+  p_nom            text,
+  p_prenom         text,
+  p_email          text,
+  p_telephone      text,
+  p_room_type      text,
+  p_co_occupants   text default null
 )
 returns table(reservation_id uuid, amount_eur numeric)
 language plpgsql
@@ -166,6 +167,7 @@ declare
   v_remaining int;
   v_amount    numeric;
   v_id        uuid;
+  v_note      text;
 begin
   -- Validations
   if p_nom is null or btrim(p_nom) = ''   then raise exception 'Nom obligatoire'; end if;
@@ -182,16 +184,23 @@ begin
 
   select remaining into v_remaining from public.get_room_stock() where room_type = p_room_type;
   if v_remaining is null or v_remaining <= 0 then
-    raise exception 'Plus de places disponibles en chambre %', p_room_type;
+    raise exception 'Plus de chambres disponibles en %', p_room_type;
   end if;
 
   v_amount := public.room_amount(p_room_type);
 
+  v_note := case
+    when p_co_occupants is not null and btrim(p_co_occupants) <> ''
+    then 'Co-occupants prévus : ' || btrim(p_co_occupants)
+    else null
+  end;
+
   insert into public.room_reservations (
-    nom, prenom, email, telephone, room_type, nights, amount_eur, payment_status
+    nom, prenom, email, telephone, room_type, nights, amount_eur,
+    payment_status, admin_notes
   ) values (
     btrim(p_nom), btrim(p_prenom), lower(btrim(p_email)), nullif(btrim(p_telephone),''),
-    p_room_type, 2, v_amount, 'pending'
+    p_room_type, 2, v_amount, 'pending', v_note
   ) returning id into v_id;
 
   return query select v_id, v_amount;
@@ -363,7 +372,7 @@ $$;
 -- Droits d'exécution
 -- =========================================================================
 grant execute on function public.get_room_stock()                        to anon, authenticated;
-grant execute on function public.create_reservation(text,text,text,text,text) to anon, authenticated;
+grant execute on function public.create_reservation(text,text,text,text,text,text) to anon, authenticated;
 grant execute on function public.admin_create_reservation(text,text,text,text,text,text,text) to authenticated;
 grant execute on function public.cancel_reservation(uuid,text)           to authenticated;
 grant execute on function public.mark_reservation_paid(uuid)             to authenticated;
