@@ -198,19 +198,24 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .btn-reserve.secondary{background:transparent;color:var(--gold)}
 .btn-reserve.secondary:hover{background:rgba(201,168,76,0.1);filter:none}
 
-/* --- Compteur d'inscriptions tournoi --- */
-.insc-stock{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin:0 0 1rem}
+/* --- Compteur d'inscriptions tournoi (style aligné sur le bloc Résidence) --- */
+.insc-stock-wrap{background:linear-gradient(180deg,rgba(30,24,16,.85),rgba(20,16,10,.85));border:1px solid var(--gold-d);border-radius:6px;padding:1.4rem 1.5rem;margin:1.5rem 0;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+.insc-stock-wrap h4{font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;letter-spacing:.08em;margin-bottom:.3rem;text-align:center}
+.insc-stock-wrap .insc-stock-intro{text-align:center;font-size:.85rem;color:var(--parch-dk);font-style:italic;margin-bottom:1rem}
+.insc-stock{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:0}
 @media(max-width:600px){.insc-stock{grid-template-columns:1fr}}
-.insc-card{background:rgba(0,0,0,0.3);border:1px solid var(--gold-d);border-radius:4px;padding:.9rem 1rem;text-align:center;transition:border-color .3s}
-.insc-card.full{border-color:var(--red);background:rgba(168,32,32,0.12)}
-.insc-card.tight{border-color:#c87838}
-.insc-card-label{font-family:'Cinzel',serif;font-size:.74rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase}
+.insc-card{background:rgba(0,0,0,0.35);border:1px solid var(--gold-d);border-radius:5px;padding:1.1rem 1rem .9rem;text-align:center;transition:border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
+.insc-card.tight{border-color:#c87838;box-shadow:inset 0 0 0 1px rgba(200,120,56,0.3)}
+.insc-card.full{border-color:var(--red);background:rgba(168,32,32,0.14);box-shadow:inset 0 0 0 1px rgba(168,32,32,0.4)}
+.insc-card-label{font-family:'Cinzel',serif;font-size:.76rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:.3rem}
 .insc-card.full .insc-card-label{color:#ffb8b8}
-.insc-card-num{font-family:'Cinzel Decorative',cursive;font-size:1.7rem;color:var(--gold-l);margin:.2rem 0;line-height:1}
-.insc-card.full .insc-card-num{color:var(--red);font-size:1rem;letter-spacing:.1em;text-transform:uppercase}
-.insc-card-sub{font-size:.74rem;color:var(--parch-dk)}
-.insc-bar{height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;margin-top:.5rem}
-.insc-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold-l));transition:width .5s}
+.insc-card-num{font-family:'Cinzel Decorative',cursive;font-size:2.4rem;color:var(--gold-l);line-height:1;margin:.3rem 0;text-shadow:0 0 18px rgba(232,201,106,0.25)}
+.insc-card.full .insc-card-num{color:var(--red);font-size:1.1rem;letter-spacing:.15em;text-transform:uppercase;text-shadow:none;padding:.4rem 0}
+.insc-card-sub{font-size:.78rem;color:var(--parch-d);margin:.3rem 0 .6rem}
+.insc-card-desc{font-size:.74rem;color:var(--parch-dk);font-style:italic;border-top:1px dotted rgba(201,168,76,0.2);padding-top:.5rem;margin-top:.3rem;line-height:1.4}
+.insc-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-top:.5rem}
+.insc-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold-l));transition:width .6s}
+.insc-card.tight .insc-bar-fill{background:linear-gradient(90deg,#a85a28,#e69b4e)}
 .insc-card.full .insc-bar-fill{background:var(--red)}
 .insc-warn{background:rgba(168,32,32,0.15);border:1px solid rgba(168,32,32,0.6);border-radius:4px;padding:.7rem 1rem;margin-bottom:1rem;font-size:.88rem;color:#ffd8a8;text-align:center}
 .insc-warn strong{color:#ffb8b8}
@@ -1288,24 +1293,31 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       </p>
 
       <!-- Compteur de places restantes (alimenté par get_inscription_stock RPC) -->
-      <div class="insc-stock" id="insc-stock-grid" aria-label="Places restantes par catégorie">
-        <div class="insc-card" data-type="equipe">
-          <div class="insc-card-label">⚔ Compétitif · Équipes</div>
-          <div class="insc-card-num" id="insc-num-equipe">—</div>
-          <div class="insc-card-sub" id="insc-sub-equipe">/ 12 équipes</div>
-          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-equipe" style="width:0%"></div></div>
-        </div>
-        <div class="insc-card" data-type="jeu_libre">
-          <div class="insc-card-label">🎲 Jeu Libre</div>
-          <div class="insc-card-num" id="insc-num-jeu_libre">—</div>
-          <div class="insc-card-sub" id="insc-sub-jeu_libre">/ 50 places</div>
-          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-jeu_libre" style="width:0%"></div></div>
-        </div>
-        <div class="insc-card" data-type="narratif">
-          <div class="insc-card-label">📜 Narratif</div>
-          <div class="insc-card-num" id="insc-num-narratif">—</div>
-          <div class="insc-card-sub" id="insc-sub-narratif">/ 10 places</div>
-          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-narratif" style="width:0%"></div></div>
+      <div class="insc-stock-wrap reveal" aria-label="Places restantes par catégorie">
+        <h4>⏳ Places restantes par axe</h4>
+        <p class="insc-stock-intro">Mise à jour en temps réel · les places s'attribuent dans l'ordre des paiements confirmés.</p>
+        <div class="insc-stock">
+          <div class="insc-card" data-type="equipe">
+            <div class="insc-card-label">⚔ Compétitif · Équipes</div>
+            <div class="insc-card-num" id="insc-num-equipe">—</div>
+            <div class="insc-card-sub" id="insc-sub-equipe">/ 12 équipes</div>
+            <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-equipe" style="width:0%"></div></div>
+            <div class="insc-card-desc">5 joueurs / équipe · tournoi par alliances · 5 rondes</div>
+          </div>
+          <div class="insc-card" data-type="jeu_libre">
+            <div class="insc-card-label">🎲 Jeu Libre</div>
+            <div class="insc-card-num" id="insc-num-jeu_libre">—</div>
+            <div class="insc-card-sub" id="insc-sub-jeu_libre">/ 50 places</div>
+            <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-jeu_libre" style="width:0%"></div></div>
+            <div class="insc-card-desc">Parties amicales · démonstrations · sans appariement</div>
+          </div>
+          <div class="insc-card" data-type="narratif">
+            <div class="insc-card-label">📜 Narratif</div>
+            <div class="insc-card-num" id="insc-num-narratif">—</div>
+            <div class="insc-card-sub" id="insc-sub-narratif">/ 10 places</div>
+            <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-narratif" style="width:0%"></div></div>
+            <div class="insc-card-desc">Animation orchestrée par <strong style="color:var(--gold)">Nimp'Games</strong></div>
+          </div>
         </div>
       </div>
 
