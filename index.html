@@ -1286,13 +1286,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     </div>
 
     <div class="payment-section reveal" style="margin-top:2rem">
-      <h3 style="text-align:center;font-family:'Cinzel',serif;color:var(--gold);margin-bottom:.6rem;letter-spacing:.12em;text-transform:uppercase;font-size:1.1rem">⚔ Paiement de l'inscription ⚔</h3>
-      <p style="text-align:center;color:var(--parch-d);margin-bottom:1.2rem;font-size:.95rem">
-        Règle tes <strong style="color:var(--gold)">65€</strong> via AssoConnect ci-dessous (carte bancaire, chèque, espèces, virement).<br>
-        <span style="font-size:.85rem;color:var(--parch-dk);font-style:italic">Tu recevras un email de confirmation avec le lien pour <strong style="color:var(--gold-d)">forger ton champion</strong>.</span>
-      </p>
-
-      <!-- Compteur de places restantes (alimenté par get_inscription_stock RPC) -->
+      <!-- Compteur de places restantes -->
       <div class="insc-stock-wrap reveal" aria-label="Places restantes par catégorie">
         <h4>⏳ Places restantes par axe</h4>
         <p class="insc-stock-intro">Mise à jour en temps réel · les places s'attribuent dans l'ordre des paiements confirmés.</p>
@@ -1324,9 +1318,14 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <!-- Warnings par catégorie pleine -->
       <div id="insc-warnings"></div>
 
-      <!-- Conteneur iframe — caché si tout est plein -->
-      <div id="insc-payment-wrap">
-        <div class="iframe-asc-container" data-type="collect" data-collect-id="01KR13EXW81MB1J0B3PKRCZ0R4"></div>
+      <!-- Bouton CTA principal vers le tunnel d'inscription dédié -->
+      <div id="insc-payment-wrap" style="text-align:center;margin-top:1.5rem">
+        <a href="inscription-tournoi.html" class="btn-reserve" style="display:inline-flex;font-size:.95rem;padding:.95rem 1.8rem">
+          ⚔ S'inscrire au tournoi (65 €)
+        </a>
+        <p style="margin-top:.8rem;font-size:.82rem;color:var(--parch-dk);font-style:italic">
+          Formulaire en 2 étapes — réservation de la place, puis paiement AssoConnect. Tu recevras un email de confirmation avec le lien pour <strong style="color:var(--gold-d)">forger ton champion</strong>.
+        </p>
       </div>
 
       <!-- Message "tout complet" — caché par défaut, affiché si remaining = 0 partout -->
