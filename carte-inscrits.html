@@ -462,7 +462,7 @@ const ALLIANCES = {
   B:   { name: 'Alliance B',    color: '#dc2626', devise: 'Force du Sud' },
   C:   { name: 'Alliance C',    color: '#16a34a', devise: 'Vigilance du Centre' },
   D:   { name: 'Alliance D',    color: '#ca8a04', devise: 'Noblesse de l\'Ouest' },
-  IDF: { name: 'Île-de-France', color: '#888888', devise: 'Cœur du Royaume — neutre' }
+  IDF: { name: 'Île-de-France', color: '#888888', devise: 'Dogs of War · Zone non conquérable' }
 };
 
 const REGION_TO_ALLIANCE = {
@@ -710,14 +710,92 @@ function regionSlug(name) {
 function renderMap() {
   const svg = document.getElementById('map');
   let h = '';
-  // Defs : pattern hachuré pour IdF + clipPath par région conquérable (pour le Voronoï)
+  // Defs : emblème Dogs of War pour l'IdF (cité franche des mercenaires)
+  // + clipPath par région conquérable (pour le Voronoï)
   h += '<defs>';
-  h += '<pattern id="idf-hatch" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">';
-  h += '<rect width="2.5" height="10" fill="#3b82f6"/>';
-  h += '<rect x="2.5" width="2.5" height="10" fill="#dc2626"/>';
-  h += '<rect x="5" width="2.5" height="10" fill="#16a34a"/>';
-  h += '<rect x="7.5" width="2.5" height="10" fill="#ca8a04"/>';
-  h += '</pattern>';
+  // Emblème Dogs of War : tête de mâtin snarling (lore Warhammer DoW)
+  // + piques croisées en arrière-plan
+  h += `<symbol id="dow-emblem" viewBox="-50 -50 100 100" overflow="visible">
+    <!-- Piques croisées en arrière-plan -->
+    <g stroke="#C9A84C" stroke-width="2.8" stroke-linecap="round" fill="none">
+      <line x1="-38" y1="-38" x2="38" y2="38"/>
+      <line x1="38" y1="-38" x2="-38" y2="38"/>
+    </g>
+    <!-- Fers de pique (en haut) -->
+    <g fill="#E8C96A" stroke="#8A6E2F" stroke-width="0.5">
+      <polygon points="-38,-38 -45,-44 -41,-50 -32,-45"/>
+      <polygon points="38,-38 32,-45 41,-50 45,-44"/>
+    </g>
+    <!-- Pommeaux de pique (en bas) -->
+    <g fill="#8A6E2F" stroke="#C9A84C" stroke-width="0.9">
+      <circle cx="-38" cy="38" r="3.5"/>
+      <circle cx="38" cy="38" r="3.5"/>
+    </g>
+
+    <!-- Médaillon noir central -->
+    <circle cx="0" cy="2" r="25" fill="#0A0806" stroke="#C9A84C" stroke-width="2.5"/>
+    <circle cx="0" cy="2" r="22" fill="none" stroke="#8A6E2F" stroke-width="0.6"/>
+
+    <!-- ====== TÊTE DE MÂTIN SNARLING (Dogs of War) ====== -->
+    <!-- Oreilles triangulaires dressées -->
+    <g fill="#E8C96A" stroke="#0A0806" stroke-width="0.9" stroke-linejoin="round">
+      <path d="M -15 -7 L -10 -18 L -5 -8 Z"/>
+      <path d="M 5 -8 L 10 -18 L 15 -7 Z"/>
+    </g>
+    <!-- Intérieur d'oreille (plus sombre) -->
+    <g fill="#8A6E2F">
+      <path d="M -12 -9 L -10 -15 L -8 -9 Z"/>
+      <path d="M 8 -9 L 10 -15 L 12 -9 Z"/>
+    </g>
+
+    <!-- Crâne / tête (forme massive de mâtin) -->
+    <path d="M -15 -8
+             Q -18 1 -15 8
+             L -12 13
+             Q -8 17 -3 18
+             L 3 18
+             Q 8 17 12 13
+             L 15 8
+             Q 18 1 15 -8
+             L 11 -11
+             Q 5 -13 0 -13
+             Q -5 -13 -11 -11 Z"
+          fill="#E8C96A" stroke="#0A0806" stroke-width="1.1"/>
+
+    <!-- Sourcils froncés (snarl) -->
+    <g stroke="#8A6E2F" stroke-width="1.3" fill="none" stroke-linecap="round">
+      <path d="M -11 -5 Q -7 -7 -3 -5"/>
+      <path d="M 11 -5 Q 7 -7 3 -5"/>
+    </g>
+
+    <!-- Yeux (regard menaçant) -->
+    <g fill="#0A0806">
+      <ellipse cx="-6" cy="-1" rx="2" ry="2.4"/>
+      <ellipse cx="6" cy="-1" rx="2" ry="2.4"/>
+    </g>
+    <g fill="#E8C96A">
+      <circle cx="-5.5" cy="-1.8" r="0.7"/>
+      <circle cx="6.5" cy="-1.8" r="0.7"/>
+    </g>
+
+    <!-- Museau (légèrement plus clair) -->
+    <path d="M -8 5 Q -10 12 -5 15 L 5 15 Q 10 12 8 5 Z"
+          fill="#C9A84C" stroke="#0A0806" stroke-width="0.7"/>
+
+    <!-- Truffe -->
+    <ellipse cx="0" cy="6" rx="2.6" ry="1.8" fill="#0A0806"/>
+
+    <!-- Gueule ouverte snarling + crocs apparents -->
+    <path d="M -7 11 Q -5 16 -2 13 L 2 13 Q 5 16 7 11 Z"
+          fill="#0A0806"/>
+    <!-- Crocs (haut + bas) -->
+    <g fill="#E8C96A">
+      <polygon points="-3,11 -2.2,14 -1.4,11"/>
+      <polygon points="1.4,11 2.2,14 3,11"/>
+      <polygon points="-3.5,13.5 -2.8,11 -2,13.5"/>
+      <polygon points="2,13.5 2.8,11 3.5,13.5"/>
+    </g>
+  </symbol>`;
   // Filtre "frontière organique" : déforme les bords des cellules avec un bruit
   // de Perlin pour casser le côté géométrique du Voronoï natif.
   // Appliqué aux cellules AVANT clip-path (via nested <g>), donc la silhouette
@@ -742,16 +820,35 @@ function renderMap() {
     if (!alliance) continue;
     const isImmune = alliance === 'IDF';
     const isSelected = selectedRegion === name;
-    const fill = isImmune ? 'url(#idf-hatch)' : ALLIANCES[alliance].color;
-    const opacity = isImmune ? 0.6 : 0.4;
+    const fill = isImmune ? '#050302' : ALLIANCES[alliance].color;
+    const opacity = isImmune ? 0.95 : 0.4;
     const cls = 'region-shape' + (isImmune ? ' immune' : '') + (isSelected ? ' selected' : '');
     h += `<path class="${cls}" d="${geoFeaturePath(feat)}" fill="${fill}" fill-opacity="${opacity}" data-name="${escapeHTML(name)}"/>`;
   }
   h += '</g>';
 
-  // 2. Labels régions
+  // Emblème Dogs of War au cœur de l'Île-de-France (cité franche des mercenaires)
+  const idfCentroid = regionCentroids['Île-de-France'];
+  if (idfCentroid) {
+    const ex = idfCentroid[0];
+    const ey = idfCentroid[1];
+    h += '<g class="layer-dow-emblem" pointer-events="none">';
+    // Halo doré subtil
+    h += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="26" fill="#C9A84C" fill-opacity="0.08"/>`;
+    // Emblème (sabres croisés + crâne)
+    h += `<use href="#dow-emblem" x="${(ex - 22).toFixed(1)}" y="${(ey - 22).toFixed(1)}" width="44" height="44"/>`;
+    // Devise "DOGS OF WAR" en arc en-dessous
+    h += `<text x="${ex.toFixed(1)}" y="${(ey + 32).toFixed(1)}" text-anchor="middle"
+            font-family="Cinzel, serif" font-size="7" font-weight="700"
+            fill="#E8C96A" letter-spacing="1.5"
+            paint-order="stroke" stroke="#0A0806" stroke-width="2">DOGS OF WAR</text>`;
+    h += '</g>';
+  }
+
+  // 2. Labels régions (l'IdF a son propre emblème Dogs of War, pas de label classique)
   h += '<g class="layer-labels" pointer-events="none">';
   for (const name of Object.keys(REGION_TO_ALLIANCE)) {
+    if (REGION_TO_ALLIANCE[name] === 'IDF') continue;
     const c = regionCentroids[name];
     if (!c) continue;
     const champsCount = champions.filter(ch => ch.region === name).length;
@@ -899,7 +996,7 @@ function showRegionTooltip(evt, name) {
   const here = champions.filter(ch => ch.region === name);
   let html = `<b>${escapeHTML(name)}</b><br>`;
   if (alliance === 'IDF') {
-    html += '<i>🛡 Zone neutre — non conquérable</i>';
+    html += '<i>⚔ Dogs of War · Zone non conquérable</i>';
   } else {
     html += `<span style="color:${ALLIANCES[alliance].color};">${ALLIANCES[alliance].name}</span><br>`;
     html += `👥 <b>${here.length}</b> champion(s)`;

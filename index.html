@@ -253,6 +253,24 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .price-card::before{content:'✦ TOUT COMPRIS ✦';position:absolute;top:1rem;right:0;background:var(--crimson);color:var(--gold);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.15em;padding:.3rem 1rem .3rem 1.5rem;clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%)}
 .price-amount{font-family:'Cinzel Decorative',cursive;font-size:3rem;color:var(--gold);text-shadow:0 0 20px var(--gold-glow);line-height:1}
 .price-unit{font-size:.9rem;color:var(--parch-dk);margin-bottom:1.5rem}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;max-width:1000px;margin:0 auto 2rem}
+@media (max-width:780px){.price-grid{grid-template-columns:1fr;max-width:480px}}
+.price-axe{background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:2px solid var(--gold-d);border-radius:6px;padding:1.8rem 1.3rem 1.5rem;text-align:center;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 24px rgba(0,0,0,0.45);transition:border-color .25s,transform .25s,box-shadow .25s}
+.price-axe:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 10px 32px rgba(201,168,76,0.15),0 8px 30px rgba(0,0,0,0.6)}
+.price-axe.featured{border-color:var(--gold);box-shadow:0 0 30px rgba(201,168,76,0.18),0 8px 30px rgba(0,0,0,0.55)}
+.price-axe.featured::before{content:'✦ FORMAT PHARE ✦';position:absolute;top:.9rem;right:0;background:var(--crimson);color:var(--gold);font-family:'Cinzel',serif;font-size:.55rem;font-weight:700;letter-spacing:.12em;padding:.28rem .9rem .28rem 1.4rem;clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%)}
+.price-axe-icon{font-size:1.6rem;margin-bottom:.3rem}
+.price-axe-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--gold-l);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem}
+.price-axe-amount{font-family:'Cinzel Decorative',cursive;font-size:2.2rem;color:var(--gold);text-shadow:0 0 18px var(--gold-glow);line-height:1;margin-bottom:.2rem}
+.price-axe-unit{font-size:.78rem;color:var(--parch-dk);margin-bottom:1rem;font-style:italic}
+.price-axe-detail{font-size:.82rem;color:var(--parch-d);line-height:1.5;flex-grow:1;padding:.8rem 0;border-top:1px solid rgba(201,168,76,0.18);border-bottom:1px solid rgba(201,168,76,0.18)}
+.price-axe-cta{margin-top:.9rem;display:inline-flex;justify-content:center;align-items:center;gap:.4rem;background:linear-gradient(180deg,var(--gold),var(--gold-d));color:#1a0e08;font-family:'Cinzel',serif;font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;padding:.7rem 1.1rem;border-radius:4px;transition:filter .2s,transform .2s}
+.price-axe-cta:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.price-axe-cta.crim{background:linear-gradient(180deg,var(--crim-l),var(--crimson));color:var(--gold-l)}
+.price-axe-cta.crim:hover{filter:brightness(1.2)}
+.price-includes-row{max-width:780px;margin:0 auto 1rem;background:rgba(15,12,9,0.55);border:1px solid var(--gold-d);border-radius:5px;padding:1rem 1.4rem;font-size:.86rem;color:var(--parch-d);line-height:1.6;text-align:center}
+.price-includes-row strong{color:var(--gold-l)}
+.price-acc-note{max-width:780px;margin:0 auto 1.5rem;font-size:.82rem;color:#a8d896;padding:.7rem 1rem;background:rgba(24,40,20,0.4);border:1px solid rgba(74,122,62,0.45);border-radius:5px;text-align:center}
 .price-includes{list-style:none;padding:0;text-align:left;margin-bottom:1.5rem}
 .price-includes li{font-size:.88rem;color:var(--parch-d);padding:.35rem 0;border-bottom:1px solid rgba(201,168,76,0.1);display:flex;align-items:center;gap:.5rem}
 .price-includes li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0}
@@ -709,7 +727,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 
     <div class="scroll reveal" style="margin-top:1.5rem">
       <h3>🍽 Restauration</h3>
-      <p>La PAF de 65 € inclut <strong>l'inscription au tournoi</strong>, <strong>2 petits-déjeuners</strong> (samedi & dimanche matin) et <strong>2 déjeuners</strong> (samedi & dimanche midi). Une <strong>buvette/snacking</strong> sera ouverte tout le week-end pour boissons et collations.</p>
+      <p>La PAF (<strong>325 €</strong> par équipe en compétitif, <strong>65 €</strong> par joueur en jeu libre ou narratif) inclut <strong>l'inscription au tournoi</strong>, <strong>2 petits-déjeuners</strong> (samedi & dimanche matin), <strong>2 déjeuners</strong> (samedi & dimanche midi), ainsi qu'une <strong>bouteille d'eau</strong> et le <strong>café à volonté</strong> tout le week-end. Une <strong>buvette/snacking</strong> sera également ouverte avec bières, softs et barres chocolatées <em>(hors PAF, à régler sur place)</em>.</p>
       <p>Le dîner du samedi soir est libre — restaurants et auberges sont disponibles à Mesnil-Saint-Père et autour du Lac d'Orient.</p>
     </div>
 
@@ -1085,7 +1103,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 
     <div class="lieu-features reveal">
       <div class="lieu-feat"><span class="lieu-feat-icon">🏟</span><div class="lieu-feat-text"><h4>Salle 1 000 m²</h4><p>Multi-usages, capacité &gt; 60 tables, équipements sportifs intégrés</p></div></div>
-      <div class="lieu-feat"><span class="lieu-feat-icon">🍽</span><div class="lieu-feat-text"><h4>Restauration</h4><p>2 petits-déj + 2 déjeuners inclus dans la PAF · buvette sur place</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🍽</span><div class="lieu-feat-text"><h4>Restauration</h4><p>2 petits-déj + 2 déjeuners + eau + café inclus PAF · buvette (bière/soft/snacks) hors PAF</p></div></div>
       <div class="lieu-feat"><span class="lieu-feat-icon">🛏</span><div class="lieu-feat-text"><h4>Hébergement sur place</h4><p>Résidence du Lac d'Orient — chambres limitées, <strong style="color:var(--gold-l)">à la demande</strong> · complétée par hôtels et gîtes à Mesnil-Saint-Père</p></div></div>
       <div class="lieu-feat"><span class="lieu-feat-icon">🚗</span><div class="lieu-feat-text"><h4>Accès & Parking</h4><p>Parking gratuit · 25 min de Troyes · A5/A26 à proximité</p></div></div>
       <div class="lieu-feat"><span class="lieu-feat-icon">🌲</span><div class="lieu-feat-text"><h4>Parc Naturel</h4><p>Forêt d'Orient · sentiers · plage · port de plaisance à 5 min</p></div></div>
@@ -1268,16 +1286,57 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     <p class="section-sub">⚔ Rejoindre l'Event ⚔</p>
     <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
 
-    <div class="price-card reveal">
-      <div class="price-amount">65 €</div>
-      <div class="price-unit">par <strong>joueur</strong> · tout compris</div>
-      <p style="font-size:.85rem;color:var(--parch-d);margin-top:1rem;line-height:1.5">
-        2 jours d'événement, repas inclus, 3 axes au choix (compétitif · narratif · jeu libre).<br>
-        <span style="font-size:.78rem;color:var(--parch-dk);font-style:italic">Détail complet dans le formulaire de paiement ci-dessous.</span>
-      </p>
-      <p style="font-size:.82rem;color:#a8d896;margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(74,122,62,0.4)">
-        🎟 <strong>Accompagnants : entrée libre et gratuite</strong> — la PAF concerne uniquement les joueurs.
-      </p>
+    <div class="price-grid reveal">
+
+      <!-- 1) COMPÉTITIF · ÉQUIPES — bloc, paiement unique pour 5 -->
+      <div class="price-axe">
+        <div class="price-axe-icon">⚔</div>
+        <div class="price-axe-title">Compétitif · Équipes</div>
+        <div class="price-axe-amount">325 €</div>
+        <div class="price-axe-unit">par <strong>équipe</strong> · soit 65 € / joueur</div>
+        <div class="price-axe-detail">
+          <strong style="color:var(--gold-l)">5 joueurs / équipe</strong> · 4 rondes · 2 000 pts.<br>
+          <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">Paiement groupé par le capitaine — la place de l'équipe entière est réservée d'un coup.</span>
+        </div>
+        <a href="inscription-tournoi.html?axe=equipe" class="price-axe-cta">⚔ Inscrire mon équipe</a>
+      </div>
+
+      <!-- 2) JEU LIBRE — individuel -->
+      <div class="price-axe">
+        <div class="price-axe-icon">🎲</div>
+        <div class="price-axe-title">Jeu Libre</div>
+        <div class="price-axe-amount">65 €</div>
+        <div class="price-axe-unit">par <strong>joueur</strong></div>
+        <div class="price-axe-detail">
+          Parties amicales · démonstrations · sans appariement.<br>
+          <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">Format souple — viens avec ta liste ou improvise sur place.</span>
+        </div>
+        <a href="inscription-tournoi.html?axe=jeu_libre" class="price-axe-cta">🎲 M'inscrire en libre</a>
+      </div>
+
+      <!-- 3) NARRATIF — individuel -->
+      <div class="price-axe">
+        <div class="price-axe-icon">📜</div>
+        <div class="price-axe-title">Narratif</div>
+        <div class="price-axe-amount">65 €</div>
+        <div class="price-axe-unit">par <strong>joueur</strong></div>
+        <div class="price-axe-detail">
+          Animation orchestrée par <strong style="color:var(--gold)">Nimp'Games</strong> · scénarios immersifs.<br>
+          <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">10 places — l'aventure prime sur la victoire.</span>
+        </div>
+        <a href="inscription-tournoi.html?axe=narratif" class="price-axe-cta">📜 M'inscrire en narratif</a>
+      </div>
+
+    </div>
+
+    <div class="price-includes-row reveal">
+      <strong>✦ Tout compris :</strong> 2 jours d'événement · 2 petits-déjeuners · 2 déjeuners · bouteille d'eau · café à volonté.<br>
+      <span style="font-size:.8rem;color:var(--parch-dk)">Buvette ouverte le week-end (bière, soft, barres chocolatées) — <em>hors PAF</em>.</span>
+      <br><span style="font-size:.78rem;color:var(--parch-dk);font-style:italic">Détail complet dans le formulaire de paiement.</span>
+    </div>
+
+    <div class="price-acc-note reveal">
+      🎟 <strong>Accompagnants : entrée libre et gratuite</strong> — la PAF concerne uniquement les joueurs.
     </div>
 
     <div class="deadline-box reveal">
@@ -1321,10 +1380,10 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <!-- Bouton CTA principal vers le tunnel d'inscription dédié -->
       <div id="insc-payment-wrap" style="text-align:center;margin-top:1.5rem">
         <a href="inscription-tournoi.html" class="btn-reserve" style="display:inline-flex;font-size:.95rem;padding:.95rem 1.8rem">
-          ⚔ S'inscrire au tournoi (65 €)
+          ⚔ Accéder au formulaire d'inscription
         </a>
         <p style="margin-top:.8rem;font-size:.82rem;color:var(--parch-dk);font-style:italic">
-          Formulaire en 2 étapes — réservation de la place, puis paiement AssoConnect. Tu recevras un email de confirmation avec le lien pour <strong style="color:var(--gold-d)">forger ton champion</strong>.
+          Formulaire en 2 étapes — choix de l'axe, réservation de la place, puis paiement AssoConnect. Tu recevras un email de confirmation avec le lien pour <strong style="color:var(--gold-d)">forger ton champion</strong>.
         </p>
       </div>
 
@@ -1338,7 +1397,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 
     <div class="scroll reveal" style="margin-top:2rem">
       <h3>🏨 Hébergement</h3>
-      <p>L'hébergement <strong>n'est pas inclus</strong> dans la PAF (65€). Plusieurs options à proximité :</p>
+      <p>L'hébergement <strong>n'est pas inclus</strong> dans la PAF. Plusieurs options à proximité :</p>
       <ul>
         <li><strong style="color:var(--gold)">Résidence du Lac d'Orient — sur place</strong> : 14 chambres (1 simple 60€ · 10 doubles 90€ · 3 triples 110€) — tarif par <em>chambre entière</em>, forfait 2 nuits. <strong>Places limitées, à la demande</strong> — <a href="reservation-chambre.html" style="color:var(--gold-l);text-decoration:underline">réserver une chambre</a> ou voir détail sur la <a href="#" onclick="showPage('lieu');return false;" style="color:var(--gold-l);text-decoration:underline">page Lieu</a>.</li>
         <li><strong>Hôtels, gîtes & chambres d'hôtes</strong> à Mesnil-Saint-Père et autour du Lac d'Orient — voir l'<a href="https://mesnil-saint-pere.com/decouvrir-sortir-bouger/annuaires-office-du-tourisme/" target="_blank" rel="noopener" style="color:var(--gold-l);text-decoration:underline">annuaire de l'Office de Tourisme</a></li>
@@ -1394,7 +1453,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
           <li>Stand ou table d'exposition pendant l'event</li>
           <li>Présentation orale lors de la remise des prix</li>
           <li>Logo sur les lots remis aux vainqueurs</li>
-          <li>Invitation au repas de clôture</li>
+          <li>Repas pris en charge (petits-déjeuners, déjeuners samedi et dimanche)</li>
         </ul>
       </div>
       <div class="sponsor-tier silver">
@@ -1423,7 +1482,6 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <ul>
         <li>Lots dotation : figurines, peintures, décors de jeu, accessoires</li>
         <li>Bons d'achat boutique ou abonnements</li>
-        <li>Repas pris en charge (cocktail d'ouverture, déjeuners samedi et dimanche)</li>
       </ul>
     </div>
     <div class="sponsor-contact reveal">
