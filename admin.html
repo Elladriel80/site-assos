@@ -224,6 +224,7 @@
     <button data-tab="dashboard" class="active">📊 Tableau de bord</button>
     <button data-tab="champions">⚔️ Champions</button>
     <button data-tab="payeurs">💰 Payeurs</button>
+    <button data-tab="inscriptions">📝 Inscriptions</button>
     <button data-tab="equipes">🏆 Équipes</button>
     <button data-tab="relances">📧 Relances</button>
     <button data-tab="tournoi">⚔️ Tournoi</button>
@@ -499,6 +500,58 @@
       </div>
     </section>
 
+    <section data-pane="inscriptions" hidden>
+      <h2>📝 Inscriptions tunnel</h2>
+      <p style="color:var(--text-dim);max-width:74ch">
+        Inscriptions créées via <code>inscription-tournoi.html</code> (le formulaire public en 2 étapes, avant paiement AssoConnect). Toutes les lignes <strong>pending</strong>, <strong>paid</strong> et <strong>waived</strong> consomment du stock — annule les <em>pending</em> orphelines (tests, abandons de tunnel) pour libérer les slots qui s'affichent côté public.
+      </p>
+
+      <div class="stats" id="insc-stats" style="margin-top:1em">
+        <div class="stat"><div class="label">⚔ Équipes (max 12)</div><div class="value" id="insc-stock-equipe">—</div></div>
+        <div class="stat"><div class="label">🎲 Jeu Libre (max 50)</div><div class="value" id="insc-stock-jeu_libre">—</div></div>
+        <div class="stat"><div class="label">📜 Narratif (max 10)</div><div class="value" id="insc-stock-narratif">—</div></div>
+        <div class="stat"><div class="label">💰 Encaissé (paid)</div><div class="value" id="insc-cash">—</div></div>
+      </div>
+
+      <div class="toolbar" style="margin-top:1em">
+        <input type="search" class="search" id="search-insc" placeholder="Rechercher par nom, prénom, email…">
+        <select id="filter-insc-status">
+          <option value="all">Tous statuts</option>
+          <option value="pending">⏳ En attente paiement</option>
+          <option value="paid">✅ Payés</option>
+          <option value="waived">🎁 Pris en charge (sans paiement)</option>
+          <option value="cancelled">❌ Annulés</option>
+        </select>
+        <select id="filter-insc-type">
+          <option value="all">Tous axes</option>
+          <option value="equipe">⚔ Équipe</option>
+          <option value="jeu_libre">🎲 Jeu Libre</option>
+          <option value="narratif">📜 Narratif</option>
+        </select>
+        <button id="refresh-insc">↻ Rafraîchir</button>
+        <span class="count" id="count-insc"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Tél.</th>
+              <th>Axe</th>
+              <th>Équipe / Rôle</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-insc"><tr><td colspan="9" class="empty-state">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
     <section data-pane="carte" hidden>
       <h2>Carte du tournoi</h2>
       <p style="color:var(--text-dim);max-width:60ch">
@@ -720,6 +773,9 @@ function switchTab(tab) {
   }
   if (tab === 'hebergement') {
     loadReservations();
+  }
+  if (tab === 'inscriptions') {
+    loadInscriptions();
   }
 }
 
@@ -2008,6 +2064,181 @@ $('#btn-create-resa').addEventListener('click', async () => {
     showBanner('err', 'Erreur : ' + (err.message || err.toString()));
   }
 });
+
+// =========================================================================
+// INSCRIPTIONS TUNNEL (pending_inscriptions)
+// =========================================================================
+state.inscriptions = [];
+state.inscFilters = { search: '', status: 'all', type: 'all' };
+
+const INSC_STATUS_META = {
+  pending:   { label: '⏳ En attente',  color: '#e6c89a' },
+  paid:      { label: '✅ Payé',        color: '#b8d6b8' },
+  waived:    { label: '🎁 Pris en charge', color: '#9bb8e6' },
+  cancelled: { label: '❌ Annulé',      color: '#a88' },
+};
+const INSC_TYPE_LABEL = {
+  equipe:    '⚔ Équipe',
+  jeu_libre: '🎲 Jeu Libre',
+  narratif:  '📜 Narratif',
+};
+const INSC_ROLE_LABEL = { capitaine: 'Capitaine', coequipier: 'Coéquipier' };
+
+async function loadInscriptions() {
+  $('#tbody-insc').innerHTML = '<tr><td colspan="9" class="empty-state">Chargement…</td></tr>';
+  const [{ data: rows, error: e1 }, { data: stock, error: e2 }] = await Promise.all([
+    sb.from('pending_inscriptions').select('*').order('created_at', { ascending: false }),
+    sb.rpc('get_inscription_stock'),
+  ]);
+  if (e1) { showBanner('err', 'Chargement inscriptions : ' + e1.message); return; }
+  if (e2) { showBanner('err', 'Stock inscriptions : ' + e2.message); return; }
+  state.inscriptions = rows || [];
+  renderInscStock(stock || []);
+  renderInscriptions();
+}
+
+function renderInscStock(stock) {
+  const map = Object.fromEntries((stock || []).map(r => [r.inscription_type, r]));
+  const fmt = (t) => map[t] ? `${map[t].remaining} / ${map[t].capacity}` : '—';
+  $('#insc-stock-equipe').textContent     = fmt('equipe');
+  $('#insc-stock-jeu_libre').textContent  = fmt('jeu_libre');
+  $('#insc-stock-narratif').textContent   = fmt('narratif');
+
+  const cash = state.inscriptions
+    .filter(r => r.payment_status === 'paid')
+    .reduce((s, r) => s + Number(r.amount_eur || 0), 0);
+  $('#insc-cash').textContent = cash.toFixed(2).replace('.', ',') + ' €';
+}
+
+function renderInscriptions() {
+  const f = state.inscFilters;
+  const q = (f.search || '').toLowerCase().trim();
+  const list = state.inscriptions.filter(r => {
+    if (f.status !== 'all' && r.payment_status   !== f.status) return false;
+    if (f.type   !== 'all' && r.inscription_type !== f.type)   return false;
+    if (q) {
+      const hay = [r.nom, r.prenom, r.email, r.telephone, r.team_name].filter(Boolean).join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  $('#count-insc').textContent = list.length + ' / ' + state.inscriptions.length;
+
+  if (list.length === 0) {
+    $('#tbody-insc').innerHTML = '<tr><td colspan="9" class="empty-state">Aucune inscription.</td></tr>';
+    return;
+  }
+
+  $('#tbody-insc').innerHTML = list.map(r => {
+    const meta = INSC_STATUS_META[r.payment_status] || { label: r.payment_status, color: '#888' };
+    const actions = renderInscActions(r);
+    const idShort = (r.id || '').slice(0, 8);
+    const notes = r.admin_notes ? `<div style="font-size:.78rem;color:var(--text-dim);margin-top:.2rem;white-space:pre-wrap">${escapeHtml(r.admin_notes)}</div>` : '';
+    const teamRole = [
+      r.team_name ? `<strong>${escapeHtml(r.team_name)}</strong>` : '',
+      r.role ? INSC_ROLE_LABEL[r.role] || r.role : '',
+    ].filter(Boolean).join(' · ') || '—';
+    return `
+      <tr data-id="${r.id}">
+        <td><span title="${formatDate(r.created_at)}">${formatDate(r.created_at)}</span><div style="font-size:.7rem;color:var(--text-dim);font-family:monospace">${idShort}…</div></td>
+        <td>${escapeHtml(r.prenom)} ${escapeHtml(r.nom)}${notes}</td>
+        <td><a href="mailto:${escapeHtml(r.email)}" style="color:var(--gold)">${escapeHtml(r.email)}</a></td>
+        <td>${escapeHtml(r.telephone || '—')}</td>
+        <td>${INSC_TYPE_LABEL[r.inscription_type] || r.inscription_type}</td>
+        <td>${teamRole}</td>
+        <td>${Number(r.amount_eur).toFixed(2).replace('.', ',')} €</td>
+        <td><span style="color:${meta.color}">${meta.label}</span></td>
+        <td>${actions}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderInscActions(r) {
+  const st = r.payment_status;
+  const btns = [];
+  if (st === 'pending') {
+    btns.push(`<button class="primary" data-insc-act="paid"   data-id="${r.id}" title="Marquer payé">✅ Payé</button>`);
+    btns.push(`<button             data-insc-act="waived" data-id="${r.id}" title="Pris en charge sans paiement">🎁 Sans paiement</button>`);
+    btns.push(`<button class="danger" data-insc-act="cancel" data-id="${r.id}">❌ Annuler</button>`);
+  } else if (st === 'paid' || st === 'waived') {
+    btns.push(`<button             data-insc-act="unpaid" data-id="${r.id}" title="Repasser en attente">↩ Repasser pending</button>`);
+    btns.push(`<button class="danger" data-insc-act="cancel" data-id="${r.id}">❌ Annuler</button>`);
+  } else if (st === 'cancelled') {
+    btns.push(`<button             data-insc-act="unpaid" data-id="${r.id}" title="Réactiver en attente">↩ Réactiver</button>`);
+    btns.push(`<button class="danger" data-insc-act="delete" data-id="${r.id}" title="Supprimer définitivement de la base">🗑 Supprimer</button>`);
+  }
+  return `<div style="display:flex;gap:.3em;flex-wrap:wrap">${btns.join('')}</div>`;
+}
+
+// Délégation événement (data-insc-act, distinct de data-resa-act)
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-insc-act]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const act = btn.dataset.inscAct;
+  await handleInscAction(act, id);
+});
+
+async function handleInscAction(act, id) {
+  const r = state.inscriptions.find(x => x.id === id);
+  if (!r) return;
+  const who = `${r.prenom} ${r.nom} (${INSC_TYPE_LABEL[r.inscription_type] || r.inscription_type})`;
+
+  try {
+    if (act === 'paid') {
+      if (!confirm(`Marquer ${who} comme PAYÉ ?`)) return;
+      const { error } = await sb.rpc('mark_inscription_paid', { p_id: id });
+      if (error) throw error;
+      showBanner('ok', 'Inscription marquée payée.');
+    }
+    else if (act === 'waived') {
+      if (!confirm(`Marquer ${who} comme PRIS EN CHARGE (sans paiement) ?`)) return;
+      const { error } = await sb.rpc('mark_inscription_waived', { p_id: id });
+      if (error) throw error;
+      showBanner('ok', 'Inscription prise en charge (sans paiement).');
+    }
+    else if (act === 'unpaid') {
+      if (!confirm(`Repasser ${who} en "en attente de paiement" ?`)) return;
+      const { error } = await sb.rpc('unmark_inscription_paid', { p_id: id });
+      if (error) throw error;
+      showBanner('ok', 'Inscription repassée en attente.');
+    }
+    else if (act === 'cancel') {
+      const reason = prompt(`Annuler l'inscription de ${who} ?\n\nMotif (optionnel) :`, '');
+      if (reason === null) return;
+      const { error } = await sb.rpc('cancel_inscription', { p_id: id, p_reason: reason || null });
+      if (error) throw error;
+      showBanner('ok', 'Inscription annulée — slot libéré dans le compteur.');
+    }
+    else if (act === 'delete') {
+      if (!confirm(`⚠️ SUPPRIMER DÉFINITIVEMENT l'inscription de ${who} ?\n\nCette action est irréversible (DELETE en base). À réserver aux entrées de test orphelines.`)) return;
+      const { error } = await sb.from('pending_inscriptions').delete().eq('id', id);
+      if (error) throw error;
+      showBanner('ok', 'Inscription supprimée définitivement.');
+    }
+    await loadInscriptions();
+  } catch (err) {
+    console.error(err);
+    showBanner('err', 'Erreur : ' + (err.message || err.toString()));
+  }
+}
+
+// Filtres & recherche
+$('#search-insc').addEventListener('input', (e) => {
+  state.inscFilters.search = e.target.value;
+  renderInscriptions();
+});
+$('#filter-insc-status').addEventListener('change', (e) => {
+  state.inscFilters.status = e.target.value;
+  renderInscriptions();
+});
+$('#filter-insc-type').addEventListener('change', (e) => {
+  state.inscFilters.type = e.target.value;
+  renderInscriptions();
+});
+$('#refresh-insc').addEventListener('click', loadInscriptions);
 
 checkSession();
 </script>

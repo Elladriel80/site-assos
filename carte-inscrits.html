@@ -217,6 +217,26 @@ header .actions a:hover, header .actions button:hover { transform: translateY(-1
 .champion-marker { cursor: pointer; }
 .champion-marker:hover circle { stroke: var(--gold); stroke-width: 1.5; }
 
+/* === Surlignage des territoires d'un champion au survol de son blason === */
+.cell-vor, .cell-hex {
+  transition: fill-opacity .18s ease, stroke-width .18s ease;
+}
+/* Mode "un champion est ciblé" → on dim toutes les cellules NON-highlighted */
+.layer-cells.is-targeting .cell-vor:not(.highlighted),
+.layer-cells.is-targeting .cell-hex:not(.highlighted) {
+  fill-opacity: 0.22;
+}
+/* Les cellules qui appartiennent au champion ciblé → poppent */
+.cell-vor.highlighted,
+.cell-hex.highlighted {
+  stroke: var(--gold-l);
+  stroke-width: 1.8;
+  fill-opacity: 0.98;
+  filter: drop-shadow(0 0 4px rgba(232,201,106,0.75));
+}
+/* Marker du champion ciblé → légèrement agrandi */
+.champion-marker.is-targeting { filter: drop-shadow(0 0 6px rgba(232,201,106,0.85)); }
+
 .map-ornament {
   fill: none; stroke: var(--gold-d); stroke-width: 1;
   stroke-dasharray: 4 3; opacity: 0.3;
@@ -852,6 +872,7 @@ function renderMap() {
         if (!path) continue;
         const color = ALLIANCES[cell.current_alliance]?.color || '#888';
         h += `<path class="cell-vor" data-cell-id="${escapeHTML(cell.id)}"
+                data-owner="${escapeHTML(cell.cluster_owner_email || '')}"
                 d="${path}" fill="${color}" fill-opacity="0.78"
                 stroke="#1a0a04" stroke-width="0.7" stroke-linejoin="round"/>`;
       }
@@ -868,7 +889,7 @@ function renderMap() {
       for (let i = 0; i < here.length; i++) {
         const ch = here[i];
         const [px, py] = positions[i];
-        h += `<g class="champion-marker" data-id="${escapeHTML(ch.id)}">
+        h += `<g class="champion-marker" data-id="${escapeHTML(ch.id)}" data-email="${escapeHTML(ch.email || '')}">
           ${renderBlason(ch.blason, px, py, 0.6)}
         </g>`;
       }
@@ -899,11 +920,12 @@ function renderMap() {
           if (!off) continue;
           const color = ALLIANCES[cell.current_alliance]?.color || '#888';
           h += `<path class="cell-hex" data-cell-id="${escapeHTML(cell.id)}"
+                  data-owner="${escapeHTML(ch.email || '')}"
                   d="${hexPath(px + off[0], py + off[1], HEX_R)}"
                   fill="${color}" fill-opacity="0.82"
                   stroke="#1a0a04" stroke-width="0.4"/>`;
         }
-        h += `<g class="champion-marker" data-id="${escapeHTML(ch.id)}">
+        h += `<g class="champion-marker" data-id="${escapeHTML(ch.id)}" data-email="${escapeHTML(ch.email || '')}">
           ${renderBlason(ch.blason, px, py, 0.55)}
         </g>`;
       }
@@ -929,13 +951,44 @@ function renderMap() {
     el.addEventListener('click', () => selectRegion(name));
   });
   // Événements champions
+  const cellsLayer = svg.querySelector('.layer-cells');
   svg.querySelectorAll('.champion-marker').forEach(el => {
     const id = el.dataset.id;
-    el.addEventListener('mouseover', evt => showChampionTooltip(evt, id));
+    const email = el.dataset.email;
+    el.addEventListener('mouseover', evt => {
+      showChampionTooltip(evt, id);
+      highlightOwnedCells(cellsLayer, el, email);
+    });
     el.addEventListener('mousemove', moveTooltip);
-    el.addEventListener('mouseout', hideTooltip);
+    el.addEventListener('mouseout', () => {
+      hideTooltip();
+      clearHighlightedCells(cellsLayer, el);
+    });
     el.addEventListener('click', evt => { evt.stopPropagation(); openChampionModal(id); });
   });
+}
+
+/* ==========================================================================
+   SURLIGNAGE DES TERRITOIRES D'UN CHAMPION
+   ========================================================================== */
+
+function highlightOwnedCells(cellsLayer, markerEl, email) {
+  if (!cellsLayer || !email) return;
+  cellsLayer.classList.add('is-targeting');
+  markerEl.classList.add('is-targeting');
+  // Échapper les caractères spéciaux de l'email pour le sélecteur CSS
+  const safe = (window.CSS && CSS.escape) ? CSS.escape(email) : email.replace(/"/g, '\\"');
+  cellsLayer.querySelectorAll(
+    `.cell-vor[data-owner="${safe}"], .cell-hex[data-owner="${safe}"]`
+  ).forEach(c => c.classList.add('highlighted'));
+}
+
+function clearHighlightedCells(cellsLayer, markerEl) {
+  if (!cellsLayer) return;
+  cellsLayer.classList.remove('is-targeting');
+  if (markerEl) markerEl.classList.remove('is-targeting');
+  cellsLayer.querySelectorAll('.cell-vor.highlighted, .cell-hex.highlighted')
+    .forEach(c => c.classList.remove('highlighted'));
 }
 
 /* ==========================================================================
