@@ -713,89 +713,21 @@ function renderMap() {
   // Defs : emblème Dogs of War pour l'IdF (cité franche des mercenaires)
   // + clipPath par région conquérable (pour le Voronoï)
   h += '<defs>';
-  // Emblème Dogs of War : tête de mâtin snarling (lore Warhammer DoW)
-  // + piques croisées en arrière-plan
-  h += `<symbol id="dow-emblem" viewBox="-50 -50 100 100" overflow="visible">
-    <!-- Piques croisées en arrière-plan -->
-    <g stroke="#C9A84C" stroke-width="2.8" stroke-linecap="round" fill="none">
-      <line x1="-38" y1="-38" x2="38" y2="38"/>
-      <line x1="38" y1="-38" x2="-38" y2="38"/>
-    </g>
-    <!-- Fers de pique (en haut) -->
-    <g fill="#E8C96A" stroke="#8A6E2F" stroke-width="0.5">
-      <polygon points="-38,-38 -45,-44 -41,-50 -32,-45"/>
-      <polygon points="38,-38 32,-45 41,-50 45,-44"/>
-    </g>
-    <!-- Pommeaux de pique (en bas) -->
-    <g fill="#8A6E2F" stroke="#C9A84C" stroke-width="0.9">
-      <circle cx="-38" cy="38" r="3.5"/>
-      <circle cx="38" cy="38" r="3.5"/>
-    </g>
-
-    <!-- Médaillon noir central -->
-    <circle cx="0" cy="2" r="25" fill="#0A0806" stroke="#C9A84C" stroke-width="2.5"/>
-    <circle cx="0" cy="2" r="22" fill="none" stroke="#8A6E2F" stroke-width="0.6"/>
-
-    <!-- ====== TÊTE DE MÂTIN SNARLING (Dogs of War) ====== -->
-    <!-- Oreilles triangulaires dressées -->
-    <g fill="#E8C96A" stroke="#0A0806" stroke-width="0.9" stroke-linejoin="round">
-      <path d="M -15 -7 L -10 -18 L -5 -8 Z"/>
-      <path d="M 5 -8 L 10 -18 L 15 -7 Z"/>
-    </g>
-    <!-- Intérieur d'oreille (plus sombre) -->
-    <g fill="#8A6E2F">
-      <path d="M -12 -9 L -10 -15 L -8 -9 Z"/>
-      <path d="M 8 -9 L 10 -15 L 12 -9 Z"/>
-    </g>
-
-    <!-- Crâne / tête (forme massive de mâtin) -->
-    <path d="M -15 -8
-             Q -18 1 -15 8
-             L -12 13
-             Q -8 17 -3 18
-             L 3 18
-             Q 8 17 12 13
-             L 15 8
-             Q 18 1 15 -8
-             L 11 -11
-             Q 5 -13 0 -13
-             Q -5 -13 -11 -11 Z"
-          fill="#E8C96A" stroke="#0A0806" stroke-width="1.1"/>
-
-    <!-- Sourcils froncés (snarl) -->
-    <g stroke="#8A6E2F" stroke-width="1.3" fill="none" stroke-linecap="round">
-      <path d="M -11 -5 Q -7 -7 -3 -5"/>
-      <path d="M 11 -5 Q 7 -7 3 -5"/>
-    </g>
-
-    <!-- Yeux (regard menaçant) -->
-    <g fill="#0A0806">
-      <ellipse cx="-6" cy="-1" rx="2" ry="2.4"/>
-      <ellipse cx="6" cy="-1" rx="2" ry="2.4"/>
-    </g>
-    <g fill="#E8C96A">
-      <circle cx="-5.5" cy="-1.8" r="0.7"/>
-      <circle cx="6.5" cy="-1.8" r="0.7"/>
-    </g>
-
-    <!-- Museau (légèrement plus clair) -->
-    <path d="M -8 5 Q -10 12 -5 15 L 5 15 Q 10 12 8 5 Z"
-          fill="#C9A84C" stroke="#0A0806" stroke-width="0.7"/>
-
-    <!-- Truffe -->
-    <ellipse cx="0" cy="6" rx="2.6" ry="1.8" fill="#0A0806"/>
-
-    <!-- Gueule ouverte snarling + crocs apparents -->
-    <path d="M -7 11 Q -5 16 -2 13 L 2 13 Q 5 16 7 11 Z"
-          fill="#0A0806"/>
-    <!-- Crocs (haut + bas) -->
-    <g fill="#E8C96A">
-      <polygon points="-3,11 -2.2,14 -1.4,11"/>
-      <polygon points="1.4,11 2.2,14 3,11"/>
-      <polygon points="-3.5,13.5 -2.8,11 -2,13.5"/>
-      <polygon points="2,13.5 2.8,11 3.5,13.5"/>
-    </g>
-  </symbol>`;
+  // Emblème Dogs of War — illustration médiévale fantastique (assets/dogs-of-war.png)
+  // ClipPath circulaire pour cacher le fond de pierre + zoomer sur la tête du mâtin
+  h += `<clipPath id="dow-emblem-clip"><circle cx="0" cy="0" r="42"/></clipPath>`;
+  // Filtre "halo doré" pour faire ressortir l'emblème de loin
+  h += `<filter id="dow-glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="blur"/>
+    <feFlood flood-color="#E8C96A" flood-opacity="0.85"/>
+    <feComposite in2="blur" operator="in" result="glow"/>
+    <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <!-- Boost saturation/contraste pour mieux lire l'image à petite taille -->
+  <filter id="dow-pop">
+    <feColorMatrix type="saturate" values="1.35"/>
+    <feComponentTransfer><feFuncR type="gamma" amplitude="1" exponent="0.9"/><feFuncG type="gamma" amplitude="1" exponent="0.9"/><feFuncB type="gamma" amplitude="1" exponent="0.9"/></feComponentTransfer>
+  </filter>`;
   // Filtre "frontière organique" : déforme les bords des cellules avec un bruit
   // de Perlin pour casser le côté géométrique du Voronoï natif.
   // Appliqué aux cellules AVANT clip-path (via nested <g>), donc la silhouette
@@ -828,20 +760,40 @@ function renderMap() {
   h += '</g>';
 
   // Emblème Dogs of War au cœur de l'Île-de-France (cité franche des mercenaires)
+  // Stratégie : zoomer sur la tête du mâtin (la couronne/bannière deviennent illisibles à petite taille)
+  //             + médaillon plus grand + bordure dorée nette + halo extérieur + texte gravé en bas
   const idfCentroid = regionCentroids['Île-de-France'];
   if (idfCentroid) {
     const ex = idfCentroid[0];
     const ey = idfCentroid[1];
     h += '<g class="layer-dow-emblem" pointer-events="none">';
-    // Halo doré subtil
-    h += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="26" fill="#C9A84C" fill-opacity="0.08"/>`;
-    // Emblème (sabres croisés + crâne)
-    h += `<use href="#dow-emblem" x="${(ex - 22).toFixed(1)}" y="${(ey - 22).toFixed(1)}" width="44" height="44"/>`;
-    // Devise "DOGS OF WAR" en arc en-dessous
-    h += `<text x="${ex.toFixed(1)}" y="${(ey + 32).toFixed(1)}" text-anchor="middle"
-            font-family="Cinzel, serif" font-size="7" font-weight="700"
-            fill="#E8C96A" letter-spacing="1.5"
-            paint-order="stroke" stroke="#0A0806" stroke-width="2">DOGS OF WAR</text>`;
+
+    // 1) Halo doré extérieur (rayonnement)
+    h += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="58" fill="#C9A84C" fill-opacity="0.06"/>`;
+    h += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="50" fill="#C9A84C" fill-opacity="0.10"/>`;
+
+    // 2) Disque de fond + bordure dorée nette
+    h += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="43" fill="#0A0806" stroke="#C9A84C" stroke-width="2.2"/>`;
+
+    // 3) Image emblème — agrandie ET décalée vers le HAUT pour zoomer sur la tête du mâtin
+    //    (l'image source a le chien au centre-haut, la bannière en bas → on cadre haut)
+    h += `<g transform="translate(${ex.toFixed(1)},${ey.toFixed(1)})">
+            <g clip-path="url(#dow-emblem-clip)" filter="url(#dow-pop)">
+              <image href="assets/dogs-of-war.png" x="-55" y="-50" width="110" height="110" preserveAspectRatio="xMidYMid slice"/>
+            </g>
+            <!-- Liseré intérieur doré fin -->
+            <circle cx="0" cy="0" r="42" fill="none" stroke="#E8C96A" stroke-width="0.5" opacity="0.65"/>
+            <!-- Anneau brun foncé pour appuyer la bordure -->
+            <circle cx="0" cy="0" r="44" fill="none" stroke="#2a1d0a" stroke-width="1" opacity="0.7"/>
+          </g>`;
+
+    // 4) Bannière "DOGS OF WAR" gravée sous le médaillon
+    h += `<text x="${ex.toFixed(1)}" y="${(ey + 56).toFixed(1)}" text-anchor="middle"
+            font-family="Cinzel, serif" font-size="9" font-weight="700"
+            fill="#E8C96A" letter-spacing="2.5"
+            paint-order="stroke" stroke="#0A0806" stroke-width="2.5"
+            filter="url(#dow-glow)">DOGS OF WAR</text>`;
+
     h += '</g>';
   }
 
