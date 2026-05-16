@@ -266,8 +266,9 @@ const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Lien public AssoConnect (PAF tournoi 65€) — collect-id 01KR13EXW81MB1J0B3PKRCZ0R4
-const ASSOCONNECT_PUBLIC_URL = 'https://les-strateges-du-vieux-monde.assoconnect.com/collect/01KR13EXW81MB1J0B3PKRCZ0R4';
+// Lien public AssoConnect — nouvelle URL (format slug AssoConnect 2026)
+// collect-id technique : 01KR13EXW81MB1J0B3PKRCZ0R4 (utilisé par l'embed iframe.js)
+const ASSOCONNECT_PUBLIC_URL = 'https://les-strateges-du-vieux-monde.assoconnect.com/collect/description/707712-z-interregions-the-old-world';
 
 function buildPrefillUrl(payload) {
   const params = new URLSearchParams({
