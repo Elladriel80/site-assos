@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réservation chambre — Résidence du Lac d'Orient · InterRegions 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:     #C9A84C;
+  --gold-l:   #E8C96A;
+  --gold-d:   #8A6E2F;
+  --gold-glow: rgba(201,168,76,0.55);
+  --crimson:  #6B0F0F;
+  --crim-m:   #8B1A1A;
+  --crim-l:   #A82020;
+  --bg:       #0A0806;
+  --bg2:      #0F0C09;
+  --bg3:      #171210;
+  --bg4:      #1E1810;
+  --parch:    #E8DFC8;
+  --parch-d:  #C4B89A;
+  --parch-dk: #8A7A5A;
+  --white:    #F5F0E8;
+  --green:    #4a7a3e;
+  --red:      #a82020;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--bg);
+  color: var(--parch);
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(201,168,76,0.05), transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(107,15,15,0.08), transparent 50%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0) 0 3px, rgba(255,255,255,0.007) 3px 4px);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+header.banner { text-align:center; padding:30px 20px 10px; border-bottom:2px solid var(--gold-d); margin-bottom:30px }
+header h1 { font-family:'Cinzel Decorative',cursive; font-size:clamp(1.5rem,4vw,2.4rem); color:var(--gold); letter-spacing:.15em; text-transform:uppercase; text-shadow:0 0 20px var(--gold-glow),2px 2px 4px rgba(0,0,0,0.9); margin-bottom:8px }
+header .sub { font-family:'Cinzel',serif; font-size:.9rem; color:var(--parch-d); letter-spacing:.2em; text-transform:uppercase }
+header .home-link { display:inline-block; margin-top:.8rem; font-family:'Cinzel',serif; font-size:.78rem; color:var(--gold); text-decoration:none; border:1px solid var(--gold-d); padding:.35rem .9rem; border-radius:3px; letter-spacing:.08em }
+header .home-link:hover{ background:rgba(201,168,76,0.1) }
+
+.container { max-width:840px; margin:0 auto }
+
+.card { background:linear-gradient(180deg, rgba(30,24,16,.85), rgba(20,16,10,.85)); border:1px solid var(--gold-d); border-radius:6px; padding:1.6rem 1.8rem; margin-bottom:1.6rem; box-shadow:0 8px 30px rgba(0,0,0,0.5) }
+.card h2 { font-family:'Cinzel',serif; color:var(--gold); font-size:1.15rem; letter-spacing:.08em; margin-bottom:.8rem }
+.card p  { color:var(--parch-d); font-size:.92rem; line-height:1.55; margin-bottom:.6rem }
+.card p.muted { color:var(--parch-dk); font-size:.82rem; font-style:italic }
+
+.stock-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; margin:1rem 0 }
+@media(max-width:600px){.stock-grid{grid-template-columns:1fr}}
+.stock-card { background:rgba(0,0,0,0.25); border:1px solid var(--gold-d); border-radius:4px; padding:.9rem; text-align:center }
+.stock-card .stock-type { font-family:'Cinzel',serif; font-size:.75rem; letter-spacing:.12em; color:var(--gold); text-transform:uppercase }
+.stock-card .stock-num  { font-family:'Cinzel Decorative',cursive; font-size:1.9rem; color:var(--gold-l); margin:.2rem 0 }
+.stock-card .stock-num.full { color:var(--red) }
+.stock-card .stock-sub  { font-size:.74rem; color:var(--parch-dk) }
+.stock-card .stock-price{ display:block; margin-top:.4rem; font-size:.78rem; color:var(--parch) }
+
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem }
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.field { display:flex; flex-direction:column; gap:.3rem }
+.field.full { grid-column:1/-1 }
+.field label { font-family:'Cinzel',serif; font-size:.74rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold) }
+.field input, .field select {
+  background:rgba(0,0,0,0.35); border:1px solid var(--gold-d); border-radius:3px;
+  color:var(--parch); padding:.6rem .8rem; font-family:'Lato',sans-serif; font-size:.95rem;
+  outline:none; transition:border-color .2s, box-shadow .2s;
+}
+.field input:focus, .field select:focus { border-color:var(--gold-l); box-shadow:0 0 0 2px rgba(201,168,76,0.2) }
+.field input::placeholder{ color:var(--parch-dk) }
+.field .hint { font-size:.78rem; color:var(--parch-dk) }
+
+button.primary, .btn-primary {
+  display:inline-flex; align-items:center; gap:.5rem; justify-content:center;
+  font-family:'Cinzel',serif; font-size:.86rem; font-weight:600; letter-spacing:.08em;
+  color:var(--bg); background:var(--gold); border:1px solid var(--gold-d);
+  padding:.75rem 1.4rem; border-radius:3px; cursor:pointer; text-decoration:none;
+  transition:filter .2s, transform .1s;
+}
+button.primary:hover, .btn-primary:hover { filter:brightness(1.1) }
+button.primary:disabled { opacity:.5; cursor:not-allowed }
+
+button.secondary {
+  font-family:'Cinzel',serif; font-size:.82rem; color:var(--gold); background:transparent;
+  border:1px solid var(--gold-d); padding:.6rem 1.2rem; border-radius:3px; cursor:pointer;
+}
+button.secondary:hover { background:rgba(201,168,76,0.1) }
+
+.alert { padding:.8rem 1rem; border-radius:4px; font-size:.88rem; line-height:1.45; margin:.8rem 0; border-left:3px solid }
+.alert-warn   { background:rgba(180,80,40,0.12);  border-left-color:#c87838; color:var(--parch) }
+.alert-error  { background:rgba(168,32,32,0.15);  border-left-color:var(--red); color:#ffb8b8 }
+.alert-ok     { background:rgba(74,122,62,0.15);  border-left-color:var(--green); color:#d8f0d0 }
+
+.step { display:none }
+.step.active { display:block }
+.summary { background:rgba(0,0,0,0.3); border:1px dashed var(--gold-d); border-radius:4px; padding:1rem; margin:1rem 0; font-size:.9rem }
+.summary .row { display:flex; justify-content:space-between; padding:.25rem 0; border-bottom:1px dotted rgba(201,168,76,0.15) }
+.summary .row:last-child { border-bottom:none; padding-top:.6rem; margin-top:.3rem; border-top:1px solid var(--gold-d); font-weight:700; color:var(--gold-l) }
+.summary .row .lbl { color:var(--parch-dk) }
+.summary .row .val { color:var(--parch); font-weight:600 }
+
+.payment-block { background:rgba(0,0,0,0.3); border:1px solid var(--gold-d); border-radius:4px; padding:1rem; margin-top:1rem }
+.payment-block h3 { font-family:'Cinzel',serif; color:var(--gold); font-size:.95rem; margin-bottom:.6rem; letter-spacing:.08em }
+.iframe-asc-container { min-height:520px; background:rgba(0,0,0,0.2); border-radius:3px }
+
+footer { text-align:center; padding:2rem 1rem 1rem; font-family:'Cinzel',serif; font-size:.78rem; color:var(--parch-dk); letter-spacing:.1em }
+footer a { color:var(--gold); text-decoration:none }
+footer a:hover { text-decoration:underline }
+</style>
+</head>
+<body>
+
+<header class="banner">
+  <h1>⚜ Réservation Chambre ⚜</h1>
+  <div class="sub">Résidence du Lac d'Orient · InterRégions 2026</div>
+  <a class="home-link" href="index.html">← Retour au site</a>
+</header>
+
+<div class="container">
+
+  <!-- ===================================================== -->
+  <!-- ÉTAPE 1 : choix de la chambre et infos personnelles    -->
+  <!-- ===================================================== -->
+  <section class="step active" id="step-form">
+    <div class="card">
+      <h2>Places restantes</h2>
+      <p class="muted">Les places sont attribuées par ordre d'arrivée. Une fois la chambre choisie, votre place est retenue immédiatement (statut "en attente de paiement").</p>
+
+      <div class="stock-grid" id="stock-grid">
+        <div class="stock-card">
+          <div class="stock-type">Simple</div>
+          <div class="stock-num" id="stock-simple">—</div>
+          <div class="stock-sub">sur 1</div>
+          <span class="stock-price">56 € / pers · 2 nuits</span>
+        </div>
+        <div class="stock-card">
+          <div class="stock-type">Double</div>
+          <div class="stock-num" id="stock-double">—</div>
+          <div class="stock-sub">sur 20</div>
+          <span class="stock-price">42 € / pers · 2 nuits</span>
+        </div>
+        <div class="stock-card">
+          <div class="stock-type">Triple</div>
+          <div class="stock-num" id="stock-triple">—</div>
+          <div class="stock-sub">sur 9</div>
+          <span class="stock-price">34 € / pers · 2 nuits</span>
+        </div>
+      </div>
+    </div>
+
+    <form id="form-reservation" class="card" novalidate>
+      <h2>Vos coordonnées</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label for="f-prenom">Prénom *</label>
+          <input id="f-prenom" name="prenom" type="text" required autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label for="f-nom">Nom *</label>
+          <input id="f-nom" name="nom" type="text" required autocomplete="family-name">
+        </div>
+        <div class="field">
+          <label for="f-email">Email *</label>
+          <input id="f-email" name="email" type="email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="f-tel">Téléphone</label>
+          <input id="f-tel" name="telephone" type="tel" autocomplete="tel" placeholder="06 12 34 56 78">
+        </div>
+        <div class="field full">
+          <label for="f-type">Type de chambre *</label>
+          <select id="f-type" name="room_type" required>
+            <option value="">— Sélectionner —</option>
+            <option value="simple">Chambre simple · 56 € (1 place)</option>
+            <option value="double">Chambre double · 42 € / pers (20 places)</option>
+            <option value="triple">Chambre triple · 34 € / pers (9 places)</option>
+          </select>
+          <span class="hint">Forfait 2 nuits (vendredi 6 → dimanche 8 novembre 2026). Tarif par personne.</span>
+        </div>
+      </div>
+
+      <div class="alert alert-warn" style="margin-top:1.2rem">
+        ⚠ <strong>Places limitées</strong> — Une fois la résidence pleine, nous orienterons vers les hôtels et gîtes de Mesnil-Saint-Père. Votre réservation ne sera <strong>définitive qu'après paiement</strong>.
+      </div>
+
+      <div id="form-error" class="alert alert-error" style="display:none"></div>
+
+      <div style="display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1rem">
+        <button type="submit" class="primary" id="btn-submit">⚜ Réserver ma chambre</button>
+        <a href="index.html" class="secondary" style="text-decoration:none; line-height:1.2">Annuler</a>
+      </div>
+    </form>
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- ÉTAPE 2 : récap + paiement                             -->
+  <!-- ===================================================== -->
+  <section class="step" id="step-payment">
+    <div class="card">
+      <h2>Réservation enregistrée ✓</h2>
+      <div class="alert alert-ok">
+        Votre place est <strong>retenue</strong>. Pour la rendre définitive, réglez le montant ci-dessous. Vous recevrez ensuite un email de confirmation.
+      </div>
+
+      <div class="summary" id="recap-summary"></div>
+
+      <div class="payment-block">
+        <h3>💳 Paiement — AssoConnect</h3>
+        <p class="muted">Carte bancaire, chèque, espèces ou virement — choisissez le mode de paiement adapté dans le module ci-dessous.</p>
+
+        <div class="iframe-asc-container" data-type="collect" data-collect-id="01KRR18VQF98WSNTRNDGK4RB41"></div>
+
+        <p class="muted" style="margin-top:.8rem">
+          ❓ Le module de paiement ne s'affiche pas ? Recharge la page ou écris-nous à
+          <a href="mailto:contact@interregions2026.fr" style="color:var(--gold)">contact@interregions2026.fr</a> en mentionnant l'ID de réservation ci-dessus.
+        </p>
+      </div>
+
+      <div style="display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem">
+        <a href="index.html" class="btn-primary">🏠 Retour à l'accueil</a>
+        <button class="secondary" id="btn-new-resa">+ Nouvelle réservation</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  ⚜ InterRégions 2026 — The Old World · <a href="index.html">Site principal</a> · <a href="mailto:contact@interregions2026.fr">Nous écrire</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- AssoConnect — script loader (même que index.html, sous-domaine asso) -->
+<script src="https://les-strateges-du-vieux-monde.assoconnect.com/public/build/js/iframe.js"></script>
+<script>
+const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const $ = (sel, root=document) => root.querySelector(sel);
+const TYPE_LABEL = { simple:'Chambre simple', double:'Chambre double', triple:'Chambre triple' };
+
+async function loadStock() {
+  const { data, error } = await sb.rpc('get_room_stock');
+  if (error) { console.error('get_room_stock', error); return; }
+  const map = Object.fromEntries((data || []).map(r => [r.room_type, r]));
+  for (const t of ['simple','double','triple']) {
+    const el = $('#stock-' + t);
+    const opt = document.querySelector(`#f-type option[value="${t}"]`);
+    if (!map[t]) continue;
+    const rem = map[t].remaining;
+    el.textContent = rem;
+    el.classList.toggle('full', rem <= 0);
+    if (opt) {
+      if (rem <= 0) {
+        opt.disabled = true;
+        opt.textContent = opt.textContent.replace(/·.*/, '· COMPLET');
+      }
+    }
+  }
+}
+
+function showError(msg) {
+  const box = $('#form-error');
+  box.textContent = msg;
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+function clearError() { $('#form-error').style.display = 'none'; }
+
+$('#form-reservation').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearError();
+  const fd = new FormData(e.target);
+  const payload = {
+    p_nom:       (fd.get('nom')||'').trim(),
+    p_prenom:    (fd.get('prenom')||'').trim(),
+    p_email:     (fd.get('email')||'').trim().toLowerCase(),
+    p_telephone: (fd.get('telephone')||'').trim() || null,
+    p_room_type: fd.get('room_type'),
+  };
+
+  if (!payload.p_nom || !payload.p_prenom || !payload.p_email || !payload.p_room_type) {
+    showError('Merci de remplir tous les champs obligatoires.');
+    return;
+  }
+  if (!/^[^@]+@[^@]+\.[^@]+$/.test(payload.p_email)) {
+    showError('Adresse email invalide.');
+    return;
+  }
+
+  const btn = $('#btn-submit');
+  btn.disabled = true;
+  btn.textContent = '⏳ Enregistrement…';
+  try {
+    const { data, error } = await sb.rpc('create_reservation', payload);
+    if (error) throw error;
+    const row = Array.isArray(data) ? data[0] : data;
+    if (!row || !row.reservation_id) throw new Error('Réponse inattendue du serveur.');
+
+    // Affichage récap + paiement
+    const sum = $('#recap-summary');
+    sum.innerHTML = `
+      <div class="row"><span class="lbl">Réservation</span><span class="val" style="font-family:monospace;font-size:.78rem">${row.reservation_id}</span></div>
+      <div class="row"><span class="lbl">Nom</span><span class="val">${escapeHtml(payload.p_prenom + ' ' + payload.p_nom)}</span></div>
+      <div class="row"><span class="lbl">Email</span><span class="val">${escapeHtml(payload.p_email)}</span></div>
+      <div class="row"><span class="lbl">Téléphone</span><span class="val">${escapeHtml(payload.p_telephone || '—')}</span></div>
+      <div class="row"><span class="lbl">Chambre</span><span class="val">${TYPE_LABEL[payload.p_room_type]} · 2 nuits</span></div>
+      <div class="row"><span class="lbl">Montant</span><span class="val">${Number(row.amount_eur).toFixed(2).replace('.',',')} €</span></div>
+    `;
+
+    $('#step-form').classList.remove('active');
+    $('#step-payment').classList.add('active');
+    window.scrollTo({ top:0, behavior:'smooth' });
+
+    // Re-trigger AssoConnect script si nécessaire (le widget est révélé après submit)
+    // Le loader scan le DOM au load ; on relance via un event dispatch en cas de besoin.
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+  } catch (err) {
+    console.error(err);
+    showError('Erreur : ' + (err.message || err.toString()));
+    btn.disabled = false;
+    btn.textContent = '⚜ Réserver ma chambre';
+  }
+});
+
+$('#btn-new-resa').addEventListener('click', () => {
+  $('#form-reservation').reset();
+  $('#step-payment').classList.remove('active');
+  $('#step-form').classList.add('active');
+  loadStock();
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[c]);
+}
+
+loadStock();
+</script>
+</body>
+</html>

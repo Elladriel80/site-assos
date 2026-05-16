@@ -227,6 +227,7 @@
     <button data-tab="equipes">🏆 Équipes</button>
     <button data-tab="relances">📧 Relances</button>
     <button data-tab="tournoi">⚔️ Tournoi</button>
+    <button data-tab="hebergement">🛏 Hébergement</button>
     <button data-tab="carte">🗺 Carte</button>
     <button data-tab="demo">🎭 Démo</button>
   </nav>
@@ -444,6 +445,58 @@
           <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
         </tbody>
       </table>
+    </section>
+
+    <section data-pane="hebergement" hidden>
+      <h2>🛏 Hébergement — Résidence du Lac d'Orient</h2>
+      <p style="color:var(--text-dim);max-width:70ch">
+        Réservations de chambres (forfait 2 nuits). Les places en attente de paiement consomment du stock mais peuvent être annulées. <strong>Waived</strong> = pris en charge sans paiement (offert / régularisé hors paiement en ligne).
+      </p>
+
+      <div class="stats" id="resa-stats" style="margin-top:1em">
+        <div class="stat"><div class="label">Simple (1 place)</div><div class="value" id="resa-stock-simple">—</div></div>
+        <div class="stat"><div class="label">Double (20 places)</div><div class="value" id="resa-stock-double">—</div></div>
+        <div class="stat"><div class="label">Triple (9 places)</div><div class="value" id="resa-stock-triple">—</div></div>
+        <div class="stat"><div class="label">Encaissé</div><div class="value" id="resa-cash">—</div></div>
+      </div>
+
+      <div class="toolbar" style="margin-top:1em">
+        <input type="search" class="search" id="search-resa" placeholder="Rechercher par nom, prénom, email…">
+        <select id="filter-resa-status">
+          <option value="all">Tous statuts</option>
+          <option value="pending">⏳ En attente paiement</option>
+          <option value="paid">✅ Payés</option>
+          <option value="waived">🎁 Pris en charge (sans paiement)</option>
+          <option value="cancelled">❌ Annulés</option>
+        </select>
+        <select id="filter-resa-type">
+          <option value="all">Toutes chambres</option>
+          <option value="simple">Simple</option>
+          <option value="double">Double</option>
+          <option value="triple">Triple</option>
+        </select>
+        <button class="primary" id="btn-create-resa">+ Créer une réservation</button>
+        <button id="refresh-resa">↻ Rafraîchir</button>
+        <span class="count" id="count-resa"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Tél.</th>
+              <th>Chambre</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-resa"><tr><td colspan="8" class="empty-state">Chargement…</td></tr></tbody>
+        </table>
+      </div>
     </section>
 
     <section data-pane="carte" hidden>
@@ -664,6 +717,9 @@ function switchTab(tab) {
   }
   if (tab === 'equipes') {
     renderEquipes();
+  }
+  if (tab === 'hebergement') {
+    loadReservations();
   }
 }
 
@@ -1706,6 +1762,250 @@ $('#import-diff').addEventListener('click', async (e) => {
     console.error(err);
     $('#import-status').innerHTML = `<span style="color:var(--danger)">✖ Erreur lors de l'application : ${escapeHtml(err.message || String(err))}</span>`;
     btn.disabled = false;
+  }
+});
+
+// =========================================================================
+// ============== 🛏 HÉBERGEMENT — RÉSERVATIONS CHAMBRES ===================
+// =========================================================================
+state.reservations = [];
+state.resaFilters = { search: '', status: 'all', type: 'all' };
+
+const RESA_TYPE_LABEL = { simple: 'Simple', double: 'Double', triple: 'Triple' };
+const RESA_STATUS_META = {
+  pending:   { label: '⏳ En attente',  color: '#e6c89a' },
+  paid:      { label: '✅ Payé',        color: '#b8d6b8' },
+  waived:    { label: '🎁 Pris en charge', color: '#9bb8e6' },
+  cancelled: { label: '❌ Annulé',      color: '#a88' },
+};
+
+async function loadReservations() {
+  $('#tbody-resa').innerHTML = '<tr><td colspan="8" class="empty-state">Chargement…</td></tr>';
+  const [{ data: rows, error: e1 }, { data: stock, error: e2 }] = await Promise.all([
+    sb.from('room_reservations').select('*').order('created_at', { ascending: false }),
+    sb.rpc('get_room_stock'),
+  ]);
+  if (e1) { showBanner('err', 'Chargement résas : ' + e1.message); return; }
+  if (e2) { showBanner('err', 'Stock : ' + e2.message); return; }
+  state.reservations = rows || [];
+  renderResaStock(stock || []);
+  renderReservations();
+}
+
+function renderResaStock(stock) {
+  const map = Object.fromEntries(stock.map(r => [r.room_type, r]));
+  const fmt = (t) => map[t] ? `${map[t].remaining} / ${map[t].capacity}` : '—';
+  $('#resa-stock-simple').textContent = fmt('simple');
+  $('#resa-stock-double').textContent = fmt('double');
+  $('#resa-stock-triple').textContent = fmt('triple');
+
+  // Encaissé = somme des montants des résas paid
+  const cash = state.reservations
+    .filter(r => r.payment_status === 'paid')
+    .reduce((s, r) => s + Number(r.amount_eur || 0), 0);
+  $('#resa-cash').textContent = cash.toFixed(2).replace('.', ',') + ' €';
+}
+
+function renderReservations() {
+  const f = state.resaFilters;
+  const q = (f.search || '').toLowerCase().trim();
+  const list = state.reservations.filter(r => {
+    if (f.status !== 'all' && r.payment_status !== f.status) return false;
+    if (f.type   !== 'all' && r.room_type      !== f.type)   return false;
+    if (q) {
+      const hay = [r.nom, r.prenom, r.email, r.telephone].filter(Boolean).join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  $('#count-resa').textContent = list.length + ' / ' + state.reservations.length;
+
+  if (list.length === 0) {
+    $('#tbody-resa').innerHTML = '<tr><td colspan="8" class="empty-state">Aucune réservation.</td></tr>';
+    return;
+  }
+
+  $('#tbody-resa').innerHTML = list.map(r => {
+    const meta = RESA_STATUS_META[r.payment_status] || { label: r.payment_status, color: '#888' };
+    const actions = renderResaActions(r);
+    const idShort = (r.id || '').slice(0, 8);
+    const notes = r.admin_notes ? `<div style="font-size:.78rem;color:var(--text-dim);margin-top:.2rem;white-space:pre-wrap">${escapeHtml(r.admin_notes)}</div>` : '';
+    const customUrl = r.custom_payment_url
+      ? `<div style="font-size:.74rem;margin-top:.2rem"><a href="${escapeHtml(r.custom_payment_url)}" target="_blank" style="color:var(--gold)">🔗 lien paiement custom</a></div>`
+      : '';
+    return `
+      <tr data-id="${r.id}">
+        <td><span title="${formatDate(r.created_at)}">${formatDate(r.created_at)}</span><div style="font-size:.7rem;color:var(--text-dim);font-family:monospace">${idShort}…</div></td>
+        <td>${escapeHtml(r.prenom)} ${escapeHtml(r.nom)}${notes}</td>
+        <td><a href="mailto:${escapeHtml(r.email)}" style="color:var(--gold)">${escapeHtml(r.email)}</a></td>
+        <td>${escapeHtml(r.telephone || '—')}</td>
+        <td>${RESA_TYPE_LABEL[r.room_type] || r.room_type}<div style="font-size:.7rem;color:var(--text-dim)">${r.nights || 2} nuits</div></td>
+        <td>${Number(r.amount_eur).toFixed(2).replace('.', ',')} €${customUrl}</td>
+        <td><span style="color:${meta.color}">${meta.label}</span></td>
+        <td>${actions}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderResaActions(r) {
+  const st = r.payment_status;
+  const btns = [];
+  if (st === 'pending') {
+    btns.push(`<button class="primary" data-resa-act="paid"   data-id="${r.id}" title="Marquer payé">✅ Payé</button>`);
+    btns.push(`<button             data-resa-act="waived" data-id="${r.id}" title="Pris en charge sans paiement">🎁 Sans paiement</button>`);
+    btns.push(`<button             data-resa-act="link"   data-id="${r.id}" title="Définir un lien de paiement custom">🔗 Lien</button>`);
+    btns.push(`<button class="danger" data-resa-act="cancel" data-id="${r.id}">❌ Annuler</button>`);
+  } else if (st === 'paid' || st === 'waived') {
+    btns.push(`<button             data-resa-act="unpaid" data-id="${r.id}" title="Repasser en attente">↩ Repasser pending</button>`);
+    btns.push(`<button class="danger" data-resa-act="cancel" data-id="${r.id}">❌ Annuler</button>`);
+  } else if (st === 'cancelled') {
+    btns.push(`<button             data-resa-act="unpaid" data-id="${r.id}" title="Réactiver en attente">↩ Réactiver</button>`);
+  }
+  btns.push(`<button             data-resa-act="notes"  data-id="${r.id}" title="Éditer notes">📝 Notes</button>`);
+  return `<div style="display:flex;gap:.3em;flex-wrap:wrap">${btns.join('')}</div>`;
+}
+
+// Délégation événement sur le tbody
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-resa-act]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const act = btn.dataset.resaAct;
+  await handleResaAction(act, id);
+});
+
+async function handleResaAction(act, id) {
+  const r = state.reservations.find(x => x.id === id);
+  if (!r) return;
+  const who = `${r.prenom} ${r.nom} (${RESA_TYPE_LABEL[r.room_type]})`;
+
+  try {
+    if (act === 'paid') {
+      const ok = confirm(`Marquer ${who} comme PAYÉ ?`);
+      if (!ok) return;
+      const { error } = await sb.rpc('mark_reservation_paid', { p_id: id });
+      if (error) throw error;
+      showBanner('ok', 'Réservation marquée payée.');
+    }
+    else if (act === 'waived') {
+      const ok = confirm(`Marquer ${who} comme PRIS EN CHARGE (sans paiement) ?`);
+      if (!ok) return;
+      const { error } = await sb.rpc('mark_reservation_waived', { p_id: id });
+      if (error) throw error;
+      showBanner('ok', 'Réservation prise en charge (sans paiement).');
+    }
+    else if (act === 'unpaid') {
+      const ok = confirm(`Repasser ${who} en "en attente de paiement" ?`);
+      if (!ok) return;
+      const { error } = await sb.rpc('unmark_reservation_paid', { p_id: id });
+      if (error) throw error;
+      showBanner('ok', 'Réservation repassée en attente.');
+    }
+    else if (act === 'cancel') {
+      const reason = prompt(`Annuler la réservation de ${who} ?\n\nMotif (optionnel) :`, '');
+      if (reason === null) return;
+      const { error } = await sb.rpc('cancel_reservation', { p_id: id, p_reason: reason || null });
+      if (error) throw error;
+      showBanner('ok', 'Réservation annulée.');
+    }
+    else if (act === 'link') {
+      const url = prompt(
+        `Lien de paiement custom pour ${who}\n\n(Colle ici l'URL AssoConnect ou autre. Laisse vide pour effacer.)`,
+        r.custom_payment_url || ''
+      );
+      if (url === null) return;
+      const { error } = await sb.rpc('update_reservation_payment_url', { p_id: id, p_url: url });
+      if (error) throw error;
+      showBanner('ok', 'Lien de paiement mis à jour.');
+    }
+    else if (act === 'notes') {
+      const notes = prompt(`Notes admin pour ${who} :`, r.admin_notes || '');
+      if (notes === null) return;
+      const { error } = await sb.rpc('update_reservation_notes', { p_id: id, p_notes: notes });
+      if (error) throw error;
+      showBanner('ok', 'Notes mises à jour.');
+    }
+    await loadReservations();
+  } catch (err) {
+    console.error(err);
+    showBanner('err', 'Erreur : ' + (err.message || err.toString()));
+  }
+}
+
+// Filtres & recherche
+$('#search-resa').addEventListener('input', (e) => {
+  state.resaFilters.search = e.target.value;
+  renderReservations();
+});
+$('#filter-resa-status').addEventListener('change', (e) => {
+  state.resaFilters.status = e.target.value;
+  renderReservations();
+});
+$('#filter-resa-type').addEventListener('change', (e) => {
+  state.resaFilters.type = e.target.value;
+  renderReservations();
+});
+$('#refresh-resa').addEventListener('click', loadReservations);
+
+// Bouton "Créer une réservation"
+$('#btn-create-resa').addEventListener('click', async () => {
+  const html = `
+    <h3 style="font-family:'Cinzel',serif;color:var(--gold);margin-bottom:1em">+ Nouvelle réservation</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8em">
+      <label>Prénom *<input id="m-prenom" type="text" required></label>
+      <label>Nom *<input id="m-nom" type="text" required></label>
+      <label>Email *<input id="m-email" type="email" required></label>
+      <label>Téléphone<input id="m-tel" type="tel"></label>
+      <label style="grid-column:1/-1">Type de chambre *
+        <select id="m-type" required>
+          <option value="">— choisir —</option>
+          <option value="simple">Simple — 56 €</option>
+          <option value="double">Double — 42 €</option>
+          <option value="triple">Triple — 34 €</option>
+        </select>
+      </label>
+      <label style="grid-column:1/-1">Statut initial
+        <select id="m-status">
+          <option value="pending">⏳ En attente paiement</option>
+          <option value="paid">✅ Déjà payé</option>
+          <option value="waived">🎁 Pris en charge (sans paiement)</option>
+        </select>
+      </label>
+      <label style="grid-column:1/-1">Notes (optionnel)<textarea id="m-notes" rows="2" style="width:100%"></textarea></label>
+    </div>
+    <div class="modal-actions">
+      <button onclick="closeModal(null)">Annuler</button>
+      <button class="primary" id="m-submit">Créer</button>
+    </div>
+  `;
+  const p = modal(html);
+  $('#m-submit').addEventListener('click', () => {
+    const payload = {
+      p_nom:       $('#m-nom').value.trim(),
+      p_prenom:    $('#m-prenom').value.trim(),
+      p_email:     $('#m-email').value.trim().toLowerCase(),
+      p_telephone: $('#m-tel').value.trim() || null,
+      p_room_type: $('#m-type').value,
+      p_status:    $('#m-status').value,
+      p_notes:     $('#m-notes').value.trim() || null,
+    };
+    if (!payload.p_nom || !payload.p_prenom || !payload.p_email || !payload.p_room_type) {
+      alert('Les champs marqués * sont obligatoires.');
+      return;
+    }
+    closeModal(payload);
+  });
+  const result = await p;
+  if (!result) return;
+  try {
+    const { error } = await sb.rpc('admin_create_reservation', result);
+    if (error) throw error;
+    showBanner('ok', 'Réservation créée.');
+    await loadReservations();
+  } catch (err) {
+    showBanner('err', 'Erreur : ' + (err.message || err.toString()));
   }
 });
 
