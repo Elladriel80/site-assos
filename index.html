@@ -198,6 +198,26 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .btn-reserve.secondary{background:transparent;color:var(--gold)}
 .btn-reserve.secondary:hover{background:rgba(201,168,76,0.1);filter:none}
 
+/* --- Compteur d'inscriptions tournoi --- */
+.insc-stock{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin:0 0 1rem}
+@media(max-width:600px){.insc-stock{grid-template-columns:1fr}}
+.insc-card{background:rgba(0,0,0,0.3);border:1px solid var(--gold-d);border-radius:4px;padding:.9rem 1rem;text-align:center;transition:border-color .3s}
+.insc-card.full{border-color:var(--red);background:rgba(168,32,32,0.12)}
+.insc-card.tight{border-color:#c87838}
+.insc-card-label{font-family:'Cinzel',serif;font-size:.74rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase}
+.insc-card.full .insc-card-label{color:#ffb8b8}
+.insc-card-num{font-family:'Cinzel Decorative',cursive;font-size:1.7rem;color:var(--gold-l);margin:.2rem 0;line-height:1}
+.insc-card.full .insc-card-num{color:var(--red);font-size:1rem;letter-spacing:.1em;text-transform:uppercase}
+.insc-card-sub{font-size:.74rem;color:var(--parch-dk)}
+.insc-bar{height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;margin-top:.5rem}
+.insc-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold-l));transition:width .5s}
+.insc-card.full .insc-bar-fill{background:var(--red)}
+.insc-warn{background:rgba(168,32,32,0.15);border:1px solid rgba(168,32,32,0.6);border-radius:4px;padding:.7rem 1rem;margin-bottom:1rem;font-size:.88rem;color:#ffd8a8;text-align:center}
+.insc-warn strong{color:#ffb8b8}
+.insc-allfull{background:rgba(168,32,32,0.2);border:2px solid var(--red);border-radius:6px;padding:1.6rem 1.4rem;margin:1.2rem 0;text-align:center}
+.insc-allfull h4{font-family:'Cinzel Decorative',cursive;color:#ffb8b8;font-size:1.3rem;margin-bottom:.6rem;letter-spacing:.1em}
+.insc-allfull p{color:var(--parch);font-size:.95rem;line-height:1.5}
+
 /* --- Venez en famille --- */
 .famille-intro{text-align:center;font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);font-style:italic;line-height:1.7;max-width:720px;margin:2.4rem auto 1.2rem}
 .famille-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0 2rem}
@@ -1256,7 +1276,43 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
         Règle tes <strong style="color:var(--gold)">65€</strong> via AssoConnect ci-dessous (carte bancaire, chèque, espèces, virement).<br>
         <span style="font-size:.85rem;color:var(--parch-dk);font-style:italic">Tu recevras un email de confirmation avec le lien pour <strong style="color:var(--gold-d)">forger ton champion</strong>.</span>
       </p>
-      <div class="iframe-asc-container" data-type="collect" data-collect-id="01KR13EXW81MB1J0B3PKRCZ0R4"></div>
+
+      <!-- Compteur de places restantes (alimenté par get_inscription_stock RPC) -->
+      <div class="insc-stock" id="insc-stock-grid" aria-label="Places restantes par catégorie">
+        <div class="insc-card" data-type="equipe">
+          <div class="insc-card-label">⚔ Compétitif · Équipes</div>
+          <div class="insc-card-num" id="insc-num-equipe">—</div>
+          <div class="insc-card-sub" id="insc-sub-equipe">/ 12 équipes</div>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-equipe" style="width:0%"></div></div>
+        </div>
+        <div class="insc-card" data-type="jeu_libre">
+          <div class="insc-card-label">🎲 Jeu Libre</div>
+          <div class="insc-card-num" id="insc-num-jeu_libre">—</div>
+          <div class="insc-card-sub" id="insc-sub-jeu_libre">/ 50 places</div>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-jeu_libre" style="width:0%"></div></div>
+        </div>
+        <div class="insc-card" data-type="narratif">
+          <div class="insc-card-label">📜 Narratif</div>
+          <div class="insc-card-num" id="insc-num-narratif">—</div>
+          <div class="insc-card-sub" id="insc-sub-narratif">/ 10 places</div>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-narratif" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Warnings par catégorie pleine -->
+      <div id="insc-warnings"></div>
+
+      <!-- Conteneur iframe — caché si tout est plein -->
+      <div id="insc-payment-wrap">
+        <div class="iframe-asc-container" data-type="collect" data-collect-id="01KR13EXW81MB1J0B3PKRCZ0R4"></div>
+      </div>
+
+      <!-- Message "tout complet" — caché par défaut, affiché si remaining = 0 partout -->
+      <div id="insc-allfull-box" class="insc-allfull" hidden>
+        <h4>🔒 Inscriptions complètes</h4>
+        <p>Les <strong>12 équipes</strong>, les <strong>50 places de jeu libre</strong> et les <strong>10 places narratif</strong> sont toutes prises.</p>
+        <p style="margin-top:.6rem">Tu peux te mettre en <strong>liste d'attente</strong> via le <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a> — on libère parfois des places suite à des désistements.</p>
+      </div>
     </div>
 
     <div class="scroll reveal" style="margin-top:2rem">
@@ -1512,6 +1568,10 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
   sbScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
   sbScript.onload = async () => {
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // -------- Compteur d'inscriptions tournoi (RPC get_inscription_stock) --------
+    loadInscriptionStock(sb);
+
     const { data, error } = await sb.from('champions').select('*').order('created_at', { ascending: false });
     const countText = document.getElementById('champ-count-text');
     const carousel = document.getElementById('champ-carousel');
@@ -1569,6 +1629,65 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeChampModal();
   });
+
+  // =========================================================================
+  // Compteur d'inscriptions live (page Inscriptions)
+  // =========================================================================
+  const INSC_LABELS = {
+    equipe:    { name: '⚔ Compétitif · Équipes', unit: 'équipes' },
+    jeu_libre: { name: '🎲 Jeu Libre',           unit: 'places' },
+    narratif:  { name: '📜 Narratif',            unit: 'places' },
+  };
+
+  async function loadInscriptionStock(sb) {
+    try {
+      const { data, error } = await sb.rpc('get_inscription_stock');
+      if (error) { console.warn('get_inscription_stock', error); return; }
+      const stockByType = Object.fromEntries((data || []).map(r => [r.inscription_type, r]));
+      const warnings = [];
+      let allFull = true;
+
+      ['equipe', 'jeu_libre', 'narratif'].forEach(type => {
+        const row = stockByType[type];
+        if (!row) return;
+        const remaining = row.remaining;
+        const capacity  = row.capacity;
+        const numEl = document.getElementById('insc-num-' + type);
+        const subEl = document.getElementById('insc-sub-' + type);
+        const barEl = document.getElementById('insc-bar-' + type);
+        const card  = document.querySelector('.insc-card[data-type="' + type + '"]');
+        if (!numEl || !card) return;
+
+        const label = INSC_LABELS[type];
+        const pctTaken = Math.min(100, Math.round((row.taken / capacity) * 100));
+
+        if (remaining <= 0) {
+          numEl.textContent = 'COMPLET';
+          subEl.textContent = capacity + ' / ' + capacity + ' ' + label.unit;
+          card.classList.add('full');
+          warnings.push(`<div class="insc-warn">🚫 <strong>${label.name} — COMPLET</strong> · Cette catégorie est pleine, ne sélectionne pas cette option lors du paiement. Liste d'attente possible via le <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a>.</div>`);
+        } else {
+          allFull = false;
+          numEl.textContent = remaining;
+          subEl.textContent = '/ ' + capacity + ' ' + label.unit + ' · reste ' + remaining;
+          if (remaining <= 3) card.classList.add('tight');
+        }
+        barEl.style.width = pctTaken + '%';
+      });
+
+      document.getElementById('insc-warnings').innerHTML = warnings.join('');
+
+      // Hard cap : si TOUT est plein, on cache l'iframe et on affiche le message "complet"
+      if (allFull) {
+        const wrap = document.getElementById('insc-payment-wrap');
+        if (wrap) wrap.hidden = true;
+        const box  = document.getElementById('insc-allfull-box');
+        if (box) box.hidden = false;
+      }
+    } catch (e) {
+      console.warn('loadInscriptionStock failed', e);
+    }
+  }
 })();
 </script>
 

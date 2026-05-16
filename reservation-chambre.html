@@ -193,7 +193,12 @@ footer a:hover { text-decoration:underline }
       </div>
 
       <div class="alert alert-warn" style="margin-top:1.2rem">
-        ⚠ <strong>Places limitées</strong> — Une fois la résidence pleine, nous orienterons vers les hôtels et gîtes de Mesnil-Saint-Père. Votre réservation ne sera <strong>définitive qu'après paiement</strong>.
+        ⚠ <strong>Places limitées</strong> — Une fois la résidence pleine, nous orienterons vers les hôtels et gîtes de Mesnil-Saint-Père.
+      </div>
+
+      <div class="alert alert-error" style="margin-top:.6rem;font-size:.95rem;border-left-width:4px;background:rgba(168,32,32,0.18)">
+        🚨 <strong>Attention :</strong> Remplir ce formulaire <strong>RÉSERVE la place</strong> mais <strong>NE LA CONFIRME PAS</strong>.<br>
+        Ta réservation ne sera <strong style="text-transform:uppercase">définitive qu'après ton paiement sur AssoConnect</strong> à l'étape suivante. Tant que ce n'est pas payé, ta place peut être libérée pour quelqu'un d'autre.
       </div>
 
       <div id="form-error" class="alert alert-error" style="display:none"></div>
@@ -210,9 +215,13 @@ footer a:hover { text-decoration:underline }
   <!-- ===================================================== -->
   <section class="step" id="step-payment">
     <div class="card">
-      <h2>Réservation enregistrée ✓</h2>
-      <div class="alert alert-ok">
-        Votre place est <strong>retenue</strong>. Pour la rendre définitive, réglez le montant ci-dessous. Vous recevrez ensuite un email de confirmation.
+      <h2>Place retenue ✓ — Paiement requis</h2>
+
+      <div class="alert alert-error" style="font-size:1rem;border-left-width:5px;background:rgba(168,32,32,0.2);padding:1rem 1.2rem">
+        🚨 <strong style="text-transform:uppercase">Ta réservation n'est pas encore définitive</strong><br>
+        <span style="font-size:.92rem;display:block;margin-top:.4rem">
+          La place est <strong>retenue temporairement</strong>. Pour la <strong style="color:#ffd8a8">confirmer définitivement</strong>, tu dois maintenant <strong>payer sur AssoConnect</strong> ci-dessous. Sans paiement, ta place sera libérée pour quelqu'un d'autre.
+        </span>
       </div>
 
       <div class="summary" id="recap-summary"></div>
