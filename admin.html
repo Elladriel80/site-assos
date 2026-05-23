@@ -225,6 +225,7 @@
     <button data-tab="champions">⚔️ Champions</button>
     <button data-tab="payeurs">💰 Payeurs</button>
     <button data-tab="inscriptions">📝 Inscriptions</button>
+    <button data-tab="attente">⏳ Attente</button>
     <button data-tab="equipes">🏆 Équipes</button>
     <button data-tab="relances">📧 Relances</button>
     <button data-tab="tournoi">⚔️ Tournoi</button>
@@ -552,6 +553,50 @@
       </div>
     </section>
 
+    <section data-pane="attente" hidden>
+      <h2>⏳ Liste d'attente</h2>
+      <p style="color:var(--text-dim);max-width:78ch">
+        Personnes inscrites <strong>au-delà du quota</strong> de leur catégorie. Elles ne paient pas tant que tu ne les as pas promues. La promotion automatique se déclenche dès qu'une place se libère (FIFO). Tu peux aussi promouvoir manuellement quelqu'un hors ordre (ex : équilibrer les régions).
+      </p>
+
+      <div class="stats" id="att-stats" style="margin-top:1em">
+        <div class="stat"><div class="label">⚔ Équipes en attente</div><div class="value" id="att-count-equipe">—</div></div>
+        <div class="stat"><div class="label">🎲 Jeu Libre en attente</div><div class="value" id="att-count-jeu_libre">—</div></div>
+        <div class="stat"><div class="label">📜 Narratif en attente</div><div class="value" id="att-count-narratif">—</div></div>
+        <div class="stat"><div class="label">Total</div><div class="value" id="att-count-total">—</div></div>
+      </div>
+
+      <div class="toolbar" style="margin-top:1em">
+        <select id="filter-att-type">
+          <option value="all">Tous axes</option>
+          <option value="equipe">⚔ Équipe</option>
+          <option value="jeu_libre">🎲 Jeu Libre</option>
+          <option value="narratif">📜 Narratif</option>
+        </select>
+        <button id="refresh-att">↻ Rafraîchir</button>
+        <button id="copy-att-emails" class="primary">📋 Copier les emails (axe filtré)</button>
+        <span class="count" id="count-att"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Axe</th>
+              <th>Position</th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Tél.</th>
+              <th>Équipe / Rôle</th>
+              <th>Inscrit le</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-att"><tr><td colspan="8" class="empty-state">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
     <section data-pane="carte" hidden>
       <h2>Carte du tournoi</h2>
       <p style="color:var(--text-dim);max-width:60ch">
@@ -776,6 +821,9 @@ function switchTab(tab) {
   }
   if (tab === 'inscriptions') {
     loadInscriptions();
+  }
+  if (tab === 'attente') {
+    loadWaitlist();
   }
 }
 
@@ -2139,6 +2187,12 @@ function renderInscriptions() {
       r.team_name ? `<strong>${escapeHtml(r.team_name)}</strong>` : '',
       r.role ? INSC_ROLE_LABEL[r.role] || r.role : '',
     ].filter(Boolean).join(' · ') || '—';
+    const waitBadge = r.is_waitlist
+      ? `<span style="color:var(--warn);font-weight:bold" title="En liste d'attente — ne consomme pas de slot, pas de paiement">⏳ Attente</span><br>`
+      : '';
+    const amountCell = r.is_waitlist
+      ? `<span style="color:var(--text-dim)">—</span>`
+      : Number(r.amount_eur).toFixed(2).replace('.', ',') + ' €';
     return `
       <tr data-id="${r.id}">
         <td><span title="${formatDate(r.created_at)}">${formatDate(r.created_at)}</span><div style="font-size:.7rem;color:var(--text-dim);font-family:monospace">${idShort}…</div></td>
@@ -2147,8 +2201,8 @@ function renderInscriptions() {
         <td>${escapeHtml(r.telephone || '—')}</td>
         <td>${INSC_TYPE_LABEL[r.inscription_type] || r.inscription_type}</td>
         <td>${teamRole}</td>
-        <td>${Number(r.amount_eur).toFixed(2).replace('.', ',')} €</td>
-        <td><span style="color:${meta.color}">${meta.label}</span></td>
+        <td>${amountCell}</td>
+        <td>${waitBadge}<span style="color:${meta.color}">${meta.label}</span></td>
         <td>${actions}</td>
       </tr>
     `;
@@ -2239,6 +2293,113 @@ $('#filter-insc-type').addEventListener('change', (e) => {
   renderInscriptions();
 });
 $('#refresh-insc').addEventListener('click', loadInscriptions);
+
+// =========================================================================
+// LISTE D'ATTENTE (pending_inscriptions where is_waitlist=true)
+// =========================================================================
+state.waitlist = [];
+state.attFilters = { type: 'all' };
+
+async function loadWaitlist() {
+  $('#tbody-att').innerHTML = '<tr><td colspan="8" class="empty-state">Chargement…</td></tr>';
+  const { data, error } = await sb.rpc('get_waitlist', { p_type: null });
+  if (error) { showBanner('err', 'Liste d\'attente : ' + error.message); return; }
+  state.waitlist = data || [];
+  renderWaitlistStats();
+  renderWaitlist();
+}
+
+function renderWaitlistStats() {
+  const counts = { equipe: 0, jeu_libre: 0, narratif: 0 };
+  state.waitlist.forEach(r => { counts[r.inscription_type] = (counts[r.inscription_type] || 0) + 1; });
+  $('#att-count-equipe').textContent     = counts.equipe;
+  $('#att-count-jeu_libre').textContent  = counts.jeu_libre;
+  $('#att-count-narratif').textContent   = counts.narratif;
+  $('#att-count-total').textContent      = state.waitlist.length;
+}
+
+function renderWaitlist() {
+  const f = state.attFilters;
+  const list = state.waitlist.filter(r => f.type === 'all' || r.inscription_type === f.type);
+  $('#count-att').textContent = list.length + ' / ' + state.waitlist.length;
+  if (list.length === 0) {
+    $('#tbody-att').innerHTML = '<tr><td colspan="8" class="empty-state">Aucune personne en liste d\'attente.</td></tr>';
+    return;
+  }
+  $('#tbody-att').innerHTML = list.map(r => {
+    const teamRole = [
+      r.team_name ? `<strong>${escapeHtml(r.team_name)}</strong>` : '',
+      r.role ? INSC_ROLE_LABEL[r.role] || r.role : '',
+    ].filter(Boolean).join(' · ') || '—';
+    return `
+      <tr data-id="${r.id}">
+        <td>${INSC_TYPE_LABEL[r.inscription_type] || r.inscription_type}</td>
+        <td><strong style="color:var(--gold-bright);font-size:1.05rem">#${r.queue_position}</strong></td>
+        <td>${escapeHtml(r.prenom)} ${escapeHtml(r.nom)}</td>
+        <td><a href="mailto:${escapeHtml(r.email)}" style="color:var(--gold)">${escapeHtml(r.email)}</a></td>
+        <td>${escapeHtml(r.telephone || '—')}</td>
+        <td>${teamRole}</td>
+        <td>${formatDate(r.created_at)}</td>
+        <td>
+          <div style="display:flex;gap:.3em;flex-wrap:wrap">
+            <button class="primary" data-att-act="promote" data-id="${r.id}" title="Promouvoir maintenant (passe en pending — à prévenir par email)">⬆ Promouvoir</button>
+            <button class="danger" data-att-act="cancel" data-id="${r.id}">❌ Annuler</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+$('#filter-att-type').addEventListener('change', (e) => {
+  state.attFilters.type = e.target.value;
+  renderWaitlist();
+});
+$('#refresh-att').addEventListener('click', loadWaitlist);
+
+$('#copy-att-emails').addEventListener('click', async () => {
+  const f = state.attFilters;
+  const list = state.waitlist.filter(r => f.type === 'all' || r.inscription_type === f.type);
+  if (list.length === 0) { showBanner('warn', 'Aucun email à copier.'); return; }
+  const emails = list.map(r => r.email).join(', ');
+  try {
+    await navigator.clipboard.writeText(emails);
+    showBanner('ok', list.length + ' email(s) copié(s) dans le presse-papier.');
+  } catch (err) {
+    showBanner('err', 'Copie échouée : ' + err.message);
+  }
+});
+
+// Délégation événements (data-att-act)
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-att-act]');
+  if (!btn) return;
+  const id  = btn.dataset.id;
+  const act = btn.dataset.attAct;
+  const r = state.waitlist.find(x => x.id === id);
+  if (!r) return;
+  const who = `${r.prenom} ${r.nom} (${INSC_TYPE_LABEL[r.inscription_type] || r.inscription_type})`;
+  try {
+    if (act === 'promote') {
+      if (!confirm(`Promouvoir ${who} maintenant ?\n\nLa personne sortira de la liste d'attente et passera en statut "pending" (pré-paiement). Pense à la prévenir par email — le délai habituel est de quelques jours pour confirmer.`)) return;
+      const { error } = await sb.rpc('promote_waitlist_entry', { p_id: id });
+      if (error) throw error;
+      showBanner('ok', who + ' promu·e. À prévenir par email.');
+      await loadWaitlist();
+      if (state.activeTab === 'inscriptions') await loadInscriptions();
+    } else if (act === 'cancel') {
+      const reason = prompt(`Annuler l'inscription en attente de ${who} ?\n\nMotif (optionnel) :`, '');
+      if (reason === null) return;
+      const { error } = await sb.rpc('cancel_inscription', { p_id: id, p_reason: reason || null });
+      if (error) throw error;
+      showBanner('ok', 'Inscription en attente annulée.');
+      await loadWaitlist();
+    }
+  } catch (err) {
+    console.error(err);
+    showBanner('err', 'Erreur : ' + (err.message || err.toString()));
+  }
+});
 
 checkSession();
 </script>
