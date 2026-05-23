@@ -1748,7 +1748,7 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
         } else {
           allFull = false;
           numEl.textContent = remaining;
-          subEl.textContent = '/ ' + capacity + ' ' + label.unit + ' · reste ' + remaining;
+          subEl.textContent = '/ ' + capacity + ' ' + label.unit;
           if (remaining <= 3) card.classList.add('tight');
         }
         barEl.style.width = pctTaken + '%';
