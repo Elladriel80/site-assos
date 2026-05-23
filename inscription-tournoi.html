@@ -13,7 +13,7 @@
   --crimson:#6B0F0F; --crim-m:#8B1A1A; --crim-l:#A82020;
   --bg:#0A0806; --bg2:#0F0C09; --bg3:#171210; --bg4:#1E1810;
   --parch:#E8DFC8; --parch-d:#C4B89A; --parch-dk:#8A7A5A;
-  --white:#F5F0E8; --green:#4a7a3e; --red:#a82020;
+  --white:#F5F0E8; --green:#4a7a3e; --red:#a82020; --amber:#c87838;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -40,14 +40,15 @@ header .home-link:hover{ background:rgba(201,168,76,0.1) }
 .stock-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; margin:1rem 0 }
 @media(max-width:600px){.stock-grid{grid-template-columns:1fr}}
 .stock-card { background:rgba(0,0,0,0.25); border:1px solid var(--gold-d); border-radius:4px; padding:.9rem; text-align:center; transition:border-color .3s }
-.stock-card.tight{ border-color:#c87838 }
-.stock-card.full { border-color:var(--red); background:rgba(168,32,32,0.12) }
+.stock-card.tight{ border-color:var(--amber) }
+.stock-card.full { border-color:var(--amber); background:rgba(200,120,56,0.10) }
 .stock-card .stock-type { font-family:'Cinzel',serif; font-size:.75rem; letter-spacing:.12em; color:var(--gold); text-transform:uppercase }
-.stock-card.full .stock-type { color:#ffb8b8 }
+.stock-card.full .stock-type { color:#ffd8a8 }
 .stock-card .stock-num  { font-family:'Cinzel Decorative',cursive; font-size:1.9rem; color:var(--gold-l); margin:.2rem 0 }
-.stock-card.full .stock-num { color:var(--red); font-size:1rem; letter-spacing:.1em; text-transform:uppercase }
+.stock-card.full .stock-num { color:var(--amber); font-size:1rem; letter-spacing:.1em; text-transform:uppercase }
 .stock-card .stock-sub  { font-size:.74rem; color:var(--parch-dk) }
 .stock-card .stock-desc { display:block; margin-top:.4rem; font-size:.78rem; color:var(--parch); border-top:1px dotted rgba(201,168,76,0.2); padding-top:.4rem }
+.stock-card .stock-waitlist { display:block; margin-top:.3rem; font-size:.74rem; color:var(--amber); font-style:italic }
 
 .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem }
 @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
@@ -79,9 +80,10 @@ button.secondary {
 button.secondary:hover { background:rgba(201,168,76,0.1) }
 
 .alert { padding:.8rem 1rem; border-radius:4px; font-size:.88rem; line-height:1.45; margin:.8rem 0; border-left:3px solid }
-.alert-warn  { background:rgba(180,80,40,0.12); border-left-color:#c87838; color:var(--parch) }
+.alert-warn  { background:rgba(180,80,40,0.12); border-left-color:var(--amber); color:var(--parch) }
 .alert-error { background:rgba(168,32,32,0.15); border-left-color:var(--red); color:#ffb8b8 }
 .alert-ok    { background:rgba(74,122,62,0.15); border-left-color:var(--green); color:#d8f0d0 }
+.alert-info  { background:rgba(201,168,76,0.10); border-left-color:var(--gold); color:var(--parch) }
 
 .step { display:none }
 .step.active { display:block }
@@ -94,6 +96,10 @@ button.secondary:hover { background:rgba(201,168,76,0.1) }
 .payment-block { background:rgba(0,0,0,0.3); border:1px solid var(--gold-d); border-radius:4px; padding:1rem; margin-top:1rem }
 .payment-block h3 { font-family:'Cinzel',serif; color:var(--gold); font-size:.95rem; margin-bottom:.6rem; letter-spacing:.08em }
 .iframe-asc-container { min-height:520px; background:rgba(0,0,0,0.2); border-radius:3px }
+
+.wait-hero { text-align:center; padding:1.2rem 0 .4rem }
+.wait-hero .wait-pos { font-family:'Cinzel Decorative',cursive; font-size:3.4rem; color:var(--gold-l); line-height:1; text-shadow:0 0 20px var(--gold-glow) }
+.wait-hero .wait-lbl { font-family:'Cinzel',serif; font-size:.85rem; letter-spacing:.15em; color:var(--gold); text-transform:uppercase; margin-top:.4rem }
 
 footer { text-align:center; padding:2rem 1rem 1rem; font-family:'Cinzel',serif; font-size:.78rem; color:var(--parch-dk); letter-spacing:.1em }
 footer a { color:var(--gold); text-decoration:none }
@@ -116,7 +122,7 @@ footer a:hover { text-decoration:underline }
   <section class="step active" id="step-form">
     <div class="card">
       <h2>Places restantes</h2>
-      <p class="muted">Mise à jour en temps réel. Une fois ton type d'inscription choisi, ta place est retenue immédiatement en attendant le paiement AssoConnect.</p>
+      <p class="muted">Mise à jour en temps réel. Une fois ta catégorie pleine, ton inscription bascule automatiquement en <strong>liste d'attente</strong> — on te recontacte dès qu'une place se libère.</p>
 
       <div class="stock-grid" id="stock-grid">
         <div class="stock-card" data-type="equipe">
@@ -124,18 +130,21 @@ footer a:hover { text-decoration:underline }
           <div class="stock-num" id="stock-equipe">—</div>
           <div class="stock-sub">sur 12 équipes</div>
           <span class="stock-desc">5 joueurs · tournoi par alliances · 5 rondes</span>
+          <span class="stock-waitlist" id="wait-equipe" style="display:none"></span>
         </div>
         <div class="stock-card" data-type="jeu_libre">
           <div class="stock-type">🎲 Jeu Libre</div>
           <div class="stock-num" id="stock-jeu_libre">—</div>
           <div class="stock-sub">sur 50 places</div>
           <span class="stock-desc">Parties amicales · démonstrations</span>
+          <span class="stock-waitlist" id="wait-jeu_libre" style="display:none"></span>
         </div>
         <div class="stock-card" data-type="narratif">
           <div class="stock-type">📜 Narratif</div>
           <div class="stock-num" id="stock-narratif">—</div>
           <div class="stock-sub">sur 10 places</div>
           <span class="stock-desc">Animation Nimp'Games</span>
+          <span class="stock-waitlist" id="wait-narratif" style="display:none"></span>
         </div>
       </div>
     </div>
@@ -186,11 +195,12 @@ footer a:hover { text-decoration:underline }
         </div>
       </div>
 
-      <div class="alert alert-warn" style="margin-top:1.2rem">
-        ⚠ <strong>Places limitées</strong> — Une fois ta catégorie pleine, elle disparaît du site. Tu peux te mettre en liste d'attente via le Discord en cas de désistement.
+      <!-- Bandeau dynamique : devient "liste d'attente" si la catégorie sélectionnée est pleine -->
+      <div class="alert alert-warn" id="alert-availability" style="margin-top:1.2rem">
+        ⚠ <strong>Places limitées</strong> — Une fois ta catégorie pleine, ton inscription passera en <strong>liste d'attente</strong>. On te recontactera par email dès qu'une place se libère.
       </div>
 
-      <div class="alert alert-error" style="margin-top:.6rem;font-size:.95rem;border-left-width:4px;background:rgba(168,32,32,0.18)">
+      <div class="alert alert-error" id="alert-payment-required" style="margin-top:.6rem;font-size:.95rem;border-left-width:4px;background:rgba(168,32,32,0.18)">
         🚨 <strong>Attention :</strong> Remplir ce formulaire <strong>RÉSERVE la place</strong> mais <strong>NE LA CONFIRME PAS</strong>.<br>
         Ton inscription ne sera <strong style="text-transform:uppercase">définitive qu'après ton paiement sur AssoConnect</strong> à l'étape suivante. Tant que ce n'est pas payé, ta place peut être libérée pour quelqu'un d'autre.
       </div>
@@ -205,7 +215,7 @@ footer a:hover { text-decoration:underline }
   </section>
 
   <!-- ===================================================== -->
-  <!-- ÉTAPE 2 : récap + paiement                             -->
+  <!-- ÉTAPE 2a : récap + paiement (place confirmée)         -->
   <!-- ===================================================== -->
   <section class="step" id="step-payment">
     <div class="card">
@@ -253,6 +263,38 @@ footer a:hover { text-decoration:underline }
     </div>
   </section>
 
+  <!-- ===================================================== -->
+  <!-- ÉTAPE 2b : inscrit en LISTE D'ATTENTE (pas de paiement) -->
+  <!-- ===================================================== -->
+  <section class="step" id="step-waitlist">
+    <div class="card">
+      <h2 style="color:var(--amber)">⏳ Inscription en liste d'attente</h2>
+
+      <div class="wait-hero">
+        <div class="wait-pos">#<span id="wait-position">—</span></div>
+        <div class="wait-lbl">Position sur la liste d'attente</div>
+      </div>
+
+      <div class="alert alert-info" style="margin-top:1rem">
+        <strong>Bonne nouvelle :</strong> ton inscription est bien enregistrée. <strong>Tu ne paies rien pour le moment.</strong><br>
+        <span style="display:block;margin-top:.4rem;font-size:.92rem">
+          Si une place se libère, on te recontacte par email à l'adresse que tu as renseignée. Tu auras alors quelques jours pour confirmer ton paiement sur AssoConnect.
+        </span>
+      </div>
+
+      <div class="summary" id="recap-summary-wait"></div>
+
+      <p class="muted" style="margin-top:1rem">
+        Tu peux suivre l'évolution du nombre d'inscriptions sur cette page et nous rejoindre sur <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" rel="noopener" style="color:#9BA8FF">le Discord</a> pour les annonces en direct.
+      </p>
+
+      <div style="display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem">
+        <a href="index.html" class="btn-primary">🏠 Retour à l'accueil</a>
+        <button class="secondary" id="btn-new-resa-wait">+ Nouvelle inscription</button>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <footer>
@@ -266,8 +308,6 @@ const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Lien public AssoConnect — nouvelle URL (format slug AssoConnect 2026)
-// collect-id technique : 01KR13EXW81MB1J0B3PKRCZ0R4 (utilisé par l'embed iframe.js)
 const ASSOCONNECT_PUBLIC_URL = 'https://les-strateges-du-vieux-monde.assoconnect.com/collect/description/707712-z-interregions-the-old-world';
 
 function buildPrefillUrl(payload) {
@@ -288,25 +328,71 @@ const TYPE_LABEL = {
 };
 const ROLE_LABEL = { capitaine: 'Capitaine', coequipier: 'Coéquipier' };
 
+// Garde en mémoire l'état de chaque catégorie pour adapter le bandeau d'alerte
+let STOCK_STATE = {};
+
 async function loadStock() {
   const { data, error } = await sb.rpc('get_inscription_stock');
   if (error) { console.error(error); return; }
-  const map = Object.fromEntries((data || []).map(r => [r.inscription_type, r]));
+  STOCK_STATE = Object.fromEntries((data || []).map(r => [r.inscription_type, r]));
   for (const t of ['equipe','jeu_libre','narratif']) {
     const card = document.querySelector('.stock-card[data-type="' + t + '"]');
     const el   = $('#stock-' + t);
     const opt  = document.querySelector(`#f-type option[value="${t}"]`);
-    if (!map[t] || !el) continue;
-    const rem = map[t].remaining;
-    el.textContent = rem;
-    card.classList.toggle('full', rem <= 0);
+    const wait = $('#wait-' + t);
+    const row  = STOCK_STATE[t];
+    if (!row || !el) continue;
+
+    const rem  = row.remaining;
+    const wcnt = row.waitlist_count || 0;
+
+    card.classList.toggle('full',  rem <= 0);
     card.classList.toggle('tight', rem > 0 && rem <= 3);
-    if (opt) {
-      if (rem <= 0) {
-        opt.disabled = true;
-        if (!opt.textContent.includes('COMPLET')) opt.textContent = opt.textContent + ' · COMPLET';
-      }
+
+    if (rem <= 0) {
+      el.textContent = 'Liste d\'attente';
+    } else {
+      el.textContent = rem;
     }
+
+    if (wcnt > 0) {
+      wait.style.display = '';
+      wait.textContent = wcnt + ' en attente';
+    } else {
+      wait.style.display = 'none';
+    }
+
+    if (opt) {
+      // On garde l'option active : l'inscription bascule en waitlist côté serveur
+      opt.disabled = false;
+      const baseLabel = opt.dataset.baseLabel || opt.textContent.replace(/ · (COMPLET|LISTE D'ATTENTE)$/i,'').trim();
+      opt.dataset.baseLabel = baseLabel;
+      opt.textContent = rem <= 0 ? baseLabel + ' · LISTE D\'ATTENTE' : baseLabel;
+    }
+  }
+  // Met à jour le bandeau d'alerte si une catégorie est déjà sélectionnée
+  refreshAvailabilityAlert();
+}
+
+function refreshAvailabilityAlert() {
+  const type = $('#f-type').value;
+  const alert = $('#alert-availability');
+  const payAlert = $('#alert-payment-required');
+  if (!type) {
+    alert.className = 'alert alert-warn';
+    alert.innerHTML = '⚠ <strong>Places limitées</strong> — Une fois ta catégorie pleine, ton inscription passera en <strong>liste d\'attente</strong>. On te recontactera par email dès qu\'une place se libère.';
+    payAlert.style.display = '';
+    return;
+  }
+  const row = STOCK_STATE[type];
+  if (row && row.remaining <= 0) {
+    alert.className = 'alert alert-info';
+    alert.innerHTML = '⏳ <strong>' + (TYPE_LABEL[type] || type) + ' est complet</strong> — En validant ce formulaire, tu seras inscrit·e en <strong>liste d\'attente</strong> (position estimée : #' + ((row.waitlist_count || 0) + 1) + '). <strong>Aucun paiement n\'est requis</strong> à ce stade.';
+    payAlert.style.display = 'none';
+  } else {
+    alert.className = 'alert alert-warn';
+    alert.innerHTML = '⚠ <strong>Places limitées</strong> — Une fois ta catégorie pleine, ton inscription passera en <strong>liste d\'attente</strong>. On te recontactera par email dès qu\'une place se libère.';
+    payAlert.style.display = '';
   }
 }
 
@@ -318,12 +404,29 @@ function showError(msg) {
 }
 function clearError() { $('#form-error').style.display = 'none'; }
 
-// Affiche les champs équipe seulement si type=equipe
+// Affiche les champs équipe seulement si type=equipe, et met à jour le bandeau
 $('#f-type').addEventListener('change', (e) => {
   const show = e.target.value === 'equipe';
   $('#field-team').style.display = show ? '' : 'none';
   $('#field-role').style.display = show ? '' : 'none';
+  refreshAvailabilityAlert();
 });
+
+function renderSummary(targetSel, payload, row) {
+  const sum = $(targetSel);
+  sum.innerHTML = `
+    <div class="row"><span class="lbl">Inscription</span><span class="val" style="font-family:monospace;font-size:.78rem">${row.inscription_id}</span></div>
+    <div class="row"><span class="lbl">Nom</span><span class="val">${escapeHtml(payload.p_prenom + ' ' + payload.p_nom)}</span></div>
+    <div class="row"><span class="lbl">Email</span><span class="val">${escapeHtml(payload.p_email)}</span></div>
+    <div class="row"><span class="lbl">Téléphone</span><span class="val">${escapeHtml(payload.p_telephone || '—')}</span></div>
+    <div class="row"><span class="lbl">Axe de jeu</span><span class="val">${TYPE_LABEL[payload.p_inscription_type] || payload.p_inscription_type}</span></div>
+    ${payload.p_team_name ? `<div class="row"><span class="lbl">Équipe</span><span class="val">${escapeHtml(payload.p_team_name)}</span></div>` : ''}
+    ${payload.p_role ? `<div class="row"><span class="lbl">Rôle</span><span class="val">${ROLE_LABEL[payload.p_role] || payload.p_role}</span></div>` : ''}
+    ${row.is_waitlist
+       ? `<div class="row"><span class="lbl">Statut</span><span class="val" style="color:var(--amber)">En liste d'attente — pas de paiement</span></div>`
+       : `<div class="row"><span class="lbl">Montant</span><span class="val">${Number(row.amount_eur).toFixed(2).replace('.',',')} €</span></div>`}
+  `;
+}
 
 $('#form-inscription').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -354,22 +457,17 @@ $('#form-inscription').addEventListener('submit', async (e) => {
     const row = Array.isArray(data) ? data[0] : data;
     if (!row || !row.inscription_id) throw new Error('Réponse inattendue du serveur.');
 
-    const sum = $('#recap-summary');
-    sum.innerHTML = `
-      <div class="row"><span class="lbl">Inscription</span><span class="val" style="font-family:monospace;font-size:.78rem">${row.inscription_id}</span></div>
-      <div class="row"><span class="lbl">Nom</span><span class="val">${escapeHtml(payload.p_prenom + ' ' + payload.p_nom)}</span></div>
-      <div class="row"><span class="lbl">Email</span><span class="val">${escapeHtml(payload.p_email)}</span></div>
-      <div class="row"><span class="lbl">Téléphone</span><span class="val">${escapeHtml(payload.p_telephone || '—')}</span></div>
-      <div class="row"><span class="lbl">Axe de jeu</span><span class="val">${TYPE_LABEL[payload.p_inscription_type] || payload.p_inscription_type}</span></div>
-      ${payload.p_team_name ? `<div class="row"><span class="lbl">Équipe</span><span class="val">${escapeHtml(payload.p_team_name)}</span></div>` : ''}
-      ${payload.p_role ? `<div class="row"><span class="lbl">Rôle</span><span class="val">${ROLE_LABEL[payload.p_role] || payload.p_role}</span></div>` : ''}
-      <div class="row"><span class="lbl">Montant</span><span class="val">${Number(row.amount_eur).toFixed(2).replace('.',',')} €</span></div>
-    `;
-
-    $('#btn-pay-external').setAttribute('href', buildPrefillUrl(payload));
-
-    $('#step-form').classList.remove('active');
-    $('#step-payment').classList.add('active');
+    if (row.is_waitlist) {
+      $('#wait-position').textContent = row.waitlist_position ?? '?';
+      renderSummary('#recap-summary-wait', payload, row);
+      $('#step-form').classList.remove('active');
+      $('#step-waitlist').classList.add('active');
+    } else {
+      renderSummary('#recap-summary', payload, row);
+      $('#btn-pay-external').setAttribute('href', buildPrefillUrl(payload));
+      $('#step-form').classList.remove('active');
+      $('#step-payment').classList.add('active');
+    }
     window.scrollTo({ top:0, behavior:'smooth' });
   } catch (err) {
     console.error(err);
@@ -378,15 +476,20 @@ $('#form-inscription').addEventListener('submit', async (e) => {
   }
 });
 
-$('#btn-new-resa').addEventListener('click', () => {
+function resetForm() {
   $('#form-inscription').reset();
   $('#field-team').style.display = 'none';
   $('#field-role').style.display = 'none';
   $('#step-payment').classList.remove('active');
+  $('#step-waitlist').classList.remove('active');
   $('#step-form').classList.add('active');
+  $('#btn-submit').disabled = false;
+  $('#btn-submit').textContent = '⚔ Réserver ma place';
   loadStock();
   window.scrollTo({ top:0, behavior:'smooth' });
-});
+}
+$('#btn-new-resa').addEventListener('click', resetForm);
+$('#btn-new-resa-wait').addEventListener('click', resetForm);
 
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({
