@@ -795,11 +795,11 @@ function renderMap() {
     // 2) Disque de fond + bordure dorée nette
     h += `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="43" fill="#0A0806" stroke="#C9A84C" stroke-width="2.2"/>`;
 
-    // 3) Image emblème — agrandie ET décalée vers le HAUT pour zoomer sur la tête du mâtin
-    //    (l'image source a le chien au centre-haut, la bannière en bas → on cadre haut)
+    // 3) Image emblème — bouclier doré centré, cadrage au cœur du médaillon
+    //    (l'image source a le bouclier parfaitement centré → on cadre centré, y=-55)
     h += `<g transform="translate(${ex.toFixed(1)},${ey.toFixed(1)})">
             <g clip-path="url(#dow-emblem-clip)" filter="url(#dow-pop)">
-              <image href="assets/dogs-of-war.png" x="-55" y="-50" width="110" height="110" preserveAspectRatio="xMidYMid slice"/>
+              <image href="assets/dogs-of-war.png" x="-55" y="-55" width="110" height="110" preserveAspectRatio="xMidYMid slice"/>
             </g>
             <!-- Liseré intérieur doré fin -->
             <circle cx="0" cy="0" r="42" fill="none" stroke="#E8C96A" stroke-width="0.5" opacity="0.65"/>
