@@ -34,17 +34,6 @@ body{font-family:'Lato',sans-serif;background-color:var(--bg);color:var(--parch)
 .rune{position:absolute;font-family:'IM Fell English',serif;color:var(--gold);opacity:0;animation:runeFloat linear infinite;text-shadow:0 0 8px var(--gold-glow),0 0 20px rgba(201,168,76,0.25);user-select:none}
 @keyframes runeFloat{0%{opacity:0;transform:translateY(0) rotate(0deg)}10%{opacity:.35}80%{opacity:.20}100%{opacity:0;transform:translateY(-100vh) rotate(360deg)}}
 
-/* SAVE THE DATE strip — Tricasses Saison 3 */
-.std-strip{position:relative;z-index:101;background:linear-gradient(90deg,#3a0a0a 0%,#6B0F0F 35%,#8B1A1A 50%,#6B0F0F 65%,#3a0a0a 100%);border-bottom:1px solid var(--gold);box-shadow:0 1px 12px rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;gap:.9rem;padding:.55rem 1rem;text-decoration:none;cursor:pointer;font-family:'Cinzel',serif;flex-wrap:wrap;text-align:center;transition:filter .2s,transform .2s}
-.std-strip:hover{filter:brightness(1.15)}
-.std-strip:hover .std-arrow{transform:translateX(4px)}
-.std-tag{font-size:.65rem;font-weight:700;color:var(--gold-l);letter-spacing:.25em;text-transform:uppercase;background:rgba(0,0,0,0.35);border:1px solid var(--gold-d);padding:.2rem .55rem;border-radius:2px;text-shadow:0 1px 2px rgba(0,0,0,0.8);white-space:nowrap}
-.std-title{font-family:'Uncial Antiqua',cursive;font-size:.95rem;color:var(--gold-l);letter-spacing:.04em;text-shadow:0 0 8px rgba(232,201,106,0.45),0 1px 3px rgba(0,0,0,0.9);white-space:nowrap}
-.std-date{font-size:.78rem;font-weight:700;color:var(--parch);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 1px 2px rgba(0,0,0,0.8);white-space:nowrap}
-.std-cta{font-size:.7rem;font-weight:700;color:var(--bg);background:linear-gradient(135deg,var(--gold-l),var(--gold));padding:.3rem .7rem;border-radius:3px;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.3rem;white-space:nowrap;box-shadow:0 0 10px var(--gold-glow)}
-.std-arrow{display:inline-block;transition:transform .2s}
-@media(max-width:600px){.std-strip{padding:.45rem .6rem;gap:.5rem}.std-tag{font-size:.55rem;padding:.15rem .4rem}.std-title{font-size:.78rem}.std-date{font-size:.65rem}.std-cta{font-size:.6rem;padding:.25rem .5rem}}
-
 nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,8,6,0.97) 0%,rgba(15,12,9,0.93) 100%);border-bottom:2px solid var(--gold-d);box-shadow:0 2px 20px rgba(0,0,0,0.8);padding:0}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:0;flex-wrap:wrap;padding:0 1rem}
 .nav-brand{font-family:'Uncial Antiqua',cursive;color:var(--gold);font-size:.85rem;padding:.7rem 1rem .7rem 0;margin-right:1rem;border-right:1px solid var(--gold-d);text-shadow:0 0 10px var(--gold-glow);white-space:nowrap}
@@ -349,20 +338,11 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 <body>
 <div id="particles"></div>
 
-<!-- SAVE THE DATE — TRICASSES SAISON 3 -->
-<a class="std-strip" onclick="showPage('tricasses-s3');return false;" href="#tricasses-s3">
-  <span class="std-tag">🛡 Save the date</span>
-  <span class="std-title">Tricasses Saison&nbsp;3</span>
-  <span class="std-date">15 &amp; 16 mai 2027 · Ruvigny</span>
-  <span class="std-cta">Inscriptions ouvertes <span class="std-arrow">→</span></span>
-</a>
-
 <nav>
   <div class="nav-inner">
-    <div class="nav-brand">⚔ Les Stratèges du Vieux Monde</div>
+    <div class="nav-brand">⚔ InterRégions 2026 — TOW</div>
     <div class="nav-links">
       <button onclick="showPage('accueil')" class="active" id="nav-accueil">Accueil</button>
-      <button onclick="showPage('tricasses-s3')" id="nav-tricasses-s3" style="color:var(--gold-l)">🛡 Tricasses S3</button>
       <button onclick="showPage('format')" id="nav-format">Format &amp; Conquête</button>
       <button onclick="showPage('lieu')" id="nav-lieu">Lieu</button>
       <button onclick="showPage('association')" id="nav-association">Organisateurs</button>
@@ -438,148 +418,6 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
       <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
     </p>
-  </footer>
-</div>
-
-<!-- TRICASSES SAISON 3 -->
-<div class="page" id="page-tricasses-s3">
-  <section class="hero" style="padding-top:3rem">
-    <div class="ir-banner" style="margin-bottom:1.2rem">
-      <div class="ir-convo">⚔ Tournoi Officiel LSVM ⚔</div>
-      <h1 class="ir-mega" style="font-size:clamp(2.2rem,8vw,5.4rem)">Tricasses<br>Saison&nbsp;III</h1>
-      <div class="ir-edition">Édition&nbsp;2027</div>
-      <p class="ir-game">Tournoi Warhammer : The Old World</p>
-      <div class="ir-flourish">⚜ 15 &amp; 16 Mai 2027 ⚜</div>
-      <p class="ir-orgs">Organisé par <strong>Les Stratèges du Vieux Monde</strong> · Aube (10)</p>
-    </div>
-
-    <!-- Visuel Tricasses S3 -->
-    <div style="max-width:720px;margin:0 auto 2rem;padding:0 1rem">
-      <div style="border:1px solid var(--gold-d);border-radius:6px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,0.55),0 0 24px rgba(201,168,76,0.15)">
-        <img src="assets/Tricasses3.png" alt="Affiche Tricasses Saison 3 — 15 & 16 mai 2027" style="width:100%;display:block">
-      </div>
-    </div>
-
-    <div class="hero-meta">
-      <div class="hero-badge">🗓 <span>15 &amp; 16 mai 2027</span></div>
-      <div class="hero-badge">🏰 <span>Salle des fêtes de Ruvigny</span></div>
-      <div class="hero-badge">⚔ <span>4 parties + 1 optionnelle · 2000 pts</span></div>
-      <div class="hero-badge">💰 <span>40 € tout compris</span></div>
-    </div>
-
-    <p class="countdown-label">✦ Compte à rebours ✦</p>
-    <div class="countdown">
-      <div class="cd-unit"><span class="cd-num" id="cd-tri-j">--</span><span class="cd-lbl">Jours</span></div>
-      <div class="cd-unit"><span class="cd-num" id="cd-tri-h">--</span><span class="cd-lbl">Heures</span></div>
-      <div class="cd-unit"><span class="cd-num" id="cd-tri-m">--</span><span class="cd-lbl">Mins</span></div>
-      <div class="cd-unit"><span class="cd-num" id="cd-tri-s">--</span><span class="cd-lbl">Secs</span></div>
-    </div>
-
-    <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:1rem">
-      <a href="https://les-strateges-du-vieux-monde.assoconnect.com/collect/description/713967-t-tricasses-saison-3" target="_blank" rel="noopener" class="cta-btn" style="text-decoration:none">💳 S'inscrire (40 €)</a>
-      <a href="https://www.newrecruit.eu/app/tournydetails/details?id=6a143031db215492f43ac082" target="_blank" rel="noopener" class="btn-newrecruit">📜 Déposer ma liste sur NewRecruit</a>
-    </div>
-  </section>
-
-  <div class="section" style="max-width:980px">
-    <!-- ESSENTIEL -->
-    <div class="stats-bar reveal">
-      <div class="stat"><div class="stat-num">2 j</div><div class="stat-lbl">15-16 Mai 2027</div></div>
-      <div class="stat"><div class="stat-num">2000</div><div class="stat-lbl">Points / armée</div></div>
-      <div class="stat"><div class="stat-num">4+1</div><div class="stat-lbl">Parties</div></div>
-      <div class="stat"><div class="stat-num">40 €</div><div class="stat-lbl">Tout compris</div></div>
-    </div>
-
-    <!-- LIEU -->
-    <div class="scroll reveal" style="margin-top:2rem">
-      <h3>🏰 Le Lieu — Salle des fêtes de Ruvigny</h3>
-      <p>Le tournoi se tiendra dans la <strong style="color:var(--gold)">Salle des fêtes de Ruvigny</strong>, en plein cœur de l'Aube — un cadre convivial, à quelques minutes de Troyes, parfait pour deux jours de batailles entre stratèges du Vieux Monde.</p>
-      <p style="margin-top:.5rem">
-        <a href="https://maps.google.com/?q=Salle+des+f%C3%AAtes+de+Ruvigny" target="_blank" rel="noopener" class="map-link">📍 Voir sur Google Maps</a>
-      </p>
-    </div>
-
-    <!-- TARIFS / INCLUS -->
-    <div class="price-card reveal" style="margin-top:2.5rem">
-      <div class="price-amount">40&nbsp;€</div>
-      <div class="price-unit">Tarif unique · 2 jours de tournoi</div>
-      <ul class="price-includes">
-        <li><strong style="color:var(--gold)">2 petits-déjeuners</strong> (samedi &amp; dimanche)</li>
-        <li><strong style="color:var(--gold)">Repas du samedi midi</strong></li>
-        <li><strong style="color:var(--gold)">4 parties compétitives</strong></li>
-        <li>+ 1 partie supplémentaire <em>optionnelle</em></li>
-        <li>Accès au week-end complet</li>
-      </ul>
-      <div style="margin-top:1rem">
-        <a href="https://les-strateges-du-vieux-monde.assoconnect.com/collect/description/713967-t-tricasses-saison-3" target="_blank" rel="noopener" class="cta-btn" style="text-decoration:none">💳 Payer mon inscription</a>
-      </div>
-      <p class="inscr-note" style="margin-top:1rem">Paiement sécurisé via AssoConnect (CB, virement, prélèvement)</p>
-    </div>
-
-    <!-- FORMAT -->
-    <h2 class="section-title" style="margin-top:3rem">⚔ Format du Tournoi</h2>
-    <p class="section-sub">Règles &amp; conventions</p>
-
-    <div class="rules-grid reveal">
-      <div class="rule-block">
-        <h3>📜 Règles de base</h3>
-        <ul>
-          <li>Armées à <strong style="color:var(--gold)">2000 points</strong></li>
-          <li>Application stricte du <strong style="color:var(--gold)">Guide du Jeu égale</strong> (Forge of Battle)</li>
-          <li>Règles du livre de base de <em>The Old World</em></li>
-          <li><strong style="color:var(--gold)">4 parties compétitives</strong> classantes</li>
-          <li><strong style="color:var(--gold)">1 partie optionnelle</strong> bonus</li>
-        </ul>
-      </div>
-
-      <div class="rule-block">
-        <h3>🗼 La Tour (GBB)</h3>
-        <p>La règle de la <strong style="color:var(--gold)">Tour</strong> (cf. <em>Generals Buying Battles</em>) est <strong style="color:var(--gold)">autorisée sans accord préalable</strong> de l'adversaire.</p>
-        <p style="margin-top:.5rem;font-style:italic;color:var(--parch-dk);font-size:.85rem">Si tu veux la jouer, tu la joues — pas besoin de demander la permission au mage d'en face.</p>
-      </div>
-
-      <div class="rule-block">
-        <h3>🏞 Décors — Règle Tricasses</h3>
-        <p>Les décors sont apportés et déposés par les joueurs selon les règles du <strong>Guide du Jeu égale</strong>, avec <strong style="color:var(--gold)">3 modifications</strong> propres à Tricasses :</p>
-        <ul>
-          <li>Placement <strong style="color:var(--gold)">à plus de 3 pouces</strong> d'un bord de table</li>
-          <li>Placement <strong style="color:var(--gold)">alternatif</strong> entre les deux joueurs</li>
-          <li>La <strong style="color:var(--gold)">taille du décor n'est pas prise en compte</strong></li>
-        </ul>
-        <div class="rule-highlight" style="margin-top:1rem;font-style:italic">
-          « Un décor peut être petit ou gros, ça n'en compte quand même que pour un ! »<br>
-          <span style="font-size:.75rem;color:var(--parch-dk);letter-spacing:.05em">— Gimli, fils de Glóin</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- LISTES -->
-    <div class="scroll reveal" style="margin-top:2.5rem;text-align:center">
-      <h3>📜 Dépôt des Listes — NewRecruit</h3>
-      <p>Les listes d'armées sont à déposer sur la plateforme <strong style="color:var(--gold)">NewRecruit</strong>. Format 2000 pts, conforme aux règles ci-dessus.</p>
-      <div style="margin-top:1.2rem">
-        <a href="https://www.newrecruit.eu/app/tournydetails/details?id=6a143031db215492f43ac082" target="_blank" rel="noopener" class="cta-btn" style="text-decoration:none">📜 Accéder à NewRecruit</a>
-      </div>
-    </div>
-
-    <!-- DOUBLE CTA FINAL -->
-    <div class="reveal" style="margin-top:3rem;padding:2rem;background:linear-gradient(160deg,rgba(107,15,15,0.25),rgba(42,8,8,0.45));border:1px solid var(--gold-d);border-radius:6px;text-align:center">
-      <h2 class="section-title" style="margin-bottom:.5rem">⚔ Prêt à rejoindre la bataille ?</h2>
-      <p style="color:var(--parch-d);max-width:600px;margin:0 auto 1.5rem;line-height:1.7">Inscris-toi dès maintenant et dépose ta liste — les places partent vite, et la 3<sup>e</sup> édition s'annonce épique.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:1rem;justify-content:center">
-        <a href="https://les-strateges-du-vieux-monde.assoconnect.com/collect/description/713967-t-tricasses-saison-3" target="_blank" rel="noopener" class="cta-btn" style="text-decoration:none">💳 S'inscrire (40 €)</a>
-        <a href="https://www.newrecruit.eu/app/tournydetails/details?id=6a143031db215492f43ac082" target="_blank" rel="noopener" class="btn-newrecruit">📜 Déposer ma liste</a>
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    <div class="footer-brand">🛡 Tricasses Saison III — 15 &amp; 16 Mai 2027 🛡</div>
-    <div class="footer-links">
-      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('tricasses-s3')">Tricasses S3</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button>
-    </div>
-    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
-    <p style="margin-top:.5rem">© 2026 Les Stratèges du Vieux Monde · Ruvigny, Aube (10)</p>
   </footer>
 </div>
 
@@ -1341,7 +1179,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
         <a class="famille-card" href="https://www.nigloland.fr/" target="_blank" rel="noopener">
           <span class="famille-card-icon">🎢</span>
           <h4>Nigloland <span class="famille-badge">Halloween · exceptionnel</span></h4>
-          <p>Un excellent parc d'attraction pour toute la famille.</p>
+          <p>Le 2e parc d'attractions de France, en mode Halloween en novembre — ambiance, décors et soirées nocturnes vraiment à part. À 40 min du tournoi.</p>
           <span class="famille-cta">→ Découvrir Nigloland</span>
         </a>
 
@@ -1722,28 +1560,6 @@ function updateCountdown() {
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
-
-/* ── COUNTDOWN — TRICASSES SAISON 3 (15 mai 2027) ── */
-const targetTri = new Date('2027-05-15T09:00:00').getTime();
-function updateCountdownTri() {
-  const el = document.getElementById('cd-tri-j');
-  if (!el) return;
-  const diff = targetTri - Date.now();
-  if (diff <= 0) {
-    ['cd-tri-j','cd-tri-h','cd-tri-m','cd-tri-s'].forEach(id => { const e = document.getElementById(id); if (e) e.textContent = '0'; });
-    return;
-  }
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-tri-j').textContent = d;
-  document.getElementById('cd-tri-h').textContent = String(h).padStart(2,'0');
-  document.getElementById('cd-tri-m').textContent = String(m).padStart(2,'0');
-  document.getElementById('cd-tri-s').textContent = String(s).padStart(2,'0');
-}
-updateCountdownTri();
-setInterval(updateCountdownTri, 1000);
 
 /* ── REVEAL ON SCROLL ── */
 function observeReveals() {
