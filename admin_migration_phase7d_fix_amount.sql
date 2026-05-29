@@ -1,0 +1,9 @@
+-- =========================================================================
+-- ⚠️ FICHIER OBSOLÈTE — NE PAS EXÉCUTER
+-- Cette migration a été renommée et corrigée (elle doit se placer APRÈS la
+-- phase 8 / liste d'attente, pas en 7d). Utilise désormais :
+--
+--     admin_migration_phase9_hold_and_amount.sql
+--
+-- Tu peux supprimer ce fichier.
+-- =========================================================================

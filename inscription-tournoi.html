@@ -256,6 +256,25 @@ footer a:hover { text-decoration:underline }
         </details>
       </div>
 
+      <!-- Bloc CAPITAINE : comment réunir son équipe (affiché si role=capitaine) -->
+      <div id="captain-invite-info" hidden style="margin-top:1.4rem;padding:1.1rem 1.3rem;background:rgba(168,32,32,0.10);border:1px solid var(--gold-d);border-left:4px solid var(--gold);border-radius:4px">
+        <div style="font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem">
+          ⚜ Tu es capitaine — voici comment réunir ton équipe
+        </div>
+        <p style="font-size:.92rem;line-height:1.6;color:var(--parch);margin-bottom:.8rem">
+          Ton paiement de <strong style="color:var(--gold)">325 €</strong> couvre <strong>toute l'équipe (5 joueurs)</strong> : tes coéquipiers <strong>ne paient rien</strong>. C'est toi qui les invites, en 3 étapes.
+        </p>
+        <ol style="font-size:.92rem;line-height:1.7;color:var(--parch-d);margin:0 0 1rem 1.1rem;padding:0">
+          <li><strong style="color:var(--parch)">Paie</strong> ton inscription équipe ci-dessus (une seule fois, pour les 5).</li>
+          <li>Va sur <strong style="color:var(--gold)">Forge ton champion</strong> et crée d'abord <strong>ton propre champion</strong> (pseudo, région, blason).</li>
+          <li>Sur cette même page apparaît alors <strong>« 👥 Inscris ton équipe »</strong> : clique <strong style="color:var(--gold)">« + Générer un lien d'invitation »</strong> pour obtenir <strong>1 lien par coéquipier</strong>. Envoie chaque lien par WhatsApp ou mail — il permet à ce coéquipier de forger son champion <strong>sans payer</strong>.</li>
+        </ol>
+        <a href="inscription-champion.html" class="btn-primary" style="display:inline-flex">⚒ Forger mon champion &amp; inviter mon équipe →</a>
+        <p class="muted" style="font-size:.78rem;margin-top:.7rem">
+          Les liens d'invitation se génèrent sur la page « Forge ton champion », <strong>après</strong> avoir créé ton propre champion.
+        </p>
+      </div>
+
       <div style="display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem">
         <a href="index.html" class="btn-primary">🏠 Retour à l'accueil</a>
         <button class="secondary" id="btn-new-resa">+ Nouvelle inscription</button>
@@ -465,6 +484,8 @@ $('#form-inscription').addEventListener('submit', async (e) => {
     } else {
       renderSummary('#recap-summary', payload, row);
       $('#btn-pay-external').setAttribute('href', buildPrefillUrl(payload));
+      const isCaptain = payload.p_inscription_type === 'equipe' && payload.p_role === 'capitaine';
+      $('#captain-invite-info').hidden = !isCaptain;
       $('#step-form').classList.remove('active');
       $('#step-payment').classList.add('active');
     }
