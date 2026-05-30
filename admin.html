@@ -511,7 +511,7 @@
         <div class="stat"><div class="label">⚔ Équipes (max 12)</div><div class="value" id="insc-stock-equipe">—</div></div>
         <div class="stat"><div class="label">🎲 Jeu Libre (max 50)</div><div class="value" id="insc-stock-jeu_libre">—</div></div>
         <div class="stat"><div class="label">📜 Narratif (max 10)</div><div class="value" id="insc-stock-narratif">—</div></div>
-        <div class="stat"><div class="label">💰 Encaissé (paid)</div><div class="value" id="insc-cash">—</div></div>
+        <div class="stat"><div class="label">💰 Encaissé (AssoConnect)</div><div class="value" id="insc-cash">—</div></div>
       </div>
 
       <div class="toolbar" style="margin-top:1em">
@@ -2152,10 +2152,13 @@ function renderInscStock(stock) {
   $('#insc-stock-jeu_libre').textContent  = fmt('jeu_libre');
   $('#insc-stock-narratif').textContent   = fmt('narratif');
 
-  const cash = state.inscriptions
-    .filter(r => r.payment_status === 'paid')
-    .reduce((s, r) => s + Number(r.amount_eur || 0), 0);
-  $('#insc-cash').textContent = cash.toFixed(2).replace('.', ',') + ' €';
+  // Encaissé réel = vérité AssoConnect (paid_users via get_paid_revenue),
+  // et NON la somme des pending "payés" (polluée par doublons/tests).
+  sb.rpc('get_paid_revenue').then(({ data, error }) => {
+    if (error) { $('#insc-cash').textContent = '—'; return; }
+    const cash = (data || []).reduce((s, r) => s + Number(r.total_eur || 0), 0);
+    $('#insc-cash').textContent = cash.toFixed(2).replace('.', ',') + ' €';
+  });
 }
 
 function renderInscriptions() {
