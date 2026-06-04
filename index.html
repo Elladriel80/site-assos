@@ -413,6 +413,18 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <div class="hero-badge">🏞 <span>Mesnil-Saint-Père · Lac d'Orient</span></div>
       <div class="hero-badge">⚔ <span>120 participants · 3 axes</span></div>
     </div>
+    <!-- BANDEAU SPONSORS → page Sponsors -->
+    <div class="sponsor-strip" onclick="showPage('sponsors')" role="button" tabindex="0" title="Voir nos partenaires" onkeydown="if(event.key==='Enter'||event.key===' '){showPage('sponsors')}">
+      <span class="sponsor-strip-label">⚜ Avec le soutien de ⚜</span>
+      <div class="sponsor-strip-logos">
+        <img src="assets/Logo-Boite-a-rabiots-detoure.png" class="logo-rabiots-strip" alt="La Boîte à Rabiots" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;LA BOÎTE À RABIOTS&lt;/span&gt;'">
+        <img src="assets/logo_fcw_detoure.png" class="logo-fcw-strip" alt="FCW Miniature" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;FCW MINIATURE&lt;/span&gt;'">
+        <img src="assets/Logo_custom_wargame_clair.png" class="logo-cw-strip" alt="Custom Wargame" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;CUSTOM WARGAME&lt;/span&gt;'">
+        <img src="assets/Logo Stratemats blanc.png" alt="Stratemats" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;STRATEMATS&lt;/span&gt;'">
+      </div>
+      <span class="sponsor-strip-arrow">Nos partenaires →</span>
+    </div>
+
     <p class="countdown-label">✦ Compte à rebours ✦</p>
     <div class="countdown">
       <div class="cd-unit"><span class="cd-num" id="cd-j">--</span><span class="cd-lbl">Jours</span></div>
@@ -426,17 +438,6 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       Rejoindre le serveur Discord officiel
     </a>
 
-    <!-- BANDEAU SPONSORS → page Sponsors -->
-    <div class="sponsor-strip" onclick="showPage('sponsors')" role="button" tabindex="0" title="Voir nos partenaires" onkeydown="if(event.key==='Enter'||event.key===' '){showPage('sponsors')}">
-      <span class="sponsor-strip-label">⚜ Avec le soutien de ⚜</span>
-      <div class="sponsor-strip-logos">
-        <img src="assets/Logo-Boite-a-rabiots-detoure.png" class="logo-rabiots-strip" alt="La Boîte à Rabiots" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;LA BOÎTE À RABIOTS&lt;/span&gt;'">
-        <img src="assets/logo_fcw_detoure.png" class="logo-fcw-strip" alt="FCW Miniature" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;FCW MINIATURE&lt;/span&gt;'">
-        <img src="assets/Logo_custom_wargame_clair.png" class="logo-cw-strip" alt="Custom Wargame" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;CUSTOM WARGAME&lt;/span&gt;'">
-        <img src="assets/Logo Stratemats blanc.png" alt="Stratemats" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;STRATEMATS&lt;/span&gt;'">
-      </div>
-      <span class="sponsor-strip-arrow">Nos partenaires →</span>
-    </div>
   </section>
   <div style="max-width:1100px;margin:0 auto;padding:3rem 1.5rem">
     <div class="stats-bar reveal">
@@ -914,7 +915,6 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     </p>
   </footer>
 </div>
-
 
 <!-- CONQUETE -->
 <div class="page" id="page-conquete">
@@ -1727,7 +1727,6 @@ function spawnRune() {
 }
 setInterval(spawnRune, 2500);
 for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
-
 
 /* ============================================================
    CAROUSEL DES CHAMPIONS — fetch Supabase + auto-scroll + modal
