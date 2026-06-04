@@ -42,6 +42,7 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .nav-links button::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold);transition:left .25s,right .25s}
 .nav-links button:hover,.nav-links button.active{color:var(--gold)}
 .nav-links button:hover::after,.nav-links button.active::after{left:10%;right:10%}
+.nav-links button.nav-highlight{color:var(--gold);text-shadow:0 0 8px rgba(201,168,76,.35)}
 
 .page{display:none;min-height:100vh;position:relative;z-index:1}
 .page.active{display:block}
@@ -386,11 +387,11 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     <div class="nav-brand">⚔ InterRégions 2026 — TOW</div>
     <div class="nav-links">
       <button onclick="showPage('accueil')" class="active" id="nav-accueil">Accueil</button>
+      <button onclick="showPage('sponsors')" id="nav-sponsors" class="nav-highlight">Sponsors</button>
       <button onclick="showPage('format')" id="nav-format">Format &amp; Conquête</button>
       <button onclick="showPage('lieu')" id="nav-lieu">Lieu</button>
       <button onclick="showPage('association')" id="nav-association">Organisateurs</button>
       <button onclick="showPage('inscriptions')" id="nav-inscriptions">Inscriptions</button>
-      <button onclick="showPage('sponsors')" id="nav-sponsors">Sponsors</button>
     </div>
   </div>
 </nav>
@@ -465,7 +466,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
     <div class="footer-links">
-      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button>
+      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button>
     </div>
     <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
     <p style="margin-top:.5rem">© 2026 Les Stratèges du Vieux Monde · Mesnil-Saint-Père, Aube (10)</p>
@@ -560,7 +561,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
     <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
 
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
@@ -792,7 +793,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
 
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
       <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
@@ -852,7 +853,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
 
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
       <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
@@ -906,7 +907,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
 
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
       <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
@@ -1131,7 +1132,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
     <div class="footer-links">
-      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button>
+      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button>
     </div>
     <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
     <p style="margin-top:.5rem">© 2026 Les Stratèges du Vieux Monde · Mesnil-Saint-Père, Aube (10)</p>
@@ -1266,7 +1267,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
     <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
 
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
@@ -1326,7 +1327,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
     <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
 
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
@@ -1489,7 +1490,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
     <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
 
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
@@ -1629,7 +1630,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
   </div>
   <footer>
     <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
-    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button><button onclick="showPage('sponsors')">Sponsors</button></div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
     <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
 
     <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
