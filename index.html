@@ -47,31 +47,31 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .page{display:none;min-height:100vh;position:relative;z-index:1}
 .page.active{display:block}
 
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 1.5rem 3rem;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(107,15,15,0.25) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 50% 60%,rgba(27,74,90,0.15) 0%,transparent 60%);position:relative;overflow:hidden}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.4rem 1.5rem 2.4rem;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(107,15,15,0.25) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 50% 60%,rgba(27,74,90,0.15) 0%,transparent 60%);position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0deg,transparent 30deg,rgba(201,168,76,0.015) 30deg,rgba(201,168,76,0.015) 31deg)}
 .shield{width:140px;height:160px;margin:0 auto 2rem;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);background:linear-gradient(160deg,var(--crimson) 0%,var(--blood) 60%,#1A0505 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(107,15,15,0.7),0 0 60px rgba(107,15,15,0.3),inset 0 0 20px rgba(0,0,0,0.5);position:relative}
 .shield::before{content:'';position:absolute;inset:4px;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);border:2px solid var(--gold-d);background:transparent}
 .shield-sigil{font-size:3rem;filter:drop-shadow(0 0 10px var(--gold-glow))}
 .hero-eyebrow{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--gold-d);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.8rem}
 /* INTERREGIONS mega-banner — heritage Battle InterRegions */
-.ir-banner{margin:0 auto 1.8rem;max-width:920px;text-align:center;position:relative}
+.ir-banner{margin:0 auto 1.1rem;max-width:920px;text-align:center;position:relative}
 .ir-convo{font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;color:var(--gold-d);letter-spacing:.5em;text-transform:uppercase;margin-bottom:.3rem}
-.ir-mega{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.6rem,9vw,6.2rem);line-height:.95;color:var(--gold);letter-spacing:.02em;text-shadow:0 0 35px var(--gold-glow),0 0 70px rgba(201,168,76,0.35),3px 3px 6px rgba(0,0,0,0.95);margin-bottom:.1rem;background:linear-gradient(180deg,#F0D478 0%,#C9A84C 45%,#8A6E2F 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 20px rgba(201,168,76,0.4))}
+.ir-mega{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.3rem,6vw,4rem);line-height:.95;color:var(--gold);letter-spacing:.02em;text-shadow:0 0 16px var(--gold-glow),0 0 30px rgba(201,168,76,0.22),2px 2px 4px rgba(0,0,0,0.9);margin-bottom:.1rem;background:linear-gradient(180deg,#F0D478 0%,#C9A84C 45%,#8A6E2F 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 9px rgba(201,168,76,0.3))}
 .ir-edition{font-family:'Cinzel Decorative',cursive;font-size:clamp(1rem,2.4vw,1.6rem);font-weight:700;color:var(--crim-l);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.3rem;text-shadow:0 0 15px rgba(168,32,32,0.5),2px 2px 3px rgba(0,0,0,0.9)}
-.ir-game{font-family:'Cinzel',serif;font-size:clamp(.85rem,1.8vw,1.15rem);font-weight:700;color:var(--parch);letter-spacing:.35em;text-transform:uppercase;margin-bottom:1rem}
+.ir-game{font-family:'Cinzel',serif;font-size:clamp(.85rem,1.8vw,1.15rem);font-weight:700;color:var(--parch);letter-spacing:.35em;text-transform:uppercase;margin-bottom:.55rem}
 .ir-roman{display:inline-block;font-family:'Cinzel Decorative',cursive;font-size:1rem;color:var(--gold);border:1.5px solid var(--gold-d);padding:.25rem .9rem;letter-spacing:.3em;margin:0 .5rem;background:rgba(107,15,15,0.2)}
 .ir-orgs{font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--parch-d);letter-spacing:.15em;margin-top:.5rem}
 .ir-orgs strong{color:var(--gold);font-weight:700}
-.ir-flourish{display:flex;align-items:center;justify-content:center;gap:.8rem;margin:.8rem 0;color:var(--gold-d);font-size:.9rem;letter-spacing:.4em}
+.ir-flourish{display:flex;align-items:center;justify-content:center;gap:.8rem;margin:.45rem 0;color:var(--gold-d);font-size:.9rem;letter-spacing:.4em}
 .ir-flourish::before,.ir-flourish::after{content:'';flex:1;max-width:140px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
 .hero h1{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.2rem,6vw,4.5rem);color:var(--gold);line-height:1.1;text-shadow:0 0 30px var(--gold-glow),0 0 60px rgba(201,168,76,0.3),2px 2px 4px rgba(0,0,0,0.9);margin-bottom:.5rem}
 .hero-subtitle{font-family:'Cinzel Decorative',cursive;font-size:clamp(.9rem,2vw,1.3rem);color:var(--parch-d);letter-spacing:.15em;margin-bottom:2rem}
-.hero-divider{width:320px;max-width:90%;height:20px;margin:.5rem auto 1.5rem;opacity:.7}
-.hero-meta{display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;margin-bottom:2rem}
+.hero-divider{width:320px;max-width:90%;height:20px;margin:.35rem auto .9rem;opacity:.7}
+.hero-meta{display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;margin-bottom:1.1rem}
 .hero-badge{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--parch);background:rgba(107,15,15,0.35);border:1px solid var(--gold-d);border-radius:3px;padding:.4rem .9rem;letter-spacing:.08em;text-shadow:0 1px 3px rgba(0,0,0,0.8)}
 .hero-badge span{color:var(--gold)}
 .countdown-label{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.6rem}
-.countdown{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem}
+.countdown{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.4rem}
 .cd-unit{width:80px;height:95px;clip-path:polygon(50% 0%,100% 12%,100% 65%,50% 100%,0% 65%,0% 12%);background:linear-gradient(160deg,rgba(107,15,15,0.7),rgba(42,4,4,0.9));display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:0 0 15px rgba(107,15,15,0.5)}
 .cd-unit::before{content:'';position:absolute;inset:3px;clip-path:polygon(50% 0%,100% 12%,100% 65%,50% 100%,0% 65%,0% 12%);border:1px solid rgba(201,168,76,0.4)}
 .cd-num{font-family:'Cinzel Decorative',cursive;font-size:1.6rem;font-weight:700;color:var(--gold);text-shadow:0 0 15px var(--gold-glow);line-height:1}
@@ -117,7 +117,7 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .yt-btn:hover{background:linear-gradient(135deg,rgba(255,0,0,.35),rgba(255,0,0,.15));color:#FF8080;box-shadow:0 0 14px rgba(255,80,80,.35)}
 .axe-icon{font-size:2.2rem;margin-bottom:.5rem}
 .axe-title{font-family:'Cinzel Decorative',cursive;font-size:1.25rem;color:var(--gold);margin-bottom:.3rem}
-.axe-count{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--parch-dk);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem}
+.axe-count{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--parch-dk);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.55rem}
 .axe-desc{font-size:.9rem;color:var(--parch-d);line-height:1.6}
 .axe-card ul{list-style:none;padding:0;margin-top:.8rem}
 .axe-card ul li{font-size:.85rem;color:var(--parch-d);padding:.2rem 0;padding-left:1.2rem;position:relative;line-height:1.5}
@@ -329,14 +329,14 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .partner-empty .pe-icon{font-size:1.8rem;opacity:.5}
 .partner-empty .pe-title{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--parch-dk);letter-spacing:.1em;text-transform:uppercase}
 .partner-empty .pe-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:.82rem;color:var(--parch-dk)}
-.sponsor-strip{max-width:880px;margin:2.5rem auto 0;background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:8px;padding:1.4rem 1.8rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;justify-content:center;text-align:center}
+.sponsor-strip{max-width:880px;margin:1.4rem auto 0;background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:8px;padding:1rem 1.6rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;justify-content:center;text-align:center}
 .sponsor-strip:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 18px var(--gold-glow);border-color:var(--gold)}
 .sponsor-strip-label{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--parch-dk)}
 .sponsor-strip-logos{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap;justify-content:center}
 .sponsor-strip-logos img{height:44px;max-width:160px;object-fit:contain;opacity:.92;transition:opacity .2s}
-.sponsor-strip-logos img.logo-rabiots-strip{height:84px;max-width:none}
-.sponsor-strip-logos img.logo-fcw-strip{height:84px;max-width:none}
-.sponsor-strip-logos img.logo-cw-strip{height:88px;max-width:none}
+.sponsor-strip-logos img.logo-rabiots-strip{height:62px;max-width:none}
+.sponsor-strip-logos img.logo-fcw-strip{height:62px;max-width:none}
+.sponsor-strip-logos img.logo-cw-strip{height:64px;max-width:none}
 .sponsor-strip:hover .sponsor-strip-logos img{opacity:1}
 .sponsor-strip-arrow{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;color:var(--gold);letter-spacing:.08em}
 @media(max-width:600px){.partner-tier .partner-card{flex-direction:column;padding:1.5rem;text-align:center}.partner-logo{flex-basis:auto}.partner-tier .partner-role{justify-content:center}}
@@ -399,7 +399,6 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 <!-- ACCUEIL -->
 <div class="page active" id="page-accueil">
   <section class="hero">
-    <div class="shield"><span class="shield-sigil">⚔</span></div>
     <div class="ir-banner">
       <h1 class="ir-mega">InterRégions<br>2026</h1>
       <div class="ir-flourish">⚜ Deuxième Édition ⚜</div>
