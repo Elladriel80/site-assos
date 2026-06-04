@@ -55,7 +55,10 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .hero-eyebrow{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--gold-d);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.8rem}
 /* INTERREGIONS mega-banner — heritage Battle InterRegions */
 .ir-banner{margin:0 auto 1.1rem;max-width:920px;text-align:center;position:relative}
-.hero-logo-wrap{margin:0 auto .3rem;line-height:0}
+.hero-logo-wrap{position:relative;display:inline-block;margin-bottom:.3rem;line-height:0}
+.hero-logo-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.5) 47%,rgba(255,255,255,.92) 50%,rgba(255,255,255,.5) 53%,transparent 62%);background-size:250% 100%;background-repeat:no-repeat;-webkit-mask:url(assets/logo-interregions.webp) center/contain no-repeat;mask:url(assets/logo-interregions.webp) center/contain no-repeat;mix-blend-mode:screen;animation:logoSheen 5.5s ease-in-out infinite}
+@keyframes logoSheen{0%{background-position:210% 0}55%,100%{background-position:-110% 0}}
+@media(prefers-reduced-motion:reduce){.hero-logo-wrap::after{animation:none;display:none}}
 .hero-logo{width:min(420px,82vw);height:auto;display:block;margin:0 auto;filter:drop-shadow(0 6px 22px rgba(0,0,0,.55))}
 .ir-convo{font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;color:var(--gold-d);letter-spacing:.5em;text-transform:uppercase;margin-bottom:.3rem}
 .ir-mega{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.3rem,6vw,4rem);line-height:.95;color:var(--gold);letter-spacing:.02em;text-shadow:0 0 16px var(--gold-glow),0 0 30px rgba(201,168,76,0.22),2px 2px 4px rgba(0,0,0,0.9);margin-bottom:.1rem;background:linear-gradient(180deg,#F0D478 0%,#C9A84C 45%,#8A6E2F 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 9px rgba(201,168,76,0.3))}
