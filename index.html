@@ -85,6 +85,8 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 @keyframes cueBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
 .discord-banner{margin-top:2rem;display:inline-flex;align-items:center;gap:.7rem;background:rgba(88,101,242,0.15);border:1px solid rgba(88,101,242,0.5);border-radius:8px;padding:.6rem 1.2rem;font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:#9BA8FF;letter-spacing:.05em;text-decoration:none;transition:background .2s,border-color .2s}
 .discord-banner:hover{background:rgba(88,101,242,0.25);border-color:rgba(88,101,242,0.8)}
+.hero-discord-link{margin-top:1rem;display:inline-flex;align-items:center;gap:.45rem;color:#9BA8FF;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.05em;text-decoration:none;opacity:.82;transition:opacity .2s}
+.hero-discord-link:hover{opacity:1;text-decoration:underline}
 
 .section{padding:5rem 1.5rem;max-width:1100px;margin:0 auto}
 .section-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold);text-align:center;margin-bottom:.5rem;text-shadow:0 0 20px rgba(201,168,76,0.4)}
@@ -405,7 +407,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 <div class="page active" id="page-accueil">
   <section class="hero">
     <div class="ir-banner">
-      <h1 class="hero-logo-wrap"><img src="assets/logo-interregions.png" class="hero-logo" alt="InterRégions 2026 — Grand Tournoi National · Warhammer: The Old World"></h1>
+      <h1 class="hero-logo-wrap"><img src="assets/logo-interregions.webp" class="hero-logo" alt="InterRégions 2026 — Grand Tournoi National · Warhammer: The Old World"></h1>
       <div class="ir-flourish">⚜ Deuxième Édition ⚜</div>
       <p class="ir-tagline" style="font-family:'Cinzel',serif;font-style:italic;color:var(--gold-l);font-size:1.05rem;letter-spacing:.04em;margin:.4rem 0 1rem;text-shadow:0 1px 2px rgba(0,0,0,0.6)">⚔ Viens défendre ta région dans un Risk géant national ⚔</p>
       <p class="ir-orgs">Sous l'égide de la <strong>Fédération France The Old World<sup style="color:var(--gold-l);font-weight:700;">*</sup></strong><br>organisé par <strong><a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--gold-d)">Les Stratèges du Vieux Monde</a></strong> · Aube (10)</p>
@@ -418,10 +420,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     </div>
 
     <button class="cta-btn" onclick="showPage('inscriptions')">Rejoindre l'Event</button>
-    <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="discord-banner">
-      <svg width="20" height="15" viewBox="0 0 71 55" fill="#9BA8FF"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>
-      Rejoindre le serveur Discord officiel
-    </a>
+    <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="hero-discord-link"><svg width="16" height="12" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>Rejoindre le Discord</a>
 
     <button class="scroll-cue" onclick="window.scrollBy({top:Math.round(window.innerHeight*0.82),behavior:'smooth'})" aria-label="Faire défiler vers le bas"><span>Découvrir l'événement</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
   </section>
