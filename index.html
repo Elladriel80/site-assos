@@ -1796,4 +1796,106 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
       </div>
     `).join('');
     // Click handlers
-    carousel.querySelectorAll('.champ-ca
+    carousel.querySelectorAll('.champ-card').forEach((card, i) => {
+      card.addEventListener('click', () => openChampModal(items[i]));
+    });
+  };
+  sbScript.onerror = () => {
+    document.getElementById('champ-count-text').textContent = 'Carousel indisponible (Supabase non joignable).';
+  };
+  document.head.appendChild(sbScript);
+
+  // Modal helpers (exposées globalement)
+  window.openChampModal = function(ch) {
+    const overlay = document.getElementById('champ-modal-overlay');
+    const content = document.getElementById('champ-modal-content');
+    content.innerHTML = `
+      <h2>${escapeHTML(ch.pseudo)}</h2>
+      <div class="blason-display">
+        <svg viewBox="-22 -22 44 44">${renderBlason(ch.blason, 0, 0, 1.6)}</svg>
+      </div>
+      ${ch.faction ? `<div class="info-row"><span class="lbl">Faction</span><span>${escapeHTML(ch.faction)}</span></div>` : ''}
+      <div class="info-row"><span class="lbl">Région</span><span>${escapeHTML(ch.region)}${ch.is_parisian_redistributed ? ' <em style="color:#A82020;font-size:.85em">(parisien redistribué)</em>' : ''}</span></div>
+      ${ch.story ? `<div class="story">${escapeHTML(ch.story)}</div>` : '<div style="font-style:italic;color:var(--parch-dk);text-align:center;margin-top:12px;font-family:\'IM Fell English\',serif">Ce champion garde son histoire pour lui…</div>'}
+      <button class="close-btn" onclick="closeChampModal()">Fermer</button>
+    `;
+    overlay.classList.add('show');
+  };
+  window.closeChampModal = function() {
+    document.getElementById('champ-modal-overlay').classList.remove('show');
+  };
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeChampModal();
+  });
+
+  // =========================================================================
+  // Compteur d'inscriptions live (page Inscriptions)
+  // =========================================================================
+  const INSC_LABELS = {
+    equipe:    { name: '⚔ Compétitif · Équipes', unit: 'équipes' },
+    jeu_libre: { name: '🎲 Jeu Libre',           unit: 'places' },
+    narratif:  { name: '📜 Narratif',            unit: 'places' },
+  };
+
+  async function loadInscriptionStock(sb) {
+    try {
+      const { data, error } = await sb.rpc('get_inscription_stock');
+      if (error) { console.warn('get_inscription_stock', error); return; }
+      const stockByType = Object.fromEntries((data || []).map(r => [r.inscription_type, r]));
+      const warnings = [];
+      let allFull = true;
+
+      ['equipe', 'jeu_libre', 'narratif'].forEach(type => {
+        const row = stockByType[type];
+        if (!row) return;
+        const remaining = row.remaining;
+        const capacity  = row.capacity;
+        const numEl = document.getElementById('insc-num-' + type);
+        const subEl = document.getElementById('insc-sub-' + type);
+        const barEl = document.getElementById('insc-bar-' + type);
+        const card  = document.querySelector('.insc-card[data-type="' + type + '"]');
+        if (!numEl || !card) return;
+
+        const label = INSC_LABELS[type];
+        const pctTaken = Math.min(100, Math.round((row.taken / capacity) * 100));
+
+        if (remaining <= 0) {
+          numEl.textContent = 'COMPLET';
+          subEl.textContent = capacity + ' / ' + capacity + ' ' + label.unit;
+          card.classList.add('full');
+          warnings.push(`<div class="insc-warn">🚫 <strong>${label.name} — COMPLET</strong> · Cette catégorie est pleine, ne sélectionne pas cette option lors du paiement. Liste d'attente possible via le <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a>.</div>`);
+        } else {
+          allFull = false;
+          numEl.textContent = remaining;
+          subEl.textContent = '/ ' + capacity + ' ' + label.unit;
+          if (remaining <= 3) card.classList.add('tight');
+        }
+        barEl.style.width = pctTaken + '%';
+      });
+
+      document.getElementById('insc-warnings').innerHTML = warnings.join('');
+
+      // Hard cap : si TOUT est plein, on cache l'iframe et on affiche le message "complet"
+      if (allFull) {
+        const wrap = document.getElementById('insc-payment-wrap');
+        if (wrap) wrap.hidden = true;
+        const box  = document.getElementById('insc-allfull-box');
+        if (box) box.hidden = false;
+      }
+    } catch (e) {
+      console.warn('loadInscriptionStock failed', e);
+    }
+  }
+})();
+</script>
+
+<!-- MODAL — détail champion (carousel inscriptions) -->
+<div class="champ-modal-overlay" id="champ-modal-overlay" onclick="if(event.target===this)closeChampModal()">
+  <div class="champ-modal" id="champ-modal-content"></div>
+</div>
+
+<!-- AssoConnect — script loader pour l'embed paiement (data-collect-id en page Inscriptions) -->
+<script src="https://les-strateges-du-vieux-monde.assoconnect.com/public/build/js/iframe.js"></script>
+
+</body>
+</html>
