@@ -386,6 +386,18 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 .champ-modal .story{font-family:'IM Fell English',serif;font-style:italic;color:var(--parch);font-size:1rem;line-height:1.55;margin-top:16px;padding:14px 16px;background:rgba(0,0,0,.3);border-left:3px solid var(--gold);border-radius:3px;white-space:pre-wrap}
 .champ-modal .close-btn{display:block;margin:18px auto 0;padding:9px 26px;font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;background:rgba(30,24,16,.8);color:var(--parch);border:1px solid var(--gold-d);border-radius:3px;cursor:pointer;transition:background .15s,border-color .15s}
 .champ-modal .close-btn:hover{background:rgba(50,40,28,.9);border-color:var(--gold)}
+/* TEASER (bande-annonce) */
+.teaser-btn{margin-top:1rem;display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);background:rgba(107,15,15,0.25);border:1px solid var(--gold-d);border-radius:3px;padding:.7rem 1.6rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.teaser-btn:hover{transform:scale(1.04);border-color:var(--gold);box-shadow:0 0 22px var(--gold-glow)}
+.teaser-btn svg{width:15px;height:15px;flex-shrink:0}
+.teaser-overlay{position:fixed;inset:0;background:rgba(10,8,6,.92);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px;backdrop-filter:blur(4px)}
+.teaser-overlay.show{display:flex}
+.teaser-modal{position:relative;width:min(420px,92vw);max-height:92vh;aspect-ratio:9/16;border:2px solid var(--gold);border-radius:8px;overflow:hidden;box-shadow:0 0 45px rgba(201,168,76,.4),0 12px 55px rgba(0,0,0,.9);background:#000}
+.teaser-modal video{width:100%;height:100%;display:block;object-fit:cover;background:#000}
+.teaser-close{position:absolute;top:8px;right:8px;z-index:2;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;line-height:1;color:var(--parch);background:rgba(10,8,6,.7);border:1px solid var(--gold-d);border-radius:50%;cursor:pointer;transition:background .15s,border-color .15s}
+.teaser-close:hover{background:rgba(50,40,28,.95);border-color:var(--gold)}
+.teaser-unmute{position:absolute;left:50%;bottom:54px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:.5rem;font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bg);background:linear-gradient(135deg,var(--gold-l),var(--gold),var(--gold-d));border:none;border-radius:4px;padding:.6rem 1.2rem;cursor:pointer;box-shadow:0 0 22px var(--gold-glow),0 4px 14px rgba(0,0,0,.6);animation:cueBounce 2.2s ease-in-out infinite;z-index:3}
+.teaser-unmute svg{width:16px;height:16px}
 
 </style>
 </head>
@@ -424,6 +436,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 
     <button class="cta-btn" onclick="showPage('inscriptions')">Rejoindre l'Event</button>
     <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="hero-discord-link"><svg width="16" height="12" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>Rejoindre le Discord</a>
+    <div><button class="teaser-btn" onclick="openTeaser(true)" aria-label="Voir la bande-annonce"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Voir la bande-annonce</button></div>
 
     <button class="scroll-cue" onclick="window.scrollBy({top:Math.round(window.innerHeight*0.82),behavior:'smooth'})" aria-label="Faire défiler vers le bas"><span>Découvrir l'événement</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
   </section>
@@ -1907,6 +1920,29 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
 <div class="champ-modal-overlay" id="champ-modal-overlay" onclick="if(event.target===this)closeChampModal()">
   <div class="champ-modal" id="champ-modal-content"></div>
 </div>
+
+<!-- MODAL bande-annonce teaser -->
+<div class="teaser-overlay" id="teaser-overlay" onclick="if(event.target===this)closeTeaser()">
+  <div class="teaser-modal">
+    <button class="teaser-close" onclick="closeTeaser()" aria-label="Fermer la bande-annonce">✕</button>
+    <video id="teaser-video" controls playsinline preload="auto" poster="assets/teaser-poster.jpg">
+      <source src="assets/teaser-interregions.mp4" type="video/mp4">
+    </video>
+    <button class="teaser-unmute" id="teaser-unmute" onclick="teaserUnmute()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>Activer le son</button>
+  </div>
+</div>
+<script>
+(function(){
+  var o=document.getElementById("teaser-overlay"),v=document.getElementById("teaser-video"),um=document.getElementById("teaser-unmute");
+  window.openTeaser=function(sound){o.classList.add("show");document.body.style.overflow="hidden";try{v.currentTime=0;}catch(e){}if(sound){v.muted=false;v.loop=false;if(um)um.style.display="none";}else{v.muted=true;v.loop=true;if(um)um.style.display="";}v.play().catch(function(){});};
+  window.closeTeaser=function(){o.classList.remove("show");document.body.style.overflow="";v.pause();};
+  window.teaserUnmute=function(){v.muted=false;v.loop=false;try{v.currentTime=0;}catch(e){}if(um)um.style.display="none";v.play().catch(function(){});};
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&o.classList.contains("show"))closeTeaser();});
+  function teaserSeen(){return document.cookie.indexOf("ir_teaser_seen=1")!==-1;}
+  function teaserMarkSeen(){var d=new Date();d.setTime(d.getTime()+30*24*60*60*1000);document.cookie="ir_teaser_seen=1;expires="+d.toUTCString()+";path=/;SameSite=Lax";}
+  window.addEventListener("load",function(){if(teaserSeen())return;teaserMarkSeen();setTimeout(function(){openTeaser(false);},700);});
+})();
+</script>
 
 <!-- AssoConnect — script loader pour l'embed paiement (data-collect-id en page Inscriptions) -->
 <script src="https://les-strateges-du-vieux-monde.assoconnect.com/public/build/js/iframe.js"></script>
