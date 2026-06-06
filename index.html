@@ -286,13 +286,18 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .price-includes li{font-size:.88rem;color:var(--parch-d);padding:.35rem 0;border-bottom:1px solid rgba(201,168,76,0.1);display:flex;align-items:center;gap:.5rem}
 .price-includes li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0}
 .inscr-btns{display:flex;flex-direction:column;gap:1rem;align-items:center;margin-top:2rem}
-.btn-paypal{display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;background:linear-gradient(135deg,#0070ba,#003087);color:#fff;border:none;cursor:pointer;padding:.85rem 2rem;border-radius:6px;text-decoration:none;letter-spacing:.08em;box-shadow:0 4px 15px rgba(0,0,0,0.4);transition:transform .2s,box-shadow .2s}
-.btn-paypal:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.5)}
 .btn-newrecruit{display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;background:transparent;color:var(--gold);border:2px solid var(--gold);cursor:pointer;padding:.8rem 2rem;border-radius:6px;text-decoration:none;letter-spacing:.08em;transition:background .2s,color .2s}
 .btn-newrecruit:hover{background:rgba(201,168,76,0.15)}
 .inscr-note{font-family:'IM Fell English',serif;font-size:.9rem;font-style:italic;color:var(--parch-dk);text-align:center;margin-top:1rem;line-height:1.6}
 .deadline-box{background:rgba(107,15,15,0.25);border:1px solid rgba(107,15,15,0.6);border-radius:4px;padding:1rem 1.5rem;text-align:center;margin:1.5rem 0;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch)}
 .deadline-box strong{color:var(--gold)}
+.desist-box{max-width:820px;margin:1.6rem auto;background:rgba(40,18,18,0.45);border:1px solid rgba(201,168,76,0.5);border-left:4px solid var(--gold-d);border-radius:6px;padding:1.4rem 1.6rem}
+.desist-box h4{font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;text-align:center;margin:0 0 .9rem;letter-spacing:.05em}
+.desist-box .desist-key{display:block;text-align:center;font-family:'Cinzel',serif;font-size:.92rem;line-height:1.5;color:var(--gold);background:rgba(107,15,15,0.32);border:1px solid rgba(107,15,15,0.6);border-radius:4px;padding:.75rem 1rem;margin-bottom:.95rem}
+.desist-box p{font-family:'Lato',sans-serif;font-size:.95rem;line-height:1.7;color:var(--parch);margin:0 0 .7rem}
+.desist-box p:last-child{margin-bottom:0}
+.desist-box strong{color:var(--gold-l)}
+.desist-box a{color:var(--gold-l)}
 .btn-contact{display:inline-flex;align-items:center;gap:.4rem;background:none;border:1px solid var(--gold-d);border-radius:3px;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--gold);padding:.3rem .8rem;letter-spacing:.05em;transition:background .2s}
 .btn-contact:hover{background:rgba(201,168,76,0.1)}
 
@@ -617,7 +622,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <div class="rule-block reveal">
         <h3><span>📋</span> Inscription</h3>
         <ul>
-          <li>Inscription via NewRecruit + paiement PayPal</li>
+          <li>Inscription via NewRecruit + paiement en ligne sécurisé (AssoConnect)</li>
           <li>Date limite inscription & paiement : <strong>1er octobre 2026</strong></li>
           <li>Date limite envoi des listes : <strong>31 octobre 2026 minuit</strong></li>
           <li>Toute équipe incomplète à la date limite sera désinscrite</li>
@@ -1418,6 +1423,14 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <strong>Date limite d'envoi des listes (compétitif) :</strong> 31 octobre 2026 à minuit
     </div>
 
+    <div class="desist-box reveal">
+      <h4>⚠ Politique de désinscription &amp; remboursement</h4>
+      <span class="desist-key">Remboursement possible uniquement jusqu'à 60 jours avant l'événement<br>— soit jusqu'au <strong style="color:var(--gold-l)">8 septembre 2026 inclus</strong>.</span>
+      <p>Au-delà de cette date, les sommes versées (inscription et PAF) ne pourront plus être remboursées, quel que soit le motif.</p>
+      <p>Un désistement, même de bonne foi, pose d'<strong>énormes problèmes logistiques</strong>. Il déséquilibre les <strong>appariements</strong> — les équipes de 5, les tables 5v5 et les rondes par alliances reposent sur un effectif complet, et une place vacante pénalise toute une équipe et son adversaire. Il fragilise aussi l'<strong>équilibre financier</strong> d'un projet entièrement associatif&nbsp;: la salle, la restauration et les prestataires sont réservés et engagés des mois à l'avance, sur la base du nombre d'inscrits.</p>
+      <p>En cas d'empêchement, préviens-nous <strong>le plus tôt possible</strong>&nbsp;: une place libérée à temps peut profiter à un joueur en <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" rel="noopener">liste d'attente</a>. Merci de votre compréhension.</p>
+    </div>
+
     <div class="payment-section reveal" style="margin-top:2rem">
       <!-- Compteur de places restantes -->
       <div class="insc-stock-wrap reveal" aria-label="Places restantes par catégorie">
@@ -1669,11 +1682,6 @@ function copyMail(key, btn) {
     btn.style.borderColor = 'rgba(80,180,80,0.6)';
     setTimeout(function(){ btn.innerHTML = orig; btn.style.background = ''; btn.style.borderColor = ''; }, 2000);
   });
-}
-function openPaypal(e) {
-  e.preventDefault();
-  copyMail('contact', e.currentTarget);
-  alert('Adresse PayPal copiée. Ouvrez PayPal et envoyez le montant en mentionnant : "Tournoi TOW 2026 — [Axe] — [Votre nom]"');
 }
 
 /* ── PAGE NAVIGATION ── */
