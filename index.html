@@ -48,7 +48,7 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .page.active{display:block}
 
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.4rem 1.5rem 2.4rem;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(107,15,15,0.25) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 50% 60%,rgba(27,74,90,0.15) 0%,transparent 60%);position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0deg,transparent 30deg,rgba(201,168,76,0.015) 30deg,rgba(201,168,76,0.015) 31deg)}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0deg,transparent 30deg,rgba(201,168,76,0.015) 30deg,rgba(201,168,76,0.015) 31deg)}
 .shield{width:140px;height:160px;margin:0 auto 2rem;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);background:linear-gradient(160deg,var(--crimson) 0%,var(--blood) 60%,#1A0505 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(107,15,15,0.7),0 0 60px rgba(107,15,15,0.3),inset 0 0 20px rgba(0,0,0,0.5);position:relative}
 .shield::before{content:'';position:absolute;inset:4px;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);border:2px solid var(--gold-d);background:transparent}
 .shield-sigil{font-size:3rem;filter:drop-shadow(0 0 10px var(--gold-glow))}
@@ -387,7 +387,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
 .champ-modal .close-btn{display:block;margin:18px auto 0;padding:9px 26px;font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;background:rgba(30,24,16,.8);color:var(--parch);border:1px solid var(--gold-d);border-radius:3px;cursor:pointer;transition:background .15s,border-color .15s}
 .champ-modal .close-btn:hover{background:rgba(50,40,28,.9);border-color:var(--gold)}
 /* TEASER (bande-annonce) */
-.teaser-btn{margin-top:1rem;display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);background:rgba(107,15,15,0.25);border:1px solid var(--gold-d);border-radius:3px;padding:.7rem 1.6rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.teaser-btn{position:relative;z-index:1;margin-top:1rem;display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);background:rgba(107,15,15,0.25);border:1px solid var(--gold-d);border-radius:3px;padding:.7rem 1.6rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
 .teaser-btn:hover{transform:scale(1.04);border-color:var(--gold);box-shadow:0 0 22px var(--gold-glow)}
 .teaser-btn svg{width:15px;height:15px;flex-shrink:0}
 .teaser-overlay{position:fixed;inset:0;background:rgba(10,8,6,.92);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px;backdrop-filter:blur(4px)}
