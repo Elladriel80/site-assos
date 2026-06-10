@@ -18,6 +18,7 @@ Pour rejouer la base sur un projet Supabase vierge, exécuter les fichiers **dan
 | 8 | `admin_migration_phase5.sql` | Phase 5 — Import AssoConnect | Colonnes enrichies sur `paid_users` (`transaction_id`, `inscription_type`, `acheteur_email`, `expected_champions`, `pseudo_assoconnect`, `montant_eur`) |
 | 9 | `admin_migration_phase5_fix.sql` | Fix Phase 5 | Trigger `create_cells_for_champion()` en `SECURITY DEFINER` (sinon les anons libérés en phase 4 ne peuvent plus créer leurs cells) |
 | … | `admin_migration_phase11_fix_is_waitlist_ambiguous.sql` | Phase 11 — Fix réservation | Qualifie les références `is_waitlist` dans `create_inscription` (bug « column reference "is_waitlist" is ambiguous » à la réservation) |
+| … | `admin_migration_phase12_narratif_capacity_16.sql` | Phase 12 — Capacité narratif | Passe la capacité narratif de 10 à 16 places dans le CTE `cap` de `get_inscription_stock()` |
 
 ## Procédure pour appliquer une nouvelle migration
 

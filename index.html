@@ -69,6 +69,9 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .ir-orgs strong{color:var(--gold);font-weight:700}
 .ir-flourish{display:flex;align-items:center;justify-content:center;gap:.8rem;margin:.45rem 0;color:var(--gold-d);font-size:.9rem;letter-spacing:.4em}
 .ir-flourish::before,.ir-flourish::after{content:'';flex:1;max-width:140px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
+.hero-troyes{font-family:'Cinzel Decorative',cursive;font-size:clamp(2.2rem,7vw,3.6rem);font-weight:700;color:var(--gold-l);letter-spacing:.16em;line-height:1.1;margin:.6rem 0 .25rem;text-shadow:0 0 28px var(--gold-glow),0 2px 5px rgba(0,0,0,.85)}
+.hero-troyes-sub{font-family:'Cinzel',serif;font-size:clamp(.9rem,2.6vw,1.05rem);font-weight:700;color:var(--parch);letter-spacing:.1em;margin-bottom:.7rem;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.hero-troyes-sub strong{color:var(--gold)}
 .hero h1{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.2rem,6vw,4.5rem);color:var(--gold);line-height:1.1;text-shadow:0 0 30px var(--gold-glow),0 0 60px rgba(201,168,76,0.3),2px 2px 4px rgba(0,0,0,0.9);margin-bottom:.5rem}
 .hero-subtitle{font-family:'Cinzel Decorative',cursive;font-size:clamp(.9rem,2vw,1.3rem);color:var(--parch-d);letter-spacing:.15em;margin-bottom:2rem}
 .hero-divider{width:320px;max-width:90%;height:20px;margin:.35rem auto .9rem;opacity:.7}
@@ -429,18 +432,20 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     <div class="ir-banner">
       <h1 class="hero-logo-wrap"><img src="assets/logo-interregions.webp" class="hero-logo" alt="InterRégions 2026 — Grand Tournoi National · Warhammer: The Old World"></h1>
       <div class="ir-flourish">⚜ Deuxième Édition ⚜</div>
+      <div class="hero-troyes">📍 TROYES</div>
+      <p class="hero-troyes-sub">🗓 <strong>7 &amp; 8 novembre 2026</strong> · Maison des Lacs, Mesnil-Saint-Père — Lac d'Orient (20 min de Troyes)</p>
       <p class="ir-tagline" style="font-family:'Cinzel',serif;font-style:italic;color:var(--gold-l);font-size:1.05rem;letter-spacing:.04em;margin:.4rem 0 1rem;text-shadow:0 1px 2px rgba(0,0,0,0.6)">⚔ Viens défendre ta région dans un Risk géant national ⚔</p>
       <p class="ir-orgs">Sous l'égide de la <strong>Fédération France The Old World<sup style="color:var(--gold-l);font-weight:700;">*</sup></strong><br>organisé par <strong><a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--gold-d)">Les Stratèges du Vieux Monde</a></strong> · Aube (10)</p>
     </div>
     <svg class="hero-divider" viewBox="0 0 320 20" fill="none"><line x1="0" y1="10" x2="120" y2="10" stroke="#8A6E2F" stroke-width="1"/><polygon points="130,10 140,4 150,10 140,16" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="155" y1="10" x2="160" y2="10" stroke="#C9A84C" stroke-width="1.5"/><path d="M160,3 L163,10 L160,17 L157,10 Z" fill="#C9A84C"/><line x1="160" y1="10" x2="165" y2="10" stroke="#C9A84C" stroke-width="1.5"/><polygon points="170,10 180,4 190,10 180,16" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="200" y1="10" x2="320" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
     <div class="hero-meta">
       <div class="hero-badge">🗓 <span>7–8 Novembre 2026</span></div>
-      <div class="hero-badge">🏞 <span>Mesnil-Saint-Père · Lac d'Orient</span></div>
+      <div class="hero-badge">🏞 <span>Troyes · Mesnil-Saint-Père · Lac d'Orient</span></div>
       <div class="hero-badge">⚔ <span>126 participants · 3 axes</span></div>
     </div>
 
     <button class="cta-btn" onclick="showPage('inscriptions')">Rejoindre l'Event</button>
-    <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="hero-discord-link"><svg width="16" height="12" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>Rejoindre le Discord</a>
+    <a href="https://discord.gg/VTvnFqfvuF" target="_blank" class="hero-discord-link"><svg width="16" height="12" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>Rejoindre le Discord</a>
     <div><button class="teaser-btn" onclick="openTeaser(true)" aria-label="Voir la bande-annonce"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Voir la bande-annonce</button></div>
 
     <button class="scroll-cue" onclick="window.scrollBy({top:Math.round(window.innerHeight*0.82),behavior:'smooth'})" aria-label="Faire défiler vers le bas"><span>Découvrir l'événement</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -1335,7 +1340,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
         <strong style="color:var(--gold)">📬 Nous rejoindre :</strong> passionné(e) de jeux de figurines dans l'Aube ?<br>
         <a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600">🌐 Site officiel de l'asso</a>
         &nbsp;·&nbsp; <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button>
-        &nbsp;·&nbsp; 💬 <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" style="color:#9BA8FF">Discord</a>
+        &nbsp;·&nbsp; 💬 <a href="https://discord.gg/VTvnFqfvuF" target="_blank" style="color:#9BA8FF">Discord</a>
         &nbsp;·&nbsp; 📍 Ruvigny, Aube (10)
       </p>
     </div>
@@ -1428,7 +1433,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <span class="desist-key">Remboursement possible uniquement jusqu'à 60 jours avant l'événement<br>— soit jusqu'au <strong style="color:var(--gold-l)">8 septembre 2026 inclus</strong>.</span>
       <p>Au-delà de cette date, les sommes versées (inscription et PAF) ne pourront plus être remboursées, quel que soit le motif.</p>
       <p>Un désistement, même de bonne foi, pose d'<strong>énormes problèmes logistiques</strong>. Il déséquilibre les <strong>appariements</strong> — les équipes de 5, les tables 5v5 et les rondes par alliances reposent sur un effectif complet, et une place vacante pénalise toute une équipe et son adversaire. Il fragilise aussi l'<strong>équilibre financier</strong> d'un projet entièrement associatif&nbsp;: la salle, la restauration et les prestataires sont réservés et engagés des mois à l'avance, sur la base du nombre d'inscrits.</p>
-      <p>En cas d'empêchement, préviens-nous <strong>le plus tôt possible</strong>&nbsp;: une place libérée à temps peut profiter à un joueur en <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" rel="noopener">liste d'attente</a>. Merci de votre compréhension.</p>
+      <p>En cas d'empêchement, préviens-nous <strong>le plus tôt possible</strong>&nbsp;: une place libérée à temps peut profiter à un joueur en <a href="https://discord.gg/VTvnFqfvuF" target="_blank" rel="noopener">liste d'attente</a>. Merci de votre compréhension.</p>
     </div>
 
     <div class="payment-section reveal" style="margin-top:2rem">
@@ -1478,7 +1483,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <div id="insc-allfull-box" class="insc-allfull" hidden>
         <h4>🔒 Inscriptions complètes</h4>
         <p>Les <strong>12 équipes</strong>, les <strong>50 places de jeu libre</strong> et les <strong>16 places narratif</strong> sont toutes prises.</p>
-        <p style="margin-top:.6rem">Tu peux te mettre en <strong>liste d'attente</strong> via le <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a> — on libère parfois des places suite à des désistements.</p>
+        <p style="margin-top:.6rem">Tu peux te mettre en <strong>liste d'attente</strong> via le <a href="https://discord.gg/VTvnFqfvuF" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a> — on libère parfois des places suite à des désistements.</p>
       </div>
     </div>
 
@@ -1494,7 +1499,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <p style="margin-top:.8rem;font-size:.85rem;color:var(--parch-dk)">Une page dédiée avec liens directs sera communiquée aux inscrits.</p>
     </div>
 
-    <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" class="discord-banner" style="display:inline-flex;margin-top:1.5rem">
+    <a href="https://discord.gg/VTvnFqfvuF" target="_blank" class="discord-banner" style="display:inline-flex;margin-top:1.5rem">
       <svg width="18" height="14" viewBox="0 0 71 55" fill="#9BA8FF"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>
       Questions ? Rejoignez le Discord
     </a>
@@ -1648,7 +1653,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       <p>Pour toute demande de partenariat :</p>
       <p><strong style="color:var(--gold)">Jean-Sébastien Lefèvre</strong> — Président, <a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--gold-d)">Les Stratèges du Vieux Monde</a></p>
       <p><button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
-      <p>💬 <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" style="color:#9BA8FF">discord.gg/Q9y9v8EgqZ</a></p>
+      <p>💬 <a href="https://discord.gg/VTvnFqfvuF" target="_blank" style="color:#9BA8FF">discord.gg/VTvnFqfvuF</a></p>
       <p style="margin-top:1rem;font-style:italic;color:var(--parch-dk)">"Chaque soutien contribue à forger la légende de cet événement."</p>
     </div>
   </div>
@@ -1898,7 +1903,7 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
           numEl.textContent = 'COMPLET';
           subEl.textContent = capacity + ' / ' + capacity + ' ' + label.unit;
           card.classList.add('full');
-          warnings.push(`<div class="insc-warn">🚫 <strong>${label.name} — COMPLET</strong> · Cette catégorie est pleine, ne sélectionne pas cette option lors du paiement. Liste d'attente possible via le <a href="https://discord.gg/Q9y9v8EgqZ" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a>.</div>`);
+          warnings.push(`<div class="insc-warn">🚫 <strong>${label.name} — COMPLET</strong> · Cette catégorie est pleine, ne sélectionne pas cette option lors du paiement. Liste d'attente possible via le <a href="https://discord.gg/VTvnFqfvuF" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a>.</div>`);
         } else {
           allFull = false;
           numEl.textContent = remaining;
@@ -1934,7 +1939,7 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
   <div class="teaser-modal">
     <button class="teaser-close" onclick="closeTeaser()" aria-label="Fermer la bande-annonce">✕</button>
     <video id="teaser-video" controls playsinline preload="auto" poster="assets/teaser-poster.jpg">
-      <source src="assets/teaser-interregions.mp4" type="video/mp4">
+      <source src="assets/teaser-interregions-dynamique.mp4" type="video/mp4">
     </video>
     <button class="teaser-unmute" id="teaser-unmute" onclick="teaserUnmute()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>Activer le son</button>
   </div>
@@ -1945,15 +1950,4 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
   window.openTeaser=function(sound){o.classList.add("show");document.body.style.overflow="hidden";try{v.currentTime=0;}catch(e){}if(sound){v.muted=false;v.loop=false;if(um)um.style.display="none";}else{v.muted=true;v.loop=true;if(um)um.style.display="";}v.play().catch(function(){});};
   window.closeTeaser=function(){o.classList.remove("show");document.body.style.overflow="";v.pause();};
   window.teaserUnmute=function(){v.muted=false;v.loop=false;try{v.currentTime=0;}catch(e){}if(um)um.style.display="none";v.play().catch(function(){});};
-  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&o.classList.contains("show"))closeTeaser();});
-  function teaserSeen(){return document.cookie.indexOf("ir_teaser_seen=1")!==-1;}
-  function teaserMarkSeen(){var d=new Date();d.setTime(d.getTime()+30*24*60*60*1000);document.cookie="ir_teaser_seen=1;expires="+d.toUTCString()+";path=/;SameSite=Lax";}
-  window.addEventListener("load",function(){if(teaserSeen())return;teaserMarkSeen();setTimeout(function(){openTeaser(false);},700);});
-})();
-</script>
-
-<!-- AssoConnect — script loader pour l'embed paiement (data-collect-id en page Inscriptions) -->
-<script src="https://les-strateges-du-vieux-monde.assoconnect.com/public/build/js/iframe.js"></script>
-
-</body>
-</html>
+  document.addEventListener("k
