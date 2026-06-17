@@ -1669,6 +1669,14 @@ function parseImportFile(file) {
   });
 }
 
+// Surcharges d'email d'identité par N° de transaction. AssoConnect ne permet pas de
+// corriger l'« Adresse email » (participant) de certains billets (restés sous un email
+// partagé) : on force ici l'email du capitaine réel. Club BFC — juin 2026.
+const IMPORT_EMAIL_OVERRIDES = {
+  '24883223': 'pierre.boissenin@gmail.com',  // BFC – Pierre BOISSENIN (ex thomas.orchampt@siemens-healthineers.com)
+  '24884167': 'thibaut.har@gmail.com',       // BFC – Thibaut HARLAY  (ex thomas.orchampt@gmail.com)
+  '24882709': 'simon.bassenne@gmail.com',    // BFC – Simon BASSENNE  (ex casg.sectionfigurines@gmail.com)
+};
 function mapImportRows(rows) {
   if (rows.length < 2) throw new Error('Fichier vide (pas de ligne de données)');
   const headers = rows[0];
@@ -1695,7 +1703,8 @@ function mapImportRows(rows) {
     if (!r || !r.length) continue;
     const emailP = cols.email_participant !== -1 ? String(r[cols.email_participant] || '').trim().toLowerCase() : '';
     const emailA = cols.email_acheteur    !== -1 ? String(r[cols.email_acheteur]    || '').trim().toLowerCase() : '';
-    const email = emailP || emailA;
+    const txOverride = cols.transaction_id !== -1 ? String(r[cols.transaction_id] || '').trim() : '';
+    const email = (txOverride && IMPORT_EMAIL_OVERRIDES[txOverride]) || emailP || emailA;
     if (!email || !email.includes('@')) continue;
     const num = (idx) => idx !== -1 ? (parseFloat(String(r[idx] || '0').replace(',', '.')) || 0) : 0;
     const valEquipe = num(cols.insc_equipe);
