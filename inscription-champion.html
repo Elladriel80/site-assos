@@ -342,6 +342,13 @@ footer a:hover { color: var(--gold); }
 
     <div id="parisian-block" hidden></div>
 
+    <div id="team-block" hidden style="margin-bottom:18px;padding:14px 16px;background:rgba(15,15,15,0.4);border:1px solid var(--gold-d);border-radius:4px">
+      <label for="captain-email" style="display:block;margin-bottom:4px">Tu es coéquipier d'une équipe ?</label>
+      <input id="captain-email" type="email" autocomplete="off" placeholder="email du capitaine qui a payé l'inscription équipe" style="width:100%" oninput="document.getElementById('captain-feedback').innerHTML=''">
+      <div class="hint">Indique l'email du capitaine de ton équipe (celui qui a réglé l'inscription « équipe »), pour être rattaché à son équipe. <strong>Laisse vide si tu joues en individuel</strong> (jeu libre / narratif).</div>
+      <div id="captain-feedback" style="margin-top:6px;font-size:.88rem"></div>
+    </div>
+
     <div class="form-grid">
       <div>
         <label for="pseudo">Pseudo de joueur *</label>
@@ -863,6 +870,22 @@ async function prepareForm() {
     randomizeBlason();
     document.getElementById('btn-submit').textContent = '⚔ Inscrire mon joueur';
   }
+
+  // Bloc « capitaine » : visible pour les non-capitaines en mode standard (pas en mode
+  // invité, où le rattachement se fait déjà via le token). Évite les champions orphelins.
+  const teamBlock = document.getElementById('team-block');
+  const captainInput = document.getElementById('captain-email');
+  if (teamBlock && captainInput) {
+    const isCaptain = !!(currentUser && currentUser.inscription_type === 'equipe');
+    if (!inviteToken && !isCaptain) {
+      teamBlock.hidden = false;
+      captainInput.value = (currentChampion && currentChampion.invited_by_email) || '';
+    } else {
+      teamBlock.hidden = true;
+      captainInput.value = '';
+    }
+    document.getElementById('captain-feedback').innerHTML = '';
+  }
 }
 
 async function getLeastPopulatedRegions(n) {
@@ -932,11 +955,33 @@ async function submitChampion() {
       savedChampion = fetched;
     } else {
       // ============ Mode standard : upsert direct ============
+      // Rattachement éventuel à un capitaine d'équipe (anti-orphelin) : si l'email d'un
+      // capitaine est saisi, on le valide comme payeur « équipe » avant de l'enregistrer.
+      let invitedBy = null;
+      const teamShown = !document.getElementById('team-block').hidden;
+      const capRaw = (document.getElementById('captain-email').value || '').trim().toLowerCase();
+      const capFb = document.getElementById('captain-feedback');
+      const resetBtn = () => { btn.disabled = false; btn.innerHTML = currentChampion ? '✓ Mettre à jour mon champion' : '⚔ Inscrire mon joueur'; };
+      if (teamShown && capRaw) {
+        if (capRaw === (currentUser.email || '').toLowerCase()) {
+          capFb.innerHTML = '<span style="color:var(--crim-l)">⚠ C\'est ton propre email — laisse ce champ vide si tu joues en individuel.</span>';
+          resetBtn(); return;
+        }
+        const { data: cap, error: capErr } = await sb
+          .from('paid_users').select('inscription_type').eq('email', capRaw).maybeSingle();
+        if (capErr) throw capErr;
+        if (!cap || cap.inscription_type !== 'equipe') {
+          capFb.innerHTML = '<span style="color:var(--crim-l)">⚠ Cet email n\'est pas reconnu comme une inscription « équipe » payée. Vérifie-le avec ton capitaine, ou laisse vide.</span>';
+          resetBtn(); return;
+        }
+        invitedBy = capRaw;
+      }
       const payload = {
         email: currentUser.email,
         pseudo, faction: faction || null, region,
         is_parisian_redistributed: !!isParisian,
-        blason, story: story || null, heroes: []
+        blason, story: story || null, heroes: [],
+        invited_by_email: invitedBy
       };
       const { data, error } = await sb
         .from('champions')

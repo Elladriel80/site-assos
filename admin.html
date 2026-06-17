@@ -1517,6 +1517,11 @@ function renderEquipes() {
   if (!incoherences.length) {
     tb2.innerHTML = '<tr><td colspan="6" class="empty-state">🎉 Aucune incohérence — tous les champions inscrits sont rattachés à un payeur.</td></tr>';
   } else {
+    const captainOpts = captains.map(cap => {
+      const nm = `${cap.prenom || ''} ${cap.nom || ''}`.trim() || cap.email;
+      const ps = cap.pseudo_assoconnect ? ` [${cap.pseudo_assoconnect}]` : '';
+      return `<option value="${escapeHtml(cap.email)}">${escapeHtml(nm + ps)}</option>`;
+    }).join('');
     tb2.innerHTML = incoherences.map(c => `
       <tr>
         <td><strong>${escapeHtml(c.pseudo)}</strong></td>
@@ -1524,7 +1529,14 @@ function renderEquipes() {
         <td>${escapeHtml(c.region || '—')}</td>
         <td class="muted">${escapeHtml(c.invited_by_email || '(personne)')}</td>
         <td class="muted">${formatDate(c.created_at)}</td>
-        <td><button class="danger" data-action="delete-champion-inco" data-id="${escapeHtml(c.id)}">Suppr.</button></td>
+        <td style="white-space:nowrap">
+          <select data-captain-for="${escapeHtml(c.id)}" style="max-width:150px;margin-right:4px;vertical-align:middle">
+            <option value="">— rattacher à…</option>
+            ${captainOpts}
+          </select>
+          <button data-action="link-champion-captain" data-id="${escapeHtml(c.id)}">Rattacher</button>
+          <button class="danger" data-action="delete-champion-inco" data-id="${escapeHtml(c.id)}">Suppr.</button>
+        </td>
       </tr>`).join('');
   }
 }
@@ -1535,6 +1547,22 @@ $('#refresh-equipes').addEventListener('click', async () => {
 });
 
 $('#tbody-incoherences').addEventListener('click', async (e) => {
+  const linkBtn = e.target.closest('button[data-action="link-champion-captain"]');
+  if (linkBtn) {
+    const id = linkBtn.dataset.id;
+    const sel = $(`select[data-captain-for="${id}"]`);
+    const capEmail = sel ? sel.value : '';
+    if (!capEmail) return showBanner('err', 'Choisis d\'abord un capitaine dans la liste déroulante.');
+    const champ = state.champions.find(c => c.id === id);
+    linkBtn.disabled = true;
+    const { error } = await sb.from('champions').update({ invited_by_email: capEmail }).eq('id', id);
+    if (error) { linkBtn.disabled = false; return showBanner('err', 'Rattachement échoué : ' + error.message); }
+    showBanner('ok', `« ${champ ? champ.pseudo : 'Champion'} » rattaché à ${capEmail}`);
+    await loadChampions();
+    renderEquipes();
+    refreshDashboard();
+    return;
+  }
   const btn = e.target.closest('button[data-action="delete-champion-inco"]');
   if (!btn) return;
   const id = btn.dataset.id;
@@ -1645,7 +1673,7 @@ function mapImportRows(rows) {
   if (rows.length < 2) throw new Error('Fichier vide (pas de ligne de données)');
   const headers = rows[0];
   const cols = {
-    email_participant: findCol(headers, ['email ema', 'email participant', 'email du participant', 'mail participant']),
+    email_participant: findCol(headers, ['email participant', 'email du participant', 'mail participant', 'adresse email', 'adresse e-mail', 'adresse mail', 'adresse courriel', 'courriel', 'email ema']),
     email_acheteur:    findCol(headers, ['email achete', 'email acheteur', 'email de l\'acheteur']),
     transaction_id:    findCol(headers, ['n° de transac', 'no de transac', 'num de transac', 'numero de transac', 'transaction id', 'n de transac']),
     prenom:            findCol(headers, ['prenom particip', 'prenom du particip', 'prénom particip', 'prenom']),
@@ -1696,7 +1724,7 @@ function mapImportRows(rows) {
   return mapped;
 }
 
-const IMPORT_TRACKED_FIELDS = ['prenom','nom','adresse','code_postal','ville','inscription_type','expected_champions','montant_eur','pseudo_assoconnect','acheteur_email','transaction_id'];
+const IMPORT_TRACKED_FIELDS = ['email','prenom','nom','adresse','code_postal','ville','inscription_type','expected_champions','montant_eur','pseudo_assoconnect','acheteur_email','transaction_id'];
 function compareImportRow(before, after) {
   const changes = [];
   for (const f of IMPORT_TRACKED_FIELDS) {
@@ -1835,10 +1863,32 @@ $('#import-diff').addEventListener('click', async (e) => {
   }
   if (!pendingImportDiff) return;
   const { ajouts, modifs, suppressions } = pendingImportDiff;
-  const toUpsert = [...ajouts, ...modifs.map(m => m.after)];
+  let toUpsert = [...ajouts, ...modifs.map(m => m.after)];
+  // Filet de sécurité : dédoublonner le batch par email. La contrainte UNIQUE(email)
+  // interdit de toute façon deux lignes au même email, et un même email présent deux fois
+  // dans un seul upsert fait planter Postgres ("ON CONFLICT ... affect row a second time").
+  {
+    const seen = new Set();
+    toUpsert = toUpsert.filter(r => {
+      const k = (r.email || '').trim().toLowerCase();
+      if (!k || seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }
+  // Si une ligne existante change d'email (ex : on prenait l'email de l'acheteur, on prend
+  // désormais celui du participant), supprimer l'ancienne ligne pour éviter un doublon.
+  const staleEmails = modifs
+    .filter(m => m.before && m.before.email && m.after &&
+                 m.before.email.trim().toLowerCase() !== (m.after.email || '').trim().toLowerCase())
+    .map(m => m.before.email);
   btn.disabled = true;
   $('#import-status').innerHTML = '<span class="spinner"></span> Application en cours…';
   try {
+    if (staleEmails.length) {
+      const { error: errStale } = await sb.from('paid_users').delete().in('email', staleEmails);
+      if (errStale) throw errStale;
+    }
     if (toUpsert.length) {
       const { error } = await sb.from('paid_users').upsert(toUpsert, { onConflict: 'email' });
       if (error) throw error;
