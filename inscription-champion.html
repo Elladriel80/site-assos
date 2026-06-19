@@ -481,6 +481,14 @@ const REGIONS_LIST = [
 // Région IdF impossible à choisir (les parisiens sont redistribués)
 const CONQUERABLE_REGIONS = REGIONS_LIST.filter(r => r !== 'Île-de-France');
 
+// Régions → alliance (camp) de la Conquête. DOIT rester synchronisé avec carte-inscrits.html.
+const REGION_TO_ALLIANCE = {
+  'Alsace':'A','Bretagne':'A','Basse-Normandie':'A','Rhône-Alpes':'A','Corse':'A',
+  'Nord-Pas-de-Calais':'B','Bourgogne':'B',"Provence-Alpes-Côte d'Azur":'B','Aquitaine':'B','Midi-Pyrénées':'B',
+  'Picardie':'C','Haute-Normandie':'C','Centre':'C','Franche-Comté':'C','Auvergne':'C',
+  'Lorraine':'D','Pays de la Loire':'D','Champagne-Ardenne':'D','Poitou-Charentes':'D','Languedoc-Roussillon':'D','Limousin':'D'
+};
+
 // Code département (2 premiers chiffres du code postal) → région
 const DEPT_TO_REGION = {
   '01':'Rhône-Alpes','02':'Picardie','03':'Auvergne','04':"Provence-Alpes-Côte d'Azur",
@@ -521,8 +529,8 @@ const FACTIONS = [
   'Empire', 'Bretonnia', 'Hauts Elfes', 'Elfes Sylvains', 'Elfes Noirs',
   'Nains', 'Nains du Chaos', 'Skavens', 'Hommes Bêtes', 'Orques & Gobelins',
   'Royaumes Ogres', 'Hommes-Lézards', 'Rois des Tombes', 'Comtes Vampires',
-  'Démons du Chaos', 'Guerriers du Chaos', 'Mercenaires de Tilée',
-  'Estaliens', 'Norses'
+  'Démons du Chaos', 'Guerriers du Chaos',
+  'Couronnes Renégates', 'Grand Cathay'
 ];
 
 const TINCTURES = {
@@ -827,12 +835,12 @@ async function prepareForm() {
     parisianOptions = await getLeastPopulatedRegions(3);
     regionSelect.innerHTML = parisianOptions.map(r => `<option value="${r}">${r}</option>`).join('');
     regionSelect.disabled = false;
-    regionHint.innerHTML = `<strong style="color:var(--crim-l);">Parisien·ne détecté·e</strong> — l'Île-de-France est zone neutre, choisis une des 3 régions les moins pourvues à rejoindre.`;
+    regionHint.innerHTML = `<strong style="color:var(--crim-l);">Parisien·ne détecté·e</strong> — l'Île-de-France est zone neutre — choisis une région du camp le moins pourvu, que tu viendras renforcer.`;
     parisBlock.hidden = false;
     parisBlock.innerHTML = `
       <div class="parisian-redirect">
         <h4>⚔ Tu es de la zone parisienne</h4>
-        <p>L'Île-de-France est <strong>la zone neutre</strong> du Vieux Monde — elle ne participe pas aux conquêtes. Tu vas combattre pour l'une des trois régions les moins pourvues en champions :</p>
+        <p>L'Île-de-France est <strong>la zone neutre</strong> du Vieux Monde — elle ne participe pas aux conquêtes. Tu vas renforcer le camp (alliance) le plus faible du moment — choisis l'une de ces régions :</p>
         <div class="options" id="paris-options">
           ${parisianOptions.map(r => `<div class="opt" onclick="selectParisOption('${r}')">${r}<small>en attente d'un champion</small></div>`).join('')}
         </div>
@@ -894,12 +902,30 @@ async function getLeastPopulatedRegions(n) {
     console.warn(error);
     return CONQUERABLE_REGIONS.slice(0, n);
   }
-  const counts = {};
-  CONQUERABLE_REGIONS.forEach(r => counts[r] = 0);
+  // Comptage par région ET par alliance (camp). On rééquilibre les CAMPS, pas les régions :
+  // une région peu peuplée peut appartenir au camp déjà le plus fort.
+  const regionCounts = {};
+  CONQUERABLE_REGIONS.forEach(r => regionCounts[r] = 0);
+  const allianceCounts = { A: 0, B: 0, C: 0, D: 0 };
   for (const row of data) {
-    if (counts[row.region] !== undefined) counts[row.region]++;
+    if (regionCounts[row.region] !== undefined) regionCounts[row.region]++;
+    const ally = REGION_TO_ALLIANCE[row.region];
+    if (ally && allianceCounts[ally] !== undefined) allianceCounts[ally]++;
   }
-  return Object.entries(counts).sort((a, b) => a[1] - b[1]).slice(0, n).map(([r]) => r);
+  // Camps du moins peuplé au plus peuplé, puis régions les moins pourvues à l'intérieur.
+  const camps = Object.keys(allianceCounts).sort((a, b) => allianceCounts[a] - allianceCounts[b]);
+  const result = [];
+  for (const ally of camps) {
+    const regions = CONQUERABLE_REGIONS
+      .filter(r => REGION_TO_ALLIANCE[r] === ally)
+      .sort((a, b) => regionCounts[a] - regionCounts[b]);
+    for (const r of regions) {
+      if (result.length >= n) break;
+      result.push(r);
+    }
+    if (result.length >= n) break;
+  }
+  return result.slice(0, n);
 }
 
 function selectParisOption(region) {
