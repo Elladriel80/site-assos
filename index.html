@@ -236,6 +236,24 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .insc-allfull{background:rgba(168,32,32,0.2);border:2px solid var(--red);border-radius:6px;padding:1.6rem 1.4rem;margin:1.2rem 0;text-align:center}
 .insc-allfull h4{font-family:'Cinzel Decorative',cursive;color:#ffb8b8;font-size:1.3rem;margin-bottom:.6rem;letter-spacing:.1em}
 .insc-allfull p{color:var(--parch);font-size:.95rem;line-height:1.5}
+/* --- Refonte inscription : résumé conditions, stock fusionné dans les cartes, désistement repliable --- */
+.insc-summary{max-width:680px;margin:0 auto 1.8rem;background:rgba(15,12,9,.55);border:1px solid var(--gold-d);border-left:4px solid var(--gold);border-radius:6px;padding:.8rem 1.4rem;font-family:'Cinzel',serif}
+.insc-summary-row{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px dotted rgba(201,168,76,.18);font-size:.84rem}
+.insc-summary-row:last-child{border-bottom:0}
+.insc-summary-row .lbl{color:var(--parch-d);letter-spacing:.03em}
+.insc-summary-row .val{color:var(--gold-l);font-weight:600;text-align:right}
+.insc-summary-row .val a{color:var(--gold-l)}
+.axis-stock{margin-top:1rem;padding-top:.8rem;border-top:1px dotted rgba(201,168,76,.25)}
+.axis-stock-cap{display:block;font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin-bottom:.3rem}
+.axis-stock .insc-card-num{font-family:'Cinzel Decorative',cursive;font-size:1.7rem;color:var(--gold-l);line-height:1;text-shadow:0 0 14px rgba(232,201,106,.25)}
+.axis-stock .insc-card-sub{font-size:.78rem;color:var(--parch-d);margin-left:.2rem}
+.insc-stock-caption{text-align:center;font-size:.78rem;color:var(--parch-dk);font-style:italic;margin:0 auto 1.4rem}
+.desist-more{margin-top:.5rem}
+.desist-more summary{cursor:pointer;color:var(--gold-l);font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:.04em;padding:.35rem 0;list-style:none}
+.desist-more summary::-webkit-details-marker{display:none}
+.desist-more summary::before{content:'\25B8  ';color:var(--gold-d)}
+.desist-more[open] summary::before{content:'\25BE  '}
+.desist-more p:first-of-type{margin-top:.8rem}
 
 /* --- Venez en famille --- */
 .famille-intro{text-align:center;font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);font-style:italic;line-height:1.7;max-width:720px;margin:2.4rem auto 1.2rem}
@@ -629,7 +647,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
         <ul>
           <li>Inscription via NewRecruit + paiement en ligne sécurisé (AssoConnect)</li>
           <li>Date limite inscription & paiement : <strong>1er octobre 2026</strong></li>
-          <li>Date limite envoi des listes : <strong>31 octobre 2026 minuit</strong></li>
+          <li>Date limite envoi des listes : <strong>10 octobre 2026 à 23h59</strong></li>
           <li>Toute équipe incomplète à la date limite sera désinscrite</li>
         </ul>
       </div>
@@ -1364,10 +1382,17 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     <p class="section-sub">⚔ Rejoindre l'Event ⚔</p>
     <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
 
+    <!-- Résumé des conditions — visible AVANT de choisir un axe -->
+    <div class="insc-summary reveal">
+      <div class="insc-summary-row"><span class="lbl">Limite inscription &amp; paiement</span><span class="val">1er octobre 2026</span></div>
+      <div class="insc-summary-row"><span class="lbl">Limite envoi des listes (compétitif)</span><span class="val">10 octobre 2026 à 23h59</span></div>
+      <div class="insc-summary-row"><span class="lbl">Remboursement</span><span class="val">jusqu'au 8 septembre 2026 inclus · <a href="#desist-policy" onclick="var d=document.getElementById('desist-policy');if(d){d.open=true;}">voir la politique</a></span></div>
+    </div>
+
     <div class="price-grid reveal">
 
-      <!-- 1) COMPÉTITIF · ÉQUIPES — bloc, paiement unique pour 5 -->
-      <div class="price-axe">
+      <!-- 1) COMPÉTITIF · ÉQUIPES — prix + places fusionnés -->
+      <div class="price-axe insc-card" data-type="equipe">
         <div class="price-axe-icon">⚔</div>
         <div class="price-axe-title">Compétitif · Équipes</div>
         <div class="price-axe-amount">325 €</div>
@@ -1377,11 +1402,15 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
           <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">Paiement groupé par le capitaine — la place de l'équipe entière est réservée d'un coup.</span><br>
           <span style="font-size:.78rem;color:var(--parch-d)">Responsable : <strong style="color:var(--gold)">Chexwiki</strong></span>
         </div>
-        <a href="inscription-tournoi.html?axe=equipe" class="price-axe-cta">⚔ Inscrire mon équipe</a>
+        <div class="axis-stock">
+          <span class="axis-stock-cap">Places restantes</span>
+          <span class="insc-card-num" id="insc-num-equipe">—</span><span class="insc-card-sub" id="insc-sub-equipe">/ 12 équipes</span>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-equipe" style="width:0%"></div></div>
+        </div>
       </div>
 
-      <!-- 2) JEU LIBRE — individuel -->
-      <div class="price-axe">
+      <!-- 2) JEU LIBRE -->
+      <div class="price-axe insc-card" data-type="jeu_libre">
         <div class="price-axe-icon">🎲</div>
         <div class="price-axe-title">Jeu Libre</div>
         <div class="price-axe-amount">65 €</div>
@@ -1391,23 +1420,33 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
           <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">Format souple — viens avec ta liste ou improvise sur place.</span><br>
           <span style="font-size:.78rem;color:var(--parch-d)">Animation : <strong style="color:var(--gold)">Daem</strong></span>
         </div>
-        <a href="inscription-tournoi.html?axe=jeu_libre" class="price-axe-cta">🎲 M'inscrire en libre</a>
+        <div class="axis-stock">
+          <span class="axis-stock-cap">Places restantes</span>
+          <span class="insc-card-num" id="insc-num-jeu_libre">—</span><span class="insc-card-sub" id="insc-sub-jeu_libre">/ 50 places</span>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-jeu_libre" style="width:0%"></div></div>
+        </div>
       </div>
 
-      <!-- 3) NARRATIF — individuel -->
-      <div class="price-axe">
+      <!-- 3) NARRATIF -->
+      <div class="price-axe insc-card" data-type="narratif">
         <div class="price-axe-icon">📜</div>
         <div class="price-axe-title">Narratif</div>
         <div class="price-axe-amount">65 €</div>
         <div class="price-axe-unit">par <strong>joueur</strong></div>
         <div class="price-axe-detail">
           Animation orchestrée par <strong style="color:var(--gold)">Nimp'Games</strong> · scénarios immersifs.<br>
-          <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">16 places — l'aventure prime sur la victoire.</span>
+          <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">L'aventure prime sur la victoire.</span>
         </div>
-        <a href="inscription-tournoi.html?axe=narratif" class="price-axe-cta">📜 M'inscrire en narratif</a>
+        <div class="axis-stock">
+          <span class="axis-stock-cap">Places restantes</span>
+          <span class="insc-card-num" id="insc-num-narratif">—</span><span class="insc-card-sub" id="insc-sub-narratif">/ 16 places</span>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-narratif" style="width:0%"></div></div>
+        </div>
       </div>
 
     </div>
+
+    <p class="insc-stock-caption reveal">Places mises à jour en temps réel · attribuées dans l'ordre des paiements confirmés.</p>
 
     <div class="reveal" style="max-width:820px;margin:0 auto 1.2rem;text-align:center;font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.04em;color:var(--parch-d)">
       ⚜ L'équipe organisatrice — Organisation : <strong style="color:var(--gold-l)">JSL</strong> · Arbitrage : <strong style="color:var(--gold-l)">JB Warfo</strong> · Finances : <strong style="color:var(--gold-l)">-DK-</strong>
@@ -1423,54 +1462,23 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
       🎟 <strong>Accompagnants : entrée libre et gratuite</strong> — la PAF concerne uniquement les joueurs.
     </div>
 
-    <div class="deadline-box reveal">
-      <strong>Date limite d'inscription & paiement :</strong> 1er octobre 2026<br>
-      <strong>Date limite d'envoi des listes (compétitif) :</strong> 31 octobre 2026 à minuit
-    </div>
-
     <div class="desist-box reveal">
       <h4>⚠ Politique de désinscription &amp; remboursement</h4>
       <span class="desist-key">Remboursement possible uniquement jusqu'à 60 jours avant l'événement<br>— soit jusqu'au <strong style="color:var(--gold-l)">8 septembre 2026 inclus</strong>.</span>
-      <p>Au-delà de cette date, les sommes versées (inscription et PAF) ne pourront plus être remboursées, quel que soit le motif.</p>
-      <p>Un désistement, même de bonne foi, pose d'<strong>énormes problèmes logistiques</strong>. Il déséquilibre les <strong>appariements</strong> — les équipes de 5, les tables 5v5 et les rondes par alliances reposent sur un effectif complet, et une place vacante pénalise toute une équipe et son adversaire. Il fragilise aussi l'<strong>équilibre financier</strong> d'un projet entièrement associatif&nbsp;: la salle, la restauration et les prestataires sont réservés et engagés des mois à l'avance, sur la base du nombre d'inscrits.</p>
-      <p>En cas d'empêchement, préviens-nous <strong>le plus tôt possible</strong>&nbsp;: une place libérée à temps peut profiter à un joueur en <a href="https://discord.gg/VTvnFqfvuF" target="_blank" rel="noopener">liste d'attente</a>. Merci de votre compréhension.</p>
+      <details class="desist-more" id="desist-policy">
+        <summary>Lire la politique complète</summary>
+        <p>Au-delà de cette date, les sommes versées (inscription et PAF) ne pourront plus être remboursées, quel que soit le motif.</p>
+        <p>Un désistement, même de bonne foi, pose d'<strong>énormes problèmes logistiques</strong>. Il déséquilibre les <strong>appariements</strong> — les équipes de 5, les tables 5v5 et les rondes par alliances reposent sur un effectif complet, et une place vacante pénalise toute une équipe et son adversaire. Il fragilise aussi l'<strong>équilibre financier</strong> d'un projet entièrement associatif&nbsp;: la salle, la restauration et les prestataires sont réservés et engagés des mois à l'avance, sur la base du nombre d'inscrits.</p>
+        <p>En cas d'empêchement, préviens-nous <strong>le plus tôt possible</strong>&nbsp;: une place libérée à temps peut profiter à un joueur en <a href="https://discord.gg/VTvnFqfvuF" target="_blank" rel="noopener">liste d'attente</a>. Merci de votre compréhension.</p>
+      </details>
     </div>
 
     <div class="payment-section reveal" style="margin-top:2rem">
-      <!-- Compteur de places restantes -->
-      <div class="insc-stock-wrap reveal" aria-label="Places restantes par catégorie">
-        <h4>⏳ Places restantes par axe</h4>
-        <p class="insc-stock-intro">Mise à jour en temps réel · les places s'attribuent dans l'ordre des paiements confirmés.</p>
-        <div class="insc-stock">
-          <div class="insc-card" data-type="equipe">
-            <div class="insc-card-label">⚔ Compétitif · Équipes</div>
-            <div class="insc-card-num" id="insc-num-equipe">—</div>
-            <div class="insc-card-sub" id="insc-sub-equipe">/ 12 équipes</div>
-            <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-equipe" style="width:0%"></div></div>
-            <div class="insc-card-desc">5 joueurs / équipe · tournoi par alliances · 5 rondes</div>
-          </div>
-          <div class="insc-card" data-type="jeu_libre">
-            <div class="insc-card-label">🎲 Jeu Libre</div>
-            <div class="insc-card-num" id="insc-num-jeu_libre">—</div>
-            <div class="insc-card-sub" id="insc-sub-jeu_libre">/ 50 places</div>
-            <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-jeu_libre" style="width:0%"></div></div>
-            <div class="insc-card-desc">Parties amicales · démonstrations · sans appariement</div>
-          </div>
-          <div class="insc-card" data-type="narratif">
-            <div class="insc-card-label">📜 Narratif</div>
-            <div class="insc-card-num" id="insc-num-narratif">—</div>
-            <div class="insc-card-sub" id="insc-sub-narratif">/ 16 places</div>
-            <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-narratif" style="width:0%"></div></div>
-            <div class="insc-card-desc">Animation orchestrée par <strong style="color:var(--gold)">Nimp'Games</strong></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Warnings par catégorie pleine -->
+      <!-- Warnings par catégorie pleine (injectés par JS) -->
       <div id="insc-warnings"></div>
 
-      <!-- Bouton CTA principal vers le tunnel d'inscription dédié -->
-      <div id="insc-payment-wrap" style="text-align:center;margin-top:1.5rem">
+      <!-- CTA principal unique vers le tunnel d'inscription -->
+      <div id="insc-payment-wrap" style="text-align:center;margin-top:.5rem">
         <a href="inscription-tournoi.html" class="btn-reserve" style="display:inline-flex;font-size:.95rem;padding:.95rem 1.8rem">
           ⚔ Accéder au formulaire d'inscription
         </a>
