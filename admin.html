@@ -1585,12 +1585,22 @@ function normalizeStr(s) {
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .trim();
 }
-function findCol(headers, candidates) {
+function findCol(headers, candidates, exclude) {
   const norm = headers.map(normalizeStr);
-  for (const cand of candidates) {
-    const n = normalizeStr(cand);
-    const idx = norm.findIndex(h => h && h.includes(n));
-    if (idx !== -1) return idx;
+  const skip = new Set(exclude || []);
+  // Préférence : égalité exacte, puis début de chaîne, puis sous-chaîne.
+  // Indispensable car « nom particip » est une SOUS-CHAÎNE de « prénom participant »
+  // (pré-NOM PARTICIP-ant) : sans cet ordre, la colonne Nom était captée par Prénom.
+  for (const mode of ['exact', 'starts', 'incl']) {
+    for (const cand of candidates) {
+      const n = normalizeStr(cand);
+      if (!n) continue;
+      const idx = norm.findIndex((h, i) => !skip.has(i) && h && (
+        mode === 'exact'  ? h === n :
+        mode === 'starts' ? h.startsWith(n) :
+                            h.includes(n)));
+      if (idx !== -1) return idx;
+    }
   }
   return -1;
 }
@@ -1680,12 +1690,15 @@ const IMPORT_EMAIL_OVERRIDES = {
 function mapImportRows(rows) {
   if (rows.length < 2) throw new Error('Fichier vide (pas de ligne de données)');
   const headers = rows[0];
+  // Prénom détecté en premier pour pouvoir l'exclure de la détection du Nom.
+  const c_prenom = findCol(headers, ['prenom particip', 'prenom du particip', 'prénom particip', 'prenom']);
   const cols = {
+    ticket_number:     findCol(headers, ['numero billet', 'numero de billet', 'numero du billet', 'n billet', 'no billet', 'num billet', 'billet']),
     email_participant: findCol(headers, ['email participant', 'email du participant', 'mail participant', 'adresse email', 'adresse e-mail', 'adresse mail', 'adresse courriel', 'courriel', 'email ema']),
     email_acheteur:    findCol(headers, ['email achete', 'email acheteur', 'email de l\'acheteur']),
     transaction_id:    findCol(headers, ['n° de transac', 'no de transac', 'num de transac', 'numero de transac', 'transaction id', 'n de transac']),
-    prenom:            findCol(headers, ['prenom particip', 'prenom du particip', 'prénom particip', 'prenom']),
-    nom:               findCol(headers, ['nom particip', 'nom du particip']),
+    prenom:            c_prenom,
+    nom:               findCol(headers, ['nom particip', 'nom du particip'], [c_prenom]),
     adresse:           findCol(headers, ['adresse']),
     code_postal:       findCol(headers, ['code postal', 'cp']),
     ville:             findCol(headers, ['ville']),
@@ -1718,6 +1731,7 @@ function mapImportRows(rows) {
     mapped.push({
       email,
       acheteur_email: emailA || null,
+      ticket_number: cell(cols.ticket_number),
       transaction_id: cell(cols.transaction_id),
       prenom: cell(cols.prenom),
       nom: cell(cols.nom),
@@ -1733,7 +1747,7 @@ function mapImportRows(rows) {
   return mapped;
 }
 
-const IMPORT_TRACKED_FIELDS = ['email','prenom','nom','adresse','code_postal','ville','inscription_type','expected_champions','montant_eur','pseudo_assoconnect','acheteur_email','transaction_id'];
+const IMPORT_TRACKED_FIELDS = ['email','prenom','nom','adresse','code_postal','ville','inscription_type','expected_champions','montant_eur','pseudo_assoconnect','acheteur_email','transaction_id','ticket_number'];
 function compareImportRow(before, after) {
   const changes = [];
   for (const f of IMPORT_TRACKED_FIELDS) {
@@ -1747,19 +1761,38 @@ function compareImportRow(before, after) {
 async function computeImportDiff(parsedRows) {
   const { data: existing, error } = await sb.from('paid_users').select('*');
   if (error) throw error;
-  const byTx = new Map(), byEmail = new Map();
+  // L'identité unique d'un payeur est son EMAIL (clé onConflict + lien vers champions).
+  // On apparie d'abord par email. Le N° de transaction n'est PAS unique (commande groupée :
+  // un acheteur paie plusieurs joueurs => même tx sur plusieurs billets) : on ne s'en sert
+  // qu'en repli, et UNIQUEMENT s'il est sans ambiguïté (présent une seule fois dans le
+  // fichier ET une seule fois en base). Sinon le 2e billet d'une commande groupée écrasait
+  // le 1er (bug « billet perdu »). Le Numéro billet, lui, est la vraie clé par billet.
+  const byEmail = new Map();
+  const byTxExisting = new Map(), txCountExisting = new Map();
   for (const u of existing || []) {
-    if (u.transaction_id) byTx.set(u.transaction_id, u);
     if (u.email) byEmail.set(u.email.toLowerCase(), u);
+    if (u.transaction_id) {
+      byTxExisting.set(u.transaction_id, u);
+      txCountExisting.set(u.transaction_id, (txCountExisting.get(u.transaction_id) || 0) + 1);
+    }
+  }
+  const txCountFile = new Map();
+  for (const row of parsedRows) {
+    if (row.transaction_id) txCountFile.set(row.transaction_id, (txCountFile.get(row.transaction_id) || 0) + 1);
   }
   const ajouts = [], modifs = [], inchanges = [];
-  const seenTx = new Set(), seenEmail = new Set();
+  const claimedEmails = new Set(); // lignes existantes déjà appariées (jamais deux fois)
   for (const row of parsedRows) {
-    let match = row.transaction_id ? byTx.get(row.transaction_id) : null;
-    if (!match) match = byEmail.get(row.email);
+    let match = byEmail.get((row.email || '').toLowerCase());
+    // Repli par transaction seulement si non ambigu et pas déjà réclamé (= changement d'email)
+    if (!match && row.transaction_id
+        && txCountFile.get(row.transaction_id) === 1
+        && txCountExisting.get(row.transaction_id) === 1) {
+      const cand = byTxExisting.get(row.transaction_id);
+      if (cand && !claimedEmails.has((cand.email || '').toLowerCase())) match = cand;
+    }
     if (match) {
-      if (row.transaction_id) seenTx.add(row.transaction_id);
-      seenEmail.add(row.email);
+      claimedEmails.add((match.email || '').toLowerCase());
       const changes = compareImportRow(match, row);
       if (changes.length === 0) inchanges.push({ before: match, after: row });
       else modifs.push({ before: match, after: row, changes });
@@ -1767,10 +1800,11 @@ async function computeImportDiff(parsedRows) {
       ajouts.push(row);
     }
   }
-  const suppressions = (existing || []).filter(u => {
-    if (u.transaction_id) return !seenTx.has(u.transaction_id);
-    return !seenEmail.has((u.email || '').toLowerCase());
-  });
+  const seenEmail = new Set(parsedRows.map(r => (r.email || '').toLowerCase()));
+  const suppressions = (existing || []).filter(u =>
+    !claimedEmails.has((u.email || '').toLowerCase()) &&
+    !seenEmail.has((u.email || '').toLowerCase())
+  );
   return { ajouts, modifs, inchanges, suppressions };
 }
 
@@ -1887,10 +1921,13 @@ $('#import-diff').addEventListener('click', async (e) => {
   }
   // Si une ligne existante change d'email (ex : on prenait l'email de l'acheteur, on prend
   // désormais celui du participant), supprimer l'ancienne ligne pour éviter un doublon.
+  const keptEmails = new Set(toUpsert.map(r => (r.email || '').trim().toLowerCase()));
   const staleEmails = modifs
     .filter(m => m.before && m.before.email && m.after &&
                  m.before.email.trim().toLowerCase() !== (m.after.email || '').trim().toLowerCase())
-    .map(m => m.before.email);
+    .map(m => m.before.email)
+    // Filet : ne jamais supprimer un email qui est par ailleurs conservé dans le batch.
+    .filter(e => !keptEmails.has(e.trim().toLowerCase()));
   btn.disabled = true;
   $('#import-status').innerHTML = '<span class="spinner"></span> Application en cours…';
   try {
