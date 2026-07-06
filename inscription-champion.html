@@ -833,6 +833,13 @@ async function prepareForm() {
   if (isParisian) {
     // Pour les parisiens : redistribuer entre 3 régions les moins peuplées
     parisianOptions = await getLeastPopulatedRegions(3);
+    // Si ce champion parisien a déjà choisi une région redistribuée, on la conserve
+    // même si elle n'est plus parmi les 3 camps les moins peuplés — sinon on lui
+    // reproposerait un choix de région à chaque reconnexion (bug capitaine IdF).
+    if (currentChampion && currentChampion.is_parisian_redistributed && currentChampion.region
+        && !parisianOptions.includes(currentChampion.region)) {
+      parisianOptions = [currentChampion.region, ...parisianOptions];
+    }
     regionSelect.innerHTML = parisianOptions.map(r => `<option value="${r}">${r}</option>`).join('');
     regionSelect.disabled = false;
     regionHint.innerHTML = `<strong style="color:var(--crim-l);">Parisien·ne détecté·e</strong> — l'Île-de-France est zone neutre — choisis une région du camp le moins pourvu, que tu viendras renforcer.`;
@@ -847,8 +854,11 @@ async function prepareForm() {
       </div>
     `;
     // Sélection par défaut sur la première
-    parisianRedirectChoice = parisianOptions[0];
-    setTimeout(() => selectParisOption(parisianOptions[0]), 0);
+    // Sélection par défaut : la région déjà choisie si elle existe, sinon la 1re.
+    parisianRedirectChoice = (currentChampion && currentChampion.is_parisian_redistributed
+        && currentChampion.region && parisianOptions.includes(currentChampion.region))
+      ? currentChampion.region : parisianOptions[0];
+    setTimeout(() => selectParisOption(parisianRedirectChoice), 0);
   } else if (detectedRegion) {
     regionSelect.innerHTML = `<option value="${detectedRegion}">${detectedRegion}</option>`;
     regionSelect.disabled = true;
