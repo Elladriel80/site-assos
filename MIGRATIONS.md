@@ -19,6 +19,7 @@ Pour rejouer la base sur un projet Supabase vierge, exécuter les fichiers **dan
 | 9 | `admin_migration_phase5_fix.sql` | Fix Phase 5 | Trigger `create_cells_for_champion()` en `SECURITY DEFINER` (sinon les anons libérés en phase 4 ne peuvent plus créer leurs cells) |
 | … | `admin_migration_phase11_fix_is_waitlist_ambiguous.sql` | Phase 11 — Fix réservation | Qualifie les références `is_waitlist` dans `create_inscription` (bug « column reference "is_waitlist" is ambiguous » à la réservation) |
 | … | `admin_migration_phase12_narratif_capacity_16.sql` | Phase 12 — Capacité narratif | Passe la capacité narratif de 10 à 16 places dans le CTE `cap` de `get_inscription_stock()` |
+| … | `admin_migration_phase13_capacites_16_35_22.sql` | Phase 13 — Ouverture de places | Ajuste les capacités dans le CTE `cap` de `get_inscription_stock()` : equipe 12→16, jeu_libre 50→35, narratif 16→22 |
 
 ## Procédure pour appliquer une nouvelle migration
 
