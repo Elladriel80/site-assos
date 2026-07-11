@@ -20,6 +20,7 @@ Pour rejouer la base sur un projet Supabase vierge, exécuter les fichiers **dan
 | … | `admin_migration_phase11_fix_is_waitlist_ambiguous.sql` | Phase 11 — Fix réservation | Qualifie les références `is_waitlist` dans `create_inscription` (bug « column reference "is_waitlist" is ambiguous » à la réservation) |
 | … | `admin_migration_phase12_narratif_capacity_16.sql` | Phase 12 — Capacité narratif | Passe la capacité narratif de 10 à 16 places dans le CTE `cap` de `get_inscription_stock()` |
 | … | `admin_migration_phase13_capacites_16_35_22.sql` | Phase 13 — Ouverture de places | Ajuste les capacités dans le CTE `cap` de `get_inscription_stock()` : equipe 12→16, jeu_libre 50→35, narratif 16→22 |
+| … | `admin_migration_phase14_jeu_libre_36.sql` | Phase 14 — Ajustement jeu libre | Passe la capacité jeu_libre de 35 à 36 dans le CTE `cap` de `get_inscription_stock()` |
 
 ## Procédure pour appliquer une nouvelle migration
 
