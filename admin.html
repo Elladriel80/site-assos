@@ -1815,31 +1815,37 @@ function importRowLabel(r) {
   return { nom, type: t + places };
 }
 
-function renderImportDiffSection(title, rowsHtml) {
+function renderImportDiffSection(title, rowsHtml, kind, defaultOn, helpText) {
   if (!rowsHtml.length) return '';
+  const masterChecked = defaultOn ? 'checked' : '';
   return `<details open style="margin-top:1em"><summary style="cursor:pointer;font-weight:bold;font-family:Georgia,serif;color:var(--gold);padding:.4em 0">${title}</summary>
-    <div style="margin-top:.5em;border:1px solid var(--border);border-radius:3px;overflow-x:auto">
-      <table style="margin:0"><thead><tr><th>Email</th><th>Nom</th><th>Type</th><th>Détails</th></tr></thead>
+    ${helpText ? `<div class="muted" style="font-size:.8rem;margin:.2em 0 .5em">${helpText}</div>` : ''}
+    <div style="margin-top:.3em;border:1px solid var(--border);border-radius:3px;overflow-x:auto">
+      <table style="margin:0"><thead><tr><th style="width:82px;text-align:center"><label style="cursor:pointer;display:inline-flex;align-items:center;gap:.3em;font-weight:normal;white-space:nowrap"><input type="checkbox" data-imp-all="${kind}" ${masterChecked} style="width:15px;height:15px;cursor:pointer"> tout</label></th><th>Email</th><th>Nom</th><th>Type</th><th>Détails</th></tr></thead>
       <tbody>${rowsHtml.join('')}</tbody></table>
     </div>
   </details>`;
 }
 
+function impToggleCell(kind, idx, on) {
+  return `<td style="text-align:center"><input type="checkbox" class="imp-row" data-imp-kind="${kind}" data-imp-idx="${idx}" ${on ? 'checked' : ''} style="width:17px;height:17px;cursor:pointer"></td>`;
+}
+
 function renderImportDiff(diff) {
   const c = $('#import-diff');
   c.hidden = false;
-  const ajoutsRows = diff.ajouts.map(a => {
+  const ajoutsRows = diff.ajouts.map((a, i) => {
     const l = importRowLabel(a);
-    return `<tr><td class="email">${escapeHtml(a.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td class="muted">${a.transaction_id ? 'tx:'+escapeHtml(a.transaction_id) : ''}</td></tr>`;
+    return `<tr>${impToggleCell('ajout', i, true)}<td class="email">${escapeHtml(a.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td class="muted">${a.transaction_id ? 'tx:'+escapeHtml(a.transaction_id) : ''}</td></tr>`;
   });
-  const modifsRows = diff.modifs.map(m => {
+  const modifsRows = diff.modifs.map((m, i) => {
     const l = importRowLabel(m.after);
     const changesHtml = m.changes.map(c => `<div><strong>${escapeHtml(c.field)}</strong> : <span style="color:#f3a89e">${escapeHtml(c.before || '—')}</span> → <span style="color:#b8d6b8">${escapeHtml(c.after || '—')}</span></div>`).join('');
-    return `<tr><td class="email">${escapeHtml(m.after.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td style="font-size:.82rem">${changesHtml}</td></tr>`;
+    return `<tr>${impToggleCell('modif', i, true)}<td class="email">${escapeHtml(m.after.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td style="font-size:.82rem">${changesHtml}</td></tr>`;
   });
-  const supprRows = diff.suppressions.map(s => {
+  const supprRows = diff.suppressions.map((s, i) => {
     const l = importRowLabel(s);
-    return `<tr><td class="email">${escapeHtml(s.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td class="muted">${s.transaction_id ? 'tx:'+escapeHtml(s.transaction_id) : ''}</td></tr>`;
+    return `<tr>${impToggleCell('suppr', i, false)}<td class="email">${escapeHtml(s.email)}</td><td>${escapeHtml(l.nom)}</td><td>${escapeHtml(l.type)}</td><td class="muted">${s.transaction_id ? 'tx:'+escapeHtml(s.transaction_id) : ''}</td></tr>`;
   });
   c.innerHTML = `
     <h3 style="margin-top:1.2em">Aperçu du diff</h3>
@@ -1849,14 +1855,38 @@ function renderImportDiff(diff) {
       <div class="banner"      style="margin:0;text-align:center;background:rgba(100,100,100,0.15);border-color:#666;color:#bbb">⚪ ${diff.inchanges.length} inchangés</div>
       <div class="banner err"  style="margin:0;text-align:center">🔴 ${diff.suppressions.length} suppr.</div>
     </div>
-    ${renderImportDiffSection('🟢 Ajouts', ajoutsRows)}
-    ${renderImportDiffSection('🟡 Modifications', modifsRows)}
-    ${renderImportDiffSection('🔴 Suppressions (en base mais absents du fichier)', supprRows)}
-    <div style="display:flex;gap:.75em;margin-top:1.5em;flex-wrap:wrap">
-      <button class="primary" data-import-action="apply-safe" ${(diff.ajouts.length + diff.modifs.length === 0) ? 'disabled' : ''}>✓ Appliquer ajouts + modifs (${diff.ajouts.length + diff.modifs.length})</button>
-      ${diff.suppressions.length ? `<button class="danger" data-import-action="apply-all">⚠ Tout appliquer + supprimer ${diff.suppressions.length}</button>` : ''}
+    <div class="muted" style="font-size:.82rem;margin:-.4em 0 1em">Coche ou décoche chaque ligne pour l'appliquer ou l'ignorer. Seules les lignes cochées seront prises en compte. Les suppressions sont décochées par défaut.</div>
+    ${renderImportDiffSection('🟢 Ajouts', ajoutsRows, 'ajout', true, 'Nouveaux payeurs à insérer.')}
+    ${renderImportDiffSection('🟡 Modifications', modifsRows, 'modif', true, 'Lignes existantes dont une valeur change dans le fichier.')}
+    ${renderImportDiffSection('🔴 Suppressions (en base mais absents du fichier)', supprRows, 'suppr', false, 'Payeurs présents en base mais pas dans le fichier (ex. inscriptions offertes). Décochés par défaut : ne cocher que pour supprimer réellement.')}
+    <div style="display:flex;gap:.75em;margin-top:1.5em;flex-wrap:wrap;align-items:center">
+      <button class="primary" id="import-apply-btn" data-import-action="apply-selection">✓ Appliquer la sélection</button>
       <button data-import-action="cancel">Annuler</button>
     </div>`;
+  updateImportSelectionUI();
+}
+
+function updateImportSelectionUI() {
+  const box = document.getElementById('import-diff');
+  if (!box) return;
+  let a = 0, s = 0;
+  box.querySelectorAll('input.imp-row').forEach(cb => {
+    const tr = cb.closest('tr');
+    if (cb.checked) { if (cb.dataset.impKind === 'suppr') s++; else a++; if (tr) tr.style.opacity = ''; }
+    else { if (tr) tr.style.opacity = '.38'; }
+  });
+  box.querySelectorAll('input[data-imp-all]').forEach(all => {
+    const kind = all.dataset.impAll;
+    const rows = box.querySelectorAll(`input.imp-row[data-imp-kind="${kind}"]`);
+    const checked = box.querySelectorAll(`input.imp-row[data-imp-kind="${kind}"]:checked`);
+    all.checked = rows.length > 0 && checked.length === rows.length;
+    all.indeterminate = checked.length > 0 && checked.length < rows.length;
+  });
+  const btn = document.getElementById('import-apply-btn');
+  if (btn) {
+    btn.innerHTML = `✓ Appliquer la sélection (${a} ajout/modif${s ? `, ${s} suppr.` : ''})`;
+    btn.disabled = (a + s === 0);
+  }
 }
 
 let pendingImportDiff = null;
@@ -1905,8 +1935,22 @@ $('#import-diff').addEventListener('click', async (e) => {
     return;
   }
   if (!pendingImportDiff) return;
+  if (action !== 'apply-selection') return;
   const { ajouts, modifs, suppressions } = pendingImportDiff;
-  let toUpsert = [...ajouts, ...modifs.map(m => m.after)];
+  // Sélection ligne par ligne : on ne garde que les cases cochées (Oui).
+  const _box = $('#import-diff');
+  const _isChecked = (kind, idx) => {
+    const cb = _box.querySelector(`input.imp-row[data-imp-kind="${kind}"][data-imp-idx="${idx}"]`);
+    return cb ? cb.checked : false;
+  };
+  const selAjouts = ajouts.filter((_, i) => _isChecked('ajout', i));
+  const selModifs = modifs.filter((_, i) => _isChecked('modif', i));
+  const selSuppr  = suppressions.filter((_, i) => _isChecked('suppr', i));
+  if (selAjouts.length + selModifs.length + selSuppr.length === 0) {
+    $('#import-status').textContent = 'Aucune ligne sélectionnée.';
+    return;
+  }
+  let toUpsert = [...selAjouts, ...selModifs.map(m => m.after)];
   // Filet de sécurité : dédoublonner le batch par email. La contrainte UNIQUE(email)
   // interdit de toute façon deux lignes au même email, et un même email présent deux fois
   // dans un seul upsert fait planter Postgres ("ON CONFLICT ... affect row a second time").
@@ -1922,7 +1966,7 @@ $('#import-diff').addEventListener('click', async (e) => {
   // Si une ligne existante change d'email (ex : on prenait l'email de l'acheteur, on prend
   // désormais celui du participant), supprimer l'ancienne ligne pour éviter un doublon.
   const keptEmails = new Set(toUpsert.map(r => (r.email || '').trim().toLowerCase()));
-  const staleEmails = modifs
+  const staleEmails = selModifs
     .filter(m => m.before && m.before.email && m.after &&
                  m.before.email.trim().toLowerCase() !== (m.after.email || '').trim().toLowerCase())
     .map(m => m.before.email)
@@ -1940,16 +1984,16 @@ $('#import-diff').addEventListener('click', async (e) => {
       if (error) throw error;
     }
     let deletedCount = 0;
-    if (action === 'apply-all' && suppressions.length) {
-      if (!confirm(`Supprimer définitivement ${suppressions.length} paid_user(s) absent(s) du fichier ?\n\nCette action est irréversible.`)) {
+    if (selSuppr.length) {
+      if (!confirm(`Supprimer définitivement ${selSuppr.length} paid_user(s) coché(s) pour suppression ?\n\nCette action est irréversible.`)) {
         btn.disabled = false;
         $('#import-status').textContent = 'Suppressions annulées (ajouts/modifs déjà appliqués)';
         return;
       }
-      const emails = suppressions.map(s => s.email);
+      const emails = selSuppr.map(s => s.email);
       const { error } = await sb.from('paid_users').delete().in('email', emails);
       if (error) throw error;
-      deletedCount = suppressions.length;
+      deletedCount = selSuppr.length;
     }
     $('#import-status').innerHTML = `<span style="color:var(--ok)">✓ Import appliqué : ${toUpsert.length} insertions/MAJ${deletedCount ? `, ${deletedCount} suppressions` : ''}</span>`;
     pendingImportDiff = null;
@@ -1963,6 +2007,16 @@ $('#import-diff').addEventListener('click', async (e) => {
     $('#import-status').innerHTML = `<span style="color:var(--danger)">✖ Erreur lors de l'application : ${escapeHtml(err.message || String(err))}</span>`;
     btn.disabled = false;
   }
+});
+
+// Boutons Oui/Non par ligne : coché = appliqué. La case « tout » (dé)coche toute la section.
+$('#import-diff').addEventListener('change', (e) => {
+  const master = e.target.closest('input[data-imp-all]');
+  if (master) {
+    const kind = master.dataset.impAll;
+    $('#import-diff').querySelectorAll(`input.imp-row[data-imp-kind="${kind}"]`).forEach(cb => { cb.checked = master.checked; });
+  }
+  if (master || e.target.closest('input.imp-row')) updateImportSelectionUI();
 });
 
 // =========================================================================
