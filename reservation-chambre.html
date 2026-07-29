@@ -143,13 +143,13 @@ footer a:hover { text-decoration:underline }
         <div class="stock-card">
           <div class="stock-type">Double · 2 pers</div>
           <div class="stock-num" id="stock-double">—</div>
-          <div class="stock-sub">sur 10 chambres</div>
+          <div class="stock-sub">sur 24 chambres</div>
           <span class="stock-price">90 € / chambre · 2 nuits</span>
         </div>
         <div class="stock-card">
           <div class="stock-type">Triple · 3 pers</div>
           <div class="stock-num" id="stock-triple">—</div>
-          <div class="stock-sub">sur 3 chambres</div>
+          <div class="stock-sub">sur 4 chambres</div>
           <span class="stock-price">110 € / chambre · 2 nuits</span>
         </div>
       </div>
@@ -179,8 +179,8 @@ footer a:hover { text-decoration:underline }
           <select id="f-type" name="room_type" required>
             <option value="">— Sélectionner —</option>
             <option value="simple">Chambre simple · 60 € · 1 personne · (1 chambre)</option>
-            <option value="double">Chambre double · 90 € · 2 personnes · (10 chambres)</option>
-            <option value="triple">Chambre triple · 110 € · 3 personnes · (3 chambres)</option>
+            <option value="double">Chambre double · 90 € · 2 personnes · (24 chambres)</option>
+            <option value="triple">Chambre triple · 110 € · 3 personnes · (4 chambres)</option>
           </select>
           <span class="hint">Forfait 2 nuits (vendredi 6 → dimanche 8 novembre 2026). Tarif <strong>par chambre entière</strong>.</span>
         </div>
@@ -278,7 +278,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ⚠️ Lien public AssoConnect "Lien du formulaire" — à remplacer si l'URL n'est pas exactement celle-ci.
 // On y annexe ?firstname=...&lastname=...&email=...&phone=... en espérant qu'AssoConnect pré-remplit.
 // Si ça ne pré-remplit pas, l'utilisateur a quand même son récap au-dessus pour copier-coller.
-const ASSOCONNECT_PUBLIC_URL = 'https://les-strateges-du-vieux-monde.assoconnect.com/collect/01KRR18VQF98WSNTRNDGK4RB41';
+const ASSOCONNECT_PUBLIC_URL = 'https://les-strateges-du-vieux-monde.assoconnect.com/collect/description/710729-d-logements-interregions';
 
 function buildPrefillUrl(payload) {
   const params = new URLSearchParams({
