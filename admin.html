@@ -1687,6 +1687,8 @@ const IMPORT_EMAIL_OVERRIDES = {
   '24884167': 'thibaut.har@gmail.com',       // BFC – Thibaut HARLAY  (ex thomas.orchampt@gmail.com)
   '24882709': 'simon.bassenne@gmail.com',    // BFC – Simon BASSENNE  (ex casg.sectionfigurines@gmail.com)
 };
+// Emails portant plusieurs billets sur le dernier fichier analyse (affiche dans le diff).
+let lastImportMerges = [];
 function mapImportRows(rows) {
   if (rows.length < 2) throw new Error('Fichier vide (pas de ligne de données)');
   const headers = rows[0];
@@ -1744,7 +1746,63 @@ function mapImportRows(rows) {
       montant_eur: montant || null
     });
   }
-  return mapped;
+  return aggregateImportRowsByEmail(mapped);
+}
+
+// paid_users a UNIQUE(email) : deux billets sous la meme adresse (deux freres inscrits avec
+// l'email de l'un, ou une meme personne inscrite deux fois) ne peuvent pas tenir sur deux
+// lignes. Avant aout 2026 le second billet etait jete silencieusement : le joueur
+// disparaissait du site et l'encaisse etait sous-evalue d'autant (cas ZUCCHINI et BRIDOUX,
+// export du 07/08/2026, 130 EUR manquants). On cumule desormais montant_eur et
+// expected_champions ; l'identite (type, nom, n de billet, pseudo) vient du billet le plus
+// cher, a egalite le premier du fichier.
+function aggregateImportRowsByEmail(mapped) {
+  lastImportMerges = [];
+  const byEmail = new Map();
+  for (const row of mapped) {
+    const k = (row.email || '').toLowerCase();
+    const prev = byEmail.get(k);
+    if (!prev) { byEmail.set(k, Object.assign({}, row, { _tickets: [row] })); continue; }
+    const montantPrev = prev.montant_eur || 0;
+    const montantRow  = row.montant_eur  || 0;
+    const tickets = prev._tickets.concat([row]);
+    const cumulMontant = (montantPrev + montantRow) || null;
+    const cumulPlaces  = (prev.expected_champions || 0) + (row.expected_champions || 0);
+    if (montantRow > montantPrev) {
+      byEmail.set(k, Object.assign({}, row, {
+        _tickets: tickets, montant_eur: cumulMontant, expected_champions: cumulPlaces
+      }));
+    } else {
+      prev._tickets = tickets;
+      prev.montant_eur = cumulMontant;
+      prev.expected_champions = cumulPlaces;
+    }
+  }
+  const out = [];
+  for (const entry of byEmail.values()) {
+    const tickets = entry._tickets;
+    delete entry._tickets;
+    if (tickets.length > 1) {
+      lastImportMerges.push({
+        email: entry.email,
+        nom: ((entry.prenom || '') + ' ' + (entry.nom || '')).trim(),
+        billets: tickets.map(t => (t.ticket_number || '?') + ' \u2014 ' + t.inscription_type + ' ' + (t.montant_eur || 0) + ' \u20ac'),
+        montant_eur: entry.montant_eur,
+        expected_champions: entry.expected_champions
+      });
+      console.warn('[Import] Billets cumules sur un meme email :', entry.email, tickets.map(t => t.ticket_number));
+    }
+    out.push(entry);
+  }
+  return out;
+}
+
+function renderImportMergesBanner() {
+  if (!lastImportMerges || !lastImportMerges.length) return '';
+  const items = lastImportMerges.map(m =>
+    `<li><b>${m.email}</b> \u2014 ${m.nom || '\u2014'} : ${m.billets.join(' + ')} \u21d2 <b>${m.montant_eur || 0} \u20ac</b> / ${m.expected_champions} place(s)</li>`
+  ).join('');
+  return `<div class="banner warn" style="margin:0 0 1em">\u26a0\ufe0f <b>${lastImportMerges.length} email(s) portant plusieurs billets</b> \u2014 montants et places cumul\u00e9s sur une seule ligne (paid_users n'accepte qu'une ligne par email). \u00c0 v\u00e9rifier&nbsp;:<ul style="margin:.4em 0 0 1.1em">${items}</ul></div>`;
 }
 
 const IMPORT_TRACKED_FIELDS = ['email','prenom','nom','adresse','code_postal','ville','inscription_type','expected_champions','montant_eur','pseudo_assoconnect','acheteur_email','transaction_id','ticket_number'];
@@ -1856,6 +1914,7 @@ function renderImportDiff(diff) {
       <div class="banner err"  style="margin:0;text-align:center">🔴 ${diff.suppressions.length} suppr.</div>
     </div>
     <div class="muted" style="font-size:.82rem;margin:-.4em 0 1em">Coche ou décoche chaque ligne pour l'appliquer ou l'ignorer. Seules les lignes cochées seront prises en compte. Les suppressions sont décochées par défaut.</div>
+    ${renderImportMergesBanner()}
     ${renderImportDiffSection('🟢 Ajouts', ajoutsRows, 'ajout', true, 'Nouveaux payeurs à insérer.')}
     ${renderImportDiffSection('🟡 Modifications', modifsRows, 'modif', true, 'Lignes existantes dont une valeur change dans le fichier.')}
     ${renderImportDiffSection('🔴 Suppressions (en base mais absents du fichier)', supprRows, 'suppr', false, 'Payeurs présents en base mais pas dans le fichier (ex. inscriptions offertes). Décochés par défaut : ne cocher que pour supprimer réellement.')}
