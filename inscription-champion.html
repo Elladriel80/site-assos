@@ -767,12 +767,10 @@ async function checkEmail() {
       // On regarde si l'email est dans paid_users uniquement pour pré-remplir
       // les infos (adresse postale → détection région auto). Si pas trouvé,
       // on continue quand même : le tri payeurs ↔ inscrits se fait côté orga.
-      const { data: paid, error: e1 } = await sb
-        .from('paid_users')
-        .select('*')
-        .eq('email', email)
-        .maybeSingle();
+      const { data: paidRows, error: e1 } = await sb
+        .rpc('get_payer_prefill', { p_email: email });
       if (e1) throw e1;
+      const paid = (paidRows && paidRows[0]) || null;
 
       if (paid) {
         currentUser = paid;
@@ -1003,9 +1001,10 @@ async function submitChampion() {
           capFb.innerHTML = '<span style="color:var(--crim-l)">⚠ C\'est ton propre email — laisse ce champ vide si tu joues en individuel.</span>';
           resetBtn(); return;
         }
-        const { data: cap, error: capErr } = await sb
-          .from('paid_users').select('inscription_type').eq('email', capRaw).maybeSingle();
+        const { data: capRows, error: capErr } = await sb
+          .rpc('get_payer_prefill', { p_email: capRaw });
         if (capErr) throw capErr;
+        const cap = (capRows && capRows[0]) || null;
         if (!cap || cap.inscription_type !== 'equipe') {
           capFb.innerHTML = '<span style="color:var(--crim-l)">⚠ Cet email n\'est pas reconnu comme une inscription « équipe » payée. Vérifie-le avec ton capitaine, ou laisse vide.</span>';
           resetBtn(); return;
