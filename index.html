@@ -1716,7 +1716,7 @@ for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
     // -------- Compteur d'inscriptions tournoi (RPC get_inscription_stock) --------
     loadInscriptionStock(sb);
 
-    const { data, error } = await sb.from('champions').select('*').order('created_at', { ascending: false });
+    const { data, error } = await sb.from('champions_public').select('*').order('created_at', { ascending: false });
     const countText = document.getElementById('champ-count-text');
     const carousel = document.getElementById('champ-carousel');
     if (error || !data) {

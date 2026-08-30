@@ -640,7 +640,7 @@ function renderBlason(blason, cx, cy, size) {
 
 async function fetchChampions() {
   const { data, error } = await sb
-    .from('champions')
+    .from('champions_public')
     .select('*')
     .order('created_at', { ascending: true });
   if (error) {
@@ -652,7 +652,7 @@ async function fetchChampions() {
 }
 
 async function fetchCells() {
-  const { data, error } = await sb.from('cells').select('*');
+  const { data, error } = await sb.from('cells_public').select('*');
   if (error) {
     console.warn('Cellules indisponibles (la migration phase 2a est-elle appliquée ?) :', error.message);
     return [];
@@ -1221,7 +1221,9 @@ async function regenerateTerritories() {
     if (resetErr) throw new Error('reset_map : ' + resetErr.message);
 
     // 2. Re-fetch champions à jour
-    const freshChampions = await fetchChampions();
+    const { data: freshChampions, error: freshErr } = await sb
+      .from('champions').select('*').order('created_at', { ascending: true });
+    if (freshErr) throw new Error('lecture champions (admin) : ' + freshErr.message);
 
     // 3. Calculer les seeds pour chaque cellule (5 par champion, en cluster)
     // 5 seeds en pentagone régulier autour du blason (aucun au centre).

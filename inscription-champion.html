@@ -749,10 +749,7 @@ async function checkEmail() {
       }
       // 2. Vérifier qu'aucun champion n'existe déjà pour cet email
       const { data: existing, error: eC } = await sb
-        .from('champions')
-        .select('*')
-        .eq('email', email)
-        .maybeSingle();
+        .rpc('get_champion_by_email', { p_email: email });
       if (eC) throw eC;
       if (existing) {
         fb.innerHTML = `<div class="alert error"><strong>⚠ Champion déjà existant.</strong><br>Un champion est déjà inscrit avec cet email (${escapeHTML(existing.pseudo)}). Utilise un autre email, ou demande à l'orga de te transmettre l'accès à ton inscription existante.</div>`;
@@ -783,10 +780,7 @@ async function checkEmail() {
 
       // Vérifier si un champion existe déjà pour cet email
       const { data: champ, error: e2 } = await sb
-        .from('champions')
-        .select('*')
-        .eq('email', email)
-        .maybeSingle();
+        .rpc('get_champion_by_email', { p_email: email });
       if (e2) throw e2;
       currentChampion = champ;
     }
@@ -905,7 +899,7 @@ async function prepareForm() {
 }
 
 async function getLeastPopulatedRegions(n) {
-  const { data, error } = await sb.from('champions').select('region');
+  const { data, error } = await sb.from('champions_public').select('region');
   if (error) {
     console.warn(error);
     return CONQUERABLE_REGIONS.slice(0, n);
@@ -984,7 +978,7 @@ async function submitChampion() {
       if (errRpc) throw errRpc;
       // Récupérer le champion créé pour l'afficher
       const { data: fetched, error: errFetch } = await sb
-        .from('champions').select('*').eq('id', newId).single();
+        .rpc('get_champion_by_id', { p_id: newId });
       if (errFetch) throw errFetch;
       savedChampion = fetched;
     } else {
@@ -1018,11 +1012,17 @@ async function submitChampion() {
         blason, story: story || null, heroes: [],
         invited_by_email: invitedBy
       };
-      const { data, error } = await sb
-        .from('champions')
-        .upsert(payload, { onConflict: 'email' })
-        .select()
-        .single();
+      const { data, error } = await sb.rpc('upsert_champion', {
+        p_email: payload.email,
+        p_pseudo: payload.pseudo,
+        p_faction: payload.faction,
+        p_region: payload.region,
+        p_is_parisian_redistributed: payload.is_parisian_redistributed,
+        p_blason: payload.blason,
+        p_story: payload.story,
+        p_heroes: payload.heroes,
+        p_invited_by_email: payload.invited_by_email
+      });
       if (error) throw error;
       savedChampion = data;
     }
@@ -1075,13 +1075,10 @@ async function refreshTeamCounter() {
   if (!el || !currentUser) return;
   el.innerHTML = '<span class="spinner"></span> Comptage…';
   try {
-    const { data, error } = await sb.from('champions').select('email, invited_by_email, pseudo');
-    if (error) throw error;
     const cap = (currentUser.email || '').toLowerCase();
-    const members = (data || []).filter(c =>
-      (c.email || '').toLowerCase() === cap ||
-      (c.invited_by_email || '').toLowerCase() === cap
-    );
+    const { data, error } = await sb.rpc('get_team_members', { p_captain_email: cap });
+    if (error) throw error;
+    const members = data || [];
     const count = members.length;
     const target = currentUser.expected_champions || 5;
     const color = count >= target ? 'var(--gold)' : (count >= target / 2 ? 'var(--parch-d)' : 'var(--crim-l)');
