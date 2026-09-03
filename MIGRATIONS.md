@@ -23,6 +23,7 @@ Pour rejouer la base sur un projet Supabase vierge, exécuter les fichiers **dan
 | … | `admin_migration_phase14_jeu_libre_36.sql` | Phase 14 — Ajustement jeu libre | Passe la capacité jeu_libre de 35 à 36 dans le CTE `cap` de `get_inscription_stock()` |
 | … | `admin_migration_phase15_room_capacity_24_4.sql` | Phase 15 — Augmentation stock chambres | Passe les capacités chambres double 10→24 et triple 3→4 dans le CTE `cap` de `get_room_stock()` (simple inchangé) |
 | … | `admin_migration_phase16_stock_places_par_champions.sql` | Phase 16 — Stock compté en joueurs | `get_inscription_stock()` compte jeu_libre/narratif via `sum(expected_champions)` au lieu de `count(*)` (une ligne paid_users peut porter 2 billets sous le même email) ; equipe reste compté en lignes |
+| … | `admin_migration_phase17_admin_nimpgames.sql` | Phase 17 — Compte admin Nimp'Games | Ajoute `nimpgames333@gmail.com` à la liste blanche `admin_users` (animation axe narratif). Prérequis : créer le compte Supabase Auth correspondant. Aucune policy modifiée, `is_admin()` lit `admin_users` |
 
 ## Procédure pour appliquer une nouvelle migration
 
