@@ -374,6 +374,113 @@ header .actions a:hover, header .actions button:hover { transform: translateY(-1
 .reduced-motion .beacon-ring { animation: none; opacity: 0.25; }
 
 /* ══════════════════════════════════════════════════════════════════
+   LE TRÔNE
+   ══════════════════════════════════════════════════════════════════ */
+.crown-mark { pointer-events: none; }
+@keyframes crownPulse { from { opacity: 0.30; } to { opacity: 1; } }
+.crown-halo { animation: crownPulse 3.8s steps(9) infinite alternate; }
+.reduced-motion .crown-halo { animation: none; opacity: 0.55; }
+
+#panel-throne .throne-king {
+  text-align: center; padding: 10px 8px 12px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(232,201,106,0.18), transparent 70%);
+  border: 1px solid var(--gold-d); margin-bottom: 9px;
+}
+#panel-throne .throne-king .kt-title {
+  font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--gold-d);
+}
+#panel-throne .throne-king .kt-name {
+  font-family: 'Cinzel Decorative', serif; font-weight: 900;
+  font-size: 1.05rem; color: var(--gold-l); margin: 3px 0 2px;
+  text-shadow: 0 0 16px var(--gold-glow);
+}
+#panel-throne .throne-king .kt-sub {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: 0.78rem; color: var(--parch-dk);
+}
+.pretender-row {
+  display: flex; align-items: center; gap: 8px; padding: 5px 4px;
+  border-bottom: 1px solid rgba(201,168,76,0.10); font-size: 0.84rem; cursor: pointer;
+}
+.pretender-row:hover { background: rgba(201,168,76,0.09); }
+.pretender-row .rk {
+  font-family: 'Cinzel', serif; font-size: 0.72rem; color: var(--gold-d);
+  width: 16px; flex: 0 0 auto; text-align: right;
+}
+.pretender-row .nm { min-width: 0; flex: 1 1 auto; }
+.pretender-row .nm small { display: block; font-size: 0.68rem; color: var(--parch-dk); }
+.pretender-row .vx {
+  font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.9rem;
+  color: var(--gold); flex: 0 0 auto;
+}
+.pretender-row.lead .nm { color: var(--gold-l); font-weight: 700; }
+.throne-hint {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: 0.76rem; color: var(--parch-dk); margin-top: 7px; line-height: 1.4;
+}
+
+/* Cérémonie de sacre, plein écran sur l'écran géant */
+.coronation {
+  position: fixed; inset: 0; z-index: 120; display: none;
+  align-items: center; justify-content: center; text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(201,168,76,0.22), transparent 62%),
+    rgba(4,5,8,0.94);
+  backdrop-filter: blur(5px);
+}
+.coronation.show { display: flex; animation: coroIn 1.4s ease-out; }
+@keyframes coroIn { from { opacity: 0; } to { opacity: 1; } }
+.coronation .coro-inner { max-width: 70vw; }
+.coronation .coro-over {
+  font-family: 'Cinzel', serif; font-size: clamp(0.8rem, 1.2vw, 1.1rem);
+  letter-spacing: 0.55em; text-transform: uppercase; color: var(--gold-d);
+}
+.coronation .coro-crown { margin: 18px auto 10px; width: clamp(90px, 9vw, 150px); }
+.coronation .coro-blason { width: clamp(90px, 9vw, 140px); margin: 0 auto 16px; display: block; }
+.coronation .coro-name {
+  font-family: 'Cinzel Decorative', serif; font-weight: 900;
+  font-size: clamp(2rem, 5.2vw, 5rem); color: var(--gold-l); line-height: 1.05;
+  text-shadow: 0 0 60px var(--gold-glow), 0 4px 18px rgba(0,0,0,0.9);
+}
+.coronation .coro-title {
+  font-family: 'Cinzel', serif; font-size: clamp(0.9rem, 1.8vw, 1.6rem);
+  letter-spacing: 0.32em; text-transform: uppercase; color: var(--parch);
+  margin-top: 14px;
+}
+.coronation .coro-sub {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(0.9rem, 1.4vw, 1.3rem); color: var(--parch-dk); margin-top: 12px;
+}
+.coronation .coro-rule {
+  width: 42%; height: 1px; margin: 22px auto;
+  background: linear-gradient(90deg, transparent, var(--gold-d), transparent);
+}
+
+/* Bandeau royal permanent en kiosque */
+.kiosk-throne {
+  position: fixed; top: 34px; left: 34px; z-index: 40; width: clamp(230px, 20vw, 330px);
+  background: rgba(6,9,13,0.80); border: 1px solid var(--gold-d);
+  padding: 13px 15px; backdrop-filter: blur(4px);
+}
+.kiosk-throne h4 {
+  font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold);
+  border-bottom: 1px solid rgba(201,168,76,0.28); padding-bottom: 6px; margin-bottom: 8px;
+}
+.kiosk-throne .kt-row {
+  display: flex; gap: 8px; align-items: baseline;
+  font-size: clamp(0.7rem, 0.9vw, 0.88rem); padding: 4px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.09);
+}
+.kiosk-throne .kt-row .v { margin-left: auto; color: var(--gold); font-weight: 700; }
+.kiosk-throne .kt-row.lead { color: var(--gold-l); font-weight: 700; }
+.kiosk-throne .kt-empty {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  color: var(--parch-dk); font-size: 0.82rem; padding: 8px 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
    SIDEBAR
    ══════════════════════════════════════════════════════════════════ */
 .sidebar { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
@@ -653,6 +760,10 @@ html.kiosk .kiosk-only { display: block; }
   </main>
 
   <aside class="sidebar">
+    <div class="panel" id="panel-throne">
+      <h3>Le trône</h3>
+      <div class="empty">Aucune voix attribuée pour l'instant.</div>
+    </div>
     <div class="panel" id="panel-region">
       <h3>Région</h3>
       <div class="empty">Clique une région pour voir ses champions</div>
@@ -666,7 +777,9 @@ html.kiosk .kiosk-only { display: block; }
 </div>
 
 <!-- HUD du mode kiosque -->
+<div class="kiosk-only kiosk-throne" id="kiosk-throne"></div>
 <div class="kiosk-only kiosk-feed" id="kiosk-feed"></div>
+<div class="coronation" id="coronation"></div>
 <div class="kiosk-only kiosk-standings" id="kiosk-standings"></div>
 
 <div class="modal-overlay" id="modal-champion">
@@ -748,6 +861,8 @@ const HERALDIC_CHARGES = {
 let champions = [];
 let cells = [];
 let battles = [];
+let royalVotes = [];
+let crown = null;          // { champion_id, alliance, voices, crowned_at }
 let regionCentroids = {};
 let selectedRegion = null;
 let regionBorders = [];      // { a, b, pts:[[lon,lat],…] }
@@ -1180,9 +1295,23 @@ async function fetchBattles() {
   if (error) { console.warn('Batailles indisponibles :', error.message); return []; }
   return data || [];
 }
+/* Les voix du royaume. Si la migration phase 20 n'est pas appliquée,
+   la vue n'existe pas : la carte continue sans le trône plutôt que de
+   tomber en erreur. */
+async function fetchRoyalVotes() {
+  const { data, error } = await sb.from('royal_votes_public').select('*');
+  if (error) { console.info('Voix royales indisponibles (migration phase 20 ?) :', error.message); return []; }
+  return data || [];
+}
+async function fetchCrown() {
+  const { data, error } = await sb.from('campaign_state_public').select('*').eq('key', 'crown').maybeSingle();
+  if (error || !data) return null;
+  return data.value || null;
+}
+
 async function refreshChampions() {
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles()]);
-  champions = r[0]; cells = r[1]; battles = r[2];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4];
   ensureSeeds();
   renderAll();
 }
@@ -1245,6 +1374,59 @@ function ensureSeeds() {
       }
     }
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   LE TRÔNE
+   Le Roi n'est pas le meilleur joueur, c'est le mieux acclamé DANS LE
+   CAMP QUI TIENT LE PLUS DE TERRITOIRES. Deux classements distincts
+   donc : les alliances au territoire, les champions à la voix.
+   ══════════════════════════════════════════════════════════════════ */
+function royalStandings() {
+  const byId = {};
+  for (const v of royalVotes) byId[v.champion_id] = (byId[v.champion_id] || 0) + (v.voices || 0);
+  return champions
+    .filter(ch => REGION_TO_ALLIANCE[ch.region] && REGION_TO_ALLIANCE[ch.region] !== 'IDF')
+    .map(ch => ({ ch: ch, alliance: REGION_TO_ALLIANCE[ch.region], voices: byId[ch.id] || 0 }))
+    .filter(r => r.voices !== 0)
+    .sort((a, b) => b.voices - a.voices || (a.ch.pseudo || '').localeCompare(b.ch.pseudo || ''));
+}
+function leadingAllianceKey() {
+  const rows = computeStandings();
+  return rows.length ? rows[0].key : null;
+}
+/* Le prétendant : celui qui serait sacré si la campagne s'arrêtait là. */
+function currentPretender() {
+  const lead = leadingAllianceKey();
+  if (!lead) return null;
+  const rows = royalStandings().filter(r => r.alliance === lead);
+  return rows.length ? rows[0] : null;
+}
+function kingRow() {
+  if (!crown || !crown.champion_id) return null;
+  const ch = champions.find(c => c.id === crown.champion_id);
+  if (!ch) return null;
+  const st = royalStandings().find(r => r.ch.id === ch.id);
+  return { ch: ch, alliance: REGION_TO_ALLIANCE[ch.region], voices: st ? st.voices : (crown.voices || 0) };
+}
+
+/* Couronne dessinée, posée au-dessus du fief. */
+function crownMark(x, y, sc, royal) {
+  const c = royal ? '#FFD76A' : '#CFA84E';
+  return '<g class="crown-mark' + (royal ? ' royal' : '') + '" transform="translate(' + x.toFixed(1) + ',' +
+           y.toFixed(1) + ') scale(' + sc.toFixed(3) + ')">' +
+    (royal
+      ? '<g class="crown-halo"><circle r="17" fill="#FFB347" fill-opacity="0.14"/>' +
+        '<circle r="11" fill="#FFB347" fill-opacity="0.20"/></g>'
+      : '') +
+    '<path d="M-7,3.4 L-8.2,-5.4 L-3.9,-1.2 L0,-7.6 L3.9,-1.2 L8.2,-5.4 L7,3.4 Z" fill="' + c +
+      '" stroke="#2a1405" stroke-width="0.9" stroke-linejoin="round"/>' +
+    '<rect x="-7.6" y="3.1" width="15.2" height="2.7" rx="0.6" fill="' + c +
+      '" stroke="#2a1405" stroke-width="0.9"/>' +
+    '<circle cx="0" cy="-5.8" r="1.35" fill="#B33A3A" stroke="#2a1405" stroke-width="0.5"/>' +
+    '<circle cx="-4.7" cy="-3.7" r="1.05" fill="#3A5A8A" stroke="#2a1405" stroke-width="0.45"/>' +
+    '<circle cx="4.7" cy="-3.7" r="1.05" fill="#3A5A8A" stroke="#2a1405" stroke-width="0.45"/>' +
+  '</g>';
 }
 
 /* Alliance dominante d'une région, d'après les cellules réellement tenues. */
@@ -1605,6 +1787,11 @@ function renderMap() {
      toutes les cellules retournées depuis le début revenait à animer un
      tiers de la carte, ce qui coûtait plus cher que tout le reste réuni
      et ne disait plus rien de l'actualité de la partie. */
+  const kingR = kingRow();
+  const pret = currentPretender();
+  const crownedId = kingR ? kingR.ch.id : null;
+  const pretId = (pret && (!kingR || pret.ch.id !== kingR.ch.id)) ? pret.ch.id : null;
+
   const lastRound = battles.length ? Math.max.apply(null, battles.map(b => b.round_number || 0)) : null;
   const lastRoundCells = new Set(
     lastRound == null ? [] :
@@ -1891,11 +2078,20 @@ function renderMap() {
              '<text class="map-fixed-text std-count" x="' + c[0].toFixed(1) + '" y="' + (c[1] + 4.3*ms).toFixed(2) +
                '" text-anchor="middle" font-family="Cinzel, serif" font-weight="800" fill="#F5EDD8">' + here.length + '</text>' +
            '</g>';
+      const hasKing = crownedId && here.some(c2 => c2.id === crownedId);
+      const hasPret = !hasKing && pretId && here.some(c2 => c2.id === pretId);
+      // Le Roi mérite une couronne plus grande que celle d'un prétendant :
+      // sur la vue France entière, c'est le seul repère qui le désigne.
+      if (hasKing || hasPret)
+        h += crownMark(c[0], c[1] - (hasKing ? 25 : 20) * ms, (hasKing ? 1.6 : 1.05) * ms, !!hasKing);
     } else if (zoomBand === 1) {
       for (let i = 0; i < here.length; i++) {
         const ch = here[i], p = ch._anchor || c;
         h += '<g class="champion-marker" data-id="' + escapeHTML(ch.id) + '" data-email="' + escapeHTML(ch.email || '') + '">' +
-               renderBlason(ch.blason, p[0], p[1], 1.0 * ms, { rim: ALLIANCES[allyD].light }) + '</g>';
+               renderBlason(ch.blason, p[0], p[1], 1.0 * ms, { rim: ALLIANCES[allyD].light }) +
+               (ch.id === crownedId ? crownMark(p[0], p[1] - 21 * ms, 1.0 * ms, true)
+                 : ch.id === pretId ? crownMark(p[0], p[1] - 21 * ms, 0.85 * ms, false) : '') +
+             '</g>';
       }
     } else {
       for (let i = 0; i < here.length; i++) {
@@ -1907,6 +2103,8 @@ function renderMap() {
                  'font-family="Cinzel, serif" font-weight="600" fill="#2a1c0b" ' +
                  'stroke="rgba(240,232,210,0.9)">' +
                  escapeHTML((ch.pseudo || '').slice(0, 18)) + '</text>' +
+               (ch.id === crownedId ? crownMark(p[0], p[1] - 53 * ms, 1.25 * ms, true)
+                 : ch.id === pretId ? crownMark(p[0], p[1] - 53 * ms, 1.0 * ms, false) : '') +
              '</g>';
       }
     }
@@ -2126,6 +2324,64 @@ function renderLegend() {
 }
 
 /* ══════════════════════════════════════════════════════════════════
+   PANNEAU DU TRÔNE
+   ══════════════════════════════════════════════════════════════════ */
+function renderThronePanel() {
+  const p = document.getElementById('panel-throne');
+  if (!p) return;
+  const lead = leadingAllianceKey();
+  const rows = royalStandings();
+  const kr = kingRow();
+  const pr = currentPretender();
+
+  let h = '<h3>Le trône</h3>';
+
+  if (kr) {
+    const a = ALLIANCES[kr.alliance] || ALLIANCES.IDF;
+    h += '<div class="throne-king">' +
+           '<div class="kt-title">Roi du Vieux Monde</div>' +
+           '<div class="kt-name">' + escapeHTML(kr.ch.pseudo) + '</div>' +
+           '<div class="kt-sub">' + escapeHTML(a.name) + ' · ' + escapeHTML(kr.ch.region || '') +
+             ' · ' + kr.voices + ' voix</div>' +
+         '</div>';
+  } else if (pr) {
+    const a = ALLIANCES[pr.alliance] || ALLIANCES.IDF;
+    h += '<div class="throne-king">' +
+           '<div class="kt-title">Prétendant au trône</div>' +
+           '<div class="kt-name">' + escapeHTML(pr.ch.pseudo) + '</div>' +
+           '<div class="kt-sub">' + escapeHTML(a.name) + ' · ' + pr.voices + ' voix</div>' +
+         '</div>';
+  }
+
+  if (!rows.length) {
+    h += '<div class="empty">Aucune voix attribuée pour l\'instant.</div>';
+    h += '<div class="throne-hint">Le Roi sera le champion le mieux acclamé dans le camp qui tient le plus de territoires.</div>';
+    p.innerHTML = h;
+    return;
+  }
+
+  h += rows.slice(0, 12).map((r, i) => {
+    const a = ALLIANCES[r.alliance] || ALLIANCES.IDF;
+    const isLead = pr && r.ch.id === pr.ch.id;
+    return '<div class="pretender-row' + (isLead ? ' lead' : '') + '" onclick="openChampionModal(\'' +
+        escapeHTML(r.ch.id) + '\')">' +
+      '<span class="rk">' + (i + 1) + '</span>' +
+      '<span class="nm">' + (kr && kr.ch.id === r.ch.id ? '♛ ' : '') + escapeHTML(r.ch.pseudo) +
+        '<small><span style="color:' + a.light + '">' + escapeHTML(a.short) + '</span> · ' +
+        escapeHTML(shortRegionName(r.ch.region || '')) +
+        (r.alliance === lead ? ' · camp en tête' : '') + '</small></span>' +
+      '<span class="vx">' + r.voices + '</span>' +
+    '</div>';
+  }).join('');
+
+  if (!kr)
+    h += '<div class="throne-hint">Le sacre revient au mieux acclamé du camp qui tient le plus de territoires, ' +
+         'à ce jour ' + escapeHTML((ALLIANCES[lead] || {}).name || '—') + '.</div>';
+
+  p.innerHTML = h;
+}
+
+/* ══════════════════════════════════════════════════════════════════
    PANNEAUX LATÉRAUX
    ══════════════════════════════════════════════════════════════════ */
 function selectRegion(name) {
@@ -2204,6 +2460,32 @@ function renderKiosk() {
       '</div>').join('') + '</div>' +
     '<div class="kiosk-ticker"><div class="tk-run">' + tickerHTML() + tickerHTML() + '</div></div>';
 
+  // Le trône, colonne de gauche
+  const th = document.getElementById('kiosk-throne');
+  if (th) {
+    const lead = leadingAllianceKey();
+    const kr = kingRow(), pr = currentPretender();
+    const rows = royalStandings().filter(r => r.alliance === lead).slice(0, 6);
+    let tht = '<h4>' + (kr ? 'Le Roi' : 'Prétendants au trône') + '</h4>';
+    if (kr) {
+      tht += '<div class="kt-row lead" style="font-size:1.05em">♛ ' + escapeHTML(kr.ch.pseudo) +
+             '<span class="v">' + kr.voices + '</span></div>' +
+             '<div class="kt-empty" style="font-style:italic">' +
+             escapeHTML((ALLIANCES[kr.alliance] || {}).name || '') + ' · ' +
+             escapeHTML(kr.ch.region || '') + '</div>';
+    } else if (!rows.length) {
+      tht += '<div class="kt-empty">Nul n\'a encore été acclamé.</div>';
+    }
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      tht += '<div class="kt-row' + (pr && r.ch.id === pr.ch.id && !kr ? ' lead' : '') + '">' +
+             '<span style="color:var(--gold-d)">' + (i + 1) + '</span> ' +
+             escapeHTML(r.ch.pseudo) + '<span class="v">' + r.voices + '</span></div>';
+    }
+    th.innerHTML = tht;
+  }
+  renderCoronation();
+
   const feed = document.getElementById('kiosk-feed');
   let fh = '<h4>Dernières batailles</h4>';
   if (!battles.length) {
@@ -2232,6 +2514,51 @@ function tickerHTML() {
     return '<span><i style="color:' + a.light + '">⚔</i> ' + escapeHTML(ch.pseudo) +
            ' <span style="opacity:.45">' + escapeHTML(shortRegionName(ch.region || '')) + '</span></span>';
   }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   LA CÉRÉMONIE DE SACRE
+   Plein écran à la première détection du sacre, puis rappelée
+   régulièrement dans la ronde du kiosque : un visiteur qui arrive une
+   heure après le couronnement doit pouvoir voir qui règne.
+   ══════════════════════════════════════════════════════════════════ */
+let _coroSeen = null, _coroTimer = null, _coroHide = null;
+function showCoronation(ms) {
+  const el = document.getElementById('coronation');
+  const kr = kingRow();
+  if (!el || !kr) return;
+  const a = ALLIANCES[kr.alliance] || ALLIANCES.IDF;
+  el.innerHTML =
+    '<div class="coro-inner">' +
+      '<div class="coro-over">Le Vieux Monde a son Roi</div>' +
+      '<svg class="coro-crown" viewBox="-30 -26 60 44" overflow="visible">' + crownMark(0, 0, 1.55, true) + '</svg>' +
+      '<svg class="coro-blason" viewBox="-24 -24 48 48">' + renderBlason(kr.ch.blason, 0, 0, 1.5) + '</svg>' +
+      '<div class="coro-name">' + escapeHTML(kr.ch.pseudo) + '</div>' +
+      '<div class="coro-rule"></div>' +
+      '<div class="coro-title">' + escapeHTML(a.name) + ' · ' + escapeHTML(kr.ch.region || '') + '</div>' +
+      '<div class="coro-sub">Acclamé par ' + kr.voices + ' voix' +
+        (kr.ch.faction ? ', à la tête des ' + escapeHTML(kr.ch.faction) : '') + '</div>' +
+    '</div>';
+  el.classList.add('show');
+  clearTimeout(_coroHide);
+  _coroHide = setTimeout(() => el.classList.remove('show'), ms || 26000);
+}
+function renderCoronation() {
+  const el = document.getElementById('coronation');
+  if (!el) return;
+  const kr = kingRow();
+  if (!kr) {
+    el.classList.remove('show');
+    _coroSeen = null;
+    clearInterval(_coroTimer); _coroTimer = null;
+    return;
+  }
+  if (_coroSeen === kr.ch.id) return;
+  _coroSeen = kr.ch.id;
+  if (!document.documentElement.classList.contains('kiosk')) return;
+  showCoronation(30000);
+  clearInterval(_coroTimer);
+  _coroTimer = setInterval(() => showCoronation(18000), 4 * 60 * 1000);
 }
 
 /* Ronde automatique : la carte s'attarde sur les régions les plus
@@ -2436,6 +2763,7 @@ function renderAll() {
   renderMap();          // d'abord : il alimente _mapDominant
   renderScoreboard();
   renderLegend();
+  renderThronePanel();
   renderRegionPanel();
   renderChampList();
   renderKiosk();
@@ -2460,8 +2788,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderMap();
   setupMapZoom();
 
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles()]);
-  champions = r[0]; cells = r[1]; battles = r[2];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4];
   ensureSeeds();
   const t1 = performance.now();
   renderAll();
@@ -2481,8 +2809,8 @@ document.addEventListener('keydown', e => {
 });
 
 setInterval(async () => {
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles()]);
-  champions = r[0]; cells = r[1]; battles = r[2];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4];
   ensureSeeds();
   renderAll();
 }, 60000);

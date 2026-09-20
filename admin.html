@@ -229,6 +229,7 @@
     <button data-tab="equipes">🏆 Équipes</button>
     <button data-tab="relances">📧 Relances</button>
     <button data-tab="tournoi">⚔️ Tournoi</button>
+    <button data-tab="couronne">♛ Couronne</button>
     <button data-tab="hebergement">🛏 Hébergement</button>
     <button data-tab="carte">🗺 Carte</button>
     <button data-tab="demo">🎭 Démo</button>
@@ -447,6 +448,80 @@
           <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
         </tbody>
       </table>
+    </section>
+
+    <section data-pane="couronne" hidden>
+      <h2>La Couronne — voix et sacre</h2>
+      <div class="banner warn" id="cr-missing" hidden>
+        ⚠️ La migration <code>admin_migration_phase20_le_roi.sql</code> n'est pas encore appliquée sur Supabase. Tant qu'elle ne l'est pas, cet onglet est en lecture seule.
+      </div>
+      <div class="banner ok">
+        💡 Le Roi n'est pas le meilleur joueur, c'est le mieux acclamé <strong>dans le camp qui tient le plus de territoires</strong>. Chaque fait d'armes, concours ou coup d'éclat rapporte des voix, attribuées ici à la main. Les voix restent visibles toute la journée sur la carte, le sacre se déclenche à la clôture.
+      </div>
+
+      <div id="cr-leader" style="margin:1.2em 0"></div>
+
+      <h3 style="margin-top:1.6em">Attribuer des voix</h3>
+      <div style="display:flex;gap:.5em;flex-wrap:wrap;margin-bottom:.9em" id="cr-presets">
+        <button data-cat="bataille"  data-voices="2">⚔ Bataille gagnée +2</button>
+        <button data-cat="territoire" data-voices="1">🏰 Territoire conquis +1</button>
+        <button data-cat="concours"  data-voices="5">🎨 Concours +5</button>
+        <button data-cat="roleplay"  data-voices="3">🎭 Roleplay +3</button>
+        <button data-cat="fairplay"  data-voices="3">🤝 Fair-play +3</button>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1.4fr 100px;gap:1em;align-items:flex-end">
+        <label><span>Champion</span><select id="cr-champion"><option value="">— choisir —</option></select></label>
+        <label><span>Voix</span><input type="number" id="cr-voices" value="1" min="-50" max="50" step="1"></label>
+        <label><span>Motif</span><select id="cr-category">
+          <option value="bataille">⚔ Fait d'armes</option>
+          <option value="territoire">🏰 Territoire</option>
+          <option value="concours">🎨 Concours</option>
+          <option value="roleplay">🎭 Roleplay</option>
+          <option value="fairplay">🤝 Fair-play</option>
+          <option value="autre">✶ Autre</option>
+        </select></label>
+        <label><span>Ronde</span><select id="cr-round">
+          <option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select></label>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 200px;gap:1em;align-items:flex-end;margin-top:.8em">
+        <label><span>Détail (affiché publiquement sur la carte)</span>
+          <input type="text" id="cr-reason" maxlength="90" placeholder="ex. a tenu le pont trois rondes durant"></label>
+        <button class="primary" id="cr-award">✚ Attribuer les voix</button>
+      </div>
+
+      <h3 style="margin-top:2em">Prétendants au trône</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Champion</th><th>Région</th><th>Camp</th><th>Voix</th><th>Détail</th></tr></thead>
+          <tbody id="cr-tbody-standings">
+            <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:2em">Le sacre</h3>
+      <p style="color:var(--text-dim);max-width:70ch">
+        Le sacre fige le Roi et déclenche la cérémonie sur l'écran géant. À ne lancer qu'une fois la dernière ronde saisie, sans quoi le camp vainqueur peut encore changer. Il reste annulable.
+      </p>
+      <div style="display:flex;gap:1em;flex-wrap:wrap;margin-top:.6em">
+        <button class="primary" id="cr-crown">♛ Sacrer le prétendant en tête</button>
+        <button class="danger" id="cr-uncrown">⟲ Annuler le sacre</button>
+      </div>
+
+      <h3 style="margin-top:2em">Historique des voix</h3>
+      <div class="toolbar">
+        <button id="cr-refresh">↻ Rafraîchir</button>
+        <span class="count" id="cr-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quand</th><th>Champion</th><th>Voix</th><th>Motif</th><th>Détail</th><th></th></tr></thead>
+          <tbody id="cr-tbody-log">
+            <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section data-pane="hebergement" hidden>
@@ -812,6 +887,10 @@ function switchTab(tab) {
     populateTournoiSelects();
     loadCells();
     loadBattles();
+  }
+  if (tab === 'couronne') {
+    crWire();
+    Promise.all([loadCells(), loadRoyal()]).then(crRenderAll);
   }
   if (tab === 'equipes') {
     renderEquipes();
@@ -2614,6 +2693,267 @@ document.addEventListener('click', async (e) => {
 });
 
 checkSession();
+
+// =========================================================================
+// ONGLET COURONNE — voix des prétendants et sacre du Roi
+// Le Roi est le champion le mieux acclamé DANS LE CAMP qui tient le plus
+// de territoires. Les voix sont attribuées à la main, une ligne par
+// attribution, annulable une par une.
+// =========================================================================
+const CR_CATEGORIES = {
+  bataille:   { label: '⚔ Fait d\'armes',  short: 'Fait d\'armes' },
+  territoire: { label: '🏰 Territoire',    short: 'Territoire' },
+  concours:   { label: '🎨 Concours',      short: 'Concours' },
+  roleplay:   { label: '🎭 Roleplay',      short: 'Roleplay' },
+  fairplay:   { label: '🤝 Fair-play',     short: 'Fair-play' },
+  autre:      { label: '✶ Autre',          short: 'Autre' }
+};
+
+state.royalVotes = [];
+state.crown = null;
+state.crownReady = true;   // passe à false si la migration n'est pas appliquée
+
+async function loadRoyal() {
+  const [rv, cs] = await Promise.all([
+    sb.from('royal_votes').select('*').order('created_at', { ascending: false }),
+    sb.from('campaign_state').select('*').eq('key', 'crown').maybeSingle()
+  ]);
+  if (rv.error) {
+    // 42P01 = table absente : la migration phase 20 n'est pas passée
+    state.crownReady = false;
+    state.royalVotes = [];
+    $('#cr-missing').hidden = false;
+  } else {
+    state.crownReady = true;
+    state.royalVotes = rv.data || [];
+    $('#cr-missing').hidden = true;
+  }
+  state.crown = (cs && !cs.error && cs.data) ? cs.data.value : null;
+}
+
+/* Camp en tête, au territoire tenu. Même calcul que la carte publique. */
+function crLeadingAlliance() {
+  const tally = { A: 0, B: 0, C: 0, D: 0 };
+  for (const c of state.cells) if (tally[c.current_alliance] != null) tally[c.current_alliance]++;
+  let best = null, bestN = -1;
+  for (const k of Object.keys(tally)) if (tally[k] > bestN) { best = k; bestN = tally[k]; }
+  return { key: best, cells: bestN, tally: tally };
+}
+
+/* Classement des prétendants : total des voix par champion. */
+function crStandings() {
+  const byChamp = {};
+  for (const v of state.royalVotes)
+    byChamp[v.champion_id] = (byChamp[v.champion_id] || 0) + (v.voices || 0);
+  return state.champions
+    .filter(ch => REGION_TO_ALLIANCE[ch.region] && REGION_TO_ALLIANCE[ch.region] !== 'IDF')
+    .map(ch => ({
+      ch: ch,
+      alliance: REGION_TO_ALLIANCE[ch.region],
+      voices: byChamp[ch.id] || 0,
+      last: state.royalVotes.filter(v => v.champion_id === ch.id)[0] || null
+    }))
+    .filter(r => r.voices !== 0)
+    .sort((a, b) => b.voices - a.voices || (a.ch.pseudo || '').localeCompare(b.ch.pseudo || ''));
+}
+
+function crPretender() {
+  const lead = crLeadingAlliance();
+  const rows = crStandings().filter(r => r.alliance === lead.key);
+  return { lead: lead, row: rows[0] || null, rows: rows };
+}
+
+function crRenderLeader() {
+  const el = $('#cr-leader');
+  if (!el) return;
+  const p = crPretender();
+  const a = ALLIANCES[p.lead.key] || {};
+  const crowned = state.crown && state.crown.champion_id
+    ? state.champions.find(c => c.id === state.crown.champion_id) : null;
+
+  let h = '';
+  if (crowned) {
+    h += '<div class="banner ok" style="font-size:1.05rem">♛ <strong>' + escapeHtml(crowned.pseudo) +
+         '</strong> a été sacré Roi le ' + escapeHtml(formatDate(state.crown.crowned_at)) +
+         ' (' + escapeHtml(crowned.region || '') + '). La cérémonie tourne sur l\'écran géant.</div>';
+  }
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1em">';
+  h += '<div style="border:1px solid var(--border);border-radius:3px;padding:.9em">' +
+         '<div style="color:var(--text-dim);font-size:.85rem">Camp en tête</div>' +
+         '<div style="font-size:1.3rem;font-weight:700;color:' + (a.color || '#888') + '">' +
+           escapeHtml(a.name || '—') + '</div>' +
+         '<div style="color:var(--text-dim);font-size:.85rem">' + p.lead.cells + ' territoires tenus sur ' +
+           state.cells.length + '</div></div>';
+  h += '<div style="border:1px solid var(--border);border-radius:3px;padding:.9em">' +
+         '<div style="color:var(--text-dim);font-size:.85rem">Prétendant en tête de ce camp</div>' +
+         '<div style="font-size:1.3rem;font-weight:700">' +
+           (p.row ? escapeHtml(p.row.ch.pseudo) : '<span style="color:var(--text-dim)">aucune voix attribuée</span>') +
+         '</div>' +
+         '<div style="color:var(--text-dim);font-size:.85rem">' +
+           (p.row ? p.row.voices + ' voix · ' + escapeHtml(p.row.ch.region || '') : '—') + '</div></div>';
+  h += '</div>';
+  el.innerHTML = h;
+}
+
+function crRenderStandings() {
+  const tb = $('#cr-tbody-standings');
+  if (!tb) return;
+  const lead = crLeadingAlliance();
+  const rows = crStandings();
+  if (!rows.length) {
+    tb.innerHTML = '<tr><td colspan="6" class="empty-state">Aucune voix attribuée pour le moment.</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.slice(0, 40).map((r, i) => {
+    const a = ALLIANCES[r.alliance] || {};
+    const inLead = r.alliance === lead.key;
+    return '<tr' + (inLead && i === rows.findIndex(x => x.alliance === lead.key)
+              ? ' style="background:rgba(201,168,76,0.10)"' : '') + '>' +
+      '<td>' + (i + 1) + '</td>' +
+      '<td>' + (inLead && i === rows.findIndex(x => x.alliance === lead.key) ? '♛ ' : '') +
+        escapeHtml(r.ch.pseudo) + '</td>' +
+      '<td>' + escapeHtml(r.ch.region || '') + '</td>' +
+      '<td><span style="color:' + (a.color || '#888') + '">' + escapeHtml(a.name || '') + '</span>' +
+        (inLead ? ' <small style="color:var(--text-dim)">(camp en tête)</small>' : '') + '</td>' +
+      '<td><strong>' + r.voices + '</strong></td>' +
+      '<td style="color:var(--text-dim)">' + escapeHtml(r.last && r.last.reason ? r.last.reason : '') + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function crRenderLog() {
+  const tb = $('#cr-tbody-log');
+  if (!tb) return;
+  $('#cr-count').textContent = state.royalVotes.length + ' attribution' + (state.royalVotes.length > 1 ? 's' : '');
+  if (!state.royalVotes.length) {
+    tb.innerHTML = '<tr><td colspan="6" class="empty-state">Aucune voix attribuée.</td></tr>';
+    return;
+  }
+  tb.innerHTML = state.royalVotes.slice(0, 200).map(v => {
+    const ch = state.champions.find(c => c.id === v.champion_id);
+    const cat = CR_CATEGORIES[v.category] || CR_CATEGORIES.autre;
+    return '<tr>' +
+      '<td style="white-space:nowrap">' + escapeHtml(formatDate(v.created_at)) +
+        (v.round_number ? ' <small style="color:var(--text-dim)">R' + v.round_number + '</small>' : '') + '</td>' +
+      '<td>' + escapeHtml(ch ? ch.pseudo : '(champion supprimé)') + '</td>' +
+      '<td><strong>' + (v.voices > 0 ? '+' : '') + v.voices + '</strong></td>' +
+      '<td>' + escapeHtml(cat.label) + '</td>' +
+      '<td style="color:var(--text-dim)">' + escapeHtml(v.reason || '') + '</td>' +
+      '<td><button class="danger" data-action="cr-revoke" data-id="' + escapeHtml(v.id) + '">⟲ Annuler</button></td>' +
+    '</tr>';
+  }).join('');
+}
+
+function crPopulateSelect() {
+  const sel = $('#cr-champion');
+  if (!sel) return;
+  const keep = sel.value;
+  const byAlly = { A: [], B: [], C: [], D: [] };
+  for (const ch of state.champions) {
+    const a = REGION_TO_ALLIANCE[ch.region];
+    if (byAlly[a]) byAlly[a].push(ch);
+  }
+  let h = '<option value="">— choisir —</option>';
+  for (const k of ['A', 'B', 'C', 'D']) {
+    if (!byAlly[k].length) continue;
+    h += '<optgroup label="' + escapeHtml(ALLIANCES[k].name) + '">';
+    h += byAlly[k].sort((a, b) => (a.pseudo || '').localeCompare(b.pseudo || ''))
+      .map(ch => '<option value="' + escapeHtml(ch.id) + '">' + escapeHtml(ch.pseudo) +
+                 ' — ' + escapeHtml(ch.region || '') + '</option>').join('');
+    h += '</optgroup>';
+  }
+  sel.innerHTML = h;
+  if (keep) sel.value = keep;
+}
+
+function crRenderAll() {
+  crPopulateSelect();
+  crRenderLeader();
+  crRenderStandings();
+  crRenderLog();
+  const dis = !state.crownReady;
+  ['#cr-award', '#cr-crown', '#cr-uncrown'].forEach(s => { const b = $(s); if (b) b.disabled = dis; });
+}
+
+document.addEventListener('click', (e) => {
+  const pre = e.target.closest('#cr-presets button');
+  if (pre) {
+    $('#cr-category').value = pre.dataset.cat;
+    $('#cr-voices').value = pre.dataset.voices;
+    $('#cr-champion').focus();
+  }
+});
+
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-action="cr-revoke"]');
+  if (!btn) return;
+  if (!confirm('Annuler cette attribution de voix ?')) return;
+  const { error } = await sb.from('royal_votes').delete().eq('id', btn.dataset.id);
+  if (error) return showBanner('err', 'Erreur : ' + error.message);
+  showBanner('ok', '⟲ Attribution annulée');
+  await loadRoyal();
+  crRenderAll();
+});
+
+function crWire() {
+  const award = $('#cr-award');
+  if (!award || award.dataset.wired) return;
+  award.dataset.wired = '1';
+
+  award.addEventListener('click', async () => {
+    const champion_id = $('#cr-champion').value;
+    const voices = parseInt($('#cr-voices').value, 10);
+    if (!champion_id) return showBanner('err', 'Choisis un champion.');
+    if (!voices || isNaN(voices)) return showBanner('err', 'Le nombre de voix ne peut pas être zéro.');
+    award.disabled = true;
+    const { error } = await sb.from('royal_votes').insert({
+      champion_id: champion_id,
+      voices: voices,
+      category: $('#cr-category').value,
+      reason: ($('#cr-reason').value || '').trim() || null,
+      round_number: $('#cr-round').value ? parseInt($('#cr-round').value, 10) : null
+    });
+    award.disabled = false;
+    if (error) return showBanner('err', 'Erreur : ' + error.message);
+    const ch = state.champions.find(c => c.id === champion_id);
+    showBanner('ok', '♛ ' + (voices > 0 ? '+' + voices : voices) + ' voix pour ' + (ch ? ch.pseudo : 'ce champion'));
+    $('#cr-reason').value = '';
+    await loadRoyal();
+    crRenderAll();
+  });
+
+  $('#cr-crown').addEventListener('click', async () => {
+    const p = crPretender();
+    if (!p.row) return showBanner('err', 'Aucun prétendant dans le camp en tête : attribue des voix d\'abord.');
+    const a = ALLIANCES[p.lead.key];
+    if (!confirm('Sacrer ' + p.row.ch.pseudo + ' Roi ?\n\n' +
+        'Camp vainqueur : ' + a.name + ' (' + p.lead.cells + ' territoires)\n' +
+        'Voix du prétendant : ' + p.row.voices + '\n\n' +
+        'La cérémonie part sur l\'écran géant. Le sacre reste annulable.')) return;
+    const { error } = await sb.from('campaign_state').upsert({
+      key: 'crown',
+      value: { champion_id: p.row.ch.id, alliance: p.lead.key, voices: p.row.voices,
+               crowned_at: new Date().toISOString() },
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'key' });
+    if (error) return showBanner('err', 'Erreur : ' + error.message);
+    showBanner('ok', '♛ ' + p.row.ch.pseudo + ' est sacré Roi');
+    await loadRoyal();
+    crRenderAll();
+  });
+
+  $('#cr-uncrown').addEventListener('click', async () => {
+    if (!confirm('Annuler le sacre ? La cérémonie disparaît de l\'écran géant.')) return;
+    const { error } = await sb.from('campaign_state').delete().eq('key', 'crown');
+    if (error) return showBanner('err', 'Erreur : ' + error.message);
+    showBanner('ok', '⟲ Sacre annulé');
+    await loadRoyal();
+    crRenderAll();
+  });
+
+  $('#cr-refresh').addEventListener('click', async () => { await loadRoyal(); crRenderAll(); });
+}
+
 </script>
 
 </body>
