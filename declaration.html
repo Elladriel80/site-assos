@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0A0806">
+<title>Déclarer une bataille — InterRégions 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cinzel+Decorative:wght@400;700;900&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C; --gold-l: #E8C96A; --gold-d: #8A6E2F;
+  --gold-glow: rgba(201,168,76,0.55);
+  --crimson: #6B0F0F; --crim-l: #A82020; --ember: #FF6B2C;
+  --bg: #0A0806; --bg2: #0F0C09; --bg3: #171210; --bg4: #1E1810;
+  --parch: #E8DFC8; --parch-d: #C4B89A; --parch-dk: #8A7A5A;
+  --c-A: #2F5E8F; --c-A-l: #5C8FC4;
+  --c-B: #9E2B2B; --c-B-l: #C95454;
+  --c-C: #2F6B3E; --c-C-l: #59A06C;
+  --c-D: #B0862A; --c-D-l: #E0B44E;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Lato', sans-serif; background: var(--bg); color: var(--parch);
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.07), transparent 55%),
+    radial-gradient(ellipse at 80% 100%, rgba(107,15,15,0.10), transparent 55%);
+  user-select: none; -webkit-user-select: none;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+/* ── Ossature ───────────────────────────────────────────────── */
+.screen { position: fixed; inset: 0; display: none; flex-direction: column; padding: 22px; }
+.screen.on { display: flex; animation: fade .28s ease-out; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.topbar { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; padding-bottom: 14px; }
+.topbar .back {
+  font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: .1em;
+  color: var(--parch-dk); padding: 12px 18px; border: 1px solid var(--gold-d); border-radius: 3px;
+}
+.topbar .back:active { background: rgba(201,168,76,.14); }
+.topbar h2 {
+  font-family: 'Cinzel', serif; font-size: clamp(1.1rem, 2.6vw, 1.7rem);
+  letter-spacing: .14em; text-transform: uppercase; color: var(--gold); flex: 1 1 auto;
+}
+.topbar .round {
+  font-family: 'Cinzel', serif; font-size: .95rem; letter-spacing: .16em;
+  color: var(--gold-d); border: 1px solid var(--gold-d); padding: 9px 15px; border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* ── Accueil ────────────────────────────────────────────────── */
+#s-home { justify-content: center; align-items: center; text-align: center; }
+#s-home h1 {
+  font-family: 'Cinzel Decorative', serif; font-weight: 900;
+  font-size: clamp(2rem, 6vw, 4.2rem); color: var(--gold);
+  letter-spacing: .06em; text-shadow: 0 0 46px var(--gold-glow); line-height: 1.08;
+}
+#s-home .sub {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.5rem); color: var(--parch-dk); margin-top: 12px;
+}
+.big-cta {
+  margin-top: 40px; padding: 26px 60px;
+  font-family: 'Cinzel', serif; font-weight: 800;
+  font-size: clamp(1.1rem, 2.6vw, 1.8rem); letter-spacing: .16em; text-transform: uppercase;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold), var(--gold-d));
+  color: #12100b; border-radius: 4px; box-shadow: 0 0 44px var(--gold-glow);
+}
+.big-cta:active { transform: translateY(2px); box-shadow: 0 0 22px var(--gold-glow); }
+#s-home .round-badge {
+  margin-top: 26px; font-family: 'Cinzel', serif; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--gold-d); font-size: clamp(.8rem, 1.4vw, 1rem);
+}
+.recent {
+  position: fixed; left: 0; right: 0; bottom: 0; padding: 14px 22px;
+  border-top: 1px solid rgba(201,168,76,.2); background: rgba(6,5,4,.7);
+  font-size: clamp(.7rem, 1.1vw, .9rem); color: var(--parch-dk);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.recent b { color: var(--parch-d); font-family: 'Cinzel', serif; font-weight: 600; }
+
+/* ── Recherche et liste ─────────────────────────────────────── */
+.search {
+  flex: 0 0 auto; width: 100%; padding: 16px 18px; font-size: 1.25rem;
+  background: var(--bg2); border: 1px solid var(--gold-d); border-radius: 3px;
+  color: var(--parch); font-family: 'Lato', sans-serif; margin-bottom: 12px;
+}
+.search:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 14px rgba(201,168,76,.28); }
+.champ-grid {
+  flex: 1 1 auto; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px; align-content: start; padding-bottom: 8px;
+}
+.champ-card {
+  display: flex; align-items: center; gap: 12px; text-align: left;
+  padding: 14px 14px; background: linear-gradient(180deg, var(--bg3), var(--bg2));
+  border: 1px solid rgba(201,168,76,.28); border-radius: 3px; min-height: 76px;
+}
+.champ-card:active { background: rgba(201,168,76,.16); border-color: var(--gold); }
+.champ-card svg { width: 38px; height: 42px; flex: 0 0 auto; }
+.champ-card .who { min-width: 0; flex: 1 1 auto; }
+.champ-card .who .p {
+  display: block;
+  font-family: 'Cinzel', serif; font-size: 1.05rem; font-weight: 600; color: var(--parch);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.champ-card .who .r {
+  display: block; font-size: .82rem; color: var(--parch-dk); margin-top: 3px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.champ-card .ally { width: 8px; align-self: stretch; border-radius: 2px; flex: 0 0 auto; }
+.empty-list {
+  grid-column: 1 / -1; text-align: center; padding: 40px;
+  font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-dk); font-size: 1.1rem;
+}
+
+/* ── Duel et confirmation ───────────────────────────────────── */
+.duel { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.duel-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(20px, 5vw, 70px); width: 100%; margin-bottom: 26px;
+}
+.duel-side { text-align: center; max-width: 38%; }
+.duel-side svg { width: clamp(70px, 9vw, 120px); height: clamp(80px, 10vw, 136px); }
+.duel-side .nm {
+  font-family: 'Cinzel', serif; font-weight: 700; font-size: clamp(1rem, 2.1vw, 1.55rem);
+  margin-top: 10px; line-height: 1.2;
+}
+.duel-side .rg { font-size: clamp(.75rem, 1.2vw, .95rem); color: var(--parch-dk); margin-top: 4px; }
+.duel-side .tag {
+  font-family: 'Cinzel', serif; font-size: .72rem; letter-spacing: .24em;
+  text-transform: uppercase; margin-top: 8px;
+}
+.duel-side.win .tag { color: var(--gold-l); }
+.duel-side.lose .tag { color: var(--crim-l); }
+.duel-vs {
+  font-family: 'Cinzel Decorative', serif; font-size: clamp(1.4rem, 3.6vw, 2.8rem);
+  color: var(--gold-d); flex: 0 0 auto;
+}
+.handover {
+  text-align: center; font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(1rem, 2.1vw, 1.5rem); color: var(--parch-d);
+  border: 1px solid var(--gold-d); border-radius: 3px; padding: 16px 22px;
+  background: rgba(201,168,76,.06); margin-bottom: 22px; max-width: 720px;
+}
+.handover b { font-family: 'Cinzel', serif; font-style: normal; color: var(--gold-l); }
+.actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.btn-major {
+  padding: 22px 46px; font-family: 'Cinzel', serif; font-weight: 800;
+  font-size: clamp(1rem, 2.1vw, 1.4rem); letter-spacing: .14em; text-transform: uppercase;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold), var(--gold-d));
+  color: #12100b; border-radius: 4px; box-shadow: 0 0 34px var(--gold-glow);
+}
+.btn-major:active { transform: translateY(2px); }
+.btn-major[disabled] { opacity: .5; box-shadow: none; }
+.btn-minor {
+  padding: 22px 34px; font-family: 'Cinzel', serif; font-size: clamp(.9rem, 1.6vw, 1.1rem);
+  letter-spacing: .12em; text-transform: uppercase; color: var(--parch-d);
+  border: 1px solid var(--gold-d); border-radius: 4px;
+}
+.btn-minor:active { background: rgba(201,168,76,.12); }
+
+/* ── Résultat ───────────────────────────────────────────────── */
+#s-done { justify-content: center; align-items: center; text-align: center; }
+#s-done .verdict {
+  font-family: 'Cinzel Decorative', serif; font-weight: 900;
+  font-size: clamp(1.8rem, 5vw, 3.6rem); color: var(--gold-l);
+  text-shadow: 0 0 48px var(--gold-glow); line-height: 1.1;
+}
+#s-done .detail {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.5rem); color: var(--parch-d); margin-top: 16px; max-width: 760px;
+}
+#s-done .rule { width: 260px; height: 1px; margin: 26px auto; background: linear-gradient(90deg, transparent, var(--gold-d), transparent); }
+
+/* ── Salut à l'adversaire ───────────────────────────────────── */
+.salute-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  flex: 1 1 auto; align-content: center; max-width: 1000px; margin: 0 auto; width: 100%;
+}
+@media (max-width: 720px) { .salute-grid { grid-template-columns: 1fr; } }
+.salute-card {
+  border: 1px solid var(--gold-d); border-radius: 3px; padding: 18px;
+  background: linear-gradient(180deg, var(--bg3), var(--bg2)); text-align: center;
+}
+.salute-card .from {
+  font-family: 'Cinzel', serif; font-size: .74rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--gold-d);
+}
+.salute-card .to {
+  font-family: 'Cinzel', serif; font-weight: 700; font-size: clamp(1rem, 1.9vw, 1.3rem);
+  margin: 6px 0 14px;
+}
+.salute-card .opts { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.salute-btn {
+  padding: 16px 20px; border: 1px solid var(--gold-d); border-radius: 3px;
+  font-family: 'Cinzel', serif; font-size: .95rem; letter-spacing: .08em;
+  color: var(--parch); min-width: 140px;
+}
+.salute-btn:active { background: rgba(201,168,76,.16); }
+.salute-btn.done {
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  color: #12100b; border-color: var(--gold); font-weight: 700;
+}
+.salute-note {
+  text-align: center; font-family: 'IM Fell English', serif; font-style: italic;
+  color: var(--parch-dk); margin-top: 18px; font-size: 1rem;
+}
+
+/* ── Divers ─────────────────────────────────────────────────── */
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 118px; z-index: 50;
+  padding: 16px 26px; border-radius: 3px; font-size: 1.05rem; max-width: 86vw; text-align: center;
+  background: linear-gradient(180deg, rgba(232,223,200,.97), rgba(205,193,164,.95));
+  color: #241708; border: 1px solid #6b5426; box-shadow: 0 6px 26px rgba(0,0,0,.8);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.toast.show { opacity: 1; }
+.toast.err { background: linear-gradient(180deg, #f0d2cc, #dcb4ac); border-color: #7a2018; }
+.spinner {
+  display: inline-block; width: 20px; height: 20px; vertical-align: -3px;
+  border: 3px solid var(--gold-d); border-top-color: transparent; border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.footer-hint {
+  flex: 0 0 auto; text-align: center; padding-top: 12px;
+  font-family: 'IM Fell English', serif; font-style: italic;
+  color: var(--parch-dk); font-size: .95rem;
+}
+</style>
+</head>
+<body>
+
+<!-- ACCUEIL -->
+<div class="screen on" id="s-home">
+  <h1>Déclarez<br>votre bataille</h1>
+  <div class="sub">Le vainqueur saisit, le vaincu confirme</div>
+  <button class="big-cta" id="go">⚔ Nouvelle bataille</button>
+  <div class="round-badge" id="home-round">Ronde —</div>
+  <div class="recent" id="recent">—</div>
+</div>
+
+<!-- VAINQUEUR -->
+<div class="screen" id="s-winner">
+  <div class="topbar">
+    <button class="back" data-go="s-home">← Retour</button>
+    <h2>Qui l'emporte ?</h2>
+    <div class="round" id="round-1">Ronde —</div>
+  </div>
+  <input class="search" id="q-winner" placeholder="Cherche un pseudo, une région, une faction…" autocomplete="off">
+  <div class="champ-grid" id="list-winner"></div>
+</div>
+
+<!-- VAINCU -->
+<div class="screen" id="s-loser">
+  <div class="topbar">
+    <button class="back" data-go="s-winner">← Retour</button>
+    <h2>Contre qui ?</h2>
+    <div class="round" id="round-2">Ronde —</div>
+  </div>
+  <input class="search" id="q-loser" placeholder="Cherche un pseudo, une région, une faction…" autocomplete="off">
+  <div class="champ-grid" id="list-loser"></div>
+</div>
+
+<!-- CONFIRMATION PAR LE PERDANT -->
+<div class="screen" id="s-confirm">
+  <div class="topbar">
+    <button class="back" data-go="s-loser">← Retour</button>
+    <h2>Confirmation</h2>
+    <div class="round" id="round-3">Ronde —</div>
+  </div>
+  <div class="duel">
+    <div class="duel-row" id="duel-row"></div>
+    <div class="handover" id="handover"></div>
+    <div class="actions">
+      <button class="btn-minor" data-go="s-winner">Ce n'est pas ça</button>
+      <button class="btn-major" id="confirm">✔ Je confirme</button>
+    </div>
+  </div>
+</div>
+
+<!-- RÉSULTAT -->
+<div class="screen" id="s-done">
+  <div class="verdict" id="verdict"></div>
+  <div class="rule"></div>
+  <div class="detail" id="detail"></div>
+  <div class="actions" style="margin-top:34px">
+    <button class="btn-major" id="to-salute">Saluer l'adversaire</button>
+    <button class="btn-minor" id="done-home">Terminer</button>
+  </div>
+</div>
+
+<!-- SALUT -->
+<div class="screen" id="s-salute">
+  <div class="topbar">
+    <h2>Un salut à l'adversaire ?</h2>
+    <div class="round" id="round-4">Ronde —</div>
+  </div>
+  <div class="salute-grid" id="salute-grid"></div>
+  <div class="salute-note">Chaque salut vaut une voix pour le titre de Roi. Un seul par joueur et par partie.</div>
+  <div class="actions" style="margin-top:22px;flex:0 0 auto">
+    <button class="btn-major" id="salute-done">Terminer</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   Tablette de déclaration — InterRégions 2026
+   Parcours : vainqueur → vaincu → confirmation par le perdant → envoi
+   → salut à l'adversaire → retour à l'accueil.
+   Tout passe par les RPC declare_battle() et acclaim_opponent(), qui
+   portent les garde-fous : l'écran ne fait que guider, il ne décide rien.
+   ══════════════════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const ALLIANCES = {
+  A: { name: "Ordre de l'Azur",     short: 'Azur',    color: '#2F5E8F', light: '#5C8FC4' },
+  B: { name: 'Bannière de Gueules', short: 'Gueules', color: '#9E2B2B', light: '#C95454' },
+  C: { name: 'Ligue de Sinople',    short: 'Sinople', color: '#2F6B3E', light: '#59A06C' },
+  D: { name: "Couronne d'Or",       short: 'Or',      color: '#B0862A', light: '#E0B44E' },
+  IDF: { name: 'Cité franche',      short: 'Neutre',  color: '#23201C', light: '#6E665A' }
+};
+const REGION_TO_ALLIANCE = {
+  'Alsace': 'A', 'Bretagne': 'A', 'Basse-Normandie': 'A', 'Rhône-Alpes': 'A', 'Corse': 'A',
+  'Nord-Pas-de-Calais': 'B', 'Bourgogne': 'B', "Provence-Alpes-Côte d'Azur": 'B', 'Aquitaine': 'B', 'Midi-Pyrénées': 'B',
+  'Picardie': 'C', 'Haute-Normandie': 'C', 'Centre': 'C', 'Franche-Comté': 'C', 'Auvergne': 'C',
+  'Lorraine': 'D', 'Pays de la Loire': 'D', 'Champagne-Ardenne': 'D', 'Poitou-Charentes': 'D',
+  'Languedoc-Roussillon': 'D', 'Limousin': 'D',
+  'Île-de-France': 'IDF'
+};
+const SHIELD_SHAPES = {
+  heater: 'M -10 -12 L 10 -12 L 10 -2 Q 10 8 0 14 Q -10 8 -10 -2 Z',
+  kite:   'M -8 -12 L 8 -12 L 8 0 Q 8 11 0 16 Q -8 11 -8 0 Z',
+  round:  'M 0 -12 A 12 12 0 1 1 -0.001 -12 Z',
+  banner: 'M -10 -13 L 10 -13 L 10 9 L 0 14 L -10 9 Z',
+  square: 'M -11 -11 L 11 -11 L 11 11 L -11 11 Z'
+};
+const CHARGES = {
+  none:'', fleur:'⚜', cross:'✚', crossPattee:'✠', star5:'★', star6:'✶',
+  star8:'✱', sparkle:'✦', sun:'☉', moon:'☽', anchor:'⚓', hammer:'⚒',
+  swords:'⚔', scales:'⚖', flag:'⚑', crown:'♛', diamond:'◆', triangle:'▲',
+  circle:'●', spiral:'❀', bolt:'⚡', flame:'🜂', skull:'☠'
+};
+
+let champions = [];
+let round = 1;
+let pick = { winner: null, loser: null, battle: null, saluted: {} };
+let idleTimer = null;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+/* ── Héraldique ─────────────────────────────────────────────── */
+let clipSeq = 0;
+function blason(b) {
+  if (!b) b = { shape:'heater', field:{type:'plain',color1:'#b13a3a',color2:'#ececec'}, charge:{type:'none',color:'#e7c878'} };
+  const shape = SHIELD_SHAPES[b.shape] || SHIELD_SHAPES.heater;
+  const f = b.field || { type:'plain', color1:'#b13a3a', color2:'#ececec' };
+  const c = b.charge || { type:'none', color:'#e7c878' };
+  const id = 'bc' + (++clipSeq);
+  let inner;
+  switch (f.type) {
+    case 'per_pale':
+      inner = '<rect x="-14" y="-14" width="14" height="32" fill="'+f.color1+'"/><rect x="0" y="-14" width="14" height="32" fill="'+f.color2+'"/>'; break;
+    case 'per_fess':
+      inner = '<rect x="-14" y="-14" width="28" height="14" fill="'+f.color1+'"/><rect x="-14" y="0" width="28" height="18" fill="'+f.color2+'"/>'; break;
+    case 'quartered':
+      inner = '<rect x="-14" y="-14" width="14" height="14" fill="'+f.color1+'"/><rect x="0" y="-14" width="14" height="14" fill="'+f.color2+'"/>' +
+              '<rect x="-14" y="0" width="14" height="18" fill="'+f.color2+'"/><rect x="0" y="0" width="14" height="18" fill="'+f.color1+'"/>'; break;
+    case 'per_bend':
+      inner = '<rect x="-14" y="-14" width="28" height="32" fill="'+f.color1+'"/><polygon points="-14,18 14,-14 14,18" fill="'+f.color2+'"/>'; break;
+    default:
+      inner = '<rect x="-14" y="-14" width="28" height="32" fill="'+f.color1+'"/>';
+  }
+  const g = CHARGES[c.type] || '';
+  return '<svg viewBox="-17 -17 34 36">' +
+    '<defs><clipPath id="'+id+'"><path d="'+shape+'"/></clipPath>' +
+    '<linearGradient id="sh'+id+'" x1="0" y1="0" x2="0.5" y2="1">' +
+      '<stop offset="0%" stop-color="#fff" stop-opacity="0.34"/>' +
+      '<stop offset="45%" stop-color="#fff" stop-opacity="0.05"/>' +
+      '<stop offset="100%" stop-color="#000" stop-opacity="0.3"/></linearGradient></defs>' +
+    '<g clip-path="url(#'+id+')">' + inner + '</g>' +
+    (g ? '<text x="0" y="3" text-anchor="middle" font-size="13" font-family="Arial,sans-serif" fill="'+c.color+'" paint-order="stroke" stroke="#140a03" stroke-width="0.7">'+g+'</text>' : '') +
+    '<path d="'+shape+'" fill="url(#sh'+id+')" opacity="0.55"/>' +
+    '<path d="'+shape+'" fill="none" stroke="#140a03" stroke-width="1.25"/></svg>';
+}
+
+/* ── Navigation ─────────────────────────────────────────────── */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  resetIdle(id);
+  if (id === 's-winner') { $('#q-winner').value = ''; renderList('winner'); }
+  if (id === 's-loser')  { $('#q-loser').value = '';  renderList('loser'); }
+}
+/* La tablette revient d'elle-même à l'accueil : personne ne doit
+   trouver l'écran bloqué au milieu d'une déclaration abandonnée. */
+function resetIdle(id) {
+  clearTimeout(idleTimer);
+  if (id === 's-home') return;
+  const delay = (id === 's-done' || id === 's-salute') ? 45000 : 90000;
+  idleTimer = setTimeout(() => { pick = { winner:null, loser:null, battle:null, saluted:{} }; show('s-home'); }, delay);
+}
+['click','touchstart','keydown'].forEach(ev =>
+  document.addEventListener(ev, () => {
+    const cur = document.querySelector('.screen.on');
+    if (cur) resetIdle(cur.id);
+  }, { passive: true }));
+
+function toast(msg, isErr) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.className = 'toast'; }, isErr ? 6000 : 3000);
+}
+
+/* ── Données ────────────────────────────────────────────────── */
+async function loadAll() {
+  const [ch, rd, bt] = await Promise.all([
+    sb.from('champions_public').select('id,pseudo,region,faction,blason').order('pseudo'),
+    sb.from('campaign_state_public').select('*').eq('key', 'round').maybeSingle(),
+    sb.from('battles_public').select('*').order('created_at', { ascending: false }).limit(6)
+  ]);
+  if (ch.error) { toast('Impossible de charger les champions : ' + ch.error.message, true); return; }
+  champions = (ch.data || []).filter(c => REGION_TO_ALLIANCE[c.region] && REGION_TO_ALLIANCE[c.region] !== 'IDF');
+  round = (rd && rd.data && rd.data.value && rd.data.value.n) ? rd.data.value.n : 1;
+  document.querySelectorAll('.round').forEach(e => e.textContent = 'Ronde ' + round);
+  $('#home-round').textContent = 'Ronde ' + round;
+  renderRecent(bt && bt.data ? bt.data : []);
+}
+function renderRecent(rows) {
+  const el = $('#recent');
+  if (!rows.length) { el.innerHTML = 'Aucune bataille déclarée pour l\'instant. Ouvrez le bal.'; return; }
+  const by = {};
+  for (const c of champions) by[c.id] = c;
+  const line = rows.map(b => {
+    const w = by[b.winner_id], l = by[b.loser_id];
+    if (!w || !l) return '';
+    return '⚔ <b>' + esc(w.pseudo) + '</b> l\'emporte sur <b>' + esc(l.pseudo) + '</b>';
+  }).filter(Boolean).join(' &nbsp;·&nbsp; ');
+  el.innerHTML = line || 'Aucune bataille déclarée pour l\'instant.';
+}
+
+/* ── Listes de champions ────────────────────────────────────── */
+function norm(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+function renderList(which) {
+  const q = norm($(which === 'winner' ? '#q-winner' : '#q-loser').value);
+  const host = $(which === 'winner' ? '#list-winner' : '#list-loser');
+  let list = champions;
+  if (which === 'loser' && pick.winner) list = list.filter(c => c.id !== pick.winner.id);
+  if (q) list = list.filter(c => norm(c.pseudo).includes(q) || norm(c.region).includes(q) || norm(c.faction).includes(q));
+  if (!list.length) { host.innerHTML = '<div class="empty-list">Aucun champion ne correspond.</div>'; return; }
+  host.innerHTML = list.map(c => {
+    const a = ALLIANCES[REGION_TO_ALLIANCE[c.region]] || ALLIANCES.IDF;
+    return '<button class="champ-card" data-id="' + esc(c.id) + '" data-which="' + which + '">' +
+      '<span class="ally" style="background:' + a.color + '"></span>' +
+      blason(c.blason) +
+      '<span class="who"><span class="p">' + esc(c.pseudo) + '</span>' +
+      '<span class="r">' + esc(c.region) + (c.faction ? ' · ' + esc(c.faction) : '') + '</span></span>' +
+    '</button>';
+  }).join('');
+}
+$('#q-winner').addEventListener('input', () => renderList('winner'));
+$('#q-loser').addEventListener('input', () => renderList('loser'));
+
+document.addEventListener('click', e => {
+  const card = e.target.closest('.champ-card');
+  if (card) {
+    const c = champions.find(x => x.id === card.dataset.id);
+    if (!c) return;
+    if (card.dataset.which === 'winner') { pick.winner = c; show('s-loser'); }
+    else { pick.loser = c; renderConfirm(); show('s-confirm'); }
+    return;
+  }
+  const b = e.target.closest('[data-go]');
+  if (b) show(b.dataset.go);
+});
+
+/* ── Confirmation par le vaincu ─────────────────────────────── */
+function side(c, kind) {
+  const a = ALLIANCES[REGION_TO_ALLIANCE[c.region]] || ALLIANCES.IDF;
+  return '<div class="duel-side ' + kind + '">' + blason(c.blason) +
+    '<div class="nm">' + esc(c.pseudo) + '</div>' +
+    '<div class="rg" style="color:' + a.light + '">' + esc(a.short) + ' · ' + esc(c.region) + '</div>' +
+    '<div class="tag">' + (kind === 'win' ? 'Vainqueur' : 'Vaincu') + '</div></div>';
+}
+function renderConfirm() {
+  $('#duel-row').innerHTML = side(pick.winner, 'win') + '<div class="duel-vs">bat</div>' + side(pick.loser, 'lose');
+  $('#handover').innerHTML = 'Passe la tablette à <b>' + esc(pick.loser.pseudo) +
+    '</b>. C\'est au vaincu de confirmer le résultat.';
+  $('#confirm').disabled = false;
+  $('#confirm').textContent = '✔ Je confirme ma défaite';
+}
+
+$('#confirm').addEventListener('click', async () => {
+  const btn = $('#confirm');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Enregistrement…';
+  const { data, error } = await sb.rpc('declare_battle', {
+    p_winner_id: pick.winner.id,
+    p_loser_id: pick.loser.id
+  });
+  if (error) {
+    btn.disabled = false;
+    btn.textContent = '✔ Je confirme ma défaite';
+    toast(error.message || 'Erreur à l\'enregistrement', true);
+    return;
+  }
+  pick.battle = data;
+  pick.saluted = {};
+  renderDone();
+  show('s-done');
+  loadAll();
+});
+
+/* ── Résultat ───────────────────────────────────────────────── */
+function renderDone() {
+  const d = pick.battle || {};
+  const wa = ALLIANCES[d.winner_alliance] || ALLIANCES.IDF;
+  const la = ALLIANCES[d.loser_alliance] || ALLIANCES.IDF;
+  $('#verdict').innerHTML = esc(d.winner || pick.winner.pseudo) + ' l\'emporte';
+  let txt;
+  if (d.same_alliance) {
+    txt = 'Duel fratricide sous la même bannière : la bataille est consignée, mais aucun territoire ne change de camp.';
+  } else if (d.transferred) {
+    txt = 'Un territoire passe de <b style="color:' + la.light + '">' + esc(la.name) +
+          '</b> à <b style="color:' + wa.light + '">' + esc(wa.name) +
+          '</b>. La carte vient de bouger dans toute la halle.';
+  } else {
+    txt = 'La victoire est consignée. <b style="color:' + la.light + '">' + esc(la.name) +
+          '</b> n\'avait plus un pouce de terre à céder.';
+  }
+  $('#detail').innerHTML = txt;
+}
+$('#done-home').addEventListener('click', () => { pick = { winner:null, loser:null, battle:null, saluted:{} }; show('s-home'); });
+$('#to-salute').addEventListener('click', () => { renderSalute(); show('s-salute'); });
+$('#salute-done').addEventListener('click', () => { pick = { winner:null, loser:null, battle:null, saluted:{} }; show('s-home'); });
+
+/* ── Salut à l'adversaire ───────────────────────────────────── */
+function saluteCard(from, to) {
+  const done = pick.saluted[from.id];
+  return '<div class="salute-card">' +
+    '<div class="from">' + esc(from.pseudo) + ' salue</div>' +
+    '<div class="to">' + esc(to.pseudo) + '</div>' +
+    '<div class="opts">' +
+      '<button class="salute-btn' + (done === 'fairplay' ? ' done' : '') + '" data-from="' + esc(from.id) +
+        '" data-to="' + esc(to.id) + '" data-kind="fairplay"' + (done ? ' disabled' : '') + '>🤝 Fair-play</button>' +
+      '<button class="salute-btn' + (done === 'roleplay' ? ' done' : '') + '" data-from="' + esc(from.id) +
+        '" data-to="' + esc(to.id) + '" data-kind="roleplay"' + (done ? ' disabled' : '') + '>🎭 Panache</button>' +
+    '</div></div>';
+}
+function renderSalute() {
+  $('#salute-grid').innerHTML = saluteCard(pick.winner, pick.loser) + saluteCard(pick.loser, pick.winner);
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('.salute-btn');
+  if (!b || b.disabled) return;
+  b.disabled = true;
+  const { error } = await sb.rpc('acclaim_opponent', {
+    p_battle_id: (pick.battle || {}).battle_id,
+    p_from_id: b.dataset.from,
+    p_to_id: b.dataset.to,
+    p_kind: b.dataset.kind
+  });
+  if (error) { toast(error.message || 'Erreur', true); b.disabled = false; return; }
+  pick.saluted[b.dataset.from] = b.dataset.kind;
+  renderSalute();
+  toast('Salut enregistré, une voix de plus pour le trône');
+});
+
+/* ── Démarrage ──────────────────────────────────────────────── */
+$('#go').addEventListener('click', () => { pick = { winner:null, loser:null, battle:null, saluted:{} }; show('s-winner'); });
+loadAll();
+setInterval(() => {
+  const cur = document.querySelector('.screen.on');
+  if (cur && cur.id === 's-home') loadAll();
+}, 45000);
+</script>
+</body>
+</html>

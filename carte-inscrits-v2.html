@@ -1290,8 +1290,10 @@ async function fetchCells() {
   if (error) { console.warn('Cellules indisponibles :', error.message); return []; }
   return data || [];
 }
+/* battles_public plutôt que battles : la table porte les emails réels
+   des joueurs, la vue n'expose que des identifiants. */
 async function fetchBattles() {
-  const { data, error } = await sb.from('battles').select('*').order('created_at', { ascending: false }).limit(40);
+  const { data, error } = await sb.from('battles_public').select('*').order('created_at', { ascending: false }).limit(40);
   if (error) { console.warn('Batailles indisponibles :', error.message); return []; }
   return data || [];
 }
@@ -2491,16 +2493,17 @@ function renderKiosk() {
   if (!battles.length) {
     fh += '<div class="kf-empty">Les armées se rassemblent. Aucune bataille livrée.</div>';
   } else {
-    const byEmail = {};
-    for (const ch of champions) byEmail[ch.email] = ch;
+    const byId = {};
+    for (const ch of champions) byId[ch.id] = ch;
     for (const b of battles.slice(0, 9)) {
-      const wc = byEmail[b.winner_email], lc = byEmail[b.loser_email];
+      const wc = byId[b.winner_id], lc = byId[b.loser_id];
       const w = ALLIANCES[wc ? REGION_TO_ALLIANCE[wc.region] : 'IDF'] || ALLIANCES.IDF;
       const l = ALLIANCES[lc ? REGION_TO_ALLIANCE[lc.region] : 'IDF'] || ALLIANCES.IDF;
       fh += '<div class="kf-row">' +
         (b.round_number != null ? '<span style="color:var(--gold-d)">R' + b.round_number + '</span> ' : '') +
         '<b style="color:' + w.light + '">' + escapeHTML(wc ? wc.pseudo : w.short) + '</b>' +
         ' l\'emporte sur <b style="color:' + l.light + '">' + escapeHTML(lc ? lc.pseudo : l.short) + '</b>' +
+        (b.source === 'tablette' ? ' <span style="color:var(--gold-d);font-size:.85em">· déclarée à la tablette</span>' : '') +
         (b.notes ? '<br><span style="opacity:.6;font-style:italic">' + escapeHTML(String(b.notes).slice(0, 70)) + '</span>' : '') +
         '</div>';
     }

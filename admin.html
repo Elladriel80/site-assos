@@ -394,6 +394,20 @@
         💡 Une bataille cède <strong>1 cellule du perdant au vainqueur</strong>. L'auto-pick choisit la cellule perdante la plus proche du cluster du vainqueur. Tu peux toujours override via le dropdown.
       </div>
 
+      <div id="t-live" style="display:flex;gap:1em;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.2em;padding:.9em;border:1px solid var(--border);border-radius:3px">
+        <label style="min-width:180px"><span>📡 Ronde en cours (tablette)</span>
+          <select id="t-live-round">
+            <option value="">— non définie —</option>
+            <option value="1">Ronde 1</option><option value="2">Ronde 2</option>
+            <option value="3">Ronde 3</option><option value="4">Ronde 4</option>
+            <option value="5">Ronde 5</option>
+          </select></label>
+        <div style="color:var(--text-dim);font-size:.88rem;max-width:56ch;padding-bottom:.4em">
+          C'est cette ronde que la tablette de déclaration attribue aux parties saisies par les joueurs.
+          À avancer entre chaque ronde. <a href="declaration.html" target="_blank">→ ouvrir la tablette</a>
+        </div>
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr 120px;gap:1em;align-items:flex-end;margin-bottom:1em">
         <label><span>🏆 Vainqueur</span><select id="t-winner"><option value="">— choisir —</option></select></label>
         <label><span>💀 Vaincu</span><select id="t-loser"><option value="">— choisir —</option></select></label>
@@ -441,6 +455,7 @@
             <th>Vainqueur</th>
             <th>Vaincu</th>
             <th>Cellule cédée</th>
+            <th>Saisie</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -887,6 +902,7 @@ function switchTab(tab) {
     populateTournoiSelects();
     loadCells();
     loadBattles();
+    loadLiveRound();
   }
   if (tab === 'couronne') {
     crWire();
@@ -1507,7 +1523,7 @@ function renderBattles() {
   $('#t-count-battles').textContent = `${rows.length} batailles${filter ? ` (R${filter})` : ''}`;
   const tbody = $('#t-tbody-battles');
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Aucune bataille pour le moment.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Aucune bataille pour le moment.</td></tr>';
     return;
   }
   const lastId = state.battles[0]?.id;
@@ -1521,6 +1537,7 @@ function renderBattles() {
       <td>${winCh ? escapeHtml(winCh.pseudo) : escapeHtml(b.winner_email)}</td>
       <td>${losCh ? escapeHtml(losCh.pseudo) : escapeHtml(b.loser_email)}</td>
       <td class="muted email">${b.cell_transferred_id ? escapeHtml(b.cell_transferred_id) : '<em>même alliance</em>'}</td>
+      <td>${b.source === 'tablette' ? '<span title="Déclarée par les joueurs sur la tablette">📱 tablette</span>' : '<span style="color:var(--text-dim)">admin</span>'}</td>
       <td>${isLast ? `<button class="danger" data-action="undo-battle">⟲ Annuler</button>` : ''}</td>
     </tr>`;
   }).join('');
@@ -2952,6 +2969,41 @@ function crWire() {
   });
 
   $('#cr-refresh').addEventListener('click', async () => { await loadRoyal(); crRenderAll(); });
+}
+
+
+// =========================================================================
+// RONDE EN COURS — partagée avec la tablette de déclaration
+// Les joueurs ne choisissent pas leur ronde : la tablette lit cette valeur.
+// =========================================================================
+async function loadLiveRound() {
+  const sel = document.querySelector('#t-live-round');
+  if (!sel) return;
+  const { data, error } = await sb.from('campaign_state').select('*').eq('key', 'round').maybeSingle();
+  if (error) {
+    // migration phase 21 pas encore appliquée
+    sel.disabled = true;
+    sel.title = 'Applique admin_migration_phase21_declaration_tablette.sql';
+    return;
+  }
+  sel.disabled = false;
+  sel.value = (data && data.value && data.value.n) ? String(data.value.n) : '';
+  if (!sel.dataset.wired) {
+    sel.dataset.wired = '1';
+    sel.addEventListener('change', async () => {
+      const n = sel.value ? parseInt(sel.value, 10) : null;
+      if (!n) {
+        const { error: e1 } = await sb.from('campaign_state').delete().eq('key', 'round');
+        if (e1) return showBanner('err', 'Erreur : ' + e1.message);
+        return showBanner('ok', 'Ronde remise à zéro (la tablette repasse en ronde 1)');
+      }
+      const { error: e2 } = await sb.from('campaign_state').upsert({
+        key: 'round', value: { n: n }, updated_at: new Date().toISOString()
+      }, { onConflict: 'key' });
+      if (e2) return showBanner('err', 'Erreur : ' + e2.message);
+      showBanner('ok', '📡 La tablette enregistre désormais en ronde ' + n);
+    });
+  }
 }
 
 </script>
