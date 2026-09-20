@@ -121,6 +121,10 @@ footer a:hover { text-decoration:underline }
   <!-- ===================================================== -->
   <section class="step active" id="step-form">
     <div class="card">
+      <div class="alert alert-error" id="alert-closed" style="display:none;font-size:.95rem;border-left-width:4px">
+        🔒 <strong>Les inscriptions sont closes</strong> : les 16 équipes, les 30 places de jeu libre et les 22 places narratif sont toutes prises. Tu peux encore te placer en <strong>liste d'attente</strong> ci-dessous, sans aucun paiement, on te recontacte si une place se libère.
+      </div>
+
       <h2>Places restantes</h2>
       <p class="muted">Mise à jour en temps réel. Une fois ta catégorie pleine, ton inscription bascule automatiquement en <strong>liste d'attente</strong> — on te recontacte dès qu'une place se libère.</p>
 
@@ -128,21 +132,21 @@ footer a:hover { text-decoration:underline }
         <div class="stock-card" data-type="equipe">
           <div class="stock-type">⚔ Équipes</div>
           <div class="stock-num" id="stock-equipe">—</div>
-          <div class="stock-sub">sur 12 équipes</div>
+          <div class="stock-sub" id="stock-cap-equipe">sur 16 équipes</div>
           <span class="stock-desc">5 joueurs · tournoi par alliances · 5 rondes</span>
           <span class="stock-waitlist" id="wait-equipe" style="display:none"></span>
         </div>
         <div class="stock-card" data-type="jeu_libre">
           <div class="stock-type">🎲 Jeu Libre</div>
           <div class="stock-num" id="stock-jeu_libre">—</div>
-          <div class="stock-sub">sur 50 places</div>
+          <div class="stock-sub" id="stock-cap-jeu_libre">sur 30 places</div>
           <span class="stock-desc">Parties amicales · démonstrations</span>
           <span class="stock-waitlist" id="wait-jeu_libre" style="display:none"></span>
         </div>
         <div class="stock-card" data-type="narratif">
           <div class="stock-type">📜 Narratif</div>
           <div class="stock-num" id="stock-narratif">—</div>
-          <div class="stock-sub">sur 16 places</div>
+          <div class="stock-sub" id="stock-cap-narratif">sur 22 places</div>
           <span class="stock-desc">Animation Nimp'Games</span>
           <span class="stock-waitlist" id="wait-narratif" style="display:none"></span>
         </div>
@@ -365,6 +369,11 @@ async function loadStock() {
     const rem  = row.remaining;
     const wcnt = row.waitlist_count || 0;
 
+    const capEl = $('#stock-cap-' + t);
+    if (capEl && row.capacity != null) {
+      capEl.textContent = 'sur ' + row.capacity + (t === 'equipe' ? ' équipes' : ' places');
+    }
+
     card.classList.toggle('full',  rem <= 0);
     card.classList.toggle('tight', rem > 0 && rem <= 3);
 
@@ -389,6 +398,14 @@ async function loadStock() {
       opt.textContent = rem <= 0 ? baseLabel + ' · LISTE D\'ATTENTE' : baseLabel;
     }
   }
+  // Bandeau "inscriptions closes" : les trois axes à 0 place restante
+  const closedEl = $('#alert-closed');
+  if (closedEl) {
+    const allFull = ['equipe','jeu_libre','narratif']
+      .every(t => STOCK_STATE[t] && STOCK_STATE[t].remaining <= 0);
+    closedEl.style.display = allFull ? '' : 'none';
+  }
+
   // Met à jour le bandeau d'alerte si une catégorie est déjà sélectionnée
   refreshAvailabilityAlert();
 }
