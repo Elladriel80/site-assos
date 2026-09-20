@@ -332,20 +332,25 @@ header .actions a:hover, header .actions button:hover { transform: translateY(-1
 }
 .cell-vor.fresh { animation: cellPulse 1.9s ease-in-out infinite; }
 
-/* Ligne de front */
-.front-glow { fill: none; stroke: var(--ember); stroke-opacity: 0.40;
-  stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
-  vector-effect: non-scaling-stroke; }
-.front-line { fill: none; stroke: #FFE7BE; stroke-opacity: 1;
-  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
-  stroke-dasharray: 6 6; pointer-events: none;
-  vector-effect: non-scaling-stroke;
-  animation: frontMarch 3.2s steps(8) infinite; }
-@keyframes frontMarch { to { stroke-dashoffset: -24; } }
-/* Repli automatique : sur un petit écran ou une machine modeste,
-   mieux vaut une carte fixe et fluide qu'une carte animée et saccadée. */
-@media (max-width: 820px) { .front-line { animation: none; } }
-.reduced-motion .front-line { animation: none; }
+/* Ligne de front : une cicatrice de braise, pas une voie ferrée.
+   Quatre traits superposés du plus large au plus fin donnent une
+   épaisseur variable et un bord irrégulier, comme un trait de plume
+   repassé. Le seul pointillé est volontairement inégal. */
+.front-glow, .front-scorch, .front-line, .front-ink {
+  fill: none; stroke-linecap: round; stroke-linejoin: round;
+  pointer-events: none; vector-effect: non-scaling-stroke;
+}
+.front-glow   { stroke: #FF7A2C; stroke-opacity: 0.26; stroke-width: 11;
+                animation: emberBreath 4.6s steps(9) infinite alternate; }
+.front-scorch { stroke: #7E2409; stroke-opacity: 0.62; stroke-width: 4; }
+.front-line   { stroke: #FBEDD2; stroke-opacity: 0.96; stroke-width: 2; }
+.front-ink    { stroke: #2a1405; stroke-opacity: 0.55; stroke-width: 0.9;
+                stroke-dasharray: 17 6 4 11 26 5 9 7; }
+@keyframes emberBreath { from { stroke-opacity: 0.16; } to { stroke-opacity: 0.44; } }
+.front-mark   { pointer-events: none; }
+.layer-front-marks { pointer-events: none; }
+.reduced-motion .front-glow { animation: none; }
+@media (max-width: 820px) { .front-glow { animation: none; } }
 
 /* Bannières */
 .champion-marker { cursor: pointer; }
@@ -1195,17 +1200,15 @@ function layoutChampionPositions(n, cx, cy) {
   return pos;
 }
 
-/* Les champions inscrits après la dernière régénération admin ont des
-   cellules sans seed : elles étaient purement invisibles sur la carte.
-   On les calcule ici côté client (même géométrie que la régénération)
-   pour que personne ne manque à l'appel. */
+/* Recalcule la position de TOUS les fiefs à partir du semis ci-dessus.
+   À adopter en production, il faudra une régénération des territoires
+   côté admin avec le même algorithme : les seeds stockées en base
+   suivent encore l'ancienne rosace. Tant que le tournoi n'a pas
+   commencé, cette régénération ne coûte rien.
+   Effet de bord bienvenu : les champions inscrits après la dernière
+   régénération n'avaient pas de seed du tout et n'apparaissaient
+   simplement pas sur la carte. */
 function ensureSeeds() {
-  const SEED_R = 6;
-  const offsets = [];
-  for (let p = 0; p < 5; p++) {
-    const a = (Math.PI * 2 * p / 5) - Math.PI / 2;
-    offsets.push([Math.cos(a) * SEED_R, Math.sin(a) * SEED_R]);
-  }
   const byOwner = {};
   for (const c of cells) (byOwner[c.cluster_owner_email] = byOwner[c.cluster_owner_email] || []).push(c);
 
@@ -1214,21 +1217,31 @@ function ensureSeeds() {
     if (!ch.region || REGION_TO_ALLIANCE[ch.region] === 'IDF') continue;
     (byRegion[ch.region] = byRegion[ch.region] || []).push(ch);
   }
+
   for (const regName of Object.keys(byRegion)) {
-    const c = regionCentroids[regName];
-    if (!c) continue;
     const here = byRegion[regName];
-    const anchors = layoutChampionPositions(here.length, c[0], c[1]);
+    const ring = regionRings[regName];
+    const centroid = regionCentroids[regName];
+    const anchors = scatterAnchors(ring, here.length, _hashStr('fief:' + regName));
+    const spacing = anchors._spacing || 20;
+
     for (let i = 0; i < here.length; i++) {
       const ch = here[i];
-      ch._anchor = anchors[i];
-      const mine = byOwner[ch.email] || [];
-      for (const cell of mine) {
-        if (cell.seed_x != null && cell.seed_y != null) continue;
-        const off = offsets[cell.cluster_index] || offsets[0];
-        cell.seed_x = anchors[i][0] + off[0];
-        cell.seed_y = anchors[i][1] + off[1];
-        cell._synthetic = true;
+      // Repli sur le centroïde si le semis n'a pas trouvé assez de place
+      const a = anchors[i] || [centroid[0] + (i % 3 - 1) * 12, centroid[1] + (Math.floor(i / 3) - 1) * 12];
+      ch._anchor = a;
+      const mine = (byOwner[ch.email] || []).slice().sort((x, y) => x.cluster_index - y.cluster_index);
+      // Petite tache irrégulière plutôt qu'un pentagone : angles et
+      // rayons tirés au sort mais stables, indexés sur le champion.
+      let s2 = _hashStr('cl:' + ch.email);
+      const rnd = () => { s2 = (Math.imul(s2, 1664525) + 1013904223) >>> 0; return s2 / 4294967296; };
+      const base = rnd() * Math.PI * 2;
+      const R = spacing * 0.27;
+      for (let k = 0; k < mine.length; k++) {
+        const ang = base + (k / Math.max(1, mine.length)) * Math.PI * 2 + (rnd() - 0.5) * 1.05;
+        const rad = R * (0.48 + rnd() * 0.85);
+        mine[k].seed_x = a[0] + Math.cos(ang) * rad;
+        mine[k].seed_y = a[1] + Math.sin(ang) * rad;
       }
     }
   }
@@ -1355,6 +1368,193 @@ function buildDefs(ms) {
    différentes à l'intérieur d'une région, et les frontières entre deux
    régions dont l'alliance dominante diffère.
    ══════════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════
+   SEMIS DES FIEFS
+   La v1 plantait les 5 cellules de chaque champion en pentagone
+   régulier autour du centroïde de la région, tous les champions
+   groupés au centre. Résultat : une rosace, donc des territoires en
+   quartiers de tarte qui rayonnent, et des frontières rectilignes qui
+   se lisent comme un réseau de voies ferrées. Ici les fiefs sont
+   semés dans TOUTE la surface de la région, à distance minimale les
+   uns des autres, et les 5 cellules d'un même champion forment une
+   petite tache irrégulière. Les territoires deviennent des blocs
+   compacts aux contours accidentés.
+   ══════════════════════════════════════════════════════════════════ */
+let regionRings = {};
+function buildRegionRings() {
+  regionRings = {};
+  for (const f of FRANCE_GEOJSON.features) {
+    const g = f.geometry;
+    const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+    let best = null, n = 0;
+    for (const poly of polys) if (poly[0].length > n) { best = poly[0]; n = poly[0].length; }
+    if (!best) continue;
+    regionRings[f.properties.nom] = best.map(pt => project(pt[0], pt[1])).filter(xy => !isNaN(xy[0]));
+  }
+}
+function pointInRing(x, y, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+    if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+function ringBBox(ring) {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const p of ring) {
+    if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0];
+    if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1];
+  }
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+function ringArea(ring) {
+  let a = 0;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++)
+    a += (ring[j][0] + ring[i][0]) * (ring[j][1] - ring[i][1]);
+  return Math.abs(a / 2);
+}
+/* Un point est retenu s'il est dans la région ET si une petite croix
+   autour de lui l'est aussi : sans cette marge, des fiefs se plantent
+   sur la côte et leur blason déborde dans la mer. */
+function wellInside(x, y, ring, m) {
+  return pointInRing(x, y, ring) &&
+         pointInRing(x + m, y, ring) && pointInRing(x - m, y, ring) &&
+         pointInRing(x, y + m, ring) && pointInRing(x, y - m, ring);
+}
+function scatterAnchors(ring, count, seed) {
+  if (!ring || !ring.length || count < 1) return [];
+  const bb = ringBBox(ring);
+  const area = ringArea(ring);
+  let minD = Math.sqrt(area / count) * 0.72;
+  const margin = Math.min(9, Math.max(3, Math.sqrt(area / count) * 0.22));
+  const out = [];
+  let s = seed >>> 0, tries = 0;
+  const rnd = () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+  const budget = count * 1200;
+  while (out.length < count && tries < budget) {
+    tries++;
+    const x = bb.x + rnd() * bb.w, y = bb.y + rnd() * bb.h;
+    if (!wellInside(x, y, ring, margin)) continue;
+    let ok = true;
+    for (const q of out) if (Math.hypot(q[0] - x, q[1] - y) < minD) { ok = false; break; }
+    if (ok) out.push([x, y]);
+    if (tries % (count * 80) === 0) minD *= 0.86;   // on relâche si ça coince
+  }
+  out._spacing = minD;
+  return out;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TRACÉ À LA MAIN
+   Les arêtes de Voronoï sont rigoureusement droites : posées telles
+   quelles elles donnent un réseau de voies ferrées. On les casse avec
+   un bruit déterministe calculé À PARTIR DE L'ARÊTE, jamais de la
+   cellule, pour que deux territoires voisins produisent exactement la
+   même frontière et qu'aucun liseré blanc ne s'ouvre entre eux.
+   L'amplitude s'annule aux deux extrémités, donc les sommets restent
+   parfaitement joints.
+   ══════════════════════════════════════════════════════════════════ */
+function _hashStr(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function _rnd01(seed) {
+  let x = Math.imul(seed ^ 0x9E3779B9, 0x85EBCA6B);
+  x ^= x >>> 13; x = Math.imul(x, 0xC2B2AE35); x ^= x >>> 16;
+  return (x >>> 0) / 4294967296;
+}
+const _edgeCache = new Map();
+function edgeWobble(p, q) {
+  const flip = !(p[0] < q[0] || (p[0] === q[0] && p[1] < q[1]));
+  const a = flip ? q : p, b = flip ? p : q;
+  const key = a[0].toFixed(2) + ',' + a[1].toFixed(2) + '|' + b[0].toFixed(2) + ',' + b[1].toFixed(2);
+  let pts = _edgeCache.get(key);
+  if (!pts) {
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len, ny = dx / len;
+    const n = Math.max(3, Math.min(12, Math.round(len / 4.5)));
+    const amp = Math.min(3.0, Math.max(0.9, len * 0.20));
+    const seed = _hashStr(key);
+    pts = [a];
+    for (let k = 1; k < n; k++) {
+      const t = k / n;
+      // deux octaves : une grande ondulation et un tremblé de plume
+      const r = ((_rnd01(seed + k * 2654435761) - 0.5) * 2 +
+                 (_rnd01(seed + k * 1013904223) - 0.5) * 0.7) * amp * 0.75;
+      const taper = Math.sin(Math.PI * t);
+      pts.push([a[0] + dx * t + nx * r * taper, a[1] + dy * t + ny * r * taper]);
+    }
+    pts.push(b);
+    _edgeCache.set(key, pts);
+  }
+  return flip ? pts.slice().reverse() : pts;
+}
+function wobbleRing(poly) {
+  const out = [];
+  for (let i = 0; i < poly.length - 1; i++) {
+    const seg = edgeWobble(poly[i], poly[i + 1]);
+    for (let k = (i === 0 ? 0 : 1); k < seg.length; k++) out.push(seg[k]);
+  }
+  return out;
+}
+function ringPath(pts) {
+  let d = 'M' + pts[0][0].toFixed(2) + ',' + pts[0][1].toFixed(2);
+  for (let i = 1; i < pts.length; i++) d += 'L' + pts[i][0].toFixed(2) + ',' + pts[i][1].toFixed(2);
+  return d + 'Z';
+}
+/* Le front est redessiné en courbe par-dessus la frontière déjà tracée :
+   un écart d'un demi-point n'y ouvre aucun jour et le trait respire. */
+function curvePath(pts) {
+  if (pts.length < 3)
+    return pts.length === 2
+      ? 'M' + pts[0][0].toFixed(2) + ',' + pts[0][1].toFixed(2) + 'L' + pts[1][0].toFixed(2) + ',' + pts[1][1].toFixed(2)
+      : '';
+  let d = 'M' + pts[0][0].toFixed(2) + ',' + pts[0][1].toFixed(2);
+  for (let i = 1; i < pts.length - 1; i++) {
+    const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+    d += 'Q' + pts[i][0].toFixed(2) + ',' + pts[i][1].toFixed(2) + ' ' + mx.toFixed(2) + ',' + my.toFixed(2);
+  }
+  const last = pts[pts.length - 1];
+  return d + 'L' + last[0].toFixed(2) + ',' + last[1].toFixed(2);
+}
+function polyLength(pts) {
+  let L = 0;
+  for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+  return L;
+}
+function polyAt(pts, target) {
+  let acc = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const d = Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+    if (acc + d >= target) {
+      const t = (target - acc) / (d || 1);
+      return [pts[i-1][0] + (pts[i][0] - pts[i-1][0]) * t, pts[i-1][1] + (pts[i][1] - pts[i-1][1]) * t];
+    }
+    acc += d;
+  }
+  return pts[pts.length - 1];
+}
+/* Marque de bataille : deux épées croisées plantées sur le front.
+   C'est elle qui dit « on se bat ici », bien mieux qu'un pointillé. */
+function frontMark(x, y, s) {
+  return '<g class="front-mark" transform="translate(' + x.toFixed(1) + ',' + y.toFixed(1) +
+         ') scale(' + s.toFixed(3) + ')">' +
+    '<circle r="6.4" fill="#1a0c03" fill-opacity="0.55"/>' +
+    '<circle r="6.4" fill="none" stroke="#FF7A2C" stroke-opacity="0.35" stroke-width="0.8"/>' +
+    '<g stroke="#F6E3BC" stroke-linecap="round">' +
+      '<path d="M-3.6,3.6 L3.4,-3.4" stroke-width="0.95"/>' +
+      '<path d="M3.6,3.6 L-3.4,-3.4" stroke-width="0.95"/>' +
+      '<path d="M-4.6,4.6 L-3.1,3.1" stroke-width="1.9"/>' +
+      '<path d="M4.6,4.6 L3.1,3.1" stroke-width="1.9"/>' +
+    '</g>' +
+    '<g stroke="#2a1405" stroke-width="0.35" stroke-linecap="round" opacity="0.8">' +
+      '<path d="M-4.3,2.4 L-2.2,4.5"/><path d="M4.3,2.4 L2.2,4.5"/>' +
+    '</g></g>';
+}
+
 function sharedEdge(pa, pb) {
   if (!pa || !pb) return null;
   const common = [];
@@ -1469,7 +1669,11 @@ function renderMap() {
   h += '</g>';
 
   // ── 6. Territoires (Voronoï) + lignes de front ───────────────
-  const frontSegs = [];
+  // Les fronts sont accumulés à part : le groupe des territoires est en
+  // mix-blend-mode multiply, et un trait clair posé dedans disparaît
+  // purement et simplement (multiplier par du blanc ne change rien).
+  _edgeCache.clear();
+  let frontsHTML = '';
   h += '<g class="layer-cells" pointer-events="none" style="mix-blend-mode:multiply">';
   for (const regName of conquerable) {
     const here = champByRegion[regName];
@@ -1480,6 +1684,7 @@ function renderMap() {
     const delaunay = d3.Delaunay.from(points);
     const voronoi = delaunay.voronoi([0, 0, 1000, 900]);
     const polys = regCells.map((_, i) => voronoi.cellPolygon(i));
+    const dpath = polys.map(pp => (pp && pp.length > 2) ? ringPath(wobbleRing(pp)) : null);
 
     /* Trois passes, comme sur une carte gravée mise en couleur à la main.
        Le lavis porte la couleur, un filet fin dessine le parcellaire, et
@@ -1496,7 +1701,7 @@ function renderMap() {
     let bands = '', hairs = '';
     for (let i = 0; i < regCells.length; i++) {
       const cell = regCells[i];
-      const path = voronoi.renderCell(i);
+      const path = dpath[i];
       if (!path) continue;
       const ally = ALLIANCES[cell.current_alliance] ? cell.current_alliance : 'IDF';
       const fresh = lastRoundCells.has(cell.id);
@@ -1506,51 +1711,78 @@ function renderMap() {
       if (frontier[i])
         bands += '<path d="' + path + '" fill="none" stroke="' + ALLIANCES[ally].color +
                  '" stroke-width="4.5" stroke-opacity="0.75" stroke-linejoin="round" ' +
-                 'vector-effect="non-scaling-stroke"/>';
+                 'stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
       hairs += '<path d="' + path + '" fill="none" stroke="#2b1a08" stroke-width="0.55" ' +
                'stroke-opacity="0.22" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>';
     }
     h += bands + hairs;
-    // Arêtes de front à l'intérieur de la région
+
+    // Fronts internes : mêmes points que la frontière tracée, donc
+    // le trait de front tombe exactement dessus.
     const segs = [];
     for (let i = 0; i < regCells.length; i++) {
       for (const j of delaunay.neighbors(i)) {
         if (j <= i) continue;
         if (regCells[i].current_alliance === regCells[j].current_alliance) continue;
         const e = sharedEdge(polys[i], polys[j]);
-        if (e) segs.push('M' + e[0][0].toFixed(2) + ',' + e[0][1].toFixed(2) +
-                         'L' + e[1][0].toFixed(2) + ',' + e[1][1].toFixed(2));
+        if (e) segs.push(edgeWobble(e[0], e[1]));
       }
     }
     if (segs.length) {
-      const d = segs.join(' ');
-      h += '<path class="front-glow" d="' + d + '"/><path class="front-line" d="' + d + '"/>';
+      const d = segs.map(curvePath).join(' ');
+      let f = '<g clip-path="url(#clip-region-' + regionSlug(regName) + '")">' +
+              '<path class="front-glow" d="' + d + '"/>' +
+              '<path class="front-scorch" d="' + d + '"/>' +
+              '<path class="front-line" d="' + d + '"/>' +
+              '<path class="front-ink" d="' + d + '"/>';
+      // Une poignée de marques de bataille sur les tronçons les plus longs
+      const best = segs.map(sg => ({ sg: sg, L: polyLength(sg) }))
+                       .filter(o => o.L > 13)
+                       .sort((a, b) => b.L - a.L)
+                       .slice(0, 2);
+      for (const o of best) {
+        const m = polyAt(o.sg, o.L / 2);
+        f += frontMark(m[0], m[1], 0.85 * ms);
+      }
+      frontsHTML += f + '</g>';
     }
     h += '</g>';
   }
   h += '</g>';
+  h += '<g class="layer-fronts" pointer-events="none">' + frontsHTML + '</g>';
 
-  // ── 7. Frontières : administratives en pointillé, contestées en braise
-  const adminD = [], frontD = [];
+  // ── 7. Frontières inter-régions contestées ───────────────────
+  // Les frontières calmes n'ont plus de trait propre : le trait de côte
+  // les dessine déjà. Un pointillé régulier par-dessus donnait des
+  // traverses de chemin de fer sur toute la carte.
+  const frontPolys = [];
   for (const b of regionBorders) {
     if (!REGION_TO_ALLIANCE[b.a] || !REGION_TO_ALLIANCE[b.b]) continue;
-    const d = ptsToPath(b.pts);
+    if (REGION_TO_ALLIANCE[b.a] === 'IDF' || REGION_TO_ALLIANCE[b.b] === 'IDF') continue;
     const da = dominant[b.a] || REGION_TO_ALLIANCE[b.a];
     const db = dominant[b.b] || REGION_TO_ALLIANCE[b.b];
-    const immune = REGION_TO_ALLIANCE[b.a] === 'IDF' || REGION_TO_ALLIANCE[b.b] === 'IDF';
-    if (!immune && da !== db) frontD.push(d); else adminD.push(d);
+    if (da === db) continue;
+    const pts = b.pts.map(pt => project(pt[0], pt[1])).filter(xy => !isNaN(xy[0]));
+    if (pts.length > 1) frontPolys.push(pts);
   }
-  h += '<g class="layer-borders" pointer-events="none">';
-  if (adminD.length)
-    h += '<path d="' + adminD.join(' ') + '" fill="none" stroke="#3a2a12" stroke-width="1.1" ' +
-         'stroke-opacity="0.5" stroke-dasharray="4 3" stroke-linejoin="round" ' +
-         'vector-effect="non-scaling-stroke"/>';
-  if (frontD.length) {
-    const d = frontD.join(' ');
-    h += '<path class="front-glow" d="' + d + '" stroke-width="9"/>';
-    h += '<path class="front-line" d="' + d + '" stroke-width="2.3"/>';
+  if (frontPolys.length) {
+    const d = frontPolys.map(curvePath).join(' ');
+    h += '<g class="layer-borders" pointer-events="none">';
+    h += '<path class="front-glow"   d="' + d + '" stroke-width="14"/>';
+    h += '<path class="front-scorch" d="' + d + '" stroke-width="6.5"/>';
+    h += '<path class="front-line"   d="' + d + '" stroke-width="2.2"/>';
+    h += '<path class="front-ink"    d="' + d + '" stroke-width="1.1"/>';
+    let marks = '', placed = 0;
+    for (const pts of frontPolys) {
+      const L = polyLength(pts);
+      const step = 140;
+      for (let t = step * 0.5; t < L && placed < 14; t += step, placed++) {
+        const m = polyAt(pts, t);
+        marks += frontMark(m[0], m[1], 0.95 * ms);
+      }
+    }
+    h += '<g class="layer-front-marks">' + marks + '</g></g>';
   }
-  h += '</g>';
 
   // ── 7 bis. Le terrain repasse par-dessus le politique : sans cela,
   //     montagnes et fleuves disparaissaient sous les territoires et la
@@ -1660,16 +1892,14 @@ function renderMap() {
                '" text-anchor="middle" font-family="Cinzel, serif" font-weight="800" fill="#F5EDD8">' + here.length + '</text>' +
            '</g>';
     } else if (zoomBand === 1) {
-      const positions = layoutChampionPositions(here.length, c[0], c[1]);
       for (let i = 0; i < here.length; i++) {
-        const ch = here[i], p = positions[i];
+        const ch = here[i], p = ch._anchor || c;
         h += '<g class="champion-marker" data-id="' + escapeHTML(ch.id) + '" data-email="' + escapeHTML(ch.email || '') + '">' +
                renderBlason(ch.blason, p[0], p[1], 1.0 * ms, { rim: ALLIANCES[allyD].light }) + '</g>';
       }
     } else {
-      const positions = layoutChampionPositions(here.length, c[0], c[1]);
       for (let i = 0; i < here.length; i++) {
-        const ch = here[i], p = positions[i];
+        const ch = here[i], p = ch._anchor || c;
         h += '<g class="champion-marker" data-id="' + escapeHTML(ch.id) + '" data-email="' + escapeHTML(ch.email || '') + '">' +
                renderBanner(ch, p[0], p[1], 1.5 * ms, ALLIANCES[allyD].light) +
                '<text class="map-fixed-text banner-name" x="' + p[0].toFixed(1) + '" y="' +
@@ -1689,11 +1919,7 @@ function renderMap() {
     const c = regionCentroids[name];
     if (!c) continue;
     const n = (champByRegion[name] || []).length;
-    // La grille d'écus grandit avec l'effectif : on remonte le toponyme
-    // d'autant, sinon il finit posé sur les blasons.
-    const cols = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(Math.max(1, n)))));
-    const rows = Math.ceil(Math.max(1, n) / cols);
-    const dy = zoomBand === 0 ? 21 : (rows - 1) * 11 + 24;
+    const dy = zoomBand === 0 ? 21 : 16;
     const off = LABEL_OFFSET[name] || [0, 0];
     const lx = c[0] + off[0], ly = c[1] - dy + off[1];
     const long = shortRegionName(name).length > 13;
@@ -2222,6 +2448,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const t0 = performance.now();
   initCentroids();
   buildRegionPaths();
+  buildRegionRings();
   regionBorders = buildRegionBorders();
   parchmentURL = makeParchmentTexture(1500, 1350);
   console.log('[carte] préparation en ' + Math.round(performance.now() - t0) + ' ms · ' +
