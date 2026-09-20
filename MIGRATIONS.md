@@ -24,6 +24,8 @@ Pour rejouer la base sur un projet Supabase vierge, exécuter les fichiers **dan
 | … | `admin_migration_phase15_room_capacity_24_4.sql` | Phase 15 — Augmentation stock chambres | Passe les capacités chambres double 10→24 et triple 3→4 dans le CTE `cap` de `get_room_stock()` (simple inchangé) |
 | … | `admin_migration_phase16_stock_places_par_champions.sql` | Phase 16 — Stock compté en joueurs | `get_inscription_stock()` compte jeu_libre/narratif via `sum(expected_champions)` au lieu de `count(*)` (une ligne paid_users peut porter 2 billets sous le même email) ; equipe reste compté en lignes |
 | … | `admin_migration_phase17_admin_nimpgames.sql` | Phase 17 — Compte admin Nimp'Games | Ajoute `nimpgames333@gmail.com` à la liste blanche `admin_users` (animation axe narratif). Prérequis : créer le compte Supabase Auth correspondant. Aucune policy modifiée, `is_admin()` lit `admin_users` |
+| … | `admin_migration_phase18_cleanup_admin_users_dup.sql` | Phase 18 — Nettoyage doublon admin | Supprime de `admin_users` toute ligne dont l'email contient une majuscule (cas `Nimpgames333@gmail.com`), inutile puisque `auth.email()` renvoie du minuscule |
+| … | `admin_migration_phase19_jeu_libre_30.sql` | Phase 19 - Fermeture des inscriptions | Ramène la capacité jeu_libre de 36 à 30 dans le CTE `cap` de `get_inscription_stock()`, soit le nombre exact d'inscrits au 20/09/2026. Les trois axes passent à remaining = 0, ce qui masque le CTA vers le tunnel et affiche le bloc « Inscriptions complètes » sur index.html |
 
 ## Procédure pour appliquer une nouvelle migration
 
