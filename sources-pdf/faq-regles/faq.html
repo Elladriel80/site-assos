@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Rappels, Précisions &amp; Modifications de règles · InterRégions 2026</title>
+<style>
+  @page { size: A4; margin: 15mm 16mm 13mm 16mm; }
+  :root {
+    --red: #6e1414;
+    --gold: #9a7638;
+    --line: #e6d8b8;
+    --box: #f6f0e0;
+    --boxline: #e3cf9f;
+    --ink: #222;
+    --mag: #c2187f;
+    --magbox: #fbeef6;
+    --magline: #e7a6cc;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body { font-family: "DejaVu Sans", sans-serif; font-size: 9.8pt; line-height: 1.5; color: var(--ink); }
+  .serif { font-family: "Liberation Serif", "Times New Roman", serif; }
+
+  /* Couverture */
+  .cover { text-align: center; padding-top: 4mm; }
+  .kicker { font-family: "Liberation Serif", serif; font-size: 9pt; letter-spacing: .32em; color: var(--gold); text-transform: uppercase; margin: 0 0 4mm; }
+  .cover h1 { font-family: "Liberation Serif", serif; font-weight: bold; color: var(--red); font-size: 25pt; line-height: 1.2; margin: 0; }
+  .cover .sub { font-family: "Liberation Serif", serif; color: #555; font-size: 10pt; margin: 2mm 0 9mm; }
+  .cover img.logo { width: 78mm; border-radius: 6px; display: block; margin: 0 auto 8mm; }
+  .cover .avec { font-family: "Liberation Serif", serif; color: #555; font-size: 10pt; margin: 0 0 9mm; }
+  .cover .version { font-family: "Liberation Serif", serif; font-size: 9pt; letter-spacing: .32em; color: var(--gold); text-transform: uppercase; }
+  .legend { margin: 14mm auto 0; max-width: 130mm; font-size: 9pt; color: var(--mag); border: 1px solid var(--magline); background: var(--magbox); border-radius: 6px; padding: 3mm 5mm; }
+
+  /* Parties */
+  .part { break-before: page; }
+  .part-head { text-align: center; margin-bottom: 5mm; }
+  .part-head .num { font-family: "Liberation Serif", serif; font-size: 8.5pt; letter-spacing: .32em; color: var(--gold); text-transform: uppercase; }
+  .part-head h2 { font-family: "Liberation Serif", serif; color: var(--red); font-size: 17pt; margin: 2mm 0 2.5mm; }
+  .part-head .rule { width: 12mm; height: 2px; background: #d9b86c; margin: 0 auto; }
+
+  h3 { font-family: "Liberation Serif", serif; color: var(--red); font-size: 12.5pt; margin: 6mm 0 2.5mm; padding-bottom: 2mm; border-bottom: 1px solid var(--line); break-after: avoid; }
+  h3:first-of-type { margin-top: 0; }
+  h4 { font-family: "Liberation Serif", serif; color: var(--gold); font-size: 10pt; margin: 4mm 0 1.5mm; line-height: 1.5; break-after: avoid; }
+  p { margin: 0 0 2.6mm; text-align: left; }
+  .note { color: #555; font-size: 9pt; margin: -1mm 0 2mm; }
+
+  .box { background: var(--box); border: 1px solid var(--boxline); border-radius: 6px; padding: 3.5mm 4.5mm; margin: 3mm 0 4mm; break-inside: avoid; }
+  .box .lbl { font-family: "Liberation Serif", serif; font-size: 7.5pt; letter-spacing: .25em; color: var(--red); text-transform: uppercase; margin-bottom: 1.5mm; }
+  .box.ex .lbl { color: var(--gold); }
+  .box.ex p { font-style: italic; margin: 0; }
+  .box p:last-child { margin-bottom: 0; }
+
+  .fer { text-align: center; font-family: "Liberation Serif", serif; color: var(--red); font-weight: bold; font-size: 12.5pt; line-height: 1.9; padding: 3mm; }
+  .center { text-align: center; }
+
+  ol { margin: 1mm 0 3mm; padding-left: 6mm; }
+  ol li { margin: 0 0 .8mm; padding-left: 1mm; }
+  ol li::marker { color: var(--gold); font-weight: bold; }
+
+  figure { margin: 0 0 4.5mm; text-align: center; break-inside: avoid; }
+  figure .frame { display: inline-block; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; line-height: 0; max-width: 100%; }
+  figure img { display: block; max-width: 100%; height: auto; }
+  figure figcaption { font-family: "Liberation Serif", serif; font-size: 7.5pt; letter-spacing: .25em; color: var(--gold); text-transform: uppercase; margin-top: 1.2mm; }
+  .stack { display: flex; flex-direction: column; align-items: center; gap: 1.2mm; }
+
+  /* Changements depuis la version du 14/08/2026 */
+  .mag, .mag h3, .mag h4, .mag p, .mag li, .mag .lbl, .mag figcaption { color: var(--mag) !important; }
+  .mag h3 { border-bottom-color: var(--magline); }
+  .mag .box, .box.mag { background: var(--magbox); border-color: var(--magline); }
+  .mag figure .frame { border-color: var(--magline); }
+  span.mag { color: var(--mag); }
+  .keep { break-inside: avoid; }
+
+  .footer { margin-top: 9mm; padding-top: 4mm; border-top: 1px solid var(--line); text-align: center; font-family: "Liberation Serif", serif; font-size: 8.5pt; color: var(--gold); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- COUVERTURE -->
+<section class="cover">
+  <div class="kicker">Inter-Régions 2026 · Warhammer: The Old World</div>
+  <h1>Rappels · Précisions<br><span class="mag">Modifications</span></h1>
+  <div class="sub">de règles, pour l'Inter-régions 2026</div>
+  <img class="logo" src="img/logo.jpg" alt="Warhammer: The Old World">
+  <div class="avec">avec <em>sources</em> et exemples, en fin de document</div>
+  <div class="version">Version du <span class="mag">01/10/2026</span></div>
+  <div class="legend">Les passages en magenta signalent les ajouts et modifications par rapport à la version du 14/08/2026.</div>
+</section>
+
+<!-- PARTIE I -->
+<section class="part">
+  <div class="part-head"><div class="num">Partie I</div><h2>Rappels</h2><div class="rule"></div></div>
+  <p class="center">D'abord, essayer de se mettre d'accord,<br>« La Règle La Plus Importante », p. 93 :</p>
+  <figure><img src="img/rlpi.jpg" style="width:150mm;border-radius:5px" alt=""></figure>
+  <p class="center">Sinon, de base nous appliquerons la réponse automatique de <strong>oldworldFAQ@gwplc.com</strong> :</p>
+  <div class="box fer">« 1. Lire la Règle<br>2. Appliquer la Formulation Exacte de la Règle » (FER)</div>
+</section>
+
+<!-- PARTIE II -->
+<section class="part">
+  <div class="part-head"><div class="num">Partie II</div><h2>Précisions</h2><div class="rule"></div></div>
+
+  <h3>Régénération</h3>
+  <p>Lorsque les Jets de Dés Rapides sont autorisés [p. 138 &amp; 148], vous pouvez a contrario tenter les Sauvegardes de régénération une par une, car les Jets pour Blesser (et la perte d'un PV consécutif) se font aussi possiblement « un à la fois » [FAQ]. Ainsi, vous pouvez tenter plus de Sauvegardes de Régénération que le nombre de PV restants au début de ce tir/palier d'I.</p>
+  <p>Lorsque les Jets de Dés Rapides ne sont pas autorisés (comme dans le cadre de Blessures Multiples, car c'est un seul Jet de Blessure qui provoque la perte de plusieurs PV [p. 175]), alors il est impossible de faire plus de Sauvegardes de Régénération que le nombre de PV restants à la figurine touchée, au début de ce jet pour blesser.</p>
+  <p>N'oubliez pas que pour les unités de figurines à PV multiples, les blessures sont résolues une par une, figurine par figurine [FAQ], mais le retrait des pertes se fait bien dès que l'UNITÉ a assez perdu de PV pour cela, « Vous devez retirer autant de figurines que possible », « vous ne pouvez pas répartir les pertes de PV entre les figurines pour éviter les pertes » [p. 102].</p>
+  <p>Enfin, en ce qui concerne le Carnage, bien noter que dans ce cadre ce sont les <strong>blessures non sauvegardées</strong> qui sont prises en compte pour le bonus de résultat de combat [p. 152], donc avant éventuelles Blessures Multiples et/ou Régénération ; et non pas les PV perdus ! Quant à la nécessité d'avoir tué son adversaire pour bénéficier du Carnage, la p. 97 précise « Si, à n'importe quel moment, la caractéristique PV d'une figurine est réduite à 0, elle est tuée », donc même si l'adversaire réduit à 0 PV regénère ensuite, et n'est plus « tué », les règles de Carnage s'appliquent néanmoins.</p>
+
+  <h3>Canon et Monstres</h3>
+  <div class="box"><div class="lbl">À retenir</div><p>Nous appliquerons bien la touche sur les Monstres entre le point visé et le point d'impact, comme écrit. [FAQ]</p></div>
+
+  <h3>Mouvement des figurines en Tirailleurs</h3>
+  <p class="note">(pour la Formation Éparse notamment)</p>
+  <p>Les UNITÉS n'effectuent pas de Manœuvres, à la place chaque FIGURINE se déplace librement [p. 184]. Du coup chaque figurine peut PIVOTER à tout moment lors de son mouvement, et même plus largement « changer sa position » [FAQ sur « se déplacer »] à la guise du joueur, dans la limite du nombre de pouces parcourable, et du respect de la cohérence de l'unité.</p>
+
+  <div class="mag keep">
+    <h3>Meutes de Bêtes des Elfes Sylvains</h3>
+    <p>Lorsqu'il n'existe pas une majorité de figurines avec un M différent des autres, la règle « peut utiliser la caractéristique de Mouvement de la majorité des figurines de l'unité » [AJ p. 40] n'est pas applicable, car elle nécessite justement une majorité. On applique alors la règle de base du jeu : « S'il y a plus d'une caractéristique de Mouvement au sein d'une unité, l'unité entière se déplace à l'allure de sa figurine la plus lente. » [p. 123]</p>
+  </div>
+</section>
+
+<!-- PARTIE III -->
+<section class="part">
+  <div class="part-head"><div class="num">Partie III</div><h2 class="mag">Modifications</h2><div class="rule"></div></div>
+
+  <h3>Esquiveurs</h3>
+  <div class="box"><div class="lbl">Ajout</div><p>Ajouter à la fin de la règle spéciale « <strong>Revérifier alors les Lignes de Vues, et les Portées</strong> » [p. 168], pour coller à l'utilisation habituelle de la règle, et son esprit supposé.</p></div>
+
+  <div class="mag">
+    <h3>Amulet of Spell Attraction</h3>
+    <div class="box"><div class="lbl">Remplacement</div><p>Remplacer « The spell is then resolved with the bearer of the Amulet as its target. » par « <strong>The casting continues</strong> with the bearer of the Amulet as its target. » [AJ p. 47], pour que l'utilisation de l'objet n'exempte pas du jet de Lancement et du jet de Dissipation du sort.</p></div>
+
+    <h3>Canons et toutes règles interdisant de cibler</h3>
+    <div class="box"><div class="lbl">Extension</div><p>Nous appliquerons la réponse « <em>ne peut pas être atteint par un boulet de canon, même si son socle se trouve directement sur la trajectoire de rebond du boulet de canon. Cependant, si le socle d'un personnage Isolé se trouve directement sous le point d'impact d'un boulet de canon, il est touché.</em> » [FAQ] à <strong>toutes les règles interdisant de viser un personnage</strong> (Limiers Spectraux d'Orion, Mantle of Drifting Shadow…).</p></div>
+  </div>
+</section>
+
+<!-- PARTIE IV -->
+<section class="part">
+  <div class="part-head"><div class="num">Partie IV</div><h2>Exemples</h2><div class="rule"></div></div>
+
+  <h3>Régénération</h3>
+  <h4>Un Prêtre Mortuaire avec 2 PV se prend un projectile magique, ou une volée de projectiles, causant 8 touches</h4>
+  <ol>
+    <li>Effectuer un seul Jet pour blesser</li>
+    <li>Si réussi, tenter une seule Sauvegarde d'Armure</li>
+    <li>Si échouée, tenter une seule Sauvegarde Invulnérable</li>
+    <li>Si échouée, perte d'un seul PV</li>
+    <li>Tenter une seule Sauvegarde de Régénération</li>
+    <li>Revenir au point 1 s'il reste encore des touches réussies non résolues, et au moins un PV encore restant</li>
+  </ol>
+  <h4>Un Nécrotecte avec 2 PV se prend une touche d'une Machine de Guerre ou d'une arme, avec la règle Blessures Multiples (3)</h4>
+  <ol>
+    <li>Effectuer l'unique jet pour blesser</li>
+    <li>Si réussi, tenter une seule Sauvegarde d'Armure</li>
+    <li>Si échouée, tenter une seule Sauvegarde Invulnérable</li>
+    <li>Si échouée, perte de deux PV malgré Blessures Multiples (3), car la caractéristique PV ne peut descendre en dessous de 0</li>
+    <li>Tenter donc uniquement deux Sauvegardes de Régénération. Si PV récupéré(s), le Prêtre ne sera dorénavant plus blessé par cette touche, l'étape 1 étant passée</li>
+  </ol>
+  <h4>Une unité de Trolls avec 3 PV chacun se prend plusieurs touches d'une Machine de Guerre ou d'une arme, avec la règle Blessures Multiples (4)</h4>
+  <ol>
+    <li>Effectuer le premier Jet pour Blesser pour le premier Troll</li>
+    <li>Si réussi, tenter une seule Sauvegarde d'Armure</li>
+    <li>Si échouée, perte de 3 PV pour ce Troll, le maximum est bien de 3, car la caractéristique PV ne peut descendre en dessous de 0</li>
+    <li>Tenter 3 Sauvegardes de Régénération, car 3 PV perdus par ce Troll</li>
+    <li>Revenir au point 1 pour le Troll suivant</li>
+    <li>Lorsque plus de Troll touché à résoudre, enlever autant de Trolls que de multiple de 3 PV perdus par l'unité, et noter le reste de PV perdu comme manquant à l'unité</li>
+  </ol>
+  <div class="box ex"><div class="lbl">Exemple · Carnage</div><p>Un Nécrophage est en défi. Son adversaire lui inflige 1 blessure non sauvegardée. Le Nécrophage tombe à 0 PV, réussit sa première Sauvegarde de Régénération et se retrouve à 1 PV. Puis il subit une autre blessure non sauvegardée de la part de son adversaire, retombe à 0 PV, échoue sa seconde Sauvegarde de Régénération. Même s'il a perdu uniquement 1 PV au final dans ce défi, le bonus de résultat de combat amené par le Carnage sera de 2, car il y a eu 2 blessures non sauvegardées lors du défi.</p></div>
+
+  <h3>Canon et Monstres</h3>
+  <div class="box ex"><div class="lbl">Exemple</div><p>Un personnage se tient juste derrière un Monstre par rapport à un canon ennemi. Ce dernier vise n'importe quel point visible dans la direction du personnage, à maximum 10 pouces devant le Monstre. Jamais le personnage ne sera touché par le tir de canon, mais le Monstre sera touché automatiquement, sauf Incident de Tir du canon.</p></div>
+
+  <h3>Mouvement des figurines en Tirailleurs</h3>
+  <div class="box ex"><div class="lbl">Exemple</div><p>Une unité de Chevaliers Pégases faisant une marche forcée en Terrain Découvert, bougera librement chacune de ses figurines de 20” maximum, pivots de chacune compris.</p></div>
+
+  <div class="mag">
+    <h3>Meutes de Bêtes des Elfes Sylvains</h3>
+    <div class="box ex"><div class="lbl">Exemple</div><p>Une unité composée d'1 Gardien des Bêtes et d'1 Chien du Grand-bois, comme il n'y a pas de majorité de figurines, ne bougera que de M 5.</p></div>
+  </div>
+
+  <h3>Esquiveurs</h3>
+  <div class="box ex"><div class="lbl">Exemple</div><p>Un Canon tire à la mitraille sur des Coureurs d'Égout à 10”. Ce premier vérifie ligne de vue et portée, et les déclare comme cible car en vue et à portée. Les Coureurs utilisent Esquiveurs pour se Replier en Bon Ordre de 5”. Le Canon revérifie alors de nouveau portée et ligne de vue, mais ne peut plus tirer sur la cible déclarée, car elle est hors de portée.</p></div>
+  <div class="box ex"><div class="lbl">Exemple</div><p>La même unité de Coureurs est plus tard déclarée comme cible par une catapulte. Celle-ci « choisit sa cible » [p. 224], et pose le gabarit centré sur l'unité à ce moment-là, c'est alors que les Coureurs se Replient en Bon Ordre de 6”, laissant le gabarit posé sur aucune figurine, car il n'est pas repositionné, on revérifie juste Portée et Ligne de vue.</p></div>
+
+  <div class="mag">
+    <h3>Amulet of Spell Attraction</h3>
+    <div class="box ex"><div class="lbl">Exemple</div><p>Une Boule de Feu désigne comme cible le porteur. Celui-ci peut tenter un test de Cd pour qu'une nouvelle cible du sort soit définie, qui possède, elle, la règle Résistance à la Magie (-1). Le jet de Lancement est ensuite effectué avec un malus de 1, puis l'éventuel jet de Dissipation, puis enfin les effets du sort sont résolus.</p></div>
+
+    <h3>Canons et toutes règles interdisant de cibler</h3>
+    <div class="box ex"><div class="lbl">Exemple</div><p>Le porteur d'un Mantle of Drifting Shadow se trouve à plus de 6 pouces d'un canon. Ce dernier désigne un point dans la direction du porteur, à 4 pouces exactement de celui-ci, sans aucun élément bloquant avant. Le porteur pourra être touché uniquement si le premier dé d'artillerie donne un 4.</p></div>
+  </div>
+</section>
+
+<!-- PARTIE V -->
+<section class="part">
+  <div class="part-head"><div class="num">Partie V</div><h2>Sources</h2><div class="rule"></div></div>
+
+  <h3>Régénération</h3>
+  <figure><div class="frame"><img src="img/regen_faq.jpg" alt=""></div><figcaption>FAQ</figcaption></figure>
+  <figure><div class="frame"><img src="img/jdr_p138.jpg" alt=""></div><figcaption>p. 138</figcaption></figure>
+  <figure><div class="frame"><img src="img/jdr_p148.jpg" alt=""></div><figcaption>p. 148</figcaption></figure>
+  <figure><div class="frame"><img src="img/bm_p175.jpg" alt=""></div><figcaption>p. 175</figcaption></figure>
+  <figure><div class="frame"><img src="img/carac_p96.jpg" alt=""></div><figcaption>p. 96</figcaption></figure>
+  <figure><div class="frame"><img src="img/pvm_p102.jpg" alt=""></div><figcaption>p. 102</figcaption></figure>
+  <figure><div class="frame"><img src="img/bm_faq.jpg" alt=""></div><figcaption>FAQ</figcaption></figure>
+  <figure><div class="frame"><img src="img/carnage_p152.jpg" alt=""></div><figcaption>p. 152</figcaption></figure>
+  <figure><div class="frame"><img src="img/tue_p97.jpg" alt=""></div><figcaption>p. 97</figcaption></figure>
+
+  <h3>Canon et Monstres</h3>
+  <figure><div class="frame"><img src="img/canon_faq.jpg" alt=""></div><figcaption>FAQ</figcaption></figure>
+
+  <h3>Mouvement des figurines en Tirailleurs</h3>
+  <figure><div class="frame"><img src="img/tir_p184.jpg" alt=""></div><figcaption>p. 184</figcaption></figure>
+  <figure><div class="frame"><img src="img/deplacer_faq.jpg" alt=""></div><figcaption>FAQ</figcaption></figure>
+
+  <div class="mag keep">
+    <h3>Meutes de Bêtes des Elfes Sylvains</h3>
+    <figure><div class="frame"><img src="img/meute_aj40.jpg" alt=""></div><figcaption>AJ p. 40</figcaption></figure>
+    <figure><div class="frame"><img src="img/mvt_p123.jpg" alt=""></div><figcaption>p. 123</figcaption></figure>
+  </div>
+
+  <h3>Esquiveurs</h3>
+  <figure><div class="frame"><img src="img/esq_p168.jpg" alt=""></div><figcaption>p. 168</figcaption></figure>
+  <figure><div class="frame"><img src="img/tir_p136.jpg" alt=""></div><figcaption>p. 136</figcaption></figure>
+  <figure><div class="stack">
+    <div class="frame"><img src="img/h1_p137.jpg" alt=""></div>
+    <div class="frame"><img src="img/h2_p137.jpg" alt=""></div>
+    <div class="frame"><img src="img/h3_p137.jpg" alt=""></div>
+    <div class="frame"><img src="img/h4_p137.jpg" alt=""></div>
+  </div><figcaption>p. 137</figcaption></figure>
+  <figure><div class="frame"><img src="img/ldv_p137.jpg" alt=""></div><figcaption>p. 137</figcaption></figure>
+  <figure><div class="frame"><img src="img/portee_p137.jpg" alt=""></div><figcaption>p. 137</figcaption></figure>
+
+  <div class="mag">
+    <h3>Amulet of Spell Attraction</h3>
+    <figure><div class="frame"><img src="img/amulet_aj47.jpg" alt=""></div><figcaption>AJ p. 47</figcaption></figure>
+    <figure><div class="stack">
+      <div class="frame"><img src="img/cible_p109.jpg" alt=""></div>
+      <div class="frame"><img src="img/lancement_p109.jpg" alt=""></div>
+    </div><figcaption>p. 109</figcaption></figure>
+
+    <h3>Canons et toutes règles interdisant de cibler</h3>
+    <figure><div class="frame"><img src="img/isoles_faq.jpg" alt=""></div><figcaption>FAQ</figcaption></figure>
+  </div>
+
+  <div class="footer">Rappels, Précisions &amp; Modifications de règles · InterRégions 2026<br>Version du 01/10/2026 · Warhammer: The Old World</div>
+</section>
+
+</body>
+</html>
