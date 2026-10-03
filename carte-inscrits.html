@@ -785,7 +785,7 @@ html.kiosk .kiosk-only { display: block; }
   <aside class="sidebar">
     <div class="panel" id="panel-throne">
       <h3>Le trône</h3>
-      <div class="empty">Aucune voix attribuée pour l'instant.</div>
+      <div class="empty">Aucun point pour l'instant.</div>
     </div>
     <div class="panel" id="panel-region">
       <h3>Région</h3>
@@ -885,6 +885,7 @@ let champions = [];
 let cells = [];
 let battles = [];
 let royalVotes = [];
+let champPoints = null;   // { champion_id: ligne de champion_points_public }, null avant la phase 25
 let crown = null;          // { champion_id, alliance, voices, crowned_at }
 const SEEDS_ALGO = 'scatter-v2';
 let seedsAlgo = null;      // algorithme avec lequel la base a été régénérée
@@ -1429,6 +1430,14 @@ async function fetchRoyalVotes() {
   if (error) { console.info('Voix royales indisponibles (migration phase 20 ?) :', error.message); return []; }
   return data || [];
 }
+/* Grille de points du trône (phase 25), calculée par la base. */
+async function fetchPoints() {
+  const { data, error } = await sb.from('champion_points_public').select('*');
+  if (error) { console.info('Grille de points indisponible (migration phase 25 ?) :', error.message); return null; }
+  const m = {};
+  for (const r of (data || [])) m[r.champion_id] = r;
+  return m;
+}
 async function fetchCrown() {
   const { data, error } = await sb.from('campaign_state_public').select('*').eq('key', 'crown').maybeSingle();
   if (error || !data) return null;
@@ -1441,8 +1450,8 @@ async function fetchSeedsAlgo() {
 }
 
 async function refreshChampions() {
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo()]);
-  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6];
   ensureSeeds();
   renderAll();
 }
@@ -1545,17 +1554,20 @@ function ensureSeeds() {
 
 /* ══════════════════════════════════════════════════════════════════
    LE TRÔNE
-   Le Roi n'est pas le meilleur joueur, c'est le mieux acclamé DANS LE
+   Le Roi n'est pas le meilleur joueur, c'est celui qui a le plus de points DANS LE
    CAMP AU MEILLEUR TAUX DE VICTOIRES. Deux classements distincts
    donc : les alliances au taux de victoires, les champions à la voix.
    ══════════════════════════════════════════════════════════════════ */
 function royalStandings() {
   const byId = {};
   for (const v of royalVotes) byId[v.champion_id] = (byId[v.champion_id] || 0) + (v.voices || 0);
+  /* Depuis la phase 25, « voices » porte le total de la grille de points
+     (parties, tenue, peinture, fair-play, bonus). Avant : les seules voix. */
   return champions
     .filter(ch => REGION_TO_ALLIANCE[ch.region] && REGION_TO_ALLIANCE[ch.region] !== 'IDF')
-    .map(ch => ({ ch: ch, alliance: REGION_TO_ALLIANCE[ch.region], voices: byId[ch.id] || 0 }))
-    .filter(r => r.voices !== 0)
+    .map(ch => ({ ch: ch, alliance: REGION_TO_ALLIANCE[ch.region],
+                  voices: champPoints ? ((champPoints[ch.id] || {}).total || 0) : (byId[ch.id] || 0) }))
+    .filter(r => champPoints || r.voices !== 0)
     .sort((a, b) => b.voices - a.voices || (a.ch.pseudo || '').localeCompare(b.ch.pseudo || ''));
 }
 function leadingAllianceKey() {
@@ -2410,7 +2422,8 @@ function computeStandings() {
   for (const b of battles) {
     const wa = allyOf[b.winner_id], la = allyOf[b.loser_id];
     if (!wa || !la || wa === la || wins[wa] == null || losses[la] == null) continue;
-    wins[wa]++; losses[la]++;
+    if (b.is_draw) { wins[wa] += .5; losses[wa] += .5; wins[la] += .5; losses[la] += .5; }   // nul = demi-victoire
+    else { wins[wa]++; losses[la]++; }
   }
   const rows = ALLY_KEYS.map(k => {
     const a = ALLIANCES[k];
@@ -2499,20 +2512,20 @@ function renderThronePanel() {
            '<div class="kt-title">Roi du Vieux Monde</div>' +
            '<div class="kt-name">' + escapeHTML(kr.ch.pseudo) + '</div>' +
            '<div class="kt-sub">' + escapeHTML(a.name) + ' · ' + escapeHTML(kr.ch.region || '') +
-             ' · ' + kr.voices + ' voix</div>' +
+             ' · ' + kr.voices + ' pts</div>' +
          '</div>';
   } else if (pr) {
     const a = ALLIANCES[pr.alliance] || ALLIANCES.IDF;
     h += '<div class="throne-king">' +
            '<div class="kt-title">Prétendant au trône</div>' +
            '<div class="kt-name">' + escapeHTML(pr.ch.pseudo) + '</div>' +
-           '<div class="kt-sub">' + escapeHTML(a.name) + ' · ' + pr.voices + ' voix</div>' +
+           '<div class="kt-sub">' + escapeHTML(a.name) + ' · ' + pr.voices + ' pts</div>' +
          '</div>';
   }
 
   if (!rows.length) {
-    h += '<div class="empty">Aucune voix attribuée pour l\'instant.</div>';
-    h += '<div class="throne-hint">Le Roi sera le champion le mieux acclamé dans le camp au meilleur taux de victoires.</div>';
+    h += '<div class="empty">Aucun point pour l\'instant.</div>';
+    h += '<div class="throne-hint">Le Roi sera le champion qui a le plus de points dans le camp au meilleur taux de victoires.</div>';
     p.innerHTML = h;
     return;
   }
@@ -2532,7 +2545,7 @@ function renderThronePanel() {
   }).join('');
 
   if (!kr)
-    h += '<div class="throne-hint">Le sacre revient au mieux acclamé du camp au meilleur taux de victoires, ' +
+    h += '<div class="throne-hint">Le sacre revient au champion qui a le plus de points dans le camp au meilleur taux de victoires, ' +
          'à ce jour ' + escapeHTML((ALLIANCES[lead] || {}).name || '—') + '.</div>';
 
   p.innerHTML = h;
@@ -2631,7 +2644,7 @@ function renderKiosk() {
              escapeHTML((ALLIANCES[kr.alliance] || {}).name || '') + ' · ' +
              escapeHTML(kr.ch.region || '') + '</div>';
     } else if (!rows.length) {
-      tht += '<div class="kt-empty">Nul n\'a encore été acclamé.</div>';
+      tht += '<div class="kt-empty">Personne n\'a encore marqué de points.</div>';
     }
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i];
@@ -2657,7 +2670,8 @@ function renderKiosk() {
       fh += '<div class="kf-row">' +
         (b.round_number != null ? '<span style="color:var(--gold-d)">R' + b.round_number + '</span> ' : '') +
         '<b style="color:' + w.light + '">' + escapeHTML(wc ? wc.pseudo : w.short) + '</b>' +
-        ' l\'emporte sur <b style="color:' + l.light + '">' + escapeHTML(lc ? lc.pseudo : l.short) + '</b>' +
+        (b.is_draw ? ' et ' : ' l\'emporte sur ') + '<b style="color:' + l.light + '">' + escapeHTML(lc ? lc.pseudo : l.short) + '</b>' +
+        (b.is_draw ? ' font match nul' : '') +
         (b.source === 'tablette' ? ' <span style="color:var(--gold-d);font-size:.85em">· déclarée à la tablette</span>' : '') +
         (b.notes ? '<br><span style="opacity:.6;font-style:italic">' + escapeHTML(String(b.notes).slice(0, 70)) + '</span>' : '') +
         '</div>';
@@ -2694,7 +2708,7 @@ function showCoronation(ms) {
       '<div class="coro-name">' + escapeHTML(kr.ch.pseudo) + '</div>' +
       '<div class="coro-rule"></div>' +
       '<div class="coro-title">' + escapeHTML(a.name) + ' · ' + escapeHTML(kr.ch.region || '') + '</div>' +
-      '<div class="coro-sub">Acclamé par ' + kr.voices + ' voix' +
+      '<div class="coro-sub">Sacré avec ' + kr.voices + ' points' +
         (kr.ch.faction ? ', à la tête des ' + escapeHTML(kr.ch.faction) : '') + '</div>' +
     '</div>';
   el.classList.add('show');
@@ -3103,8 +3117,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderMap();
   setupMapZoom();
 
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo()]);
-  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6];
   ensureSeeds();
   const t1 = performance.now();
   renderAll();
@@ -3125,8 +3139,8 @@ document.addEventListener('keydown', e => {
 });
 
 setInterval(async () => {
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo()]);
-  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6];
   ensureSeeds();
   renderAll();
 }, 60000);

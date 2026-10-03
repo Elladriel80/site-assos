@@ -139,6 +139,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .duel-side.win .tag { color: var(--gold-l); }
 .duel-side.lose .tag { color: var(--crim-l); }
+.duel-side.draw .tag { color: var(--parch-d); }
+.draw-cta { margin-top: 16px; padding: 16px 34px; font-family: 'Cinzel', serif; font-size: clamp(.95rem, 1.8vw, 1.2rem); letter-spacing: .14em; text-transform: uppercase; color: var(--parch-d); border: 1px solid var(--gold-d); border-radius: 4px; }
+.draw-cta:active { background: rgba(201,168,76,.12); }
 .duel-vs {
   font-family: 'Cinzel Decorative', serif; font-size: clamp(1.4rem, 3.6vw, 2.8rem);
   color: var(--gold-d); flex: 0 0 auto;
@@ -249,6 +252,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   <h1>Déclarez<br>votre bataille</h1>
   <div class="sub">Le vainqueur saisit, le vaincu confirme</div>
   <button class="big-cta" id="go">⚔ Nouvelle bataille</button>
+  <button class="draw-cta" id="go-draw">🤝 Match nul</button>
   <div class="round-badge" id="home-round">Ronde —</div>
   <div class="recent" id="recent">—</div>
 </div>
@@ -257,7 +261,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 <div class="screen" id="s-winner">
   <div class="topbar">
     <button class="back" data-go="s-home">← Retour</button>
-    <h2>Qui l'emporte ?</h2>
+    <h2 id="title-1">Qui l'emporte ?</h2>
     <div class="round" id="round-1">Ronde —</div>
   </div>
   <input class="search" id="q-winner" placeholder="Cherche un pseudo, une région, une faction…" autocomplete="off">
@@ -299,8 +303,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   <div class="detail" id="detail"></div>
   <div class="loose-hint" id="loose-hint"></div>
   <div class="actions" style="margin-top:34px">
-    <button class="btn-major" id="to-salute">Saluer l'adversaire</button>
-    <button class="btn-minor" id="done-home">Terminer</button>
+    <button class="btn-major" id="done-home">Terminer</button>
   </div>
 </div>
 
@@ -324,8 +327,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 /* ══════════════════════════════════════════════════════════════════
    Tablette de déclaration — InterRégions 2026
    Parcours : vainqueur → vaincu → confirmation par le perdant → envoi
-   → salut à l'adversaire → retour à l'accueil. Le vaincu est ensuite
-   invité à lancer la roue de la loose sur un stand exposant (phase 23).
+   → retour à l'accueil. Le vaincu est ensuite invité à lancer la roue
+   de la loose sur un stand exposant (phase 23). Un second parcours
+   déclare les matchs nuls (declare_draw, phase 25). Le salut à
+   l'adversaire a été retiré en phase 25 : le fair-play vaut 10 points
+   d'office dans la grille du trône.
    Tout passe par les RPC declare_battle() et acclaim_opponent(), qui
    portent les garde-fous : l'écran ne fait que guider, il ne décide rien.
    ══════════════════════════════════════════════════════════════════ */
@@ -457,6 +463,7 @@ function renderRecent(rows) {
   const line = rows.map(b => {
     const w = by[b.winner_id], l = by[b.loser_id];
     if (!w || !l) return '';
+    if (b.is_draw) return '🤝 <b>' + esc(w.pseudo) + '</b> et <b>' + esc(l.pseudo) + '</b> font match nul';
     return '⚔ <b>' + esc(w.pseudo) + '</b> l\'emporte sur <b>' + esc(l.pseudo) + '</b>';
   }).filter(Boolean).join(' &nbsp;·&nbsp; ');
   el.innerHTML = line || 'Aucune bataille déclarée pour l\'instant.';
@@ -505,27 +512,33 @@ function side(c, kind) {
   return '<div class="duel-side ' + kind + '">' + blason(c.blason) +
     '<div class="nm">' + esc(c.pseudo) + '</div>' +
     '<div class="rg" style="color:' + a.light + '">' + esc(a.short) + ' · ' + esc(c.region) + '</div>' +
-    '<div class="tag">' + (kind === 'win' ? 'Vainqueur' : 'Vaincu') + '</div></div>';
+    '<div class="tag">' + (kind === 'win' ? 'Vainqueur' : kind === 'draw' ? 'Match nul' : 'Vaincu') + '</div></div>';
 }
+function confirmLabel() { return pick.draw ? '✔ Nous confirmons le nul' : '✔ Je confirme ma défaite'; }
 function renderConfirm() {
-  $('#duel-row').innerHTML = side(pick.winner, 'win') + '<div class="duel-vs">bat</div>' + side(pick.loser, 'lose');
-  $('#handover').innerHTML = 'Passe la tablette à <b>' + esc(pick.loser.pseudo) +
-    '</b>. C\'est au vaincu de confirmer le résultat.';
+  if (pick.draw) {
+    $('#duel-row').innerHTML = side(pick.winner, 'draw') + '<div class="duel-vs">et</div>' + side(pick.loser, 'draw');
+    $('#handover').innerHTML = 'Les deux joueurs vérifient : match nul entre <b>' + esc(pick.winner.pseudo) +
+      '</b> et <b>' + esc(pick.loser.pseudo) + '</b>.';
+  } else {
+    $('#duel-row').innerHTML = side(pick.winner, 'win') + '<div class="duel-vs">bat</div>' + side(pick.loser, 'lose');
+    $('#handover').innerHTML = 'Passe la tablette à <b>' + esc(pick.loser.pseudo) +
+      '</b>. C\'est au vaincu de confirmer le résultat.';
+  }
   $('#confirm').disabled = false;
-  $('#confirm').textContent = '✔ Je confirme ma défaite';
+  $('#confirm').textContent = confirmLabel();
 }
 
 $('#confirm').addEventListener('click', async () => {
   const btn = $('#confirm');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Enregistrement…';
-  const { data, error } = await sb.rpc('declare_battle', {
-    p_winner_id: pick.winner.id,
-    p_loser_id: pick.loser.id
-  });
+  const { data, error } = pick.draw
+    ? await sb.rpc('declare_draw', { p_a_id: pick.winner.id, p_b_id: pick.loser.id })
+    : await sb.rpc('declare_battle', { p_winner_id: pick.winner.id, p_loser_id: pick.loser.id });
   if (error) {
     btn.disabled = false;
-    btn.textContent = '✔ Je confirme ma défaite';
+    btn.textContent = confirmLabel();
     toast(error.message || 'Erreur à l\'enregistrement', true);
     return;
   }
@@ -539,6 +552,15 @@ $('#confirm').addEventListener('click', async () => {
 /* ── Résultat ───────────────────────────────────────────────── */
 function renderDone() {
   const d = pick.battle || {};
+  if (d.draw) {
+    $('#verdict').innerHTML = 'Match nul';
+    $('#detail').innerHTML = esc(d.a || pick.winner.pseudo) + ' et ' + esc(d.b || pick.loser.pseudo) +
+      ' marquent 2 points chacun pour le trône. Aucun territoire ne change de camp.';
+    $('#loose-hint').innerHTML = '';
+    $('#loose-hint').hidden = true;
+    return;
+  }
+  $('#loose-hint').hidden = false;
   const wa = ALLIANCES[d.winner_alliance] || ALLIANCES.IDF;
   const la = ALLIANCES[d.loser_alliance] || ALLIANCES.IDF;
   $('#verdict').innerHTML = esc(d.winner || pick.winner.pseudo) + ' l\'emporte';
@@ -560,7 +582,6 @@ function renderDone() {
     '</b>, file sur un stand exposant lancer la roue de la loose : un lot de consolation t\'attend.';
 }
 $('#done-home').addEventListener('click', () => { pick = { winner:null, loser:null, battle:null, saluted:{} }; show('s-home'); });
-$('#to-salute').addEventListener('click', () => { renderSalute(); show('s-salute'); });
 $('#salute-done').addEventListener('click', () => { pick = { winner:null, loser:null, battle:null, saluted:{} }; show('s-home'); });
 
 /* ── Salut à l'adversaire ───────────────────────────────────── */
@@ -596,7 +617,13 @@ document.addEventListener('click', async e => {
 });
 
 /* ── Démarrage ──────────────────────────────────────────────── */
-$('#go').addEventListener('click', () => { pick = { winner:null, loser:null, battle:null, saluted:{} }; show('s-winner'); });
+function startDeclaration(draw) {
+  pick = { winner:null, loser:null, battle:null, saluted:{}, draw: draw };
+  $('#title-1').textContent = draw ? 'Premier joueur ?' : 'Qui l\'emporte ?';
+  show('s-winner');
+}
+$('#go').addEventListener('click', () => startDeclaration(false));
+$('#go-draw').addEventListener('click', () => startDeclaration(true));
 loadAll();
 setInterval(() => {
   const cur = document.querySelector('.screen.on');

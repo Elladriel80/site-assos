@@ -423,6 +423,10 @@
         </select></label>
       </div>
 
+      <div style="margin:-.3em 0 1em">
+        <button id="t-draw" title="Les deux champions choisis ci-dessus, dans la ronde en cours de la tablette">🤝 Enregistrer un match nul entre ces deux champions</button>
+      </div>
+
       <div id="t-preview" hidden style="background:var(--bg-2);border:1px solid var(--gold);border-radius:3px;padding:1em;margin-bottom:1em">
         <h3 style="margin-top:0">Cellule à céder</h3>
         <p id="t-preview-text" style="margin:0 0 0.75em"></p>
@@ -468,27 +472,41 @@
     </section>
 
     <section data-pane="couronne" hidden>
-      <h2>La Couronne — voix et sacre</h2>
+      <h2>La Couronne : points et sacre</h2>
       <div class="banner warn" id="cr-missing" hidden>
         ⚠️ La migration <code>admin_migration_phase20_le_roi.sql</code> n'est pas encore appliquée sur Supabase. Tant qu'elle ne l'est pas, cet onglet est en lecture seule.
       </div>
       <div class="banner ok">
-        💡 Le Roi n'est pas le meilleur joueur, c'est le mieux acclamé <strong>dans le camp au meilleur taux de victoires</strong>. Chaque fait d'armes, concours ou coup d'éclat rapporte des voix, attribuées ici à la main. Les voix restent visibles toute la journée sur la carte, le sacre se déclenche à la clôture.
+        💡 Le Roi est le champion qui a <strong>le plus de points dans le camp au meilleur taux de victoires</strong> (un nul y compte pour une demi-victoire). Grille : 4 pts par victoire, 2 par nul, 1 par défaite, sur les 4 meilleures parties · tenue 5 (couleurs) ou 15 (couleurs + armoiries) · peinture /20 · fair-play 10 d'office, réductible · plus les bonus attribués à la main. Le sacre se déclenche à la clôture.
       </div>
 
       <div id="cr-leader" style="margin:1.2em 0"></div>
 
-      <h3 style="margin-top:1.6em">Attribuer des voix</h3>
+      <h3 style="margin-top:1.6em">Grille de points</h3>
+      <div class="banner warn" id="pts-missing" hidden>
+        ⚠️ La migration <code>admin_migration_phase25_grille_points.sql</code> n'est pas encore appliquée : la grille est indisponible.
+      </div>
+      <div class="toolbar">
+        <input type="search" class="search" id="pts-search" placeholder="Rechercher un champion, une région…">
+        <span class="count" id="pts-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Champion</th><th>Camp</th><th>Parties</th><th>Jeu</th><th>Tenue</th><th>Peinture /20</th><th>Fair-play /10</th><th>Bonus</th><th>Total</th></tr></thead>
+          <tbody id="pts-tbody"><tr><td colspan="9" class="empty-state">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:2em">Points bonus (faits d'armes, roleplay, concours…)</h3>
+      <p style="color:var(--text-dim);margin:.2em 0 .8em">Les victoires, la tenue, la peinture et le fair-play sont déjà dans la grille : ne les comptez pas une seconde fois ici.</p>
       <div style="display:flex;gap:.5em;flex-wrap:wrap;margin-bottom:.9em" id="cr-presets">
-        <button data-cat="bataille"  data-voices="2">⚔ Bataille gagnée +2</button>
-        <button data-cat="territoire" data-voices="1">🏰 Territoire conquis +1</button>
+        <button data-cat="bataille"  data-voices="3">⚔ Action héroïque +3</button>
         <button data-cat="concours"  data-voices="5">🎨 Concours +5</button>
         <button data-cat="roleplay"  data-voices="3">🎭 Roleplay +3</button>
-        <button data-cat="fairplay"  data-voices="3">🤝 Fair-play +3</button>
       </div>
       <div style="display:grid;grid-template-columns:2fr 1fr 1.4fr 100px;gap:1em;align-items:flex-end">
         <label><span>Champion</span><select id="cr-champion"><option value="">— choisir —</option></select></label>
-        <label><span>Voix</span><input type="number" id="cr-voices" value="1" min="-50" max="50" step="1"></label>
+        <label><span>Points</span><input type="number" id="cr-voices" value="1" min="-50" max="50" step="1"></label>
         <label><span>Motif</span><select id="cr-category">
           <option value="bataille">⚔ Fait d'armes</option>
           <option value="territoire">🏰 Territoire</option>
@@ -504,13 +522,13 @@
       <div style="display:grid;grid-template-columns:1fr 200px;gap:1em;align-items:flex-end;margin-top:.8em">
         <label><span>Détail (affiché publiquement sur la carte)</span>
           <input type="text" id="cr-reason" maxlength="90" placeholder="ex. a tenu le pont trois rondes durant"></label>
-        <button class="primary" id="cr-award">✚ Attribuer les voix</button>
+        <button class="primary" id="cr-award">✚ Attribuer le bonus</button>
       </div>
 
       <h3 style="margin-top:2em">Prétendants au trône</h3>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>#</th><th>Champion</th><th>Région</th><th>Camp</th><th>Voix</th><th>Détail</th></tr></thead>
+          <thead><tr><th>#</th><th>Champion</th><th>Région</th><th>Camp</th><th>Points</th><th>Détail</th></tr></thead>
           <tbody id="cr-tbody-standings">
             <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
           </tbody>
@@ -952,7 +970,7 @@ function switchTab(tab) {
   }
   if (tab === 'couronne') {
     crWire();
-    Promise.all([loadCells(), loadBattles(), loadRoyal()]).then(crRenderAll);
+    Promise.all([loadCells(), loadBattles(), loadRoyal()]).then(crRenderAll);   // loadRoyal charge aussi la grille
   }
   if (tab === 'loose') {
     loWire();
@@ -1609,12 +1627,24 @@ function renderBattles() {
       <td class="muted">${formatDate(b.created_at)}</td>
       <td>${winCh ? escapeHtml(winCh.pseudo) : escapeHtml(b.winner_email)}</td>
       <td>${losCh ? escapeHtml(losCh.pseudo) : escapeHtml(b.loser_email)}</td>
-      <td class="muted email">${b.cell_transferred_id ? escapeHtml(b.cell_transferred_id) : '<em>même alliance</em>'}</td>
+      <td class="muted email">${b.is_draw ? '<em>🤝 match nul</em>' : b.cell_transferred_id ? escapeHtml(b.cell_transferred_id) : '<em>même alliance</em>'}</td>
       <td>${b.source === 'tablette' ? '<span title="Déclarée par les joueurs sur la tablette">📱 tablette</span>' : '<span style="color:var(--text-dim)">admin</span>'}</td>
       <td>${isLast ? `<button class="danger" data-action="undo-battle">⟲ Annuler</button>` : ''}</td>
     </tr>`;
   }).join('');
 }
+
+$('#t-draw').addEventListener('click', async () => {
+  const wEmail = $('#t-winner').value, lEmail = $('#t-loser').value;
+  const a = state.champions.find(c => c.email === wEmail || c.id === wEmail);
+  const b = state.champions.find(c => c.email === lEmail || c.id === lEmail);
+  if (!a || !b) return showBanner('err', 'Choisis les deux champions dans les listes ci-dessus.');
+  if (!confirm('Match nul entre ' + a.pseudo + ' et ' + b.pseudo + ' ?\n\n2 points chacun, aucun territoire ne bouge, ronde en cours de la tablette.')) return;
+  const { error } = await sb.rpc('declare_draw', { p_a_id: a.id, p_b_id: b.id });
+  if (error) return showBanner('err', 'Nul non enregistré : ' + error.message);
+  showBanner('ok', '🤝 Match nul enregistré');
+  await loadBattles();
+});
 
 $('#t-tbody-battles').addEventListener('click', async (e) => {
   const btn = e.target.closest('button[data-action="undo-battle"]');
@@ -2819,6 +2849,19 @@ async function loadRoyal() {
     $('#cr-missing').hidden = true;
   }
   state.crown = (cs && !cs.error && cs.data) ? cs.data.value : null;
+  await loadPoints();
+}
+
+/* Grille de points (phase 25) : le total est calculé par la base, dans la
+   vue champion_points_public, la même que lit la carte publique. */
+state.points = {};
+state.pointsReady = false;
+async function loadPoints() {
+  const { data, error } = await sb.from('champion_points_public').select('*');
+  state.pointsReady = !error;
+  state.points = {};
+  if (!error) for (const r of (data || [])) state.points[r.champion_id] = r;
+  const m = $('#pts-missing'); if (m) m.hidden = state.pointsReady;
 }
 
 /* Camp en tête, au TAUX DE VICTOIRES (choix du 3 octobre 2026). Même calcul
@@ -2830,7 +2873,8 @@ function crLeadingAlliance() {
   for (const b of state.battles) {
     const wa = allyOf[b.winner_email], la = allyOf[b.loser_email];
     if (!wa || !la || wa === la || w[wa] == null || l[la] == null) continue;
-    w[wa]++; l[la]++;
+    if (b.is_draw) { w[wa] += .5; l[wa] += .5; w[la] += .5; l[la] += .5; }   // nul = demi-victoire
+    else { w[wa]++; l[la]++; }
   }
   let best = null, bestRate = -1, bestW = -1;
   for (const k of Object.keys(w)) {
@@ -2844,20 +2888,31 @@ function crLeadingAlliance() {
            rate: best ? Math.round(bestRate * 1000) / 10 : null, w: w, l: l };
 }
 
-/* Classement des prétendants : total des voix par champion. */
+/* Classement des prétendants : total de la grille de points (phase 25).
+   r.voices porte le total pour rester compatible avec le sacre. Avant la
+   phase 25, repli sur la seule somme des voix. */
+function ptsDetail(p) {
+  if (!p) return '';
+  return 'Jeu ' + p.game_pts + ' · Tenue ' + p.outfit + ' · Peinture ' + p.painting +
+         ' · Fair-play ' + p.fairplay + (p.bonus ? ' · Bonus ' + (p.bonus > 0 ? '+' : '') + p.bonus : '');
+}
 function crStandings() {
   const byChamp = {};
   for (const v of state.royalVotes)
     byChamp[v.champion_id] = (byChamp[v.champion_id] || 0) + (v.voices || 0);
   return state.champions
     .filter(ch => REGION_TO_ALLIANCE[ch.region] && REGION_TO_ALLIANCE[ch.region] !== 'IDF')
-    .map(ch => ({
-      ch: ch,
-      alliance: REGION_TO_ALLIANCE[ch.region],
-      voices: byChamp[ch.id] || 0,
-      last: state.royalVotes.filter(v => v.champion_id === ch.id)[0] || null
-    }))
-    .filter(r => r.voices !== 0)
+    .map(ch => {
+      const p = state.pointsReady ? state.points[ch.id] : null;
+      return {
+        ch: ch,
+        alliance: REGION_TO_ALLIANCE[ch.region],
+        voices: p ? p.total : (byChamp[ch.id] || 0),
+        pts: p,
+        last: state.royalVotes.filter(v => v.champion_id === ch.id)[0] || null
+      };
+    })
+    .filter(r => state.pointsReady || r.voices !== 0)
     .sort((a, b) => b.voices - a.voices || (a.ch.pseudo || '').localeCompare(b.ch.pseudo || ''));
 }
 
@@ -2892,10 +2947,10 @@ function crRenderLeader() {
   h += '<div style="border:1px solid var(--border);border-radius:3px;padding:.9em">' +
          '<div style="color:var(--text-dim);font-size:.85rem">Prétendant en tête de ce camp</div>' +
          '<div style="font-size:1.3rem;font-weight:700">' +
-           (p.row ? escapeHtml(p.row.ch.pseudo) : '<span style="color:var(--text-dim)">aucune voix attribuée</span>') +
+           (p.row ? escapeHtml(p.row.ch.pseudo) : '<span style="color:var(--text-dim)">personne pour l\'instant</span>') +
          '</div>' +
          '<div style="color:var(--text-dim);font-size:.85rem">' +
-           (p.row ? p.row.voices + ' voix · ' + escapeHtml(p.row.ch.region || '') : '—') + '</div></div>';
+           (p.row ? p.row.voices + ' pts · ' + escapeHtml(p.row.ch.region || '') : '—') + '</div></div>';
   h += '</div>';
   el.innerHTML = h;
 }
@@ -2906,7 +2961,7 @@ function crRenderStandings() {
   const lead = crLeadingAlliance();
   const rows = crStandings();
   if (!rows.length) {
-    tb.innerHTML = '<tr><td colspan="6" class="empty-state">Aucune voix attribuée pour le moment.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="6" class="empty-state">Aucun point pour le moment.</td></tr>';
     return;
   }
   tb.innerHTML = rows.slice(0, 40).map((r, i) => {
@@ -2921,9 +2976,56 @@ function crRenderStandings() {
       '<td><span style="color:' + (a.color || '#888') + '">' + escapeHtml(a.name || '') + '</span>' +
         (inLead ? ' <small style="color:var(--text-dim)">(camp en tête)</small>' : '') + '</td>' +
       '<td><strong>' + r.voices + '</strong></td>' +
-      '<td style="color:var(--text-dim)">' + escapeHtml(r.last && r.last.reason ? r.last.reason : '') + '</td>' +
+      '<td style="color:var(--text-dim)">' + escapeHtml(r.pts ? ptsDetail(r.pts) : (r.last && r.last.reason ? r.last.reason : '')) + '</td>' +
     '</tr>';
   }).join('');
+}
+
+/* ── Grille de points : saisie tenue / peinture / fair-play ───────── */
+function ptsRender() {
+  const tb = $('#pts-tbody');
+  if (!tb) return;
+  if (!state.pointsReady) { tb.innerHTML = '<tr><td colspan="9" class="empty-state">Migration phase 25 à appliquer.</td></tr>'; return; }
+  const q = ($('#pts-search').value || '').toLowerCase();
+  const rows = state.champions
+    .filter(ch => REGION_TO_ALLIANCE[ch.region] && REGION_TO_ALLIANCE[ch.region] !== 'IDF')
+    .filter(ch => !q || [ch.pseudo, ch.region].some(v => (v || '').toLowerCase().includes(q)))
+    .sort((a, b) => (a.pseudo || '').localeCompare(b.pseudo || ''));
+  $('#pts-count').textContent = rows.length + ' champions';
+  tb.innerHTML = rows.map(ch => {
+    const p = state.points[ch.id] || { game_pts: 0, games: 0, wins: 0, draws: 0, losses: 0, outfit: 0, painting: 0, fairplay: 10, bonus: 0, total: 10 };
+    const a = ALLIANCES[REGION_TO_ALLIANCE[ch.region]] || {};
+    const id = escapeHtml(ch.id);
+    return '<tr>' +
+      '<td><strong>' + escapeHtml(ch.pseudo) + '</strong> <small style="color:var(--text-dim)">' + escapeHtml(ch.region || '') + '</small></td>' +
+      '<td><span style="color:' + (a.color || '#888') + '">' + escapeHtml(a.short || a.name || '') + '</span></td>' +
+      '<td style="white-space:nowrap">' + p.wins + ' V · ' + p.draws + ' N · ' + p.losses + ' D</td>' +
+      '<td>' + p.game_pts + '</td>' +
+      '<td><select class="pts-in" data-id="' + id + '" data-f="outfit">' +
+        [[0, '—'], [5, 'Couleurs (5)'], [15, '+ Armoiries (15)']].map(([v, l]) =>
+          '<option value="' + v + '"' + (p.outfit === v ? ' selected' : '') + '>' + l + '</option>').join('') +
+      '</select></td>' +
+      '<td><input class="pts-in" data-id="' + id + '" data-f="painting" type="number" min="0" max="20" step="1" value="' + p.painting + '" style="width:5em"></td>' +
+      '<td><input class="pts-in" data-id="' + id + '" data-f="fairplay" type="number" min="0" max="10" step="1" value="' + p.fairplay + '" style="width:5em"></td>' +
+      '<td>' + (p.bonus > 0 ? '+' : '') + p.bonus + '</td>' +
+      '<td><strong>' + p.total + '</strong></td>' +
+    '</tr>';
+  }).join('') || '<tr><td colspan="9" class="empty-state">Aucun champion ne correspond.</td></tr>';
+}
+
+async function ptsSave(el) {
+  const id = el.dataset.id, f = el.dataset.f;
+  let v = parseInt(el.value, 10);
+  const lim = { outfit: [0, 15], painting: [0, 20], fairplay: [0, 10] }[f];
+  if (isNaN(v) || v < lim[0] || v > lim[1]) { showBanner('err', 'Valeur hors limites (' + lim[0] + ' à ' + lim[1] + ')'); ptsRender(); return; }
+  const cur = state.points[id] || { outfit: 0, painting: 0, fairplay: 10 };
+  const row = { champion_id: id, outfit: cur.outfit, painting: cur.painting, fairplay: cur.fairplay,
+                updated_at: new Date().toISOString() };
+  row[f] = v;
+  const { error } = await sb.from('champion_scores').upsert(row, { onConflict: 'champion_id' });
+  if (error) { showBanner('err', 'Non enregistré : ' + error.message); ptsRender(); return; }
+  await loadPoints();
+  crRenderAll();
 }
 
 function crRenderLog() {
@@ -2975,10 +3077,14 @@ function crRenderAll() {
   crPopulateSelect();
   crRenderLeader();
   crRenderStandings();
+  ptsRender();
   crRenderLog();
   const dis = !state.crownReady;
   ['#cr-award', '#cr-crown', '#cr-uncrown'].forEach(s => { const b = $(s); if (b) b.disabled = dis; });
 }
+
+$('#pts-search').addEventListener('input', ptsRender);
+$('#pts-tbody').addEventListener('change', e => { const el = e.target.closest('.pts-in'); if (el) ptsSave(el); });
 
 document.addEventListener('click', (e) => {
   const pre = e.target.closest('#cr-presets button');
@@ -3034,7 +3140,7 @@ function crWire() {
     const a = ALLIANCES[p.lead.key];
     if (!confirm('Sacrer ' + p.row.ch.pseudo + ' Roi ?\n\n' +
         'Camp vainqueur : ' + a.name + ' (' + p.lead.rate + ' % de victoires)\n' +
-        'Voix du prétendant : ' + p.row.voices + '\n\n' +
+        'Points du prétendant : ' + p.row.voices + '\n\n' +
         'La cérémonie part sur l\'écran géant. Le sacre reste annulable.')) return;
     const { error } = await sb.from('campaign_state').upsert({
       key: 'crown',
