@@ -433,6 +433,17 @@ html.kiosk #regen-territories { display: none !important; }
   color: var(--gold); flex: 0 0 auto;
 }
 .pretender-row.lead .nm { color: var(--gold-l); font-weight: 700; }
+.bounty-box { margin-top: 12px; padding-top: 9px; border-top: 1px solid rgba(201,168,76,.22); }
+.bounty-box h4 {
+  font-family: 'Cinzel', serif; font-size: .74rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 5px;
+}
+.bounty-row { display: flex; align-items: center; gap: 7px; padding: 3px 0; font-size: .82rem; cursor: pointer; }
+.bounty-row svg { width: 16px; height: 19px; flex: 0 0 auto; }
+.bounty-row .nm { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bounty-row .pz { font-family: 'Cinzel', serif; font-size: .72rem; color: var(--gold-l); white-space: nowrap; }
+.kiosk-throne .bounty-row { font-size: 1rem; }
+.kiosk-throne .bounty-row svg { width: 22px; height: 26px; }
 .throne-hint {
   font-family: 'IM Fell English', serif; font-style: italic;
   font-size: 0.76rem; color: var(--parch-dk); margin-top: 7px; line-height: 1.4;
@@ -885,7 +896,8 @@ let champions = [];
 let cells = [];
 let battles = [];
 let royalVotes = [];
-let champPoints = null;   // { champion_id: ligne de champion_points_public }, null avant la phase 25
+let champPoints = null;
+let bountyHolders = [];   // [{ alliance, champion_id, total }] : têtes mises à prix (phase 26)   // { champion_id: ligne de champion_points_public }, null avant la phase 25
 let crown = null;          // { champion_id, alliance, voices, crowned_at }
 const SEEDS_ALGO = 'scatter-v2';
 let seedsAlgo = null;      // algorithme avec lequel la base a été régénérée
@@ -1430,6 +1442,12 @@ async function fetchRoyalVotes() {
   if (error) { console.info('Voix royales indisponibles (migration phase 20 ?) :', error.message); return []; }
   return data || [];
 }
+/* Têtes mises à prix (phase 26) : le leader unique des points de chaque alliance. */
+async function fetchBounty() {
+  const { data, error } = await sb.from('bounty_holders_public').select('*');
+  if (error) return [];
+  return data || [];
+}
 /* Grille de points du trône (phase 25), calculée par la base. */
 async function fetchPoints() {
   const { data, error } = await sb.from('champion_points_public').select('*');
@@ -1450,8 +1468,8 @@ async function fetchSeedsAlgo() {
 }
 
 async function refreshChampions() {
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints()]);
-  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints(), fetchBounty()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6]; bountyHolders = r[7];
   ensureSeeds();
   renderAll();
 }
@@ -2494,6 +2512,27 @@ function renderLegend() {
 }
 
 /* ══════════════════════════════════════════════════════════════════
+   TÊTES MISES À PRIX (phase 26)
+   Le leader unique des points de chaque alliance : un joueur d'une autre
+   alliance qui le bat empoche 3 points. Rien à afficher en cas d'égalité.
+   ══════════════════════════════════════════════════════════════════ */
+function bountyHTML() {
+  if (!bountyHolders || !bountyHolders.length) return '';
+  const byId = {};
+  for (const ch of champions) byId[ch.id] = ch;
+  const rows = ALLY_KEYS.map(k => bountyHolders.find(b => b.alliance === k)).filter(Boolean);
+  if (!rows.length) return '';
+  return '<div class="bounty-box"><h4>🎯 Têtes mises à prix</h4>' + rows.map(b => {
+    const ch = byId[b.champion_id]; if (!ch) return '';
+    const a = ALLIANCES[b.alliance] || ALLIANCES.IDF;
+    return '<div class="bounty-row" onclick="openChampionModal(\'' + escapeHTML(ch.id) + '\')">' +
+      '<svg viewBox="-16 -17 32 34">' + renderBlason(ch.blason, 0, 0, 1) + '</svg>' +
+      '<span class="nm"><span style="color:' + a.light + '">' + escapeHTML(a.short) + '</span> · ' + escapeHTML(ch.pseudo) + '</span>' +
+      '<span class="pz">+3 pts</span></div>';
+  }).join('') + '<div class="throne-hint">Le battre rapporte 3 points. La prime passe au nouveau leader de son alliance.</div></div>';
+}
+
+/* ══════════════════════════════════════════════════════════════════
    PANNEAU DU TRÔNE
    ══════════════════════════════════════════════════════════════════ */
 function renderThronePanel() {
@@ -2526,7 +2565,7 @@ function renderThronePanel() {
   if (!rows.length) {
     h += '<div class="empty">Aucun point pour l\'instant.</div>';
     h += '<div class="throne-hint">Le Roi sera le champion qui a le plus de points dans le camp au meilleur taux de victoires.</div>';
-    p.innerHTML = h;
+    p.innerHTML = h + bountyHTML();
     return;
   }
 
@@ -2548,7 +2587,7 @@ function renderThronePanel() {
     h += '<div class="throne-hint">Le sacre revient au champion qui a le plus de points dans le camp au meilleur taux de victoires, ' +
          'à ce jour ' + escapeHTML((ALLIANCES[lead] || {}).name || '—') + '.</div>';
 
-  p.innerHTML = h;
+  p.innerHTML = h + bountyHTML();
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -2652,7 +2691,7 @@ function renderKiosk() {
              '<span style="color:var(--gold-d)">' + (i + 1) + '</span> ' +
              escapeHTML(r.ch.pseudo) + '<span class="v">' + r.voices + '</span></div>';
     }
-    th.innerHTML = tht;
+    th.innerHTML = tht + bountyHTML();
   }
   renderCoronation();
 
@@ -2672,6 +2711,7 @@ function renderKiosk() {
         '<b style="color:' + w.light + '">' + escapeHTML(wc ? wc.pseudo : w.short) + '</b>' +
         (b.is_draw ? ' et ' : ' l\'emporte sur ') + '<b style="color:' + l.light + '">' + escapeHTML(lc ? lc.pseudo : l.short) + '</b>' +
         (b.is_draw ? ' font match nul' : '') +
+        (b.bounty ? ' <span style="color:var(--gold-l)">· 🎯 prime encaissée</span>' : '') +
         (b.source === 'tablette' ? ' <span style="color:var(--gold-d);font-size:.85em">· déclarée à la tablette</span>' : '') +
         (b.notes ? '<br><span style="opacity:.6;font-style:italic">' + escapeHTML(String(b.notes).slice(0, 70)) + '</span>' : '') +
         '</div>';
@@ -3117,8 +3157,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderMap();
   setupMapZoom();
 
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints()]);
-  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints(), fetchBounty()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6]; bountyHolders = r[7];
   ensureSeeds();
   const t1 = performance.now();
   renderAll();
@@ -3139,8 +3179,8 @@ document.addEventListener('keydown', e => {
 });
 
 setInterval(async () => {
-  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints()]);
-  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6];
+  const r = await Promise.all([fetchChampions(), fetchCells(), fetchBattles(), fetchRoyalVotes(), fetchCrown(), fetchSeedsAlgo(), fetchPoints(), fetchBounty()]);
+  champions = r[0]; cells = r[1]; battles = r[2]; royalVotes = r[3]; crown = r[4]; seedsAlgo = r[5]; champPoints = r[6]; bountyHolders = r[7];
   ensureSeeds();
   renderAll();
 }, 60000);

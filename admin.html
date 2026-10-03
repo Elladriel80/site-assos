@@ -477,7 +477,7 @@
         ⚠️ La migration <code>admin_migration_phase20_le_roi.sql</code> n'est pas encore appliquée sur Supabase. Tant qu'elle ne l'est pas, cet onglet est en lecture seule.
       </div>
       <div class="banner ok">
-        💡 Le Roi est le champion qui a <strong>le plus de points dans le camp au meilleur taux de victoires</strong> (un nul y compte pour une demi-victoire). Grille : 4 pts par victoire, 2 par nul, 1 par défaite, sur les 4 meilleures parties · tenue 5 (couleurs) ou 15 (couleurs + armoiries) · peinture /20 · fair-play 10 d'office, réductible · plus les bonus attribués à la main. Le sacre se déclenche à la clôture.
+        💡 Le Roi est le champion qui a <strong>le plus de points dans le camp au meilleur taux de victoires</strong> (un nul y compte pour une demi-victoire). Grille : 4 pts par victoire, 2 par nul, 1 par défaite, sur les 4 meilleures parties · tenue 5 (couleurs) ou 15 (couleurs + armoiries) · peinture /20 · fair-play 10 d'office, réductible · 🎯 +3 pour qui bat la tête mise à prix d'une autre alliance (leader unique des points de son camp) · plus les bonus attribués à la main. Le sacre se déclenche à la clôture.
       </div>
 
       <div id="cr-leader" style="margin:1.2em 0"></div>
@@ -1627,7 +1627,7 @@ function renderBattles() {
       <td class="muted">${formatDate(b.created_at)}</td>
       <td>${winCh ? escapeHtml(winCh.pseudo) : escapeHtml(b.winner_email)}</td>
       <td>${losCh ? escapeHtml(losCh.pseudo) : escapeHtml(b.loser_email)}</td>
-      <td class="muted email">${b.is_draw ? '<em>🤝 match nul</em>' : b.cell_transferred_id ? escapeHtml(b.cell_transferred_id) : '<em>même alliance</em>'}</td>
+      <td class="muted email">${b.is_draw ? '<em>🤝 match nul</em>' : b.cell_transferred_id ? escapeHtml(b.cell_transferred_id) : '<em>même alliance</em>'}${b.bounty ? ' <span title="Prime sur la tête encaissée (+3)">🎯</span>' : ''}</td>
       <td>${b.source === 'tablette' ? '<span title="Déclarée par les joueurs sur la tablette">📱 tablette</span>' : '<span style="color:var(--text-dim)">admin</span>'}</td>
       <td>${isLast ? `<button class="danger" data-action="undo-battle">⟲ Annuler</button>` : ''}</td>
     </tr>`;
@@ -2894,7 +2894,8 @@ function crLeadingAlliance() {
 function ptsDetail(p) {
   if (!p) return '';
   return 'Jeu ' + p.game_pts + ' · Tenue ' + p.outfit + ' · Peinture ' + p.painting +
-         ' · Fair-play ' + p.fairplay + (p.bonus ? ' · Bonus ' + (p.bonus > 0 ? '+' : '') + p.bonus : '');
+         ' · Fair-play ' + p.fairplay + (p.bonus ? ' · Bonus ' + (p.bonus > 0 ? '+' : '') + p.bonus : '') +
+         (p.bounty_pts ? ' · Primes +' + p.bounty_pts : '');
 }
 function crStandings() {
   const byChamp = {};
@@ -3000,7 +3001,7 @@ function ptsRender() {
       '<td><strong>' + escapeHtml(ch.pseudo) + '</strong> <small style="color:var(--text-dim)">' + escapeHtml(ch.region || '') + '</small></td>' +
       '<td><span style="color:' + (a.color || '#888') + '">' + escapeHtml(a.short || a.name || '') + '</span></td>' +
       '<td style="white-space:nowrap">' + p.wins + ' V · ' + p.draws + ' N · ' + p.losses + ' D</td>' +
-      '<td>' + p.game_pts + '</td>' +
+      '<td>' + p.game_pts + (p.bounty_pts ? ' <small title="Primes sur la tête encaissées">🎯+' + p.bounty_pts + '</small>' : '') + '</td>' +
       '<td><select class="pts-in" data-id="' + id + '" data-f="outfit">' +
         [[0, '—'], [5, 'Couleurs (5)'], [15, '+ Armoiries (15)']].map(([v, l]) =>
           '<option value="' + v + '"' + (p.outfit === v ? ' selected' : '') + '>' + l + '</option>').join('') +

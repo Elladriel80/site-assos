@@ -104,6 +104,16 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .champ-card:active { background: rgba(201,168,76,.16); border-color: var(--gold); }
 .champ-card svg { width: 38px; height: 42px; flex: 0 0 auto; }
+.champ-card { position: relative; }
+.bounty-tag {
+  position: absolute; top: 6px; right: 8px; font-family: 'Cinzel', serif; font-size: .68rem;
+  letter-spacing: .1em; text-transform: uppercase; color: #12100b; padding: 2px 7px; border-radius: 2px;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+}
+.bounty-win {
+  margin-top: 18px; font-family: 'Cinzel', serif; font-weight: 800; letter-spacing: .1em;
+  color: var(--gold-l); font-size: clamp(1rem, 2.2vw, 1.5rem); text-shadow: 0 0 30px var(--gold-glow);
+}
 .champ-card .who { min-width: 0; flex: 1 1 auto; }
 .champ-card .who .p {
   display: block;
@@ -372,6 +382,7 @@ let champions = [];
 let round = 1;
 let pick = { winner: null, loser: null, battle: null, saluted: {} };
 let idleTimer = null;
+let bountyIds = new Set();   // champions qui portent la prime sur la tête
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
@@ -443,11 +454,15 @@ function toast(msg, isErr) {
 
 /* ── Données ────────────────────────────────────────────────── */
 async function loadAll() {
-  const [ch, rd, bt] = await Promise.all([
+  const [ch, rd, bt, bh] = await Promise.all([
     sb.from('champions_public').select('id,pseudo,region,faction,blason').order('pseudo'),
     sb.from('campaign_state_public').select('*').eq('key', 'round').maybeSingle(),
-    sb.from('battles_public').select('*').order('created_at', { ascending: false }).limit(6)
+    sb.from('battles_public').select('*').order('created_at', { ascending: false }).limit(6),
+    sb.from('bounty_holders_public').select('*')
   ]);
+  /* Prime sur la tête (phase 26) : le leader unique de chaque alliance.
+     Absent tant que la migration n'est pas passée : aucun badge. */
+  bountyIds = new Set((bh && !bh.error && bh.data ? bh.data : []).map(r => r.champion_id));
   if (ch.error) { toast('Impossible de charger les champions : ' + ch.error.message, true); return; }
   champions = (ch.data || []).filter(c => REGION_TO_ALLIANCE[c.region] && REGION_TO_ALLIANCE[c.region] !== 'IDF');
   round = (rd && rd.data && rd.data.value && rd.data.value.n) ? rd.data.value.n : 1;
@@ -484,6 +499,7 @@ function renderList(which) {
     const a = ALLIANCES[REGION_TO_ALLIANCE[c.region]] || ALLIANCES.IDF;
     return '<button class="champ-card" data-id="' + esc(c.id) + '" data-which="' + which + '">' +
       '<span class="ally" style="background:' + a.color + '"></span>' +
+      (bountyIds.has(c.id) ? '<span class="bounty-tag">🎯 Tête mise à prix</span>' : '') +
       blason(c.blason) +
       '<span class="who"><span class="p">' + esc(c.pseudo) + '</span>' +
       '<span class="r">' + esc(c.region) + (c.faction ? ' · ' + esc(c.faction) : '') + '</span></span>' +
@@ -523,7 +539,9 @@ function renderConfirm() {
   } else {
     $('#duel-row').innerHTML = side(pick.winner, 'win') + '<div class="duel-vs">bat</div>' + side(pick.loser, 'lose');
     $('#handover').innerHTML = 'Passe la tablette à <b>' + esc(pick.loser.pseudo) +
-      '</b>. C\'est au vaincu de confirmer le résultat.';
+      '</b>. C\'est au vaincu de confirmer le résultat.' +
+      (bountyIds.has(pick.loser.id) && REGION_TO_ALLIANCE[pick.loser.region] !== REGION_TO_ALLIANCE[pick.winner.region]
+        ? '<br>🎯 Sa tête est mise à prix : la prime de 3 points sera pour ' + esc(pick.winner.pseudo) + '.' : '');
   }
   $('#confirm').disabled = false;
   $('#confirm').textContent = confirmLabel();
@@ -544,6 +562,10 @@ $('#confirm').addEventListener('click', async () => {
   }
   pick.battle = data;
   pick.saluted = {};
+  if (data && data.battle_id && !data.draw) {
+    const bq = await sb.from('battles_public').select('bounty').eq('id', data.battle_id).maybeSingle();
+    pick.battle.bounty = !!(bq && bq.data && bq.data.bounty);
+  }
   renderDone();
   show('s-done');
   loadAll();
@@ -561,6 +583,7 @@ function renderDone() {
     return;
   }
   $('#loose-hint').hidden = false;
+  const bountyLine = d.bounty ? '<div class="bounty-win">🎯 Prime encaissée : +3 points pour ' + esc(d.winner || pick.winner.pseudo) + '</div>' : '';
   const wa = ALLIANCES[d.winner_alliance] || ALLIANCES.IDF;
   const la = ALLIANCES[d.loser_alliance] || ALLIANCES.IDF;
   $('#verdict').innerHTML = esc(d.winner || pick.winner.pseudo) + ' l\'emporte';
@@ -575,7 +598,7 @@ function renderDone() {
     txt = 'La victoire est consignée. <b style="color:' + la.light + '">' + esc(la.name) +
           '</b> n\'avait plus un pouce de terre à céder.';
   }
-  $('#detail').innerHTML = txt;
+  $('#detail').innerHTML = txt + bountyLine;
   /* Roue de la loose (phase 23) : elle se lance sur les stands exposants,
      qui retrouvent la défaite dans leur liste. */
   $('#loose-hint').innerHTML = '🎡 <b>' + esc(d.loser || pick.loser.pseudo) +
