@@ -266,12 +266,13 @@
             <th>Email</th>
             <th>Région</th>
             <th>Faction</th>
+            <th>Axe</th>
             <th>Créé le</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody id="tbody-champions">
-          <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
+          <tr><td colspan="7" class="empty-state">Chargement…</td></tr>
         </tbody>
       </table>
     </section>
@@ -1016,15 +1017,26 @@ function renderChampions() {
   $('#count-champions').textContent = `${rows.length} / ${state.champions.length}`;
   const tbody = $('#tbody-champions');
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Aucun champion.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Aucun champion.</td></tr>';
     return;
   }
+  // Axe du champion (phase 24) : sert au plafond de 4 parties en jeu libre.
+  const hasAxis = state.champions.length && ('axis' in state.champions[0]);
+  const unknown = hasAxis ? state.champions.filter(c => !c.axis).length : 0;
+  $('#count-champions').textContent = `${rows.length} / ${state.champions.length}` +
+    (unknown ? ` · ${unknown} sans axe (non plafonnés en jeu libre)` : '');
+  const axisCell = c => !hasAxis ? '<span class="muted">phase 24</span>' :
+    `<select data-action="set-axis" data-id="${escapeHtml(c.id)}">` +
+      [['', '?'], ['competitif', 'Compétitif'], ['jeu_libre', 'Jeu libre'], ['narratif', 'Narratif']]
+        .map(([v, l]) => `<option value="${v}"${(c.axis || '') === v ? ' selected' : ''}>${l}</option>`).join('') +
+    '</select>';
   tbody.innerHTML = rows.map(c => `
     <tr data-id="${escapeHtml(c.id)}">
       <td><strong>${escapeHtml(c.pseudo)}</strong></td>
       <td class="email">${escapeHtml(c.email)}</td>
       <td>${escapeHtml(c.region)}${c.is_parisian_redistributed ? ' <span style="color:var(--warn)">(redist.)</span>' : ''}</td>
       <td class="muted">${escapeHtml(c.faction || '—')}</td>
+      <td>${axisCell(c)}</td>
       <td class="muted">${formatDate(c.created_at)}</td>
       <td><div class="actions">
         <button data-action="edit-champion" data-id="${escapeHtml(c.id)}">Éditer</button>
@@ -1035,6 +1047,18 @@ function renderChampions() {
 }
 
 $('#search-champions').addEventListener('input', renderChampions);
+
+$('#tbody-champions').addEventListener('change', async (e) => {
+  const sel = e.target.closest('select[data-action="set-axis"]');
+  if (!sel) return;
+  const champ = state.champions.find(c => c.id === sel.dataset.id);
+  const axis = sel.value || null;
+  const { error } = await sb.from('champions').update({ axis: axis }).eq('id', sel.dataset.id);
+  if (error) { sel.value = (champ && champ.axis) || ''; return showBanner('err', 'Axe non enregistré : ' + error.message); }
+  if (champ) champ.axis = axis;
+  showBanner('ok', 'Axe de ' + (champ ? champ.pseudo : 'ce champion') + ' : ' + (axis || 'inconnu'));
+  renderChampions();
+});
 
 $('#tbody-champions').addEventListener('click', async (e) => {
   const btn = e.target.closest('button[data-action]');
