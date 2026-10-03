@@ -1417,7 +1417,7 @@ async function fetchCells() {
 /* battles_public plutôt que battles : la table porte les emails réels
    des joueurs, la vue n'expose que des identifiants. */
 async function fetchBattles() {
-  const { data, error } = await sb.from('battles_public').select('*').order('created_at', { ascending: false }).limit(40);
+  const { data, error } = await sb.from('battles_public').select('*').order('created_at', { ascending: false }).limit(5000);
   if (error) { console.warn('Batailles indisponibles :', error.message); return []; }
   return data || [];
 }
@@ -1546,8 +1546,8 @@ function ensureSeeds() {
 /* ══════════════════════════════════════════════════════════════════
    LE TRÔNE
    Le Roi n'est pas le meilleur joueur, c'est le mieux acclamé DANS LE
-   CAMP QUI TIENT LE PLUS DE TERRITOIRES. Deux classements distincts
-   donc : les alliances au territoire, les champions à la voix.
+   CAMP AU MEILLEUR TAUX DE VICTOIRES. Deux classements distincts
+   donc : les alliances au taux de victoires, les champions à la voix.
    ══════════════════════════════════════════════════════════════════ */
 function royalStandings() {
   const byId = {};
@@ -1560,7 +1560,7 @@ function royalStandings() {
 }
 function leadingAllianceKey() {
   const rows = computeStandings();
-  return rows.length ? rows[0].key : null;
+  return rows.length && rows[0].games ? rows[0].key : null;
 }
 /* Le prétendant : celui qui serait sacré si la campagne s'arrêtait là. */
 function currentPretender() {
@@ -2398,21 +2398,40 @@ function closeModal() { document.getElementById('modal-champion').classList.remo
    EMPRISE TERRITORIALE
    ══════════════════════════════════════════════════════════════════ */
 function computeStandings() {
+  /* Classement au TAUX DE VICTOIRES (choix du 3 octobre 2026) : le
+     territoire tenu avantageait l'alliance la plus nombreuse, chaque
+     champion apportant 5 cellules. Seules les parties entre deux
+     alliances différentes comptent : un duel fratricide donnerait une
+     victoire ET une défaite au même camp. Le territoire reste affiché. */
   const total = cells.length || 1;
+  const allyOf = {};
+  for (const ch of champions) allyOf[ch.id] = REGION_TO_ALLIANCE[ch.region];
+  const wins = { A: 0, B: 0, C: 0, D: 0 }, losses = { A: 0, B: 0, C: 0, D: 0 };
+  for (const b of battles) {
+    const wa = allyOf[b.winner_id], la = allyOf[b.loser_id];
+    if (!wa || !la || wa === la || wins[wa] == null || losses[la] == null) continue;
+    wins[wa]++; losses[la]++;
+  }
   const rows = ALLY_KEYS.map(k => {
     const a = ALLIANCES[k];
     const now  = cells.filter(c => c.current_alliance === k).length;
     const orig = cells.filter(c => c.original_alliance === k).length;
+    const games = wins[k] + losses[k];
+    const rate = games ? Math.round(wins[k] / games * 1000) / 10 : null;
     return {
       key: k, ally: a,
       champions: champions.filter(ch => REGION_TO_ALLIANCE[ch.region] === k).length,
+      wins: wins[k], losses: losses[k], games: games, rate: rate,
+      pct: rate == null ? 0 : rate,
+      pctLabel: rate == null ? '—' : String(rate),
       cells: now, orig: orig, delta: now - orig,
-      pct: Math.round(now / total * 1000) / 10,
+      cellPct: Math.round(now / total * 1000) / 10,
       regions: Object.keys(REGION_TO_ALLIANCE).filter(r =>
         REGION_TO_ALLIANCE[r] !== 'IDF' && window._mapDominant && window._mapDominant[r] === k).length
     };
   });
-  rows.sort((x, y) => y.cells - x.cells);
+  rows.sort((x, y) => (y.rate == null ? -1 : y.rate) - (x.rate == null ? -1 : x.rate) ||
+                      y.wins - x.wins || y.games - x.games);
   return rows;
 }
 function deltaHTML(d) {
@@ -2436,12 +2455,12 @@ function renderScoreboard() {
       '<div class="head" style="background:linear-gradient(135deg,' + a.light + ',' + a.color + ')">' +
         escapeHTML(a.name) + '</div>' +
       '<div class="devise">« ' + escapeHTML(a.devise) + ' »</div>' +
-      '<div class="big" style="color:' + a.light + '">' + r.pct + '<small>%</small></div>' +
-      '<div class="sub2">du territoire</div>' +
+      '<div class="big" style="color:' + a.light + '">' + r.pctLabel + (r.rate == null ? '' : '<small>%</small>') + '</div>' +
+      '<div class="sub2">de victoires</div>' +
       '<div class="emprise-bar"><i style="width:' + r.pct + '%;background:linear-gradient(90deg,' +
         a.color + ',' + a.light + ')"></i></div>' +
-      '<div class="sub2" style="padding-bottom:9px">' + r.champions + ' champions · ' +
-        r.cells + ' territoires ' + deltaHTML(r.delta) + '</div>' +
+      '<div class="sub2" style="padding-bottom:9px">' + r.wins + ' V · ' + r.losses + ' D · ' +
+        r.champions + ' champions · ' + r.cells + ' territoires ' + deltaHTML(r.delta) + '</div>' +
     '</div>';
   }).join('');
 }
@@ -2453,7 +2472,7 @@ function renderLegend() {
   let h = '<h4>Les quatre bannières</h4>';
   for (const r of rows) {
     h += '<div class="lg"><span class="sw" style="background:' + r.ally.color + '"></span>' +
-         escapeHTML(r.ally.short) + '<em>' + r.pct + '%</em></div>';
+         escapeHTML(r.ally.short) + '<em>' + r.pctLabel + (r.rate == null ? '' : '%') + '</em></div>';
   }
   h += '<div class="lg" style="margin-top:6px;padding-top:5px;border-top:1px solid rgba(201,168,76,.18)">' +
        '<span class="sw frontline-key"></span>ligne de front</div>';
@@ -2493,7 +2512,7 @@ function renderThronePanel() {
 
   if (!rows.length) {
     h += '<div class="empty">Aucune voix attribuée pour l\'instant.</div>';
-    h += '<div class="throne-hint">Le Roi sera le champion le mieux acclamé dans le camp qui tient le plus de territoires.</div>';
+    h += '<div class="throne-hint">Le Roi sera le champion le mieux acclamé dans le camp au meilleur taux de victoires.</div>';
     p.innerHTML = h;
     return;
   }
@@ -2513,7 +2532,7 @@ function renderThronePanel() {
   }).join('');
 
   if (!kr)
-    h += '<div class="throne-hint">Le sacre revient au mieux acclamé du camp qui tient le plus de territoires, ' +
+    h += '<div class="throne-hint">Le sacre revient au mieux acclamé du camp au meilleur taux de victoires, ' +
          'à ce jour ' + escapeHTML((ALLIANCES[lead] || {}).name || '—') + '.</div>';
 
   p.innerHTML = h;
@@ -2590,10 +2609,10 @@ function renderKiosk() {
     '<div class="kiosk-bars">' + rows.map(r =>
       '<div class="kiosk-bar">' +
         '<div class="kb-head" style="color:' + r.ally.light + '">' + escapeHTML(r.ally.name) +
-          '<span class="kb-pct">' + r.pct + '%</span></div>' +
+          '<span class="kb-pct">' + r.pctLabel + (r.rate == null ? '' : '%') + '</span></div>' +
         '<div class="kb-track"><i style="width:' + r.pct + '%;background:linear-gradient(90deg,' +
           r.ally.color + ',' + r.ally.light + ')"></i></div>' +
-        '<div class="kb-foot">' + r.cells + ' territoires · ' + r.champions + ' champions · ' +
+        '<div class="kb-foot">' + r.wins + ' victoires · ' + r.losses + ' défaites · ' + r.cells + ' territoires · ' + r.champions + ' champions · ' +
           (r.delta > 0 ? '+' + r.delta : r.delta === 0 ? 'stable' : r.delta) + '</div>' +
       '</div>').join('') + '</div>' +
     '<div class="kiosk-ticker"><div class="tk-run">' + tickerHTML() + tickerHTML() + '</div></div>';

@@ -230,6 +230,7 @@
     <button data-tab="relances">📧 Relances</button>
     <button data-tab="tournoi">⚔️ Tournoi</button>
     <button data-tab="couronne">♛ Couronne</button>
+    <button data-tab="loose">🎡 Roue de la loose</button>
     <button data-tab="hebergement">🛏 Hébergement</button>
     <button data-tab="carte">🗺 Carte</button>
     <button data-tab="demo">🎭 Démo</button>
@@ -471,7 +472,7 @@
         ⚠️ La migration <code>admin_migration_phase20_le_roi.sql</code> n'est pas encore appliquée sur Supabase. Tant qu'elle ne l'est pas, cet onglet est en lecture seule.
       </div>
       <div class="banner ok">
-        💡 Le Roi n'est pas le meilleur joueur, c'est le mieux acclamé <strong>dans le camp qui tient le plus de territoires</strong>. Chaque fait d'armes, concours ou coup d'éclat rapporte des voix, attribuées ici à la main. Les voix restent visibles toute la journée sur la carte, le sacre se déclenche à la clôture.
+        💡 Le Roi n'est pas le meilleur joueur, c'est le mieux acclamé <strong>dans le camp au meilleur taux de victoires</strong>. Chaque fait d'armes, concours ou coup d'éclat rapporte des voix, attribuées ici à la main. Les voix restent visibles toute la journée sur la carte, le sacre se déclenche à la clôture.
       </div>
 
       <div id="cr-leader" style="margin:1.2em 0"></div>
@@ -535,6 +536,50 @@
           <tbody id="cr-tbody-log">
             <tr><td colspan="6" class="empty-state">Chargement…</td></tr>
           </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section data-pane="loose" hidden>
+      <h2>La roue de la loose</h2>
+      <div class="banner warn" id="lo-missing" hidden>
+        ⚠️ La migration <code>admin_migration_phase23_roue_de_la_loose.sql</code> n'est pas encore appliquée sur Supabase.
+      </div>
+      <div class="banner ok">
+        💡 Le vaincu déclare sa partie à la tablette, puis va sur un stand exposant. L'exposant ouvre la roue avec le lien de son stand, retrouve le joueur et lance la roue : un numéro de 1 à 10, et il remet le lot qu'il a prévu pour ce numéro. Un seul tirage par défaite. Clin d'oeil à la team auxerroise, qui a imaginé le concept.
+      </div>
+
+      <h3>Les stands</h3>
+      <div class="toolbar">
+        <input class="search" id="lo-new-name" placeholder="Nom du stand (ex. Figurines du Lac)" maxlength="60">
+        <button class="primary" id="lo-add">＋ Ajouter le stand</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Stand</th><th>Lien à envoyer à l'exposant</th><th>Tirages</th><th>Actif</th><th></th></tr></thead>
+          <tbody id="lo-tbody-stands"><tr><td colspan="5" class="empty-state">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:2em">Lots du stand <select id="lo-stand-pick" style="margin-left:.5em"></select></h3>
+      <p style="color:var(--text-dim);margin:.3em 0 .8em">L'exposant peut aussi les modifier lui-même depuis son lien (bouton « Mes lots »).</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th style="width:5em">N°</th><th>Lot</th></tr></thead>
+          <tbody id="lo-tbody-prizes"><tr><td colspan="2" class="empty-state">—</td></tr></tbody>
+        </table>
+      </div>
+      <div style="margin-top:.8em"><button class="primary" id="lo-save">💾 Enregistrer les lots</button></div>
+
+      <h3 style="margin-top:2em">Tirages</h3>
+      <div class="toolbar">
+        <button id="lo-refresh">↻ Rafraîchir</button>
+        <span class="count" id="lo-count"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quand</th><th>Ronde</th><th>Joueur</th><th>Stand</th><th>N°</th><th>Lot</th></tr></thead>
+          <tbody id="lo-tbody-spins"><tr><td colspan="6" class="empty-state">Chargement…</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -906,7 +951,11 @@ function switchTab(tab) {
   }
   if (tab === 'couronne') {
     crWire();
-    Promise.all([loadCells(), loadRoyal()]).then(crRenderAll);
+    Promise.all([loadCells(), loadBattles(), loadRoyal()]).then(crRenderAll);
+  }
+  if (tab === 'loose') {
+    loWire();
+    loLoad();
   }
   if (tab === 'equipes') {
     renderEquipes();
@@ -2713,8 +2762,8 @@ checkSession();
 
 // =========================================================================
 // ONGLET COURONNE — voix des prétendants et sacre du Roi
-// Le Roi est le champion le mieux acclamé DANS LE CAMP qui tient le plus
-// de territoires. Les voix sont attribuées à la main, une ligne par
+// Le Roi est le champion le mieux acclamé DANS LE CAMP au meilleur
+// taux de victoires. Les voix sont attribuées à la main, une ligne par
 // attribution, annulable une par une.
 // =========================================================================
 const CR_CATEGORIES = {
@@ -2748,13 +2797,27 @@ async function loadRoyal() {
   state.crown = (cs && !cs.error && cs.data) ? cs.data.value : null;
 }
 
-/* Camp en tête, au territoire tenu. Même calcul que la carte publique. */
+/* Camp en tête, au TAUX DE VICTOIRES (choix du 3 octobre 2026). Même calcul
+   que la carte publique : seules les parties entre deux alliances comptent. */
 function crLeadingAlliance() {
-  const tally = { A: 0, B: 0, C: 0, D: 0 };
-  for (const c of state.cells) if (tally[c.current_alliance] != null) tally[c.current_alliance]++;
-  let best = null, bestN = -1;
-  for (const k of Object.keys(tally)) if (tally[k] > bestN) { best = k; bestN = tally[k]; }
-  return { key: best, cells: bestN, tally: tally };
+  const allyOf = {};
+  for (const ch of state.champions) allyOf[ch.email] = REGION_TO_ALLIANCE[ch.region];
+  const w = { A: 0, B: 0, C: 0, D: 0 }, l = { A: 0, B: 0, C: 0, D: 0 };
+  for (const b of state.battles) {
+    const wa = allyOf[b.winner_email], la = allyOf[b.loser_email];
+    if (!wa || !la || wa === la || w[wa] == null || l[la] == null) continue;
+    w[wa]++; l[la]++;
+  }
+  let best = null, bestRate = -1, bestW = -1;
+  for (const k of Object.keys(w)) {
+    const g = w[k] + l[k];
+    if (!g) continue;
+    const r = w[k] / g;
+    if (r > bestRate || (r === bestRate && w[k] > bestW)) { best = k; bestRate = r; bestW = w[k]; }
+  }
+  const g = best ? w[best] + l[best] : 0;
+  return { key: best, wins: best ? w[best] : 0, losses: best ? l[best] : 0, games: g,
+           rate: best ? Math.round(bestRate * 1000) / 10 : null, w: w, l: l };
 }
 
 /* Classement des prétendants : total des voix par champion. */
@@ -2799,8 +2862,9 @@ function crRenderLeader() {
          '<div style="color:var(--text-dim);font-size:.85rem">Camp en tête</div>' +
          '<div style="font-size:1.3rem;font-weight:700;color:' + (a.color || '#888') + '">' +
            escapeHtml(a.name || '—') + '</div>' +
-         '<div style="color:var(--text-dim);font-size:.85rem">' + p.lead.cells + ' territoires tenus sur ' +
-           state.cells.length + '</div></div>';
+         '<div style="color:var(--text-dim);font-size:.85rem">' +
+           (p.lead.key ? p.lead.rate + ' % de victoires (' + p.lead.wins + ' V / ' + p.lead.losses + ' D)'
+                       : 'aucune partie inter-alliances déclarée') + '</div></div>';
   h += '<div style="border:1px solid var(--border);border-radius:3px;padding:.9em">' +
          '<div style="color:var(--text-dim);font-size:.85rem">Prétendant en tête de ce camp</div>' +
          '<div style="font-size:1.3rem;font-weight:700">' +
@@ -2941,10 +3005,11 @@ function crWire() {
 
   $('#cr-crown').addEventListener('click', async () => {
     const p = crPretender();
+    if (!p.lead.key) return showBanner('err', 'Aucune partie inter-alliances déclarée : pas encore de camp en tête.');
     if (!p.row) return showBanner('err', 'Aucun prétendant dans le camp en tête : attribue des voix d\'abord.');
     const a = ALLIANCES[p.lead.key];
     if (!confirm('Sacrer ' + p.row.ch.pseudo + ' Roi ?\n\n' +
-        'Camp vainqueur : ' + a.name + ' (' + p.lead.cells + ' territoires)\n' +
+        'Camp vainqueur : ' + a.name + ' (' + p.lead.rate + ' % de victoires)\n' +
         'Voix du prétendant : ' + p.row.voices + '\n\n' +
         'La cérémonie part sur l\'écran géant. Le sacre reste annulable.')) return;
     const { error } = await sb.from('campaign_state').upsert({
@@ -3004,6 +3069,119 @@ async function loadLiveRound() {
       showBanner('ok', '📡 La tablette enregistre désormais en ronde ' + n);
     });
   }
+}
+
+
+// =========================================================================
+// ONGLET ROUE DE LA LOOSE (phase 23)
+// Un lien à jeton par stand exposant, 10 lots par stand, un tirage par
+// défaite. Les exposants n'ont pas de compte : le jeton fait foi.
+// =========================================================================
+state.looseStands = [];
+state.loosePrizes = [];
+state.looseSpins = [];
+state.looseStandPick = null;
+
+function loLink(st) {
+  return location.origin + location.pathname.replace(/[^/]*$/, '') + 'roue-de-la-loose.html?stand=' + encodeURIComponent(st.token);
+}
+
+async function loLoad() {
+  const [st, pr, sp] = await Promise.all([
+    sb.from('loose_stands').select('*').order('created_at'),
+    sb.from('loose_prizes').select('*').order('number'),
+    sb.from('loose_spins').select('*').order('created_at', { ascending: false })
+  ]);
+  if (st.error || pr.error || sp.error) {
+    $('#lo-missing').hidden = false;
+    $('#lo-tbody-stands').innerHTML = '<tr><td colspan="5" class="empty-state">Migration phase 23 à appliquer.</td></tr>';
+    return;
+  }
+  $('#lo-missing').hidden = true;
+  state.looseStands = st.data || [];
+  state.loosePrizes = pr.data || [];
+  state.looseSpins = sp.data || [];
+  if (!state.looseStands.find(x => x.id === state.looseStandPick))
+    state.looseStandPick = state.looseStands.length ? state.looseStands[0].id : null;
+  if (!state.champions.length) await loadChampions();
+  loRender();
+}
+
+function loRender() {
+  const count = {};
+  for (const sp of state.looseSpins) count[sp.stand_id] = (count[sp.stand_id] || 0) + 1;
+  $('#lo-tbody-stands').innerHTML = state.looseStands.length ? state.looseStands.map(st =>
+    '<tr' + (st.active ? '' : ' style="opacity:.55"') + '>' +
+      '<td><strong>' + escapeHtml(st.name) + '</strong></td>' +
+      '<td><code style="font-size:.8rem;word-break:break-all">' + escapeHtml(loLink(st)) + '</code></td>' +
+      '<td>' + (count[st.id] || 0) + '</td>' +
+      '<td><input type="checkbox" class="lo-active" data-id="' + st.id + '"' + (st.active ? ' checked' : '') + '></td>' +
+      '<td><button class="lo-copy" data-id="' + st.id + '">📋 Copier le lien</button></td>' +
+    '</tr>').join('') : '<tr><td colspan="5" class="empty-state">Aucun stand. Ajoute le premier ci-dessus.</td></tr>';
+
+  $('#lo-stand-pick').innerHTML = state.looseStands.map(st =>
+    '<option value="' + st.id + '"' + (st.id === state.looseStandPick ? ' selected' : '') + '>' + escapeHtml(st.name) + '</option>').join('');
+  const prizes = state.loosePrizes.filter(p => p.stand_id === state.looseStandPick);
+  $('#lo-tbody-prizes').innerHTML = prizes.length ? prizes.map(p =>
+    '<tr><td><strong>' + p.number + '</strong></td>' +
+    '<td><input type="text" class="lo-label" data-n="' + p.number + '" value="' + escapeHtml(p.label || '') +
+      '" maxlength="80" style="width:100%"></td></tr>').join('')
+    : '<tr><td colspan="2" class="empty-state">—</td></tr>';
+
+  const byCh = {}; for (const c of state.champions) byCh[c.id] = c;
+  const bySt = {}; for (const st of state.looseStands) bySt[st.id] = st;
+  $('#lo-count').textContent = state.looseSpins.length + ' tirages';
+  $('#lo-tbody-spins').innerHTML = state.looseSpins.length ? state.looseSpins.map(sp => {
+    const ch = byCh[sp.champion_id], st = bySt[sp.stand_id];
+    return '<tr><td>' + escapeHtml(formatDate(sp.created_at)) + '</td>' +
+      '<td>' + (sp.round_number != null ? 'R' + sp.round_number : '—') + '</td>' +
+      '<td>' + escapeHtml(ch ? ch.pseudo : '?') + '</td>' +
+      '<td>' + escapeHtml(st ? st.name : '?') + '</td>' +
+      '<td><strong>' + sp.number + '</strong></td>' +
+      '<td>' + escapeHtml(sp.prize_label || '') + '</td></tr>';
+  }).join('') : '<tr><td colspan="6" class="empty-state">Aucun tirage pour l\'instant.</td></tr>';
+}
+
+function loWire() {
+  const add = $('#lo-add');
+  if (!add || add.dataset.wired) return;
+  add.dataset.wired = '1';
+  add.addEventListener('click', async () => {
+    const name = $('#lo-new-name').value.trim();
+    if (!name) return showBanner('err', 'Donne un nom au stand.');
+    const { data, error } = await sb.from('loose_stands').insert({ name: name }).select().single();
+    if (error) return showBanner('err', 'Erreur : ' + error.message);
+    $('#lo-new-name').value = '';
+    state.looseStandPick = data.id;
+    showBanner('ok', '🎡 Stand « ' + name + ' » créé, copie son lien pour l\'exposant');
+    loLoad();
+  });
+  $('#lo-tbody-stands').addEventListener('click', async e => {
+    const b = e.target.closest('.lo-copy'); if (!b) return;
+    const st = state.looseStands.find(x => x.id === b.dataset.id); if (!st) return;
+    try { await navigator.clipboard.writeText(loLink(st)); showBanner('ok', 'Lien copié'); }
+    catch (_) { prompt('Lien du stand :', loLink(st)); }
+  });
+  $('#lo-tbody-stands').addEventListener('change', async e => {
+    const cb = e.target.closest('.lo-active'); if (!cb) return;
+    const { error } = await sb.from('loose_stands').update({ active: cb.checked }).eq('id', cb.dataset.id);
+    if (error) { cb.checked = !cb.checked; return showBanner('err', 'Erreur : ' + error.message); }
+    loLoad();
+  });
+  $('#lo-stand-pick').addEventListener('change', e => { state.looseStandPick = e.target.value; loRender(); });
+  $('#lo-save').addEventListener('click', async () => {
+    if (!state.looseStandPick) return;
+    const rows = Array.from($$('.lo-label')).map(i => ({
+      stand_id: state.looseStandPick, number: Number(i.dataset.n), label: i.value.trim(),
+      updated_at: new Date().toISOString()
+    }));
+    if (rows.length !== 10 || rows.some(r => !r.label)) return showBanner('err', 'Chaque numéro doit avoir un lot.');
+    const { error } = await sb.from('loose_prizes').upsert(rows, { onConflict: 'stand_id,number' });
+    if (error) return showBanner('err', 'Erreur : ' + error.message);
+    showBanner('ok', '🎡 Lots enregistrés');
+    loLoad();
+  });
+  $('#lo-refresh').addEventListener('click', loLoad);
 }
 
 </script>

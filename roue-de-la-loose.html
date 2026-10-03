@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0A0806">
+<meta name="robots" content="noindex">
+<title>Roue de la loose · InterRégions 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cinzel+Decorative:wght@700;900&family=IM+Fell+English:ital@0;1&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C; --gold-l: #E8C96A; --gold-d: #8A6E2F; --gold-glow: rgba(201,168,76,0.55);
+  --crim-l: #A82020;
+  --bg: #0A0806; --bg2: #0F0C09; --bg3: #171210;
+  --parch: #E8DFC8; --parch-d: #C4B89A; --parch-dk: #8A7A5A;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { min-height: 100%; }
+body {
+  font-family: 'Lato', sans-serif; background: var(--bg); color: var(--parch);
+  background-image: radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.07), transparent 55%),
+                    radial-gradient(ellipse at 80% 100%, rgba(107,15,15,0.10), transparent 55%);
+  background-attachment: fixed;
+}
+button, input { font-family: inherit; color: inherit; }
+button { cursor: pointer; border: none; background: none; }
+
+.screen { display: none; flex-direction: column; min-height: 100vh; min-height: 100dvh; padding: 16px; max-width: 760px; margin: 0 auto; }
+.screen.on { display: flex; animation: fade .25s ease-out; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.topbar { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; }
+.topbar h1 {
+  flex: 1 1 auto; font-family: 'Cinzel', serif; font-weight: 800; color: var(--gold);
+  font-size: clamp(1rem, 4.4vw, 1.4rem); letter-spacing: .1em; text-transform: uppercase; line-height: 1.15;
+}
+.topbar h1 small { display: block; font-weight: 400; font-size: .62em; letter-spacing: .16em; color: var(--parch-dk); }
+.chip {
+  font-family: 'Cinzel', serif; font-size: .8rem; letter-spacing: .12em; color: var(--gold-d);
+  border: 1px solid var(--gold-d); padding: 9px 12px; border-radius: 3px; white-space: nowrap;
+}
+button.chip:active { background: rgba(201,168,76,.14); }
+
+.lead {
+  font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-d);
+  font-size: 1.05rem; margin-bottom: 12px;
+}
+.search {
+  width: 100%; padding: 14px 16px; font-size: 1.1rem; background: var(--bg2);
+  border: 1px solid var(--gold-d); border-radius: 3px; outline: none;
+}
+.search:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,168,76,.18); }
+.list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.row {
+  display: flex; align-items: center; gap: 12px; text-align: left; width: 100%;
+  padding: 14px 16px; border: 1px solid rgba(201,168,76,.28); border-radius: 3px;
+  background: linear-gradient(180deg, var(--bg3), var(--bg2));
+}
+.row:active { border-color: var(--gold); background: rgba(201,168,76,.10); }
+.row .who { flex: 1 1 auto; min-width: 0; }
+.row .nm { font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.08rem; }
+.row .meta { font-size: .85rem; color: var(--parch-dk); margin-top: 2px; }
+.row .go { font-size: 1.6rem; }
+.empty { text-align: center; color: var(--parch-dk); font-style: italic; padding: 30px 10px; font-family: 'IM Fell English', serif; font-size: 1.1rem; }
+
+/* ── Roue ───────────────────────────────────────────────────── */
+#s-wheel { align-items: center; text-align: center; }
+.wheel-who { font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-d); font-size: 1.15rem; }
+.wheel-who b { font-family: 'Cinzel', serif; font-style: normal; color: var(--gold-l); }
+.wheel-stage { position: relative; width: min(92vw, 62vh, 560px); aspect-ratio: 1; margin: 18px auto 8px; }
+.wheel-stage svg.wheel {
+  width: 100%; height: 100%; display: block;
+  transition: transform 4.2s cubic-bezier(.12,.72,.08,1);
+  filter: drop-shadow(0 0 26px rgba(201,168,76,.28));
+}
+.wheel-pointer {
+  position: absolute; left: 50%; top: -8px; transform: translateX(-50%); z-index: 2; width: 0; height: 0;
+  border-left: 17px solid transparent; border-right: 17px solid transparent; border-top: 34px solid var(--gold-l);
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.8));
+}
+.wheel-hub {
+  position: absolute; left: 50%; top: 50%; width: 24%; aspect-ratio: 1; transform: translate(-50%,-50%);
+  border-radius: 50%; z-index: 2; border: 3px solid var(--gold-d);
+  background: radial-gradient(circle at 35% 30%, var(--gold-l), var(--gold) 45%, var(--gold-d));
+  color: #12100b; font-family: 'Cinzel', serif; font-weight: 800; letter-spacing: .06em;
+  font-size: clamp(.8rem, 3.6vw, 1.15rem); box-shadow: 0 0 30px var(--gold-glow);
+}
+.wheel-result { min-height: 6.5em; }
+.wheel-result .num {
+  font-family: 'Cinzel Decorative', serif; font-weight: 900; color: var(--gold-l);
+  font-size: clamp(1.7rem, 8vw, 2.8rem); text-shadow: 0 0 40px var(--gold-glow);
+}
+.wheel-result .lot { font-family: 'Cinzel', serif; font-size: clamp(1.1rem, 5vw, 1.6rem); margin-top: 4px; }
+.wheel-result .hint { font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-dk); margin-top: 6px; }
+
+.btn-major {
+  padding: 16px 30px; font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.05rem;
+  letter-spacing: .12em; text-transform: uppercase; color: #12100b; border-radius: 4px;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold), var(--gold-d)); box-shadow: 0 0 26px var(--gold-glow);
+}
+.btn-major:active { transform: translateY(2px); }
+.btn-major[disabled] { opacity: .5; box-shadow: none; }
+.btn-minor {
+  padding: 16px 24px; font-family: 'Cinzel', serif; font-size: .95rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--parch-d); border: 1px solid var(--gold-d); border-radius: 4px;
+}
+.actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+
+/* ── Lots ───────────────────────────────────────────────────── */
+.lots { display: flex; flex-direction: column; gap: 8px; }
+.lot-row { display: flex; align-items: center; gap: 10px; }
+.lot-row b { font-family: 'Cinzel', serif; color: var(--gold-l); width: 2.2em; text-align: right; font-size: 1.15rem; }
+.lot-row input { flex: 1 1 auto; padding: 12px 14px; font-size: 1.05rem; background: var(--bg2); border: 1px solid var(--gold-d); border-radius: 3px; outline: none; }
+.lot-row input:focus { border-color: var(--gold); }
+
+.credit { text-align: center; font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-dk); font-size: .85rem; padding: 18px 0 4px; margin-top: auto; }
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 26px; z-index: 50;
+  padding: 14px 22px; border-radius: 3px; font-size: 1rem; max-width: 90vw; text-align: center;
+  background: linear-gradient(180deg, rgba(232,223,200,.97), rgba(205,193,164,.95));
+  color: #241708; border: 1px solid #6b5426; box-shadow: 0 6px 26px rgba(0,0,0,.8);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.toast.show { opacity: 1; }
+.toast.err { background: linear-gradient(180deg, #f0d2cc, #dcb4ac); border-color: #7a2018; }
+.spinner { display: inline-block; width: 20px; height: 20px; vertical-align: -3px; border: 3px solid #12100b; border-top-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- LIEN INVALIDE / CHARGEMENT -->
+<div class="screen on" id="s-boot" style="justify-content:center;align-items:center;text-align:center">
+  <div class="topbar"><h1>La roue de la loose</h1></div>
+  <div class="lead" id="boot-msg">Chargement du stand…</div>
+</div>
+
+<!-- LISTE DES VAINCUS -->
+<div class="screen" id="s-list">
+  <div class="topbar">
+    <h1><span id="stand-name">Stand</span><small>Roue de la loose · <span class="rd">Ronde —</span></small></h1>
+    <button class="chip" id="to-lots">Mes lots</button>
+  </div>
+  <div class="lead">Le joueur a déclaré sa défaite à la tablette ? Retrouve-le ici, puis lance la roue.</div>
+  <input class="search" id="q" placeholder="Pseudo, région, adversaire…" autocomplete="off">
+  <div class="list" id="list"></div>
+  <div class="credit">Un clin d'oeil à la team auxerroise, qui a imaginé la roue.</div>
+</div>
+
+<!-- ROUE -->
+<div class="screen" id="s-wheel">
+  <div class="topbar" style="width:100%">
+    <h1><span class="stand-name2">Stand</span><small>Roue de la loose · <span class="rd">Ronde —</span></small></h1>
+    <button class="chip" id="wheel-back">← Liste</button>
+  </div>
+  <div class="wheel-who" id="wheel-who"></div>
+  <div class="wheel-stage">
+    <div class="wheel-pointer"></div>
+    <svg class="wheel" id="wheel" viewBox="-110 -110 220 220"></svg>
+    <button class="wheel-hub" id="wheel-spin">Lancer</button>
+  </div>
+  <div class="wheel-result" id="wheel-result"></div>
+  <div class="actions" id="wheel-actions" hidden>
+    <button class="btn-major" id="wheel-next">Joueur suivant</button>
+  </div>
+</div>
+
+<!-- LOTS DU STAND -->
+<div class="screen" id="s-lots">
+  <div class="topbar">
+    <h1>Mes 10 lots<small class="stand-name2">Stand</small></h1>
+    <button class="chip" id="lots-back">← Liste</button>
+  </div>
+  <div class="lead">Un lot par numéro. La roue affiche ces lots, et tu remets celui du numéro tiré.</div>
+  <div class="lots" id="lots"></div>
+  <div class="actions" style="margin-top:16px"><button class="btn-major" id="lots-save">Enregistrer</button></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   Roue de la loose : téléphone de l'exposant (phase 23)
+   Ouvert avec le lien de son stand : roue-de-la-loose.html?stand=JETON
+   Tout passe par trois RPC qui vérifient le jeton : loose_stand_info(),
+   loose_save_prizes() et spin_loose_wheel(). Le numéro est tiré par la
+   base, l'écran ne fait qu'amener la roue jusqu'à lui.
+   ══════════════════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const TOKEN = new URLSearchParams(location.search).get('stand') || '';
+let info = null;        // { stand, round, prizes[10], pending[] }
+let current = null;     // la défaite en cours de tirage
+let wheelAngle = 0;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id)); window.scrollTo(0, 0); }
+function toast(msg, isErr) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (isErr ? ' err' : '');
+  clearTimeout(t._t); t._t = setTimeout(() => { t.className = 'toast'; }, isErr ? 6000 : 2800);
+}
+function ago(iso) {
+  const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1) return 'à l\'instant';
+  if (m < 60) return 'il y a ' + m + ' min';
+  const h = Math.floor(m / 60);
+  return 'il y a ' + h + ' h' + (m % 60 ? String(m % 60).padStart(2, '0') : '');
+}
+
+/* ── Données ────────────────────────────────────────────────── */
+async function load() {
+  if (!TOKEN) { $('#boot-msg').textContent = 'Ce lien ne contient pas de stand. Demande ton lien à un organisateur.'; return false; }
+  const { data, error } = await sb.rpc('loose_stand_info', { p_token: TOKEN });
+  if (error || !data) {
+    if (!info) $('#boot-msg').textContent = (error && error.message) || 'Stand introuvable.';
+    else toast('Liste non rafraîchie : ' + ((error && error.message) || 'erreur'), true);
+    return false;
+  }
+  info = data;
+  $('#stand-name').textContent = info.stand.name;
+  document.querySelectorAll('.stand-name2').forEach(e => e.textContent = info.stand.name);
+  document.querySelectorAll('.rd').forEach(e => e.textContent = 'Ronde ' + info.round);
+  renderList();
+  return true;
+}
+
+function renderList() {
+  const q = norm($('#q').value);
+  const rows = (info.pending || []).filter(p => !q ||
+    norm(p.loser + ' ' + p.loser_region + ' ' + p.winner).includes(q));
+  $('#list').innerHTML = rows.length ? rows.map(p =>
+    '<button class="row" data-id="' + esc(p.battle_id) + '">' +
+      '<div class="who"><div class="nm">' + esc(p.loser) + '</div>' +
+        '<div class="meta">' + esc(p.loser_region || '') + ' · battu par ' + esc(p.winner || '?') +
+          (p.round != null ? ' · R' + p.round : '') + ' · ' + ago(p.created_at) + '</div></div>' +
+      '<span class="go">🎡</span></button>').join('')
+    : '<div class="empty">' + (q ? 'Personne ne correspond.' :
+        'Aucune défaite en attente de roue. Le joueur doit d\'abord déclarer sa partie à la tablette.') + '</div>';
+}
+$('#q').addEventListener('input', renderList);
+$('#list').addEventListener('click', e => {
+  const b = e.target.closest('.row'); if (!b) return;
+  current = (info.pending || []).find(p => p.battle_id === b.dataset.id);
+  if (current) openWheel();
+});
+
+/* ── Roue ───────────────────────────────────────────────────────
+   10 secteurs de 36°, le n°1 en haut, dans le sens des aiguilles.
+   ─────────────────────────────────────────────────────────────── */
+const WHEEL_COLORS = ['#6B0F0F', '#2a2117', '#8A6E2F', '#1E1810', '#4d1a12'];
+function slice(i) {
+  const a0 = (i * 36 - 90) * Math.PI / 180, a1 = ((i + 1) * 36 - 90) * Math.PI / 180, r = 100;
+  return 'M 0 0 L ' + (r * Math.cos(a0)).toFixed(2) + ' ' + (r * Math.sin(a0)).toFixed(2) +
+         ' A ' + r + ' ' + r + ' 0 0 1 ' + (r * Math.cos(a1)).toFixed(2) + ' ' + (r * Math.sin(a1)).toFixed(2) + ' Z';
+}
+function shortLot(t) { t = String(t || ''); return t.length > 17 ? t.slice(0, 16) + '…' : t; }
+function renderWheel() {
+  const prizes = info.prizes || [];
+  let h = '<circle r="106" fill="#0F0C09" stroke="#8A6E2F" stroke-width="2"/>';
+  for (let i = 0; i < 10; i++) {
+    const p = prizes[i] || { number: i + 1, label: '' };
+    h += '<path d="' + slice(i) + '" fill="' + WHEEL_COLORS[i % 5] + '" stroke="#C9A84C" stroke-width="0.8"/>' +
+         '<g transform="rotate(' + (i * 36 + 18) + ')">' +
+           '<text x="0" y="-84" text-anchor="middle" dominant-baseline="middle" font-family="Cinzel, serif" ' +
+             'font-weight="800" font-size="14" fill="#E8C96A">' + p.number + '</text>' +
+           '<text transform="translate(0,-50) rotate(-90)" text-anchor="middle" dominant-baseline="middle" ' +
+             'font-family="Lato, sans-serif" font-size="6.6" fill="#E8DFC8">' + esc(shortLot(p.label)) + '</text>' +
+         '</g>';
+  }
+  $('#wheel').innerHTML = h;
+}
+function openWheel() {
+  const w = $('#wheel');
+  wheelAngle = 0;
+  w.style.transition = 'none'; w.style.transform = 'rotate(0deg)';
+  void w.getBoundingClientRect();
+  w.style.transition = '';
+  renderWheel();
+  $('#wheel-who').innerHTML = 'Au tour de <b>' + esc(current.loser) + '</b>, battu par ' + esc(current.winner || '?');
+  $('#wheel-result').innerHTML = '';
+  $('#wheel-actions').hidden = true;
+  $('#wheel-back').hidden = false;
+  const hub = $('#wheel-spin'); hub.disabled = false; hub.textContent = 'Lancer';
+  show('s-wheel');
+}
+$('#wheel-spin').addEventListener('click', async () => {
+  const hub = $('#wheel-spin');
+  if (hub.disabled || !current) return;
+  hub.disabled = true; hub.innerHTML = '<span class="spinner"></span>';
+  const { data, error } = await sb.rpc('spin_loose_wheel', { p_token: TOKEN, p_battle_id: current.battle_id });
+  if (error || !data) {
+    hub.disabled = false; hub.textContent = 'Lancer';
+    toast((error && error.message) || 'La roue est coincée, réessaie', true);
+    return;
+  }
+  $('#wheel-back').hidden = true;
+  hub.textContent = '…';
+  const n = data.number;
+  const jitter = (Math.random() - 0.5) * 24;          // reste dans le secteur (±12° sur 36°)
+  wheelAngle = 360 * 6 + (360 - ((n - 1) * 36 + 18)) + jitter;
+  const w = $('#wheel');
+  w.style.transform = 'rotate(' + wheelAngle + 'deg)';
+  let done = false;
+  const finish = () => {
+    if (done) return; done = true;
+    hub.textContent = 'N°' + n;
+    $('#wheel-result').innerHTML =
+      '<div class="num">Numéro ' + n + '</div>' +
+      '<div class="lot">' + esc(data.label || ('Lot n°' + n)) + '</div>' +
+      '<div class="hint">À remettre à ' + esc(data.loser || current.loser) + '</div>';
+    $('#wheel-actions').hidden = false;
+    info.pending = (info.pending || []).filter(p => p.battle_id !== current.battle_id);
+  };
+  w.addEventListener('transitionend', finish, { once: true });
+  setTimeout(finish, 4600);
+});
+$('#wheel-next').addEventListener('click', () => { current = null; $('#q').value = ''; renderList(); show('s-list'); load(); });
+$('#wheel-back').addEventListener('click', () => { current = null; show('s-list'); });
+
+/* ── Lots du stand ──────────────────────────────────────────── */
+$('#to-lots').addEventListener('click', () => {
+  $('#lots').innerHTML = (info.prizes || []).map(p =>
+    '<label class="lot-row"><b>' + p.number + '</b><input type="text" maxlength="80" data-n="' + p.number +
+    '" value="' + esc(p.label) + '"></label>').join('');
+  show('s-lots');
+});
+$('#lots-back').addEventListener('click', () => show('s-list'));
+$('#lots-save').addEventListener('click', async () => {
+  const labels = Array.from(document.querySelectorAll('#lots input')).map(i => i.value.trim());
+  if (labels.length !== 10 || labels.some(l => !l)) return toast('Il faut un lot pour chacun des 10 numéros.', true);
+  const btn = $('#lots-save'); btn.disabled = true;
+  const { error } = await sb.rpc('loose_save_prizes', { p_token: TOKEN, p_labels: labels });
+  btn.disabled = false;
+  if (error) return toast(error.message || 'Erreur', true);
+  toast('Lots enregistrés');
+  await load();
+  show('s-list');
+});
+
+/* ── Démarrage ──────────────────────────────────────────────── */
+load().then(ok => { if (ok) show('s-list'); });
+setInterval(() => { if (info && $('#s-list').classList.contains('on')) load(); }, 20000);
+</script>
+</body>
+</html>
