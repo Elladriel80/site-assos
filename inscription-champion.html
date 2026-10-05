@@ -770,7 +770,11 @@ async function checkEmail() {
       const paid = (paidRows && paidRows[0]) || null;
 
       if (paid) {
-        currentUser = paid;
+        /* get_payer_prefill ne renvoie pas l'email (protection des données) :
+           on le remet depuis la saisie, sinon upsert_champion est appelé sans
+           p_email et Supabase répond « Could not find the function » (bug du
+           05/10/2026, introduit par 7a0d45e, qui bloquait tous les payeurs). */
+        currentUser = Object.assign({}, paid, { email: email });
         isParisian = postalToRegion(paid.code_postal) === 'Île-de-France';
       } else {
         // currentUser virtuel — pas de code postal connu, choix libre de région
