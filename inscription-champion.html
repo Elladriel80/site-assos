@@ -868,6 +868,15 @@ async function prepareForm() {
   if (currentChampion) {
     document.getElementById('pseudo').value = currentChampion.pseudo || '';
     document.getElementById('faction').value = currentChampion.faction || '';
+    /* En édition, la région déjà enregistrée fait foi. Si elle n'est pas dans
+       la liste (région déduite d'un code postal qui n'est pas celui du joueur,
+       billet acheté pour lui par un tiers, correction faite par un orga), on
+       l'ajoute au lieu de laisser la liste vide : sinon « Région obligatoire »
+       bloque toute mise à jour (cas Pierre Archi, 05/10/2026). */
+    if (currentChampion.region && !Array.from(regionSelect.options).some(o => o.value === currentChampion.region)) {
+      regionSelect.insertAdjacentHTML('afterbegin',
+        `<option value="${escapeHTML(currentChampion.region)}">${escapeHTML(currentChampion.region)}</option>`);
+    }
     document.getElementById('region').value = currentChampion.region || '';
     document.getElementById('story').value = currentChampion.story || '';
     if (currentChampion.is_parisian_redistributed && parisianOptions.includes(currentChampion.region)) {
