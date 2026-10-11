@@ -351,6 +351,9 @@ nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,
 .partner-logo img.logo-rabiots{max-height:150px}
 .partner-logo img.logo-fcw{max-height:150px}
 .partner-logo img.logo-cw{max-height:160px}
+.partner-logo img.logo-rge{max-height:90px}
+.partner-tier.institutionnel .partner-card{border-top:3px solid #E8EEF5}
+.partner-tier.institutionnel .tier-name{color:#E8EEF5}
 .partner-logo{flex:0 0 220px;display:flex;align-items:center;justify-content:center;padding:1rem;background:radial-gradient(ellipse at center,rgba(255,255,255,.05),transparent 70%)}
 .partner-logo img{max-width:100%;max-height:110px;object-fit:contain;filter:drop-shadow(0 2px 10px rgba(0,0,0,.6))}
 .partner-body{flex:1;min-width:0}
@@ -495,6 +498,7 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     <div class="sponsor-strip reveal" onclick="showPage('sponsors')" role="button" tabindex="0" title="Voir nos partenaires" onkeydown="if(event.key==='Enter'||event.key===' '){showPage('sponsors')}">
       <span class="sponsor-strip-label">⚜ Avec le soutien de ⚜</span>
       <div class="sponsor-strip-logos">
+        <img src="assets/LOGO_Horizontal_RVB.png" alt="Région Grand Est" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel,serif;font-size:1rem;font-weight:700;color:var(--white)\'&gt;RÉGION GRAND EST&lt;/span&gt;'">
         <img src="assets/Logo-Boite-a-rabiots-detoure.png" class="logo-rabiots-strip" alt="La Boîte à Rabiots" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;LA BOÎTE À RABIOTS&lt;/span&gt;'">
         <img src="assets/logo_fcw_detoure.png" class="logo-fcw-strip" alt="FCW Miniature" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;FCW MINIATURE&lt;/span&gt;'">
         <img src="assets/Logo_custom_wargame_clair.png" class="logo-cw-strip" alt="Custom Wargame" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;CUSTOM WARGAME&lt;/span&gt;'">
@@ -1454,6 +1458,23 @@ footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
     <p class="section-sub">⚜ Soutenir l'Event ⚜</p>
     <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
     <p class="sponsor-intro">L'<strong>InterRégions 2026</strong> réunit 138 passionnés de Warhammer pour un week-end inoubliable au cœur du Parc Naturel Régional de la Forêt d'Orient. Deuxième édition sous l'étendard The Old World, l'événement s'inscrit dans l'héritage des grands InterRégions de l'âge d'or de Battle. Associez votre nom à cet événement national de référence.</p>
+    <!-- PARTENAIRES INSTITUTIONNELS -->
+    <div class="partner-tier institutionnel reveal">
+      <div class="tier-head"><span class="tier-name">🏛 Partenaires institutionnels 🏛</span></div>
+
+      <a href="https://www.grandest.fr/" target="_blank" rel="noopener" class="partner-card">
+        <div class="partner-logo">
+          <img src="assets/LOGO_Horizontal_RVB.png" alt="Logo Région Grand Est" class="logo-rge" onerror="this.parentElement.innerHTML='&lt;span style=\'font-family:Cinzel,serif;font-size:1.4rem;font-weight:700;color:var(--white)\'&gt;RÉGION GRAND EST&lt;/span&gt;'">
+        </div>
+        <div class="partner-body">
+          <h3>Région Grand Est</h3>
+          <span class="partner-role">🏛 Partenaire institutionnel</span>
+          <p>L'<strong>InterRégions 2026</strong> est soutenu par la <strong>Région Grand Est</strong> au titre de son dispositif de soutien à la vie associative de proximité (<strong>DIVA'P</strong>).</p>
+          <span class="partner-link">Découvrir la Région Grand Est →</span>
+        </div>
+      </a>
+    </div>
+
     <!-- PARTENAIRES CONFIRMÉS -->
     <div class="partner-tier gold reveal">
       <div class="tier-head"><span class="tier-name">⚜ Mécène Dragon d'Or ⚜</span></div>
