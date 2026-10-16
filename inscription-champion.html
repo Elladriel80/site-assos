@@ -881,7 +881,10 @@ async function prepareForm() {
       regionSelect.insertAdjacentHTML('afterbegin',
         `<option value="${escapeHTML(currentChampion.region)}">${escapeHTML(currentChampion.region)}</option>`);
     }
-    document.getElementById('region').value = currentChampion.region || '';
+    /* Champion enregistré sans région (cas Thomas Orchampt, 16/10/2026) : on garde
+       la région déduite du code postal au lieu de vider la liste. */
+    if (currentChampion.region) regionSelect.value = currentChampion.region;
+    if (!regionSelect.value && regionSelect.options.length) regionSelect.selectedIndex = 0;
     document.getElementById('story').value = currentChampion.story || '';
     if (currentChampion.is_parisian_redistributed && parisianOptions.includes(currentChampion.region)) {
       selectParisOption(currentChampion.region);
