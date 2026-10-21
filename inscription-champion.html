@@ -751,7 +751,7 @@ async function checkEmail() {
       const { data: existing, error: eC } = await sb
         .rpc('get_champion_by_email', { p_email: email });
       if (eC) throw eC;
-      if (existing) {
+      if (existing && existing.pseudo) {
         fb.innerHTML = `<div class="alert error"><strong>⚠ Champion déjà existant.</strong><br>Un champion est déjà inscrit avec cet email (${escapeHTML(existing.pseudo)}). Utilise un autre email, ou demande à l'orga de te transmettre l'accès à ton inscription existante.</div>`;
         return;
       }
@@ -786,7 +786,10 @@ async function checkEmail() {
       const { data: champ, error: e2 } = await sb
         .rpc('get_champion_by_email', { p_email: email });
       if (e2) throw e2;
-      currentChampion = champ;
+      /* get_champion_by_email renvoie une ligne entièrement vide (et non null) quand
+         l'email n'a pas de champion : sans ce filtre, un nouveau joueur passait en
+         « édition » d'un champion fantôme (cas BFC, 19/10/2026). */
+      currentChampion = (champ && champ.pseudo) ? champ : null;
     }
 
     // 3. Préparer l'étape 2 (commun aux 2 modes)
