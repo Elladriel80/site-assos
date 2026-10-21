@@ -1886,6 +1886,10 @@ const IMPORT_EMAIL_OVERRIDES = {
   '24884167': 'thibaut.har@gmail.com',       // BFC – Thibaut HARLAY  (ex thomas.orchampt@gmail.com)
   '24882709': 'thomas.orchampt@siemens-healthineers.com', // BFC 3 – Thomas ORCHAMPT, capitaine depuis le 03/10/2026 (ex simon.bassenne@gmail.com, ex casg.sectionfigurines@gmail.com)
 };
+// Surcharges d'axe par email : billet payé sur un axe AssoConnect, joueur placé sur un autre.
+const IMPORT_TYPE_OVERRIDES = {
+  'teudge@yahoo.fr': 'jeu_libre', // Stéphane COLLANGE : billet Narratif du 20/10/2026, passé en jeu libre (doublon sur la dernière place narratif)
+};
 // Emails portant plusieurs billets sur le dernier fichier analyse (affiche dans le diff).
 let lastImportMerges = [];
 function mapImportRows(rows) {
@@ -1928,6 +1932,7 @@ function mapImportRows(rows) {
     if (valEquipe > 0)     { inscType = 'equipe';    expected = 5; montant = valEquipe; }
     else if (valLibre > 0) { inscType = 'jeu_libre'; expected = 1; montant = valLibre; }
     else if (valNarr > 0)  { inscType = 'narratif';  expected = 1; montant = valNarr; }
+    if (IMPORT_TYPE_OVERRIDES[email] && inscType !== 'equipe') inscType = IMPORT_TYPE_OVERRIDES[email];
     const cell = (idx) => idx !== -1 ? (String(r[idx] || '').trim() || null) : null;
     mapped.push({
       email,
