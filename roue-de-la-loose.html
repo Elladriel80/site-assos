@@ -127,51 +127,90 @@ button.chip:active { background: rgba(201,168,76,.14); }
 .toast.err { background: linear-gradient(180deg, #f0d2cc, #dcb4ac); border-color: #7a2018; }
 .spinner { display: inline-block; width: 20px; height: 20px; vertical-align: -3px; border: 3px solid #12100b; border-top-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Page unique (phase 28) ─────────────────────────────────── */
+.step { border: 1px solid rgba(201,168,76,.22); border-radius: 4px; padding: 14px; margin-bottom: 14px; background: rgba(15,12,9,.6); }
+.step h2 { font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+.step h2 .n { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; align-items: center; justify-content: center; background: var(--gold); color: #12100b; font-size: .85rem; flex: 0 0 auto; }
+.step.done h2 .n { background: var(--gold-d); }
+.chosen { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--gold); border-radius: 3px; background: rgba(201,168,76,.10); }
+.chosen .nm { flex: 1 1 auto; font-family: 'Cinzel', serif; font-weight: 700; font-size: 1.1rem; }
+.chosen .nm small { display: block; font-family: 'Lato', sans-serif; font-weight: 400; font-size: .82rem; color: var(--parch-dk); }
+.chosen button { color: var(--parch-dk); text-decoration: underline; font-size: .9rem; }
+.list.short { max-height: 46vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.row.pend { border-color: var(--gold); }
+.row .badge { font-family: 'Cinzel', serif; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: #12100b; background: var(--gold); padding: 3px 7px; border-radius: 2px; white-space: nowrap; }
+.row.outsider { border-style: dashed; }
+.outsider-in { display: flex; gap: 8px; margin-top: 10px; }
+.outsider-in input { flex: 1 1 auto; }
+.recap { font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-d); font-size: 1.1rem; text-align: center; margin-bottom: 8px; }
+.recap b { font-family: 'Cinzel', serif; font-style: normal; color: var(--gold-l); }
+#wheel-zone { text-align: center; }
+.link-btn { color: var(--parch-dk); text-decoration: underline; font-size: .95rem; margin-top: 10px; }
 </style>
 </head>
 <body>
 
-<!-- LIEN INVALIDE / CHARGEMENT -->
+<!-- CHARGEMENT / LIEN INVALIDE -->
 <div class="screen on" id="s-boot" style="justify-content:center;align-items:center;text-align:center">
   <div class="topbar"><h1>La roue de la loose</h1></div>
   <div class="lead" id="boot-msg">Chargement du stand…</div>
 </div>
 
-<!-- LISTE DES VAINCUS -->
-<div class="screen" id="s-list">
+<!-- PAGE UNIQUE : je déclare ma loose et je tire mon lot -->
+<div class="screen" id="s-main">
   <div class="topbar">
-    <h1><span id="stand-name">Stand</span><small>Roue de la loose · <span class="rd">Ronde —</span></small></h1>
+    <h1><span class="stand-name2">Stand</span><small>Roue de la loose · <span class="rd">Ronde</span></small></h1>
     <button class="chip" id="to-lots">Mes lots</button>
   </div>
-  <div class="lead">Le joueur a déclaré sa défaite à la tablette ? Retrouve-le ici, puis lance la roue.</div>
-  <input class="search" id="q" placeholder="Pseudo, région, adversaire…" autocomplete="off">
-  <div class="list" id="list"></div>
-  <div class="credit">Un clin d'oeil à la team auxerroise, qui a imaginé la roue.</div>
-</div>
+  <div class="lead">Tu as perdu ? Déclare ta défaite ici et lance la roue : un lot de consolation t'attend.</div>
 
-<!-- ROUE -->
-<div class="screen" id="s-wheel">
-  <div class="topbar" style="width:100%">
-    <h1><span class="stand-name2">Stand</span><small>Roue de la loose · <span class="rd">Ronde —</span></small></h1>
-    <button class="chip" id="wheel-back">← Liste</button>
+  <!-- 1. QUI A PERDU -->
+  <div class="step" id="st-loser">
+    <h2><span class="n">1</span>Qui a perdu ?</h2>
+    <div id="loser-pick">
+      <input class="search" id="q-loser" placeholder="Ton pseudo, ta région…" autocomplete="off">
+      <div class="list short" id="list-loser"></div>
+    </div>
+    <div class="chosen" id="loser-chosen" hidden></div>
   </div>
-  <div class="wheel-who" id="wheel-who"></div>
-  <div class="wheel-stage">
-    <div class="wheel-pointer"></div>
-    <svg class="wheel" id="wheel" viewBox="-110 -110 220 220"></svg>
-    <button class="wheel-hub" id="wheel-spin">Lancer</button>
+
+  <!-- 2. CONTRE QUI -->
+  <div class="step" id="st-winner" hidden>
+    <h2><span class="n">2</span>Battu par qui ?</h2>
+    <div id="pending-box"></div>
+    <div id="winner-pick">
+      <input class="search" id="q-winner" placeholder="Pseudo du vainqueur…" autocomplete="off">
+      <div class="list short" id="list-winner"></div>
+    </div>
+    <div class="chosen" id="winner-chosen" hidden></div>
   </div>
-  <div class="wheel-result" id="wheel-result"></div>
-  <div class="actions" id="wheel-actions" hidden>
-    <button class="btn-major" id="wheel-next">Joueur suivant</button>
+
+  <!-- 3. LA ROUE -->
+  <div class="step" id="st-wheel" hidden>
+    <h2><span class="n">3</span>La roue</h2>
+    <div id="wheel-zone">
+      <div class="recap" id="recap"></div>
+      <div class="wheel-stage">
+        <div class="wheel-pointer"></div>
+        <svg class="wheel" id="wheel" viewBox="-110 -110 220 220"></svg>
+        <button class="wheel-hub" id="wheel-spin">Lancer</button>
+      </div>
+      <div class="wheel-result" id="wheel-result"></div>
+      <div class="actions" id="wheel-actions" hidden>
+        <button class="btn-major" id="wheel-next">Joueur suivant</button>
+      </div>
+    </div>
   </div>
+
+  <div class="credit">Un clin d'oeil à la team auxerroise, qui a imaginé la roue.</div>
 </div>
 
 <!-- LOTS DU STAND -->
 <div class="screen" id="s-lots">
   <div class="topbar">
     <h1>Mes 10 lots<small class="stand-name2">Stand</small></h1>
-    <button class="chip" id="lots-back">← Liste</button>
+    <button class="chip" id="lots-back">← Retour</button>
   </div>
   <div class="lead">Un lot par numéro. La roue affiche ces lots, et tu remets celui du numéro tiré.</div>
   <div class="lots" id="lots"></div>
@@ -183,20 +222,33 @@ button.chip:active { background: rgba(201,168,76,.14); }
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════
-   Roue de la loose : téléphone de l'exposant (phase 23)
-   Ouvert avec le lien de son stand : roue-de-la-loose.html?stand=JETON
-   Tout passe par trois RPC qui vérifient le jeton : loose_stand_info(),
-   loose_save_prizes() et spin_loose_wheel(). Le numéro est tiré par la
-   base, l'écran ne fait qu'amener la roue jusqu'à lui.
+   Roue de la loose : téléphone de l'exposant (phases 23 et 28)
+   Ouvert avec le lien du stand : roue-de-la-loose.html?stand=JETON
+   Une seule page : le vaincu se choisit, choisit son vainqueur (inscrit
+   ou non inscrit), puis lance la roue. Le bouton déclare la défaite ET
+   tire le lot en un seul appel (loose_declare_and_spin). Si la défaite
+   a déjà été déclarée à la tablette, elle est proposée directement
+   (spin_loose_wheel). Le numéro est tiré par la base, l'écran ne fait
+   qu'amener la roue jusqu'à lui.
    ══════════════════════════════════════════════════════════════════ */
 const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const REGION_TO_ALLIANCE = {
+  'Alsace': 'A', 'Bretagne': 'A', 'Basse-Normandie': 'A', 'Rhône-Alpes': 'A', 'Corse': 'A',
+  'Nord-Pas-de-Calais': 'B', 'Bourgogne': 'B', "Provence-Alpes-Côte d'Azur": 'B', 'Aquitaine': 'B', 'Midi-Pyrénées': 'B',
+  'Picardie': 'C', 'Haute-Normandie': 'C', 'Centre': 'C', 'Franche-Comté': 'C', 'Auvergne': 'C',
+  'Lorraine': 'D', 'Pays de la Loire': 'D', 'Champagne-Ardenne': 'D', 'Poitou-Charentes': 'D',
+  'Languedoc-Roussillon': 'D', 'Limousin': 'D'
+};
+
 const TOKEN = new URLSearchParams(location.search).get('stand') || '';
 let info = null;        // { stand, round, prizes[10], pending[] }
-let current = null;     // la défaite en cours de tirage
+let champions = [];     // champions jouables (camp valide)
+let sel = { loser: null, winner: null, outsider: '', pending: null };
 let wheelAngle = 0;
+let spinning = false;
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
@@ -215,45 +267,133 @@ function ago(iso) {
   const h = Math.floor(m / 60);
   return 'il y a ' + h + ' h' + (m % 60 ? String(m % 60).padStart(2, '0') : '');
 }
+function scrollToEl(el) { setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }
 
 /* ── Données ────────────────────────────────────────────────── */
 async function load() {
   if (!TOKEN) { $('#boot-msg').textContent = 'Ce lien ne contient pas de stand. Demande ton lien à un organisateur.'; return false; }
-  const { data, error } = await sb.rpc('loose_stand_info', { p_token: TOKEN });
-  if (error || !data) {
-    if (!info) $('#boot-msg').textContent = (error && error.message) || 'Stand introuvable.';
-    else toast('Liste non rafraîchie : ' + ((error && error.message) || 'erreur'), true);
+  const [r, ch] = await Promise.all([
+    sb.rpc('loose_stand_info', { p_token: TOKEN }),
+    sb.from('champions_public').select('id,pseudo,region,faction').order('pseudo')
+  ]);
+  if (r.error || !r.data) {
+    if (!info) $('#boot-msg').textContent = (r.error && r.error.message) || 'Stand introuvable.';
+    else toast('Liste non rafraîchie : ' + ((r.error && r.error.message) || 'erreur'), true);
     return false;
   }
-  info = data;
-  $('#stand-name').textContent = info.stand.name;
+  info = r.data;
+  if (!ch.error && ch.data) champions = ch.data.filter(c => REGION_TO_ALLIANCE[c.region]);
   document.querySelectorAll('.stand-name2').forEach(e => e.textContent = info.stand.name);
   document.querySelectorAll('.rd').forEach(e => e.textContent = 'Ronde ' + info.round);
-  renderList();
+  if (!spinning) renderWheel();
+  if (!sel.loser) renderLoserList();
   return true;
 }
+const pendingOf = id => ((info && info.pending) || []).filter(p => p.loser_id === id);
 
-function renderList() {
-  const q = norm($('#q').value);
-  const rows = (info.pending || []).filter(p => !q ||
-    norm(p.loser + ' ' + p.loser_region + ' ' + p.winner).includes(q));
-  $('#list').innerHTML = rows.length ? rows.map(p =>
-    '<button class="row" data-id="' + esc(p.battle_id) + '">' +
-      '<div class="who"><div class="nm">' + esc(p.loser) + '</div>' +
-        '<div class="meta">' + esc(p.loser_region || '') + ' · battu par ' + esc(p.winner || '?') +
-          (p.round != null ? ' · R' + p.round : '') + ' · ' + ago(p.created_at) + '</div></div>' +
-      '<span class="go">🎡</span></button>').join('')
-    : '<div class="empty">' + (q ? 'Personne ne correspond.' :
-        'Aucune défaite en attente de roue. Le joueur doit d\'abord déclarer sa partie à la tablette.') + '</div>';
+/* ── 1. Le vaincu ───────────────────────────────────────────── */
+function champRow(c, extra) {
+  return '<button class="row' + (extra && extra.cls ? ' ' + extra.cls : '') + '" data-id="' + esc(c.id) + '">' +
+    '<div class="who"><div class="nm">' + esc(c.pseudo) + '</div>' +
+    '<div class="meta">' + esc(c.region || '') + (c.faction ? ' · ' + esc(c.faction) : '') + '</div></div>' +
+    (extra && extra.badge ? '<span class="badge">' + extra.badge + '</span>' : '') + '</button>';
 }
-$('#q').addEventListener('input', renderList);
-$('#list').addEventListener('click', e => {
+function renderLoserList() {
+  const q = norm($('#q-loser').value);
+  const list = champions.filter(c => !q || norm(c.pseudo + ' ' + c.region + ' ' + c.faction).includes(q));
+  // Ceux qui ont une défaite déjà déclarée à la tablette remontent en tête.
+  list.sort((a, b) => (pendingOf(b.id).length > 0) - (pendingOf(a.id).length > 0));
+  $('#list-loser').innerHTML = list.length
+    ? list.map(c => champRow(c, pendingOf(c.id).length ? { cls: 'pend', badge: '🎡 défaite à tirer' } : null)).join('')
+    : '<div class="empty">Personne ne correspond.</div>';
+}
+$('#q-loser').addEventListener('input', renderLoserList);
+$('#list-loser').addEventListener('click', e => {
   const b = e.target.closest('.row'); if (!b) return;
-  current = (info.pending || []).find(p => p.battle_id === b.dataset.id);
-  if (current) openWheel();
+  const c = champions.find(x => x.id === b.dataset.id); if (!c) return;
+  sel = { loser: c, winner: null, outsider: '', pending: null };
+  $('#loser-pick').hidden = true;
+  $('#loser-chosen').hidden = false;
+  $('#loser-chosen').innerHTML = '<div class="nm">' + esc(c.pseudo) + '<small>' + esc(c.region || '') + '</small></div>' +
+    '<button id="loser-change">Changer</button>';
+  $('#st-loser').classList.add('done');
+  openWinnerStep();
+});
+document.addEventListener('click', e => {
+  if (spinning) return;
+  if (e.target.id === 'loser-change') resetAll();
+  if (e.target.id === 'winner-change') openWinnerStep();
+  if (e.target.id === 'declare-other') { sel.pending = null; $('#pending-box').innerHTML = ''; $('#winner-pick').hidden = false; renderWinnerList(); }
 });
 
-/* ── Roue ───────────────────────────────────────────────────────
+/* ── 2. Le vainqueur, ou une défaite déjà déclarée ──────────── */
+function openWinnerStep() {
+  sel.winner = null; sel.outsider = ''; sel.pending = null;
+  $('#st-winner').hidden = false; $('#st-winner').classList.remove('done');
+  $('#winner-chosen').hidden = true;
+  $('#st-wheel').hidden = true;
+  $('#q-winner').value = '';
+  const pend = pendingOf(sel.loser.id);
+  renderPendingBox();
+  $('#winner-pick').hidden = pend.length > 0;
+  renderWinnerList();
+  scrollToEl($('#st-winner'));
+}
+function renderPendingBox() {
+  const pend = pendingOf(sel.loser.id);
+  if (!pend.length) { $('#pending-box').innerHTML = ''; return; }
+  $('#pending-box').innerHTML =
+    '<div class="lead" style="margin-bottom:8px">Défaite déjà déclarée à la tablette :</div>' +
+    '<div class="list">' + pend.map(p =>
+      '<button class="row pend" data-pending="' + esc(p.battle_id) + '"><div class="who">' +
+      '<div class="nm">Contre ' + esc(p.winner || '?') + '</div>' +
+      '<div class="meta">' + (p.round != null ? 'Ronde ' + p.round + ' · ' : '') + ago(p.created_at) + '</div></div>' +
+      '<span class="badge">Tirer</span></button>').join('') + '</div>' +
+    '<button class="link-btn" id="declare-other">C\'est une autre défaite</button>';
+}
+$('#pending-box').addEventListener('click', e => {
+  const b = e.target.closest('[data-pending]'); if (!b) return;
+  sel.pending = pendingOf(sel.loser.id).find(p => p.battle_id === b.dataset.pending);
+  if (!sel.pending) return;
+  chooseWinnerDone(sel.pending.winner || '?', 'défaite déjà déclarée');
+});
+function renderWinnerList() {
+  const q = norm($('#q-winner').value);
+  const list = champions.filter(c => c.id !== sel.loser.id && (!q || norm(c.pseudo + ' ' + c.region + ' ' + c.faction).includes(q)));
+  $('#list-winner').innerHTML =
+    '<div class="row outsider" style="flex-direction:column;align-items:stretch">' +
+      '<div class="who"><div class="nm">👤 Joueur non inscrit</div><div class="meta">Ton adversaire n\'a pas de champion forgé</div></div>' +
+      '<div class="outsider-in"><input class="search" id="outsider-name" maxlength="60" placeholder="Son nom ou pseudo" autocomplete="off">' +
+      '<button class="chip" id="outsider-ok">OK</button></div></div>' +
+    (list.length ? list.map(c => champRow(c)).join('') : '<div class="empty">Personne ne correspond.</div>');
+}
+$('#q-winner').addEventListener('input', renderWinnerList);
+$('#list-winner').addEventListener('click', e => {
+  if (e.target.id === 'outsider-ok') {
+    const name = ($('#outsider-name').value || '').trim();
+    if (name.length < 2) return toast('Indique le nom de ton adversaire', true);
+    sel.winner = null; sel.outsider = name;
+    return chooseWinnerDone(name, 'joueur non inscrit');
+  }
+  if (e.target.closest('.outsider')) return;
+  const b = e.target.closest('.row'); if (!b) return;
+  const c = champions.find(x => x.id === b.dataset.id); if (!c) return;
+  sel.winner = c; sel.outsider = '';
+  chooseWinnerDone(c.pseudo, c.region || '');
+});
+$('#list-winner').addEventListener('keydown', e => { if (e.target.id === 'outsider-name' && e.key === 'Enter') $('#outsider-ok').click(); });
+
+function chooseWinnerDone(label, sub) {
+  $('#winner-pick').hidden = true;
+  $('#pending-box').innerHTML = '';
+  $('#winner-chosen').hidden = false;
+  $('#winner-chosen').innerHTML = '<div class="nm">' + esc(label) + '<small>' + esc(sub) + '</small></div>' +
+    '<button id="winner-change">Changer</button>';
+  $('#st-winner').classList.add('done');
+  openWheelStep();
+}
+
+/* ── 3. La roue ─────────────────────────────────────────────────
    10 secteurs de 36°, le n°1 en haut, dans le sens des aiguilles.
    ─────────────────────────────────────────────────────────────── */
 const WHEEL_COLORS = ['#6B0F0F', '#2a2117', '#8A6E2F', '#1E1810', '#4d1a12'];
@@ -264,7 +404,7 @@ function slice(i) {
 }
 function shortLot(t) { t = String(t || ''); return t.length > 17 ? t.slice(0, 16) + '…' : t; }
 function renderWheel() {
-  const prizes = info.prizes || [];
+  const prizes = (info && info.prizes) || [];
   let h = '<circle r="106" fill="#0F0C09" stroke="#8A6E2F" stroke-width="2"/>';
   for (let i = 0; i < 10; i++) {
     const p = prizes[i] || { number: i + 1, label: '' };
@@ -278,31 +418,39 @@ function renderWheel() {
   }
   $('#wheel').innerHTML = h;
 }
-function openWheel() {
+function openWheelStep() {
   const w = $('#wheel');
   wheelAngle = 0;
   w.style.transition = 'none'; w.style.transform = 'rotate(0deg)';
   void w.getBoundingClientRect();
   w.style.transition = '';
   renderWheel();
-  $('#wheel-who').innerHTML = 'Au tour de <b>' + esc(current.loser) + '</b>, battu par ' + esc(current.winner || '?');
+  const against = sel.pending ? sel.pending.winner : (sel.winner ? sel.winner.pseudo : sel.outsider);
+  $('#recap').innerHTML = '<b>' + esc(sel.loser.pseudo) + '</b>, battu par <b>' + esc(against || '?') + '</b>' +
+    (sel.pending ? '' : '<br>En lançant la roue, tu confirmes ta défaite.');
   $('#wheel-result').innerHTML = '';
   $('#wheel-actions').hidden = true;
-  $('#wheel-back').hidden = false;
   const hub = $('#wheel-spin'); hub.disabled = false; hub.textContent = 'Lancer';
-  show('s-wheel');
+  $('#st-wheel').hidden = false;
+  scrollToEl($('#st-wheel'));
 }
 $('#wheel-spin').addEventListener('click', async () => {
   const hub = $('#wheel-spin');
-  if (hub.disabled || !current) return;
-  hub.disabled = true; hub.innerHTML = '<span class="spinner"></span>';
-  const { data, error } = await sb.rpc('spin_loose_wheel', { p_token: TOKEN, p_battle_id: current.battle_id });
+  if (hub.disabled || spinning || !sel.loser) return;
+  spinning = true; hub.disabled = true; hub.innerHTML = '<span class="spinner"></span>';
+  const call = sel.pending
+    ? sb.rpc('spin_loose_wheel', { p_token: TOKEN, p_battle_id: sel.pending.battle_id })
+    : sb.rpc('loose_declare_and_spin', {
+        p_token: TOKEN, p_loser_id: sel.loser.id,
+        p_winner_id: sel.winner ? sel.winner.id : null,
+        p_opponent: sel.winner ? null : sel.outsider });
+  const { data, error } = await call;
   if (error || !data) {
-    hub.disabled = false; hub.textContent = 'Lancer';
+    spinning = false; hub.disabled = false; hub.textContent = 'Lancer';
     toast((error && error.message) || 'La roue est coincée, réessaie', true);
     return;
   }
-  $('#wheel-back').hidden = true;
+  document.querySelectorAll('#winner-change, #loser-change').forEach(b => b.hidden = true);
   hub.textContent = '…';
   const n = data.number;
   const jitter = (Math.random() - 0.5) * 24;          // reste dans le secteur (±12° sur 36°)
@@ -316,15 +464,22 @@ $('#wheel-spin').addEventListener('click', async () => {
     $('#wheel-result').innerHTML =
       '<div class="num">Numéro ' + n + '</div>' +
       '<div class="lot">' + esc(data.label || ('Lot n°' + n)) + '</div>' +
-      '<div class="hint">À remettre à ' + esc(data.loser || current.loser) + '</div>';
+      '<div class="hint">À remettre à ' + esc(data.loser || sel.loser.pseudo) + '</div>';
     $('#wheel-actions').hidden = false;
-    info.pending = (info.pending || []).filter(p => p.battle_id !== current.battle_id);
+    spinning = false;
   };
   w.addEventListener('transitionend', finish, { once: true });
   setTimeout(finish, 4600);
 });
-$('#wheel-next').addEventListener('click', () => { current = null; $('#q').value = ''; renderList(); show('s-list'); load(); });
-$('#wheel-back').addEventListener('click', () => { current = null; show('s-list'); });
+function resetAll() {
+  sel = { loser: null, winner: null, outsider: '', pending: null };
+  $('#loser-pick').hidden = false; $('#loser-chosen').hidden = true; $('#st-loser').classList.remove('done');
+  $('#st-winner').hidden = true; $('#st-wheel').hidden = true;
+  $('#q-loser').value = '';
+  renderLoserList();
+  window.scrollTo(0, 0);
+}
+$('#wheel-next').addEventListener('click', async () => { resetAll(); await load(); });
 
 /* ── Lots du stand ──────────────────────────────────────────── */
 $('#to-lots').addEventListener('click', () => {
@@ -333,7 +488,7 @@ $('#to-lots').addEventListener('click', () => {
     '" value="' + esc(p.label) + '"></label>').join('');
   show('s-lots');
 });
-$('#lots-back').addEventListener('click', () => show('s-list'));
+$('#lots-back').addEventListener('click', () => show('s-main'));
 $('#lots-save').addEventListener('click', async () => {
   const labels = Array.from(document.querySelectorAll('#lots input')).map(i => i.value.trim());
   if (labels.length !== 10 || labels.some(l => !l)) return toast('Il faut un lot pour chacun des 10 numéros.', true);
@@ -343,12 +498,13 @@ $('#lots-save').addEventListener('click', async () => {
   if (error) return toast(error.message || 'Erreur', true);
   toast('Lots enregistrés');
   await load();
-  show('s-list');
+  show('s-main');
 });
 
 /* ── Démarrage ──────────────────────────────────────────────── */
-load().then(ok => { if (ok) show('s-list'); });
-setInterval(() => { if (info && $('#s-list').classList.contains('on')) load(); }, 20000);
+load().then(ok => { if (ok) show('s-main'); });
+// Rafraîchit les défaites déclarées à la tablette tant que personne n'est en cours de saisie.
+setInterval(() => { if (info && !sel.loser && $('#s-main').classList.contains('on')) load(); }, 20000);
 </script>
 </body>
 </html>

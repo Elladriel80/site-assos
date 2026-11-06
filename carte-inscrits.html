@@ -2708,8 +2708,8 @@ function renderKiosk() {
       const l = ALLIANCES[lc ? REGION_TO_ALLIANCE[lc.region] : 'IDF'] || ALLIANCES.IDF;
       fh += '<div class="kf-row">' +
         (b.round_number != null ? '<span style="color:var(--gold-d)">R' + b.round_number + '</span> ' : '') +
-        '<b style="color:' + w.light + '">' + escapeHTML(wc ? wc.pseudo : w.short) + '</b>' +
-        (b.is_draw ? ' et ' : ' l\'emporte sur ') + '<b style="color:' + l.light + '">' + escapeHTML(lc ? lc.pseudo : l.short) + '</b>' +
+        '<b style="color:' + w.light + '">' + escapeHTML(wc ? wc.pseudo : (b.opponent_name || w.short)) + '</b>' +
+        (b.is_draw ? ' et ' : ' l\'emporte sur ') + '<b style="color:' + l.light + '">' + escapeHTML(lc ? lc.pseudo : (b.opponent_name || l.short)) + '</b>' +
         (b.is_draw ? ' font match nul' : '') +
         (b.bounty ? ' <span style="color:var(--gold-l)">· 🎯 prime encaissée</span>' : '') +
         (b.source === 'tablette' ? ' <span style="color:var(--gold-d);font-size:.85em">· déclarée à la tablette</span>' : '') +

@@ -124,6 +124,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   display: block; font-size: .82rem; color: var(--parch-dk); margin-top: 3px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+.champ-card.outsider { border-style: dashed; border-color: var(--gold-d); background: rgba(201,168,76,.05); }
+.champ-card.outsider .ico { width: 38px; text-align: center; font-size: 1.7rem; flex: 0 0 auto; }
+.outsider-form { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; text-align: center; }
+.outsider-form p { font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-d); font-size: clamp(1rem, 2vw, 1.4rem); max-width: 720px; }
+.outsider-form input { max-width: 560px; text-align: center; }
 .champ-card .ally { width: 8px; align-self: stretch; border-radius: 2px; flex: 0 0 auto; }
 .empty-list {
   grid-column: 1 / -1; text-align: center; padding: 40px;
@@ -287,6 +292,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   </div>
   <input class="search" id="q-loser" placeholder="Cherche un pseudo, une région, une faction…" autocomplete="off">
   <div class="champ-grid" id="list-loser"></div>
+</div>
+
+<!-- ADVERSAIRE NON INSCRIT -->
+<div class="screen" id="s-outsider">
+  <div class="topbar">
+    <button class="back" id="outsider-back">← Retour</button>
+    <h2>Adversaire non inscrit</h2>
+    <div class="round" id="round-5">Ronde —</div>
+  </div>
+  <div class="outsider-form">
+    <p>La partie compte pour le joueur inscrit (points, et roue de la loose s'il perd). Aucun territoire ne bouge.</p>
+    <input class="search" id="outsider-name" placeholder="Nom ou pseudo de l'adversaire" maxlength="60" autocomplete="off">
+    <button class="btn-major" id="outsider-ok">Valider</button>
+  </div>
 </div>
 
 <!-- CONFIRMATION PAR LE PERDANT -->
@@ -476,7 +495,8 @@ function renderRecent(rows) {
   const by = {};
   for (const c of champions) by[c.id] = c;
   const line = rows.map(b => {
-    const w = by[b.winner_id], l = by[b.loser_id];
+    const w = by[b.winner_id] || (b.opponent_name ? { pseudo: b.opponent_name } : null);
+    const l = by[b.loser_id]  || (b.opponent_name ? { pseudo: b.opponent_name } : null);
     if (!w || !l) return '';
     if (b.is_draw) return '🤝 <b>' + esc(w.pseudo) + '</b> et <b>' + esc(l.pseudo) + '</b> font match nul';
     return '⚔ <b>' + esc(w.pseudo) + '</b> l\'emporte sur <b>' + esc(l.pseudo) + '</b>';
@@ -494,8 +514,15 @@ function renderList(which) {
   let list = champions;
   if (which === 'loser' && pick.winner) list = list.filter(c => c.id !== pick.winner.id);
   if (q) list = list.filter(c => norm(c.pseudo).includes(q) || norm(c.region).includes(q) || norm(c.faction).includes(q));
-  if (!list.length) { host.innerHTML = '<div class="empty-list">Aucun champion ne correspond.</div>'; return; }
-  host.innerHTML = list.map(c => {
+  /* Adversaire non inscrit (phase 28) : proposé tant que l'autre camp de
+     la partie n'est pas déjà lui-même un non inscrit. */
+  const other = which === 'loser' ? pick.winner : null;
+  const outsiderCard = (other && other.outsider) ? '' :
+    '<button class="champ-card outsider" data-outsider="' + which + '"><span class="ico">👤</span>' +
+    '<span class="who"><span class="p">Joueur non inscrit</span>' +
+    '<span class="r">Adversaire sans champion forgé</span></span></button>';
+  if (!list.length) { host.innerHTML = outsiderCard + '<div class="empty-list">Aucun champion ne correspond.</div>'; return; }
+  host.innerHTML = outsiderCard + list.map(c => {
     const a = ALLIANCES[REGION_TO_ALLIANCE[c.region]] || ALLIANCES.IDF;
     return '<button class="champ-card" data-id="' + esc(c.id) + '" data-which="' + which + '">' +
       '<span class="ally" style="background:' + a.color + '"></span>' +
@@ -510,6 +537,8 @@ $('#q-winner').addEventListener('input', () => renderList('winner'));
 $('#q-loser').addEventListener('input', () => renderList('loser'));
 
 document.addEventListener('click', e => {
+  const oc = e.target.closest('.champ-card.outsider');
+  if (oc) { pick.outsiderSlot = oc.dataset.outsider; $('#outsider-name').value = ''; show('s-outsider'); setTimeout(() => $('#outsider-name').focus(), 50); return; }
   const card = e.target.closest('.champ-card');
   if (card) {
     const c = champions.find(x => x.id === card.dataset.id);
@@ -522,12 +551,25 @@ document.addEventListener('click', e => {
   if (b) show(b.dataset.go);
 });
 
+/* ── Adversaire non inscrit (phase 28) ──────────────────────── */
+$('#outsider-back').addEventListener('click', () => show(pick.outsiderSlot === 'winner' ? 's-winner' : 's-loser'));
+function validateOutsider() {
+  const name = $('#outsider-name').value.trim();
+  if (name.length < 2) { toast('Indique le nom de l\'adversaire', true); return; }
+  const o = { id: '__outsider__', pseudo: name, outsider: true, region: '', blason: null };
+  if (pick.outsiderSlot === 'winner') { pick.winner = o; show('s-loser'); }
+  else { pick.loser = o; renderConfirm(); show('s-confirm'); }
+}
+$('#outsider-ok').addEventListener('click', validateOutsider);
+$('#outsider-name').addEventListener('keydown', e => { if (e.key === 'Enter') validateOutsider(); });
+
 /* ── Confirmation par le vaincu ─────────────────────────────── */
 function side(c, kind) {
   const a = ALLIANCES[REGION_TO_ALLIANCE[c.region]] || ALLIANCES.IDF;
   return '<div class="duel-side ' + kind + '">' + blason(c.blason) +
     '<div class="nm">' + esc(c.pseudo) + '</div>' +
-    '<div class="rg" style="color:' + a.light + '">' + esc(a.short) + ' · ' + esc(c.region) + '</div>' +
+    (c.outsider ? '<div class="rg">Joueur non inscrit</div>'
+                : '<div class="rg" style="color:' + a.light + '">' + esc(a.short) + ' · ' + esc(c.region) + '</div>') +
     '<div class="tag">' + (kind === 'win' ? 'Vainqueur' : kind === 'draw' ? 'Match nul' : 'Vaincu') + '</div></div>';
 }
 function confirmLabel() { return pick.draw ? '✔ Nous confirmons le nul' : '✔ Je confirme ma défaite'; }
@@ -540,7 +582,7 @@ function renderConfirm() {
     $('#duel-row').innerHTML = side(pick.winner, 'win') + '<div class="duel-vs">bat</div>' + side(pick.loser, 'lose');
     $('#handover').innerHTML = 'Passe la tablette à <b>' + esc(pick.loser.pseudo) +
       '</b>. C\'est au vaincu de confirmer le résultat.' +
-      (bountyIds.has(pick.loser.id) && REGION_TO_ALLIANCE[pick.loser.region] !== REGION_TO_ALLIANCE[pick.winner.region]
+      (!pick.winner.outsider && bountyIds.has(pick.loser.id) && REGION_TO_ALLIANCE[pick.loser.region] !== REGION_TO_ALLIANCE[pick.winner.region]
         ? '<br>🎯 Sa tête est mise à prix : la prime de 3 points sera pour ' + esc(pick.winner.pseudo) + '.' : '');
   }
   $('#confirm').disabled = false;
@@ -551,9 +593,15 @@ $('#confirm').addEventListener('click', async () => {
   const btn = $('#confirm');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Enregistrement…';
-  const { data, error } = pick.draw
-    ? await sb.rpc('declare_draw', { p_a_id: pick.winner.id, p_b_id: pick.loser.id })
-    : await sb.rpc('declare_battle', { p_winner_id: pick.winner.id, p_loser_id: pick.loser.id });
+  const out = pick.winner.outsider ? pick.winner : pick.loser.outsider ? pick.loser : null;
+  const { data, error } = out
+    ? await sb.rpc('declare_outsider_battle', {
+        p_champion_id: (out === pick.winner ? pick.loser : pick.winner).id,
+        p_result: pick.draw ? 'D' : (out === pick.loser ? 'W' : 'L'),
+        p_opponent: out.pseudo })
+    : pick.draw
+      ? await sb.rpc('declare_draw', { p_a_id: pick.winner.id, p_b_id: pick.loser.id })
+      : await sb.rpc('declare_battle', { p_winner_id: pick.winner.id, p_loser_id: pick.loser.id });
   if (error) {
     btn.disabled = false;
     btn.textContent = confirmLabel();
@@ -574,6 +622,16 @@ $('#confirm').addEventListener('click', async () => {
 /* ── Résultat ───────────────────────────────────────────────── */
 function renderDone() {
   const d = pick.battle || {};
+  if (d.outsider) {
+    $('#verdict').innerHTML = d.draw ? 'Match nul' : esc(d.winner) + ' l\'emporte';
+    $('#detail').innerHTML = 'Partie contre un joueur non inscrit : elle compte pour les points de <b>' + esc(d.champion) +
+      '</b>, aucun territoire ne change de camp.';
+    const lostIt = d.result === 'L';
+    $('#loose-hint').hidden = !lostIt;
+    $('#loose-hint').innerHTML = lostIt ? '🎡 <b>' + esc(d.champion) +
+      '</b>, file sur un stand exposant lancer la roue de la loose : un lot de consolation t\'attend.' : '';
+    return;
+  }
   if (d.draw) {
     $('#verdict').innerHTML = 'Match nul';
     $('#detail').innerHTML = esc(d.a || pick.winner.pseudo) + ' et ' + esc(d.b || pick.loser.pseudo) +

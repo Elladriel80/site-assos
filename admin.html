@@ -1625,8 +1625,8 @@ function renderBattles() {
     return `<tr>
       <td><strong>R${b.round_number || '?'}</strong></td>
       <td class="muted">${formatDate(b.created_at)}</td>
-      <td>${winCh ? escapeHtml(winCh.pseudo) : escapeHtml(b.winner_email)}</td>
-      <td>${losCh ? escapeHtml(losCh.pseudo) : escapeHtml(b.loser_email)}</td>
+      <td>${winCh ? escapeHtml(winCh.pseudo) : b.winner_email ? escapeHtml(b.winner_email) : '👤 ' + escapeHtml(b.opponent_name || 'non inscrit')}</td>
+      <td>${losCh ? escapeHtml(losCh.pseudo) : b.loser_email ? escapeHtml(b.loser_email) : '👤 ' + escapeHtml(b.opponent_name || 'non inscrit')}</td>
       <td class="muted email">${b.is_draw ? '<em>🤝 match nul</em>' : b.cell_transferred_id ? escapeHtml(b.cell_transferred_id) : '<em>même alliance</em>'}${b.bounty ? ' <span title="Prime sur la tête encaissée (+3)">🎯</span>' : ''}</td>
       <td>${b.source === 'tablette' ? '<span title="Déclarée par les joueurs sur la tablette">📱 tablette</span>' : '<span style="color:var(--text-dim)">admin</span>'}</td>
       <td>${isLast ? `<button class="danger" data-action="undo-battle">⟲ Annuler</button>` : ''}</td>
