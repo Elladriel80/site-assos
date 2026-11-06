@@ -31,21 +31,31 @@ begin
 end $$;
 
 -- L'historique public expose le nom de l'adversaire non inscrit (jamais d'email).
-create or replace view public.battles_public as
-  select b.id,
-         wc.id as winner_id,
-         lc.id as loser_id,
-         b.round_number,
-         b.cell_transferred_id,
-         b.source,
-         b.notes,
-         b.created_at,
-         b.is_draw,
-         b.bounty,
-         b.opponent_name
-  from public.battles b
-  left join public.champions wc on wc.email = b.winner_email
-  left join public.champions lc on lc.email = b.loser_email;
+-- La colonne bounty n'existe que si la phase 26 (prime sur la tête) a été
+-- appliquée : la vue s'adapte, pour que cette migration passe dans les deux cas.
+do $$
+begin
+  execute format($v$
+    create or replace view public.battles_public as
+      select b.id,
+             wc.id as winner_id,
+             lc.id as loser_id,
+             b.round_number,
+             b.cell_transferred_id,
+             b.source,
+             b.notes,
+             b.created_at,
+             b.is_draw,
+             %s
+             b.opponent_name
+      from public.battles b
+      left join public.champions wc on wc.email = b.winner_email
+      left join public.champions lc on lc.email = b.loser_email
+  $v$,
+  case when exists (select 1 from information_schema.columns
+                     where table_schema = 'public' and table_name = 'battles' and column_name = 'bounty')
+       then 'b.bounty,' else '' end);
+end $$;
 
 grant select on public.battles_public to anon, authenticated;
 
