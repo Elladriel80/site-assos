@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0806">
+<title>Vente aux enchères des décors · InterRégions 2026</title>
+<meta name="description" content="Offres sous enveloppe sur les décors de Couscous : 2 tables complètes et 7 décors. Clôture le dimanche 8 novembre 2026 à 16 h.">
+<meta property="og:title" content="Vente aux enchères des décors de Couscous · InterRégions 2026">
+<meta property="og:description" content="Offres sous enveloppe, clôture le dimanche 8 novembre à 16 h. 15 % des ventes reviennent à l'organisation.">
+<meta property="og:image" content="https://inter-tow.netlify.app/assets/encheres/tour-1.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cinzel+Decorative:wght@700;900&family=IM+Fell+English:ital@0;1&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C9A84C; --gold-l: #E8C96A; --gold-d: #8A6E2F; --gold-glow: rgba(201,168,76,0.55);
+  --crim: #6B0F0F; --crim-l: #A82020;
+  --bg: #0A0806; --bg2: #0F0C09; --bg3: #171210;
+  --parch: #E8DFC8; --parch-d: #C4B89A; --parch-dk: #8A7A5A;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Lato', sans-serif; background: var(--bg); color: var(--parch); line-height: 1.55;
+  background-image: radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.07), transparent 55%),
+                    radial-gradient(ellipse at 80% 100%, rgba(107,15,15,0.10), transparent 55%);
+  background-attachment: fixed; min-height: 100vh;
+}
+button, input, select { font-family: inherit; color: inherit; font-size: inherit; }
+button { cursor: pointer; border: none; background: none; }
+a { color: var(--gold-l); }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+/* ── Barre du haut ─────────────────────────────────────────── */
+.topnav { position: sticky; top: 0; z-index: 30; background: linear-gradient(180deg, rgba(10,8,6,.97), rgba(15,12,9,.93));
+  border-bottom: 2px solid var(--gold-d); box-shadow: 0 2px 20px rgba(0,0,0,.8); }
+.topnav .wrap { display: flex; align-items: center; gap: 12px; min-height: 48px; }
+.topnav .brand { font-family: 'Cinzel', serif; font-weight: 800; color: var(--gold); letter-spacing: .1em; font-size: .85rem; text-transform: uppercase; flex: 1 1 auto; }
+.topnav a.back { font-family: 'Cinzel', serif; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--parch-d); text-decoration: none; border: 1px solid var(--gold-d); padding: 7px 11px; border-radius: 3px; white-space: nowrap; }
+.topnav a.back:hover { color: var(--gold); border-color: var(--gold); }
+
+/* ── En-tête ───────────────────────────────────────────────── */
+.hero { text-align: center; padding: 44px 0 26px; }
+.hero .kicker { font-family: 'Cinzel', serif; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-d); font-size: .78rem; }
+.hero h1 { font-family: 'Cinzel Decorative', serif; font-weight: 900; color: var(--gold); font-size: clamp(1.7rem, 6vw, 3rem); line-height: 1.12; margin: 10px 0 12px; text-shadow: 0 0 30px rgba(201,168,76,.25); }
+.hero .lead { font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-d); font-size: clamp(1.05rem, 3.4vw, 1.25rem); max-width: 720px; margin: 0 auto; }
+.hero .lead b { font-family: 'Cinzel', serif; font-style: normal; color: var(--gold-l); }
+
+.countdown { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 22px; padding: 14px 20px;
+  border: 1px solid var(--gold-d); border-radius: 4px; background: rgba(15,12,9,.7); }
+.countdown .lbl { font-family: 'Cinzel', serif; font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; color: var(--parch-dk); }
+.countdown .val { font-family: 'Cinzel', serif; font-weight: 800; color: var(--gold-l); font-size: clamp(1.2rem, 5vw, 1.7rem); letter-spacing: .06em; }
+.countdown.closed .val { color: var(--crim-l); }
+
+/* ── Règles ────────────────────────────────────────────────── */
+.rules { margin: 10px 0 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.rule { border: 1px solid rgba(201,168,76,.22); border-radius: 4px; padding: 14px 16px; background: rgba(15,12,9,.6); }
+.rule h3 { font-family: 'Cinzel', serif; font-size: .88rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.rule p { font-size: .95rem; color: var(--parch-d); }
+.rule p + p { margin-top: 6px; }
+
+/* ── Lots ──────────────────────────────────────────────────── */
+h2.sec { font-family: 'Cinzel', serif; font-weight: 800; color: var(--gold); letter-spacing: .14em; text-transform: uppercase; font-size: 1.05rem;
+  display: flex; align-items: center; gap: 12px; margin: 26px 0 14px; }
+h2.sec::after { content: ''; flex: 1 1 auto; height: 1px; background: linear-gradient(90deg, var(--gold-d), transparent); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.lot { display: flex; flex-direction: column; border: 1px solid rgba(201,168,76,.3); border-radius: 5px; overflow: hidden;
+  background: linear-gradient(180deg, var(--bg3), var(--bg2)); }
+.lot .ph { position: relative; aspect-ratio: 4 / 3; background: #050403; overflow: hidden; }
+.lot .ph img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; transition: transform .4s; }
+.lot .ph img:hover { transform: scale(1.03); }
+.lot .ph img.tall { object-fit: contain; }
+.lot .ph .none { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-dk); }
+.lot .ph .count { position: absolute; right: 8px; bottom: 8px; background: rgba(10,8,6,.85); color: var(--parch-d); font-size: .78rem; padding: 3px 8px; border-radius: 3px; border: 1px solid rgba(201,168,76,.3); }
+.lot .thumbs { display: flex; gap: 6px; padding: 8px 10px 0; }
+.lot .thumbs button { width: 54px; height: 42px; border-radius: 3px; overflow: hidden; border: 1px solid rgba(201,168,76,.25); opacity: .65; }
+.lot .thumbs button.on { opacity: 1; border-color: var(--gold); }
+.lot .thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lot .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; }
+.lot .nm { font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.15rem; color: var(--parch); line-height: 1.25; }
+.lot .ds { font-size: .92rem; color: var(--parch-d); }
+.lot .meta { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin-top: auto; padding-top: 6px; }
+.lot .price small { display: block; font-family: 'Cinzel', serif; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--parch-dk); }
+.lot .price b { font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.45rem; color: var(--gold-l); }
+.lot .nb { font-size: .85rem; color: var(--parch-dk); text-align: right; }
+.lot .badge { align-self: flex-start; font-family: 'Cinzel', serif; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: #12100b; background: var(--gold); padding: 3px 8px; border-radius: 2px; }
+
+.btn-major { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 22px; font-family: 'Cinzel', serif; font-weight: 800; font-size: .95rem;
+  letter-spacing: .1em; text-transform: uppercase; color: #12100b; border-radius: 4px;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold), var(--gold-d)); box-shadow: 0 0 18px rgba(201,168,76,.3); }
+.btn-major:hover { box-shadow: 0 0 26px var(--gold-glow); }
+.btn-major:active { transform: translateY(1px); }
+.btn-major[disabled] { opacity: .45; box-shadow: none; cursor: not-allowed; }
+.lot .btn-major { width: 100%; margin-top: 4px; }
+.btn-minor { padding: 12px 18px; font-family: 'Cinzel', serif; font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; color: var(--parch-d); border: 1px solid var(--gold-d); border-radius: 4px; }
+
+.notice { text-align: center; font-family: 'IM Fell English', serif; font-style: italic; color: var(--parch-d); font-size: 1.1rem; padding: 30px 10px; }
+
+/* ── Formulaire (dialog) ───────────────────────────────────── */
+dialog { margin: auto; border: 1px solid var(--gold-d); border-radius: 6px; background: var(--bg2); color: var(--parch);
+  width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; box-shadow: 0 10px 50px rgba(0,0,0,.9); }
+dialog::backdrop { background: rgba(0,0,0,.78); }
+.dlg-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(201,168,76,.25); position: sticky; top: 0; background: var(--bg2); z-index: 1; }
+.dlg-head img { width: 64px; height: 48px; object-fit: cover; border-radius: 3px; border: 1px solid rgba(201,168,76,.3); }
+.dlg-head .t { flex: 1 1 auto; min-width: 0; }
+.dlg-head .t b { display: block; font-family: 'Cinzel', serif; font-size: 1.05rem; color: var(--gold-l); }
+.dlg-head .t small { color: var(--parch-dk); font-size: .85rem; }
+.dlg-head .x { font-size: 1.6rem; color: var(--parch-dk); line-height: 1; padding: 4px 8px; }
+form.bid { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.fld label { display: block; font-family: 'Cinzel', serif; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--parch-d); margin-bottom: 5px; }
+.fld label em { font-family: 'Lato', sans-serif; text-transform: none; letter-spacing: 0; font-style: normal; color: var(--parch-dk); }
+.fld input { width: 100%; padding: 12px 14px; background: var(--bg); border: 1px solid var(--gold-d); border-radius: 3px; outline: none; font-size: 1rem; }
+.fld input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,168,76,.18); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .row2 { grid-template-columns: 1fr; } }
+.amount { position: relative; }
+.amount input { font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.4rem; color: var(--gold-l); padding-right: 40px; }
+.amount span { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--gold-d); }
+.hint { font-size: .85rem; color: var(--parch-dk); margin-top: 4px; }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 520px) { .choices { grid-template-columns: 1fr; } }
+.fld label.choice { font-family: 'Lato', sans-serif; text-transform: none; letter-spacing: 0; font-size: 1rem; color: inherit; margin: 0; }
+.choice { display: block; position: relative; border: 1px solid rgba(201,168,76,.3); border-radius: 4px; padding: 12px 12px 12px 40px; cursor: pointer; background: var(--bg); }
+.choice input { position: absolute; left: 14px; top: 15px; accent-color: var(--gold); width: 16px; height: 16px; }
+.choice b { display: block; font-family: 'Cinzel', serif; font-size: .92rem; color: var(--parch); }
+.choice small { color: var(--parch-dk); font-size: .83rem; }
+.choice:has(input:checked) { border-color: var(--gold); background: rgba(201,168,76,.08); }
+.ship-info { border-left: 3px solid var(--gold-d); padding: 8px 12px; font-size: .9rem; color: var(--parch-d); background: rgba(201,168,76,.05); }
+.accept { display: flex; gap: 10px; align-items: flex-start; font-size: .9rem; color: var(--parch-d); }
+.accept input { margin-top: 3px; accent-color: var(--gold); width: 16px; height: 16px; flex: 0 0 auto; }
+.err { color: #f0a69a; font-size: .92rem; min-height: 1.2em; }
+.done { padding: 22px 18px 24px; text-align: center; }
+.done .big { font-family: 'Cinzel Decorative', serif; font-weight: 900; color: var(--gold-l); font-size: 1.6rem; margin-bottom: 8px; }
+.done p { color: var(--parch-d); margin-bottom: 8px; }
+.done p b { color: var(--parch); }
+
+/* ── Visionneuse ───────────────────────────────────────────── */
+.lightbox { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.92); display: none; align-items: center; justify-content: center; padding: 16px; }
+.lightbox.on { display: flex; }
+.lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 3px; box-shadow: 0 0 40px rgba(0,0,0,.9); }
+.lightbox .x { position: absolute; top: 10px; right: 14px; font-size: 2rem; color: var(--parch); }
+.lightbox .nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 2.4rem; color: var(--parch); padding: 10px 14px; background: rgba(10,8,6,.5); border-radius: 4px; }
+.lightbox .nav.prev { left: 8px; } .lightbox .nav.next { right: 8px; }
+
+footer { text-align: center; padding: 34px 16px 40px; color: var(--parch-dk); font-size: .88rem; font-family: 'IM Fell English', serif; font-style: italic; }
+footer a { color: var(--gold); }
+.spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid #12100b; border-top-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="wrap">
+    <div class="brand">⚔ InterRégions 2026</div>
+    <a class="back" href="index.html">← Le site</a>
+  </div>
+</div>
+
+<main class="wrap">
+  <header class="hero">
+    <div class="kicker">Vente aux enchères</div>
+    <h1>Les décors de Couscous</h1>
+    <p class="lead">Les tables et décors qui ont fait vivre l'InterRégions sont à vendre, <b>sous enveloppe</b>. Fais ton offre sur le lot qui te plaît : la meilleure l'emporte. <b>15 %</b> du total des ventes reviennent à l'organisation.</p>
+    <div class="countdown" id="countdown">
+      <span class="lbl" id="cd-lbl">Clôture des offres le dimanche 8 novembre à 16 h</span>
+      <span class="val" id="cd-val">&nbsp;</span>
+    </div>
+  </header>
+
+  <section class="rules" aria-label="Règles de la vente">
+    <div class="rule">
+      <h3>Sous enveloppe</h3>
+      <p>Personne ne voit le montant des autres offres. Tu peux revenir modifier ton offre avant la clôture : la nouvelle remplace l'ancienne (même adresse email).</p>
+    </div>
+    <div class="rule">
+      <h3>La meilleure offre gagne</h3>
+      <p>Chaque lot est vendu séparément, au plus offrant, à partir de sa mise à prix. En cas d'égalité, les ex aequo refont une offre sous enveloppe.</p>
+    </div>
+    <div class="rule">
+      <h3>Retrait sur place</h3>
+      <p>Les gagnants sont prévenus après 16 h. Paiement à l'organisation et retrait du lot sur place, le dimanche.</p>
+    </div>
+    <div class="rule">
+      <h3>Envoi</h3>
+      <p>Pas sur place, ou pas de quoi transporter le lot ? On l'expédie. Frais de port en plus, au coût réel.</p>
+      <p>Arrhes de 30 % de l'offre à verser pour bloquer le lot, non remboursables. Solde et port à régler sous 7 jours, sinon le lot passe à l'offre suivante.</p>
+    </div>
+  </section>
+
+  <div id="lots-zone"><div class="notice">Chargement des lots…</div></div>
+</main>
+
+<footer>
+  Vente organisée par <a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener">Les Stratèges du Vieux Monde</a> au profit de l'InterRégions 2026.<br>
+  Une question ? Passe au stand orga ou écris-nous sur le <a href="https://discord.gg/VTvnFqfvuF" target="_blank" rel="noopener">Discord</a>.
+</footer>
+
+<!-- Formulaire d'offre -->
+<dialog id="dlg">
+  <div class="dlg-head">
+    <img id="dlg-img" alt="">
+    <div class="t"><b id="dlg-name">Lot</b><small id="dlg-sub"></small></div>
+    <button class="x" type="button" id="dlg-close" aria-label="Fermer">×</button>
+  </div>
+  <form class="bid" id="bid-form" novalidate>
+    <div class="fld">
+      <label for="f-amount">Ton offre</label>
+      <div class="amount"><input id="f-amount" type="number" inputmode="numeric" min="1" step="1" required><span>€</span></div>
+      <div class="hint" id="f-amount-hint"></div>
+    </div>
+    <div class="row2">
+      <div class="fld"><label for="f-name">Nom et prénom</label><input id="f-name" autocomplete="name" maxlength="80" required></div>
+      <div class="fld"><label for="f-pseudo">Pseudo <em>(facultatif)</em></label><input id="f-pseudo" autocomplete="nickname" maxlength="40"></div>
+    </div>
+    <div class="row2">
+      <div class="fld"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" maxlength="120" required></div>
+      <div class="fld"><label for="f-phone">Téléphone</label><input id="f-phone" type="tel" autocomplete="tel" maxlength="25" required></div>
+    </div>
+    <div class="fld">
+      <label>Si tu gagnes</label>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="delivery" value="retrait" checked><b>Je l'emporte sur place</b><small>Dimanche, après 16 h</small></label>
+        <label class="choice"><input type="radio" name="delivery" value="envoi"><b>Je le fais envoyer</b><small>Port au coût réel, arrhes 30 %</small></label>
+      </div>
+    </div>
+    <div id="ship-zone" hidden>
+      <div class="fld"><label for="f-postcode">Code postal de livraison</label><input id="f-postcode" inputmode="numeric" autocomplete="postal-code" maxlength="10"></div>
+      <div class="ship-info" id="ship-info"></div>
+    </div>
+    <label class="accept"><input type="checkbox" id="f-accept" required><span>Mon offre m'engage : si elle gagne, j'achète le lot au prix proposé, selon les règles de la vente ci-dessus.</span></label>
+    <div class="err" id="f-err" role="alert"></div>
+    <button class="btn-major" type="submit" id="f-submit">Déposer mon offre sous enveloppe</button>
+  </form>
+  <div class="done" id="dlg-done" hidden>
+    <div class="big">Offre déposée</div>
+    <p id="done-msg"></p>
+    <p>On te prévient après la clôture, le dimanche 8 novembre à 16 h, si ton offre l'emporte.</p>
+    <div style="margin-top:14px"><button class="btn-major" type="button" id="done-close">Voir les autres lots</button></div>
+  </div>
+</dialog>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Photo">
+  <button class="x" id="lb-close" aria-label="Fermer">×</button>
+  <button class="nav prev" id="lb-prev" aria-label="Photo précédente">‹</button>
+  <img id="lb-img" alt="">
+  <button class="nav next" id="lb-next" aria-label="Photo suivante">›</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   Vente aux enchères des décors de Couscous (phase 29)
+   Offres sous enveloppe : la page ne lit que la vue auction_lots_public
+   (lots, mise à prix, nombre d'offres) et dépose les offres par la RPC
+   place_auction_bid(). Aucun montant d'offre n'est jamais lisible ici.
+   ══════════════════════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const DEFAULT_CLOSE = new Date('2026-11-08T16:00:00+01:00');
+
+let lots = [];
+let closesAt = DEFAULT_CLOSE;
+let current = null;          // lot ouvert dans le formulaire
+let lb = { photos: [], i: 0 };
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const eur = n => Number(n).toLocaleString('fr-FR') + ' €';
+
+function lotCloses(l) { return l.round > 1 ? (l.round_closes_at ? new Date(l.round_closes_at) : new Date(0)) : closesAt; }
+function lotOpen(l) { return Date.now() < lotCloses(l).getTime(); }
+
+/* ── Chargement ─────────────────────────────────────────────── */
+async function load() {
+  const { data, error } = await sb.from('auction_lots_public').select('*').order('position');
+  if (error) {
+    if (!lots.length) $('#lots-zone').innerHTML = '<div class="notice">La vente ouvre très bientôt. Reviens dans quelques minutes.</div>';
+    return;
+  }
+  lots = data || [];
+  if (lots[0] && lots[0].closes_at) closesAt = new Date(lots[0].closes_at);
+  render();
+  tick();
+}
+
+function card(l) {
+  const ph = (l.photos || []);
+  const open = lotOpen(l);
+  const nb = l.bids_count || 0;
+  return '<article class="lot" data-id="' + esc(l.id) + '">' +
+    '<div class="ph">' + (ph.length
+      ? '<img src="' + esc(ph[0]) + '" alt="' + esc(l.name) + '" loading="lazy" data-zoom="0" onload="this.classList.toggle(\'tall\', this.naturalHeight > this.naturalWidth)">' + (ph.length > 1 ? '<span class="count">' + ph.length + ' photos</span>' : '')
+      : '<div class="none">Photo à venir</div>') + '</div>' +
+    (ph.length > 1 ? '<div class="thumbs">' + ph.map((p, i) =>
+      '<button type="button" data-thumb="' + i + '"' + (i === 0 ? ' class="on"' : '') + ' aria-label="Photo ' + (i + 1) + '"><img src="' + esc(p) + '" alt="" loading="lazy"></button>').join('') + '</div>' : '') +
+    '<div class="body">' +
+      (l.round > 1 ? '<span class="badge">Départage des ex aequo</span>' : '') +
+      '<div class="nm">' + esc(l.name) + '</div>' +
+      (l.description ? '<div class="ds">' + esc(l.description) + '</div>' : '') +
+      '<div class="meta"><div class="price"><small>Mise à prix</small><b>' + eur(l.min_price) + '</b></div>' +
+        '<div class="nb">' + (nb === 0 ? 'Aucune offre<br>pour l\'instant' : nb + ' offre' + (nb > 1 ? 's' : '') + '<br>sous enveloppe') + '</div></div>' +
+      '<button class="btn-major" type="button" data-bid="' + esc(l.id) + '"' + (open ? '' : ' disabled') + '>' +
+        (open ? (l.round > 1 ? 'Refaire mon offre' : 'Faire une offre') : 'Offres closes') + '</button>' +
+    '</div></article>';
+}
+
+function render() {
+  const tables = lots.filter(l => l.category === 'table');
+  const decors = lots.filter(l => l.category !== 'table');
+  let h = '';
+  if (tables.length) h += '<h2 class="sec">Tables complètes (tapis et décors)</h2><div class="grid">' + tables.map(card).join('') + '</div>';
+  if (decors.length) h += '<h2 class="sec">Décors à l\'unité</h2><div class="grid">' + decors.map(card).join('') + '</div>';
+  $('#lots-zone').innerHTML = h || '<div class="notice">Aucun lot en vente pour le moment.</div>';
+}
+
+/* ── Compte à rebours ───────────────────────────────────────── */
+function tick() {
+  const ms = closesAt.getTime() - Date.now();
+  const box = $('#countdown');
+  if (ms <= 0) {
+    box.classList.add('closed');
+    $('#cd-lbl').textContent = 'Les offres sont closes';
+    $('#cd-val').textContent = 'Résultats annoncés par l\'organisation';
+    return;
+  }
+  const d = Math.floor(ms / 86400000), h = Math.floor(ms % 86400000 / 3600000),
+        m = Math.floor(ms % 3600000 / 60000), s = Math.floor(ms % 60000 / 1000);
+  $('#cd-val').textContent = (d ? d + ' j ' : '') + String(h).padStart(2, '0') + ' h ' + String(m).padStart(2, '0') + ' min ' + String(s).padStart(2, '0') + ' s';
+}
+let wasOpen = true;
+setInterval(() => {
+  tick();
+  const open = Date.now() < closesAt.getTime();
+  if (wasOpen && !open && lots.length) render();   // les boutons passent à « Offres closes »
+  wasOpen = open;
+}, 1000);
+
+/* ── Photos ─────────────────────────────────────────────────── */
+$('#lots-zone').addEventListener('click', e => {
+  const art = e.target.closest('.lot'); if (!art) return;
+  const l = lots.find(x => x.id === art.dataset.id); if (!l) return;
+  const th = e.target.closest('[data-thumb]');
+  if (th) {
+    const i = Number(th.dataset.thumb);
+    const img = art.querySelector('.ph img'); img.src = l.photos[i]; img.dataset.zoom = i;
+    art.querySelectorAll('[data-thumb]').forEach(b => b.classList.toggle('on', b === th));
+    return;
+  }
+  const z = e.target.closest('[data-zoom]');
+  if (z) { openLightbox(l.photos, Number(z.dataset.zoom)); return; }
+  const b = e.target.closest('[data-bid]');
+  if (b && !b.disabled) openForm(l);
+});
+function openLightbox(photos, i) { lb = { photos, i }; showLb(); $('#lightbox').classList.add('on'); }
+function showLb() {
+  $('#lb-img').src = lb.photos[lb.i];
+  $('#lb-prev').hidden = $('#lb-next').hidden = lb.photos.length < 2;
+}
+$('#lb-close').onclick = () => $('#lightbox').classList.remove('on');
+$('#lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') $('#lightbox').classList.remove('on'); });
+$('#lb-prev').onclick = () => { lb.i = (lb.i + lb.photos.length - 1) % lb.photos.length; showLb(); };
+$('#lb-next').onclick = () => { lb.i = (lb.i + 1) % lb.photos.length; showLb(); };
+document.addEventListener('keydown', e => {
+  if (!$('#lightbox').classList.contains('on')) return;
+  if (e.key === 'Escape') $('#lightbox').classList.remove('on');
+  if (e.key === 'ArrowLeft') $('#lb-prev').click();
+  if (e.key === 'ArrowRight') $('#lb-next').click();
+});
+
+/* ── Formulaire d'offre ─────────────────────────────────────── */
+const SAVED_KEY = 'encheres-contact';
+function savedContact() { try { return JSON.parse(localStorage.getItem(SAVED_KEY) || '{}'); } catch (_) { return {}; } }
+
+function openForm(l) {
+  current = l;
+  const c = savedContact();
+  $('#dlg-img').src = (l.photos && l.photos[0]) || 'assets/logo-interregions.webp';
+  $('#dlg-name').textContent = l.name;
+  $('#dlg-sub').textContent = l.round > 1 ? 'Départage réservé aux ex aequo' : 'Mise à prix : ' + eur(l.min_price);
+  $('#f-amount').value = '';
+  $('#f-amount').min = l.min_price;
+  $('#f-amount').placeholder = String(l.min_price);
+  $('#f-amount-hint').textContent = l.round > 1
+    ? 'Utilise l\'email de ta première offre. Ta nouvelle offre doit être au moins égale à la précédente.'
+    : 'Minimum ' + eur(l.min_price) + ', en euros ronds.';
+  $('#f-name').value = c.name || ''; $('#f-pseudo').value = c.pseudo || '';
+  $('#f-email').value = c.email || ''; $('#f-phone').value = c.phone || '';
+  $('#f-postcode').value = c.postcode || '';
+  $('#f-accept').checked = false;
+  $('#f-err').textContent = '';
+  $('#bid-form').hidden = false; $('#dlg-done').hidden = true;
+  updateShip();
+  $('#dlg').showModal();
+  setTimeout(() => $('#f-amount').focus(), 50);
+}
+function closeForm() { $('#dlg').close(); }
+$('#dlg-close').onclick = closeForm;
+$('#done-close').onclick = closeForm;
+$('#dlg').addEventListener('click', e => { if (e.target.id === 'dlg') closeForm(); });
+
+function delivery() { return document.querySelector('input[name="delivery"]:checked').value; }
+function updateShip() {
+  const ship = delivery() === 'envoi';
+  $('#ship-zone').hidden = !ship;
+  const a = parseInt($('#f-amount').value, 10);
+  $('#ship-info').innerHTML = 'Si tu gagnes, tu verses <b>30 % d\'arrhes</b>' +
+    (a > 0 ? ' (' + eur(Math.ceil(a * 0.3)) + ')' : '') +
+    ', non remboursables, pour bloquer le lot. Puis le solde et les frais de port, au coût réel, sous 7 jours.';
+}
+document.querySelectorAll('input[name="delivery"]').forEach(r => r.addEventListener('change', updateShip));
+$('#f-amount').addEventListener('input', updateShip);
+
+$('#bid-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const l = current; if (!l) return;
+  const amount = Number($('#f-amount').value);
+  const v = {
+    name: $('#f-name').value.trim(), pseudo: $('#f-pseudo').value.trim(),
+    email: $('#f-email').value.trim(), phone: $('#f-phone').value.trim(),
+    postcode: $('#f-postcode').value.trim()
+  };
+  const err = m => { $('#f-err').textContent = m; };
+  if (!Number.isInteger(amount) || amount <= 0) return err('Indique un montant en euros ronds.');
+  if (l.round === 1 && amount < l.min_price) return err('L\'offre minimum pour ce lot est de ' + eur(l.min_price) + '.');
+  if (!v.name) return err('Indique ton nom et ton prénom.');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v.email)) return err('Adresse email invalide.');
+  if (v.phone.replace(/\D/g, '').length < 9) return err('Numéro de téléphone invalide.');
+  if (delivery() === 'envoi' && !v.postcode) return err('Indique le code postal de livraison.');
+  if (!$('#f-accept').checked) return err('Coche la case d\'engagement pour déposer ton offre.');
+  err('');
+
+  const btn = $('#f-submit'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Envoi…';
+  const { data, error } = await sb.rpc('place_auction_bid', {
+    p_lot_id: l.id, p_full_name: v.name, p_pseudo: v.pseudo, p_email: v.email, p_phone: v.phone,
+    p_amount: amount, p_delivery: delivery(), p_postcode: delivery() === 'envoi' ? v.postcode : ''
+  });
+  btn.disabled = false; btn.textContent = 'Déposer mon offre sous enveloppe';
+  if (error) return err(error.message || 'L\'offre n\'a pas pu être enregistrée. Réessaie.');
+
+  try { localStorage.setItem(SAVED_KEY, JSON.stringify(v)); } catch (_) {}
+  $('#done-msg').innerHTML = (data && data.replaced ? 'Ta nouvelle offre remplace la précédente : ' : 'Ton offre de ') +
+    '<b>' + eur(amount) + '</b> sur <b>' + esc(l.name) + '</b> est bien enregistrée, sous enveloppe.';
+  $('#bid-form').hidden = true; $('#dlg-done').hidden = false;
+  load();
+});
+
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

@@ -231,6 +231,7 @@
     <button data-tab="tournoi">⚔️ Tournoi</button>
     <button data-tab="couronne">♛ Couronne</button>
     <button data-tab="loose">🎡 Roue de la loose</button>
+    <button data-tab="encheres">🔨 Enchères</button>
     <button data-tab="hebergement">🛏 Hébergement</button>
     <button data-tab="carte">🗺 Carte</button>
     <button data-tab="demo">🎭 Démo</button>
@@ -599,6 +600,42 @@
         <table>
           <thead><tr><th>Quand</th><th>Ronde</th><th>Joueur</th><th>Stand</th><th>N°</th><th>Lot</th></tr></thead>
           <tbody id="lo-tbody-spins"><tr><td colspan="6" class="empty-state">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section data-pane="encheres" hidden>
+      <h2>🔨 Enchères des décors de Couscous</h2>
+      <div class="banner warn" id="au-missing" hidden>
+        ⚠️ La migration <code>admin_migration_phase29_encheres_decors.sql</code> n'est pas encore appliquée sur Supabase.
+      </div>
+      <div class="banner ok">
+        💡 Offres sous enveloppe sur <a href="encheres.html" target="_blank" style="color:inherit">encheres.html</a> : le public ne voit que les lots, la mise à prix et le nombre d'offres. Une offre par email et par lot (la dernière remplace la précédente). L'asso encaisse, garde 15 % et reverse 85 % à Couscous. Envoi : 30 % d'arrhes non remboursables, puis solde et port au réel sous 7 jours.
+      </div>
+
+      <div class="toolbar">
+        <label>Clôture des offres <input type="datetime-local" id="au-close" style="margin-left:.4em"></label>
+        <button id="au-close-save">💾 Enregistrer</button>
+        <button id="au-refresh">↻ Rafraîchir</button>
+        <button id="au-csv">⬇ Export CSV</button>
+        <span class="count" id="au-status"></span>
+      </div>
+
+      <div class="stats" id="au-totals" style="display:flex;gap:1.5em;flex-wrap:wrap;margin:.8em 0 1.2em"></div>
+
+      <h3>Résultat par lot</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Lot</th><th>Mise à prix</th><th>Tour</th><th>Offres</th><th>Meilleure offre</th><th>Gagnant</th><th>Remise</th><th></th></tr></thead>
+          <tbody id="au-tbody-lots"><tr><td colspan="8" class="empty-state">Chargement…</td></tr></tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:2em">Toutes les offres</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quand</th><th>Lot</th><th>Tour</th><th>Montant</th><th>Nom</th><th>Pseudo</th><th>Email</th><th>Téléphone</th><th>Remise</th><th></th></tr></thead>
+          <tbody id="au-tbody-bids"><tr><td colspan="10" class="empty-state">Chargement…</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -975,6 +1012,10 @@ function switchTab(tab) {
   if (tab === 'loose') {
     loWire();
     loLoad();
+  }
+  if (tab === 'encheres') {
+    auWire();
+    auLoad();
   }
   if (tab === 'equipes') {
     renderEquipes();
@@ -3319,6 +3360,161 @@ function loWire() {
     loLoad();
   });
   $('#lo-refresh').addEventListener('click', loLoad);
+}
+
+// =========================================================================
+// ONGLET ENCHÈRES (phase 29)
+// Offres sous enveloppe sur les décors de Couscous. Gagnant = meilleure
+// offre du dernier tour ; en cas d'égalité, on ouvre un tour de départage
+// réservé aux ex aequo (ils refont une offre depuis encheres.html).
+// =========================================================================
+state.auLots = [];
+state.auBids = [];
+state.auCloses = null;
+
+const auEur = n => Number(n || 0).toLocaleString('fr-FR') + ' €';
+const auDelivery = d => d === 'envoi' ? '📦 Envoi' : '🤝 Sur place';
+
+async function auLoad() {
+  const [lo, bi, se] = await Promise.all([
+    sb.from('auction_lots').select('*').order('position'),
+    sb.from('auction_bids').select('*').order('created_at', { ascending: false }),
+    sb.from('auction_settings').select('*').eq('id', 1).maybeSingle()
+  ]);
+  if (lo.error || bi.error || se.error) {
+    $('#au-missing').hidden = false;
+    $('#au-tbody-lots').innerHTML = '<tr><td colspan="8" class="empty-state">Migration phase 29 à appliquer.</td></tr>';
+    return;
+  }
+  $('#au-missing').hidden = true;
+  state.auLots = lo.data || [];
+  state.auBids = bi.data || [];
+  state.auCloses = se.data ? new Date(se.data.closes_at) : null;
+  auRender();
+}
+
+// Résultat d'un lot : on regarde le dernier tour qui a des offres.
+function auResult(lot) {
+  let round = lot.round;
+  let bids = state.auBids.filter(b => b.lot_id === lot.id && b.round === round);
+  if (!bids.length && round > 1) { round -= 1; bids = state.auBids.filter(b => b.lot_id === lot.id && b.round === round); }
+  if (!bids.length) return { round, bids, top: null, leaders: [] };
+  const top = Math.max(...bids.map(b => b.amount));
+  const leaders = bids.filter(b => b.amount === top).sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+  return { round, bids, top, leaders };
+}
+
+function auRender() {
+  const lotById = {}; for (const l of state.auLots) lotById[l.id] = l;
+  if (state.auCloses) {
+    const d = state.auCloses, pad = n => String(n).padStart(2, '0');
+    $('#au-close').value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    const open = Date.now() < d.getTime();
+    $('#au-status').textContent = (open ? '🟢 Offres ouvertes jusqu\'au ' : '🔴 Offres closes depuis le ') + formatDate(d.toISOString());
+  }
+
+  let total = 0, nSold = 0, nTie = 0, arrhes = 0;
+  const rows = state.auLots.map(l => {
+    const r = auResult(l);
+    const nb = r.bids.length;
+    const tie = r.leaders.length > 1;
+    const w = !tie && r.leaders[0];
+    if (w) { total += r.top; nSold++; if (w.delivery === 'envoi') arrhes += Math.ceil(r.top * 0.3); }
+    if (tie) nTie++;
+    const roundOpen = l.round > 1 && l.round_closes_at && Date.now() < new Date(l.round_closes_at).getTime();
+    const who = b => '<strong>' + escapeHtml(b.full_name) + '</strong>' + (b.pseudo ? ' (' + escapeHtml(b.pseudo) + ')' : '') +
+      '<br><small>' + escapeHtml(b.email) + ' · ' + escapeHtml(b.phone) + '</small>';
+    let winner = '-', remise = '', action = '';
+    if (tie) {
+      winner = '⚖️ <strong>Égalité</strong> entre ' + r.leaders.length + ' :<br>' + r.leaders.map(who).join('<br>');
+      if (!roundOpen) action = '<button class="au-round" data-id="' + escapeHtml(l.id) + '">⚖️ Ouvrir un départage</button>';
+    } else if (w) {
+      winner = who(w);
+      remise = auDelivery(w.delivery) + (w.delivery === 'envoi' ? '<br><small>CP ' + escapeHtml(w.postcode || '?') + ' · arrhes ' + auEur(Math.ceil(r.top * 0.3)) + '</small>' : '');
+    }
+    if (roundOpen) action = '<small>Départage ouvert jusqu\'à ' + escapeHtml(formatDate(l.round_closes_at)) + '</small>';
+    return '<tr' + (l.active ? '' : ' style="opacity:.55"') + '>' +
+      '<td><strong>' + escapeHtml(l.name) + '</strong></td>' +
+      '<td>' + auEur(l.min_price) + '</td>' +
+      '<td>' + (l.round > 1 ? 'Départage ' + (l.round - 1) : '1') + '</td>' +
+      '<td>' + nb + '</td>' +
+      '<td>' + (r.top != null ? '<strong>' + auEur(r.top) + '</strong>' : '-') + '</td>' +
+      '<td>' + winner + '</td><td>' + remise + '</td><td>' + action + '</td></tr>';
+  });
+  $('#au-tbody-lots').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="8" class="empty-state">Aucun lot.</td></tr>';
+
+  const card = (lbl, val) => '<div><div style="color:var(--text-dim);font-size:.8rem">' + lbl + '</div><div style="font-size:1.3rem;font-weight:bold">' + val + '</div></div>';
+  $('#au-totals').innerHTML =
+    card('Offres reçues', state.auBids.length) +
+    card('Lots avec un gagnant', nSold + ' / ' + state.auLots.length + (nTie ? ' · ' + nTie + ' égalité(s)' : '')) +
+    card('Total des ventes', auEur(total)) +
+    card('Part asso (15 %)', auEur(Math.round(total * 0.15 * 100) / 100)) +
+    card('À reverser à Couscous (85 %)', auEur(Math.round(total * 0.85 * 100) / 100)) +
+    card('Arrhes à demander (envois)', auEur(arrhes));
+
+  $('#au-tbody-bids').innerHTML = state.auBids.length ? state.auBids.map(b => {
+    const l = lotById[b.lot_id];
+    return '<tr><td>' + escapeHtml(formatDate(b.updated_at)) + '</td>' +
+      '<td>' + escapeHtml(l ? l.name : b.lot_id) + '</td>' +
+      '<td>' + b.round + '</td>' +
+      '<td><strong>' + auEur(b.amount) + '</strong></td>' +
+      '<td>' + escapeHtml(b.full_name) + '</td>' +
+      '<td>' + escapeHtml(b.pseudo || '') + '</td>' +
+      '<td>' + escapeHtml(b.email) + '</td>' +
+      '<td>' + escapeHtml(b.phone) + '</td>' +
+      '<td>' + auDelivery(b.delivery) + (b.postcode ? ' <small>(' + escapeHtml(b.postcode) + ')</small>' : '') + '</td>' +
+      '<td><button class="au-del danger" data-id="' + b.id + '" title="Supprimer cette offre">🗑</button></td></tr>';
+  }).join('') : '<tr><td colspan="10" class="empty-state">Aucune offre pour l\'instant.</td></tr>';
+}
+
+function auCsv() {
+  const lotById = {}; for (const l of state.auLots) lotById[l.id] = l;
+  const head = ['date', 'lot', 'tour', 'montant', 'nom', 'pseudo', 'email', 'telephone', 'remise', 'code_postal'];
+  const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const lines = [head.join(';')].concat(state.auBids.map(b => [
+    b.updated_at, lotById[b.lot_id] ? lotById[b.lot_id].name : b.lot_id, b.round, b.amount,
+    b.full_name, b.pseudo, b.email, b.phone, b.delivery, b.postcode
+  ].map(q).join(';')));
+  const blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'encheres-decors-' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function auWire() {
+  const btn = $('#au-refresh');
+  if (!btn || btn.dataset.wired) return;
+  btn.dataset.wired = '1';
+  btn.addEventListener('click', auLoad);
+  $('#au-csv').addEventListener('click', auCsv);
+  $('#au-close-save').addEventListener('click', async () => {
+    const v = $('#au-close').value; if (!v) return;
+    const { error } = await sb.from('auction_settings').update({ closes_at: new Date(v).toISOString(), updated_at: new Date().toISOString() }).eq('id', 1);
+    if (error) return showBanner('err', 'Erreur : ' + error.message);
+    showBanner('ok', '🔨 Heure de clôture enregistrée');
+    auLoad();
+  });
+  $('#au-tbody-lots').addEventListener('click', async e => {
+    const b = e.target.closest('.au-round'); if (!b) return;
+    const lot = state.auLots.find(x => x.id === b.dataset.id); if (!lot) return;
+    const min = prompt('Départage de « ' + lot.name + ' » : les ex aequo refont une offre sur encheres.html, avec le même email.\nDurée du départage, en minutes :', '30');
+    const n = parseInt(min, 10); if (!n || n <= 0) return;
+    const r = auResult(lot);
+    const { error } = await sb.from('auction_lots').update({
+      round: r.round + 1, round_closes_at: new Date(Date.now() + n * 60000).toISOString(), updated_at: new Date().toISOString()
+    }).eq('id', lot.id);
+    if (error) return showBanner('err', 'Erreur : ' + error.message);
+    showBanner('ok', '⚖️ Départage ouvert ' + n + ' min. Préviens les ex aequo : ' + r.leaders.map(x => x.full_name).join(', '), 8000);
+    auLoad();
+  });
+  $('#au-tbody-bids').addEventListener('click', async e => {
+    const b = e.target.closest('.au-del'); if (!b) return;
+    if (!confirm('Supprimer cette offre ?')) return;
+    const { error } = await sb.from('auction_bids').delete().eq('id', b.dataset.id);
+    if (error) return showBanner('err', 'Erreur : ' + error.message);
+    showBanner('ok', 'Offre supprimée');
+    auLoad();
+  });
 }
 
 </script>
