@@ -2948,6 +2948,9 @@ function crStandings() {
   const byChamp = {};
   for (const v of state.royalVotes)
     byChamp[v.champion_id] = (byChamp[v.champion_id] || 0) + (v.voices || 0);
+  /* À points égaux, le champion du camp en tête passe devant (condition 1 du sacre),
+     puis ordre alphabétique. */
+  const lead = crLeadingAlliance().key;
   return state.champions
     .filter(ch => REGION_TO_ALLIANCE[ch.region] && REGION_TO_ALLIANCE[ch.region] !== 'IDF')
     .map(ch => {
@@ -2961,7 +2964,9 @@ function crStandings() {
       };
     })
     .filter(r => state.pointsReady || r.voices !== 0)
-    .sort((a, b) => b.voices - a.voices || (a.ch.pseudo || '').localeCompare(b.ch.pseudo || ''));
+    .sort((a, b) => b.voices - a.voices ||
+                    (b.alliance === lead) - (a.alliance === lead) ||
+                    (a.ch.pseudo || '').localeCompare(b.ch.pseudo || ''));
 }
 
 function crPretender() {

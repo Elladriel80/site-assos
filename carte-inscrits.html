@@ -1581,12 +1581,17 @@ function royalStandings() {
   for (const v of royalVotes) byId[v.champion_id] = (byId[v.champion_id] || 0) + (v.voices || 0);
   /* Depuis la phase 25, « voices » porte le total de la grille de points
      (parties, tenue, peinture, fair-play, bonus). Avant : les seules voix. */
+  /* À points égaux, le champion du camp en tête passe devant (condition 1 du sacre),
+     puis ordre alphabétique. */
+  const lead = leadingAllianceKey();
   return champions
     .filter(ch => REGION_TO_ALLIANCE[ch.region] && REGION_TO_ALLIANCE[ch.region] !== 'IDF')
     .map(ch => ({ ch: ch, alliance: REGION_TO_ALLIANCE[ch.region],
                   voices: champPoints ? ((champPoints[ch.id] || {}).total || 0) : (byId[ch.id] || 0) }))
     .filter(r => champPoints || r.voices !== 0)
-    .sort((a, b) => b.voices - a.voices || (a.ch.pseudo || '').localeCompare(b.ch.pseudo || ''));
+    .sort((a, b) => b.voices - a.voices ||
+                    (b.alliance === lead) - (a.alliance === lead) ||
+                    (a.ch.pseudo || '').localeCompare(b.ch.pseudo || ''));
 }
 function leadingAllianceKey() {
   const rows = computeStandings();
