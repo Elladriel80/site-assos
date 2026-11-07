@@ -610,7 +610,7 @@
         ⚠️ La migration <code>admin_migration_phase29_encheres_decors.sql</code> n'est pas encore appliquée sur Supabase.
       </div>
       <div class="banner ok">
-        💡 Offres sous enveloppe sur <a href="encheres.html" target="_blank" style="color:inherit">encheres.html</a> : le public ne voit que les lots, la mise à prix et le nombre d'offres. Une offre par email et par lot (la dernière remplace la précédente). L'asso encaisse, garde 15 % et reverse 85 % à Couscous. Envoi : 30 % d'arrhes non remboursables, puis solde et port au réel sous 7 jours.
+        💡 Offres sous enveloppe sur <a href="encheres.html" target="_blank" style="color:inherit">encheres.html</a> : le public ne voit que les lots et la mise à prix, rien sur les offres. Une offre par téléphone et par lot (la dernière remplace la précédente). L'asso encaisse, garde 15 % et reverse 85 % à Couscous. Envoi : 30 % d'arrhes non remboursables, puis solde et port au réel sous 7 jours.
       </div>
 
       <div class="toolbar">
@@ -3497,7 +3497,7 @@ function auWire() {
   $('#au-tbody-lots').addEventListener('click', async e => {
     const b = e.target.closest('.au-round'); if (!b) return;
     const lot = state.auLots.find(x => x.id === b.dataset.id); if (!lot) return;
-    const min = prompt('Départage de « ' + lot.name + ' » : les ex aequo refont une offre sur encheres.html, avec le même email.\nDurée du départage, en minutes :', '30');
+    const min = prompt('Départage de « ' + lot.name + ' » : les ex aequo refont une offre sur encheres.html, avec le même téléphone.\nDurée du départage, en minutes :', '30');
     const n = parseInt(min, 10); if (!n || n <= 0) return;
     const r = auResult(lot);
     const { error } = await sb.from('auction_lots').update({

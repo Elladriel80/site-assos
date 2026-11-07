@@ -6,10 +6,10 @@
 -- seuls) au profit de l'événement : 15 % du total des ventes reviennent à
 -- l'association, qui encaisse et reverse 85 % à Couscous.
 --
--- Offres sous enveloppe : personne ne voit le montant des autres. Le public
--- voit seulement les lots, la mise à prix et le nombre d'offres déposées.
--- Une offre par personne (email) et par lot : une nouvelle offre remplace
--- la précédente. Clôture le dimanche 8 novembre 2026 à 16 h.
+-- Offres sous enveloppe : le public voit seulement les lots et la mise à
+-- prix, rien sur les offres (ni montant ni nombre), révélées à la clôture.
+-- Une offre par personne et par lot, la personne étant identifiée par son
+-- téléphone : une nouvelle offre remplace la précédente. Clôture le dimanche 8 novembre 2026 à 16 h.
 -- En cas d'égalité en tête, l'admin ouvre un 2e tour réservé aux ex aequo.
 --
 -- Tout passe par la RPC SECURITY DEFINER place_auction_bid() ; les tables
@@ -109,8 +109,22 @@ create table if not exists public.auction_bids (
   updated_at timestamptz not null default now()
 );
 
-create unique index if not exists uq_auction_bids_lot_email_round
-  on public.auction_bids (lot_id, lower(email), round);
+-- Le téléphone identifie l'enchérisseur : chiffres seuls, +33 ramené à 0.
+create or replace function public.auction_phone_norm(p text)
+returns text
+language sql
+immutable
+as $$
+  select case
+    when d ~ '^0033[1-9][0-9]{8}$' then '0' || substr(d, 5)
+    when d ~ '^33[1-9][0-9]{8}$'   then '0' || substr(d, 3)
+    else d end
+  from (select regexp_replace(coalesce(p, ''), '\D', '', 'g') as d) x
+$$;
+
+drop index if exists public.uq_auction_bids_lot_email_round;
+create unique index if not exists uq_auction_bids_lot_phone_round
+  on public.auction_bids (lot_id, public.auction_phone_norm(phone), round);
 
 alter table public.auction_bids enable row level security;
 drop policy if exists "Admins manage auction bids" on public.auction_bids;
@@ -121,12 +135,11 @@ grant select, insert, update, delete on public.auction_bids to authenticated;
 -- =========================================================================
 -- 4. VUE PUBLIQUE : les lots, sans aucun montant d'offre
 -- =========================================================================
-create or replace view public.auction_lots_public as
+drop view if exists public.auction_lots_public;
+create view public.auction_lots_public as
   select l.id, l.position, l.category, l.name, l.description, l.min_price, l.photos,
          l.round, l.round_closes_at,
-         s.closes_at,
-         (select count(*) from public.auction_bids b
-           where b.lot_id = l.id and b.round = l.round)::int as bids_count
+         s.closes_at
     from public.auction_lots l
     cross join public.auction_settings s
    where l.active;
@@ -155,6 +168,7 @@ declare
   v_lot       record;
   v_closes    timestamptz;
   v_email     text := lower(btrim(coalesce(p_email, '')));
+  v_phone     text := public.auction_phone_norm(p_phone);
   v_prev_max  int;
   v_replaced  boolean := false;
 begin
@@ -163,7 +177,7 @@ begin
 
   if coalesce(btrim(p_full_name), '') = '' then raise exception 'Indique ton nom et ton prénom.'; end if;
   if v_email !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then raise exception 'Adresse email invalide.'; end if;
-  if length(regexp_replace(coalesce(p_phone, ''), '\D', '', 'g')) < 9 then
+  if length(v_phone) < 9 then
     raise exception 'Numéro de téléphone invalide.';
   end if;
   if p_delivery not in ('retrait', 'envoi') then raise exception 'Choisis le retrait sur place ou l''envoi.'; end if;
@@ -184,8 +198,8 @@ begin
      where lot_id = v_lot.id and round = v_lot.round - 1;
     if not exists (select 1 from public.auction_bids
                     where lot_id = v_lot.id and round = v_lot.round - 1
-                      and lower(email) = v_email and amount = v_prev_max) then
-      raise exception 'Ce tour de départage est réservé aux personnes à égalité. Utilise l''email de ta première offre.';
+                      and public.auction_phone_norm(phone) = v_phone and amount = v_prev_max) then
+      raise exception 'Ce tour de départage est réservé aux personnes à égalité. Utilise le téléphone de ta première offre.';
     end if;
     if p_amount < v_prev_max then
       raise exception 'Ta nouvelle offre doit être d''au moins % €.', v_prev_max;
@@ -194,9 +208,9 @@ begin
 
   update public.auction_bids
      set full_name = btrim(p_full_name), pseudo = btrim(coalesce(p_pseudo, '')),
-         phone = btrim(p_phone), amount = p_amount, delivery = p_delivery,
+         email = v_email, phone = btrim(p_phone), amount = p_amount, delivery = p_delivery,
          postcode = btrim(coalesce(p_postcode, '')), updated_at = now()
-   where lot_id = v_lot.id and round = v_lot.round and lower(email) = v_email;
+   where lot_id = v_lot.id and round = v_lot.round and public.auction_phone_norm(phone) = v_phone;
   v_replaced := found;
 
   if not v_replaced then

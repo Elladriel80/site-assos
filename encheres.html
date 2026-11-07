@@ -83,7 +83,6 @@ h2.sec::after { content: ''; flex: 1 1 auto; height: 1px; background: linear-gra
 .lot .meta { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin-top: auto; padding-top: 6px; }
 .lot .price small { display: block; font-family: 'Cinzel', serif; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--parch-dk); }
 .lot .price b { font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.45rem; color: var(--gold-l); }
-.lot .nb { font-size: .85rem; color: var(--parch-dk); text-align: right; }
 .lot .badge { align-self: flex-start; font-family: 'Cinzel', serif; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: #12100b; background: var(--gold); padding: 3px 8px; border-radius: 2px; }
 
 .btn-major { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 22px; font-family: 'Cinzel', serif; font-weight: 800; font-size: .95rem;
@@ -172,7 +171,7 @@ footer a { color: var(--gold); }
   <section class="rules" aria-label="Règles de la vente">
     <div class="rule">
       <h3>Sous enveloppe</h3>
-      <p>Personne ne voit le montant des autres offres. Tu peux revenir modifier ton offre avant la clôture : la nouvelle remplace l'ancienne (même adresse email).</p>
+      <p>Personne ne voit les offres des autres, ni leur montant ni leur nombre : tout est révélé à la clôture. Tu peux modifier ton offre avant 16 h : la nouvelle remplace l'ancienne. C'est ton numéro de téléphone qui t'identifie.</p>
     </div>
     <div class="rule">
       <h3>La meilleure offre gagne</h3>
@@ -215,8 +214,8 @@ footer a { color: var(--gold); }
       <div class="fld"><label for="f-pseudo">Pseudo <em>(facultatif)</em></label><input id="f-pseudo" autocomplete="nickname" maxlength="40"></div>
     </div>
     <div class="row2">
+      <div class="fld"><label for="f-phone">Téléphone</label><input id="f-phone" type="tel" autocomplete="tel" maxlength="25" required><div class="hint">Il t'identifie : garde le même pour modifier ton offre.</div></div>
       <div class="fld"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" maxlength="120" required></div>
-      <div class="fld"><label for="f-phone">Téléphone</label><input id="f-phone" type="tel" autocomplete="tel" maxlength="25" required></div>
     </div>
     <div class="fld">
       <label>Si tu gagnes</label>
@@ -289,7 +288,6 @@ async function load() {
 function card(l) {
   const ph = (l.photos || []);
   const open = lotOpen(l);
-  const nb = l.bids_count || 0;
   return '<article class="lot" data-id="' + esc(l.id) + '">' +
     '<div class="ph">' + (ph.length
       ? '<img src="' + esc(ph[0]) + '" alt="' + esc(l.name) + '" loading="lazy" data-zoom="0" onload="this.classList.toggle(\'tall\', this.naturalHeight > this.naturalWidth)">' + (ph.length > 1 ? '<span class="count">' + ph.length + ' photos</span>' : '')
@@ -300,8 +298,7 @@ function card(l) {
       (l.round > 1 ? '<span class="badge">Départage des ex aequo</span>' : '') +
       '<div class="nm">' + esc(l.name) + '</div>' +
       (l.description ? '<div class="ds">' + esc(l.description) + '</div>' : '') +
-      '<div class="meta"><div class="price"><small>Mise à prix</small><b>' + eur(l.min_price) + '</b></div>' +
-        '<div class="nb">' + (nb === 0 ? 'Aucune offre<br>pour l\'instant' : nb + ' offre' + (nb > 1 ? 's' : '') + '<br>sous enveloppe') + '</div></div>' +
+      '<div class="meta"><div class="price"><small>Mise à prix</small><b>' + eur(l.min_price) + '</b></div></div>' +
       '<button class="btn-major" type="button" data-bid="' + esc(l.id) + '"' + (open ? '' : ' disabled') + '>' +
         (open ? (l.round > 1 ? 'Refaire mon offre' : 'Faire une offre') : 'Offres closes') + '</button>' +
     '</div></article>';
@@ -384,7 +381,7 @@ function openForm(l) {
   $('#f-amount').min = l.min_price;
   $('#f-amount').placeholder = String(l.min_price);
   $('#f-amount-hint').textContent = l.round > 1
-    ? 'Utilise l\'email de ta première offre. Ta nouvelle offre doit être au moins égale à la précédente.'
+    ? 'Utilise le téléphone de ta première offre. Ta nouvelle offre doit être au moins égale à la précédente.'
     : 'Minimum ' + eur(l.min_price) + ', en euros ronds.';
   $('#f-name').value = c.name || ''; $('#f-pseudo').value = c.pseudo || '';
   $('#f-email').value = c.email || ''; $('#f-phone').value = c.phone || '';
