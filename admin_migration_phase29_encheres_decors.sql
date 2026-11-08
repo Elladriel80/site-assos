@@ -83,8 +83,8 @@ insert into public.auction_lots (id, position, category, name, description, min_
    'Minaret à coupoles vertes.', 20,
    array['assets/encheres/minaret-1.jpg']),
   ('temple-satanique', 9, 'decor', 'Temple satanique (étoile bleue)',
-   'Photo à venir.', 10,
-   '{}'::text[])
+   'Cercle rituel au pentacle bleu, entouré d''obélisques et d''ossements.', 10,
+   array['assets/encheres/temple-satanique-1.jpg'])
 on conflict (id) do update set
   position = excluded.position, category = excluded.category, name = excluded.name,
   description = excluded.description, min_price = excluded.min_price,
