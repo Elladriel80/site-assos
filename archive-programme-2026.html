@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>InterRégions 2026 — The Old World · Fédération France The Old World × Les Stratèges du Vieux Monde</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Uncial+Antiqua&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:     #C9A84C;
+  --gold-l:   #E8C96A;
+  --gold-d:   #8A6E2F;
+  --gold-glow:rgba(201,168,76,0.55);
+  --crimson:  #6B0F0F;
+  --crim-m:   #8B1A1A;
+  --crim-l:   #A82020;
+  --blood:    #420808;
+  --teal:     #1B4A5A;
+  --teal-l:   #2A6878;
+  --bg:       #0A0806;
+  --bg2:      #0F0C09;
+  --bg3:      #171210;
+  --bg4:      #1E1810;
+  --parch:    #E8DFC8;
+  --parch-d:  #C4B89A;
+  --parch-dk: #8A7A5A;
+  --white:    #F5F0E8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Lato',sans-serif;background-color:var(--bg);color:var(--parch);overflow-x:hidden;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0) 3px,rgba(255,255,255,0.007) 3px,rgba(255,255,255,0.007) 4px),repeating-linear-gradient(90deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0) 59px,rgba(255,255,255,0.005) 59px,rgba(255,255,255,0.005) 60px)}
+
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.rune{position:absolute;font-family:'IM Fell English',serif;color:var(--gold);opacity:0;animation:runeFloat linear infinite;text-shadow:0 0 8px var(--gold-glow),0 0 20px rgba(201,168,76,0.25);user-select:none}
+@keyframes runeFloat{0%{opacity:0;transform:translateY(0) rotate(0deg)}10%{opacity:.35}80%{opacity:.20}100%{opacity:0;transform:translateY(-100vh) rotate(360deg)}}
+
+nav{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,8,6,0.97) 0%,rgba(15,12,9,0.93) 100%);border-bottom:2px solid var(--gold-d);box-shadow:0 2px 20px rgba(0,0,0,0.8);padding:0}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:0;flex-wrap:wrap;padding:0 1rem}
+.nav-brand{font-family:'Uncial Antiqua',cursive;color:var(--gold);font-size:.85rem;padding:.7rem 1rem .7rem 0;margin-right:1rem;border-right:1px solid var(--gold-d);text-shadow:0 0 10px var(--gold-glow);white-space:nowrap}
+.nav-links{display:flex;flex-wrap:wrap;gap:0}
+.nav-links button{background:none;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--parch-d);letter-spacing:.08em;padding:.75rem .8rem;position:relative;transition:color .25s;text-transform:uppercase}
+.nav-links button::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--gold);transition:left .25s,right .25s}
+.nav-links button:hover,.nav-links button.active{color:var(--gold)}
+.nav-links button:hover::after,.nav-links button.active::after{left:10%;right:10%}
+.nav-links button.nav-highlight{color:var(--gold);text-shadow:0 0 8px rgba(201,168,76,.35)}
+
+.page{display:none;min-height:100vh;position:relative;z-index:1}
+.page.active{display:block}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.4rem 1.5rem 2.4rem;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(107,15,15,0.25) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 50% 60%,rgba(27,74,90,0.15) 0%,transparent 60%);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0deg,transparent 30deg,rgba(201,168,76,0.015) 30deg,rgba(201,168,76,0.015) 31deg)}
+.shield{width:140px;height:160px;margin:0 auto 2rem;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);background:linear-gradient(160deg,var(--crimson) 0%,var(--blood) 60%,#1A0505 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(107,15,15,0.7),0 0 60px rgba(107,15,15,0.3),inset 0 0 20px rgba(0,0,0,0.5);position:relative}
+.shield::before{content:'';position:absolute;inset:4px;clip-path:polygon(50% 0%,100% 15%,100% 60%,50% 100%,0% 60%,0% 15%);border:2px solid var(--gold-d);background:transparent}
+.shield-sigil{font-size:3rem;filter:drop-shadow(0 0 10px var(--gold-glow))}
+.hero-eyebrow{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--gold-d);letter-spacing:.3em;text-transform:uppercase;margin-bottom:.8rem}
+/* INTERREGIONS mega-banner — heritage Battle InterRegions */
+.ir-banner{margin:0 auto 1.1rem;max-width:920px;text-align:center;position:relative}
+.hero-logo-wrap{position:relative;display:inline-block;margin-bottom:.3rem;line-height:0}
+.hero-logo-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 28%,rgba(255,250,230,.3) 41%,rgba(255,255,255,.4) 50%,rgba(255,250,230,.3) 59%,transparent 72%);background-size:300% 100%;background-repeat:no-repeat;-webkit-mask:url(assets/logo-interregions.webp) center/contain no-repeat;mask:url(assets/logo-interregions.webp) center/contain no-repeat;mix-blend-mode:screen;animation:logoSheen 6s ease-in-out infinite}
+@keyframes logoSheen{0%{background-position:185% 0}45%,100%{background-position:-85% 0}}
+@media(prefers-reduced-motion:reduce){.hero-logo-wrap::after{animation:none;display:none}}
+.hero-logo{width:min(420px,82vw);height:auto;display:block;margin:0 auto;filter:drop-shadow(0 6px 22px rgba(0,0,0,.55))}
+.ir-convo{font-family:'Cinzel',serif;font-size:.7rem;font-weight:700;color:var(--gold-d);letter-spacing:.5em;text-transform:uppercase;margin-bottom:.3rem}
+.ir-mega{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.3rem,6vw,4rem);line-height:.95;color:var(--gold);letter-spacing:.02em;text-shadow:0 0 16px var(--gold-glow),0 0 30px rgba(201,168,76,0.22),2px 2px 4px rgba(0,0,0,0.9);margin-bottom:.1rem;background:linear-gradient(180deg,#F0D478 0%,#C9A84C 45%,#8A6E2F 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 9px rgba(201,168,76,0.3))}
+.ir-edition{font-family:'Cinzel Decorative',cursive;font-size:clamp(1rem,2.4vw,1.6rem);font-weight:700;color:var(--crim-l);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.3rem;text-shadow:0 0 15px rgba(168,32,32,0.5),2px 2px 3px rgba(0,0,0,0.9)}
+.ir-game{font-family:'Cinzel',serif;font-size:clamp(.85rem,1.8vw,1.15rem);font-weight:700;color:var(--parch);letter-spacing:.35em;text-transform:uppercase;margin-bottom:.55rem}
+.ir-roman{display:inline-block;font-family:'Cinzel Decorative',cursive;font-size:1rem;color:var(--gold);border:1.5px solid var(--gold-d);padding:.25rem .9rem;letter-spacing:.3em;margin:0 .5rem;background:rgba(107,15,15,0.2)}
+.ir-orgs{font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--parch-d);letter-spacing:.15em;margin-top:.5rem}
+.ir-orgs strong{color:var(--gold);font-weight:700}
+.ir-flourish{display:flex;align-items:center;justify-content:center;gap:.8rem;margin:.45rem 0;color:var(--gold-d);font-size:.9rem;letter-spacing:.4em}
+.ir-flourish::before,.ir-flourish::after{content:'';flex:1;max-width:140px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d),transparent)}
+.hero-troyes{font-family:'Cinzel Decorative',cursive;font-size:clamp(2.2rem,7vw,3.6rem);font-weight:700;color:var(--gold-l);letter-spacing:.16em;line-height:1.1;margin:.6rem 0 .25rem;text-shadow:0 0 28px var(--gold-glow),0 2px 5px rgba(0,0,0,.85)}
+.hero-troyes-sub{font-family:'Cinzel',serif;font-size:clamp(.9rem,2.6vw,1.05rem);font-weight:700;color:var(--parch);letter-spacing:.1em;margin-bottom:.7rem;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.hero-troyes-sub strong{color:var(--gold)}
+.hero h1{font-family:'Uncial Antiqua',cursive;font-size:clamp(2.2rem,6vw,4.5rem);color:var(--gold);line-height:1.1;text-shadow:0 0 30px var(--gold-glow),0 0 60px rgba(201,168,76,0.3),2px 2px 4px rgba(0,0,0,0.9);margin-bottom:.5rem}
+.hero-subtitle{font-family:'Cinzel Decorative',cursive;font-size:clamp(.9rem,2vw,1.3rem);color:var(--parch-d);letter-spacing:.15em;margin-bottom:2rem}
+.hero-divider{width:320px;max-width:90%;height:20px;margin:.35rem auto .9rem;opacity:.7}
+.hero-meta{display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center;margin-bottom:1.1rem}
+.hero-badge{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--parch);background:rgba(107,15,15,0.35);border:1px solid var(--gold-d);border-radius:3px;padding:.4rem .9rem;letter-spacing:.08em;text-shadow:0 1px 3px rgba(0,0,0,0.8)}
+.hero-badge span{color:var(--gold)}
+.countdown-label{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.6rem}
+.countdown{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.4rem}
+.cd-unit{width:80px;height:95px;clip-path:polygon(50% 0%,100% 12%,100% 65%,50% 100%,0% 65%,0% 12%);background:linear-gradient(160deg,rgba(107,15,15,0.7),rgba(42,4,4,0.9));display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;box-shadow:0 0 15px rgba(107,15,15,0.5)}
+.cd-unit::before{content:'';position:absolute;inset:3px;clip-path:polygon(50% 0%,100% 12%,100% 65%,50% 100%,0% 65%,0% 12%);border:1px solid rgba(201,168,76,0.4)}
+.cd-num{font-family:'Cinzel Decorative',cursive;font-size:1.6rem;font-weight:700;color:var(--gold);text-shadow:0 0 15px var(--gold-glow);line-height:1}
+.cd-lbl{font-family:'Cinzel',serif;font-size:.5rem;font-weight:700;color:var(--parch-d);letter-spacing:.15em;text-transform:uppercase;margin-top:.2rem}
+.cta-btn{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--bg);background:linear-gradient(135deg,var(--gold-l),var(--gold),var(--gold-d));border:none;cursor:pointer;letter-spacing:.15em;text-transform:uppercase;padding:.9rem 2.5rem;clip-path:polygon(8px 0%,calc(100% - 8px) 0%,100% 50%,calc(100% - 8px) 100%,8px 100%,0% 50%);box-shadow:0 0 20px var(--gold-glow),0 4px 15px rgba(0,0,0,0.5);transition:transform .2s,box-shadow .2s}
+.cta-btn:hover{transform:scale(1.05);box-shadow:0 0 35px var(--gold-glow),0 6px 20px rgba(0,0,0,0.6)}
+.scroll-cue{margin-top:2.4rem;background:none;border:none;cursor:pointer;display:inline-flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--gold-d);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;transition:color .2s;animation:cueBounce 2.2s ease-in-out infinite}
+.scroll-cue:hover{color:var(--gold)}
+@keyframes cueBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+.discord-banner{margin-top:2rem;display:inline-flex;align-items:center;gap:.7rem;background:rgba(88,101,242,0.15);border:1px solid rgba(88,101,242,0.5);border-radius:8px;padding:.6rem 1.2rem;font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:#9BA8FF;letter-spacing:.05em;text-decoration:none;transition:background .2s,border-color .2s}
+.discord-banner:hover{background:rgba(88,101,242,0.25);border-color:rgba(88,101,242,0.8)}
+.hero-discord-link{margin-top:1rem;display:inline-flex;align-items:center;gap:.45rem;color:#9BA8FF;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.05em;text-decoration:none;opacity:.82;transition:opacity .2s}
+.hero-discord-link:hover{opacity:1;text-decoration:underline}
+
+.section{padding:5rem 1.5rem;max-width:1100px;margin:0 auto}
+.section-title{font-family:'Cinzel Decorative',cursive;font-size:clamp(1.4rem,3vw,2rem);color:var(--gold);text-align:center;margin-bottom:.5rem;text-shadow:0 0 20px rgba(201,168,76,0.4)}
+.section-sub{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--parch-dk);letter-spacing:.25em;text-transform:uppercase;text-align:center;margin-bottom:3rem}
+.ornament{display:block;margin:0 auto 2rem;opacity:.55;width:clamp(260px,60%,480px)}
+
+.scroll{background:linear-gradient(160deg,#2A2018 0%,#1E1810 50%,#2A2018 100%);border:1px solid var(--gold-d);border-radius:4px;padding:2rem 2.5rem;margin-bottom:2rem;position:relative;box-shadow:inset 0 0 40px rgba(0,0,0,0.4),0 4px 20px rgba(0,0,0,0.5)}
+.scroll::before,.scroll::after{content:'';position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold-d),var(--gold),var(--gold-d),transparent)}
+.scroll::before{top:0}.scroll::after{bottom:0}
+.scroll h3{font-family:'Cinzel',serif;font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.7rem;letter-spacing:.05em}
+.scroll p{font-size:.95rem;line-height:1.7;color:var(--parch-d);margin-bottom:.5rem}
+.scroll ul{list-style:none;padding:0}
+.scroll ul li{font-size:.92rem;line-height:1.7;color:var(--parch-d);padding:.2rem 0;padding-left:1.5rem;position:relative}
+.scroll ul li::before{content:'⚔';position:absolute;left:0;color:var(--gold-d);font-size:.75rem;top:.25rem}
+
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--gold-d);border:1px solid var(--gold-d);border-radius:4px;overflow:hidden;margin:3rem 0}
+.stat{background:linear-gradient(160deg,rgba(30,24,16,.95),rgba(15,12,9,.98));padding:1.5rem 1rem;text-align:center}
+.stat-num{font-family:'Cinzel Decorative',cursive;font-size:1.8rem;color:var(--gold);text-shadow:0 0 15px var(--gold-glow)}
+.stat-lbl{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--parch-dk);letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem}
+
+/* AXES — 3 modes de jeu */
+.axes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
+.axe-card{background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-top:3px solid;border-radius:4px;padding:1.8rem 1.5rem;position:relative;transition:transform .2s,box-shadow .2s}
+.axe-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+.axe-card.competitif{border-top-color:var(--crim-l)}
+.axe-card.narratif{border-top-color:var(--gold)}
+.axe-card.libre{border-top-color:var(--teal-l)}
+.axe-cta{display:block;width:100%;margin-top:1.5rem;padding:.7rem 1rem;background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(201,168,76,.08));border:1px solid var(--gold-d);color:var(--gold);font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s}
+.axe-cta:hover{background:linear-gradient(135deg,rgba(201,168,76,.32),rgba(201,168,76,.18));color:var(--gold-l);box-shadow:0 0 12px rgba(201,168,76,.25)}
+.format-tabs{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0}
+.fmt-tab{font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--parch-d);background:rgba(30,24,16,.6);border:1px solid var(--gold-d);padding:.6rem 1.1rem;cursor:pointer;border-radius:3px;transition:all .2s}
+.fmt-tab:hover{color:var(--gold);background:rgba(60,46,28,.85)}
+.fmt-tab.active{color:var(--bg);background:linear-gradient(135deg,var(--gold-l),var(--gold),var(--gold-d));border-color:var(--gold);box-shadow:0 0 12px var(--gold-glow)}
+.yt-btn{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,rgba(255,0,0,.18),rgba(255,0,0,.05));border:1px solid rgba(255,80,80,.5);padding:.7rem 1.4rem;color:#FF6060;font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;letter-spacing:.05em;text-decoration:none;border-radius:3px;transition:all .2s}
+.yt-btn:hover{background:linear-gradient(135deg,rgba(255,0,0,.35),rgba(255,0,0,.15));color:#FF8080;box-shadow:0 0 14px rgba(255,80,80,.35)}
+.axe-icon{font-size:2.2rem;margin-bottom:.5rem}
+.axe-title{font-family:'Cinzel Decorative',cursive;font-size:1.25rem;color:var(--gold);margin-bottom:.3rem}
+.axe-count{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--parch-dk);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.55rem}
+.axe-desc{font-size:.9rem;color:var(--parch-d);line-height:1.6}
+.axe-card ul{list-style:none;padding:0;margin-top:.8rem}
+.axe-card ul li{font-size:.85rem;color:var(--parch-d);padding:.2rem 0;padding-left:1.2rem;position:relative;line-height:1.5}
+.axe-card ul li::before{content:'›';position:absolute;left:0;color:var(--gold-d);font-weight:700}
+
+.programme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin:2rem 0}
+.round-card{background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:4px;padding:1.5rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:transform .2s,box-shadow .2s}
+.round-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.6),0 0 20px rgba(201,168,76,0.1)}
+.round-day{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.3rem}
+.round-title{font-family:'Cinzel Decorative',cursive;font-size:1.1rem;color:var(--gold);margin-bottom:.3rem;text-shadow:0 0 10px rgba(201,168,76,0.3)}
+.round-time{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:var(--parch);margin-bottom:.8rem}
+.round-desc{font-size:.85rem;color:var(--parch-dk);line-height:1.5}
+
+.score-table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.88rem}
+.score-table th{background:rgba(107,15,15,0.4);color:var(--gold);font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;text-align:center;border:1px solid rgba(201,168,76,0.2)}
+.score-table td{padding:.55rem 1rem;text-align:center;border:1px solid rgba(201,168,76,0.12);color:var(--parch-d);line-height:1.4}
+.score-table tr:nth-child(even) td{background:rgba(255,255,255,0.03)}
+.score-winner{font-weight:700;color:var(--gold) !important}
+.score-loser{color:var(--parch-dk) !important}
+
+.rules-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem;max-width:700px;margin-left:auto;margin-right:auto}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.rule-block{background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-left:3px solid var(--crimson);padding:1.5rem;border-radius:0 4px 4px 0;transition:border-left-color .2s}
+.rule-block:hover{border-left-color:var(--gold)}
+.rule-block h3{font-family:'Cinzel',serif;font-size:.9rem;font-weight:700;color:var(--gold);margin-bottom:.8rem;letter-spacing:.05em;display:flex;align-items:center;gap:.5rem}
+.rule-block p,.rule-block li{font-size:.88rem;line-height:1.7;color:var(--parch-d)}
+.rule-block ul{list-style:none;padding:0}
+.rule-block ul li{padding:.2rem 0;padding-left:1.2rem;position:relative}
+.rule-block ul li::before{content:'›';position:absolute;left:0;color:var(--gold-d)}
+.rule-highlight{background:rgba(107,15,15,0.2);border:1px solid rgba(107,15,15,0.5);border-radius:4px;padding:1rem 1.5rem;margin:1.5rem 0;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch);text-align:center}
+
+/* LIEU — visuel Lac d'Orient */
+.lac-visual{width:100%;height:340px;border:1px solid var(--gold-d);border-radius:4px;margin-bottom:2rem;overflow:hidden;position:relative;background:linear-gradient(180deg,#1A2438 0%,#2A4A60 25%,#3A6878 50%,#1B4A5A 70%,#0F2530 100%)}
+.lac-sky{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 30%,rgba(232,201,106,0.25) 0%,rgba(255,140,80,0.15) 30%,transparent 70%)}
+.lac-stars{position:absolute;top:0;left:0;right:0;height:35%}
+.lac-water{position:absolute;bottom:0;left:0;right:0;height:55%}
+.lac-label{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2}
+.lac-label h3{font-family:'Uncial Antiqua',cursive;font-size:1.8rem;color:var(--gold);text-shadow:0 0 20px var(--gold-glow),0 0 40px rgba(201,168,76,0.3);margin-bottom:.3rem}
+.lac-label p{font-family:'Cinzel',serif;font-size:.75rem;color:var(--parch);letter-spacing:.2em;text-shadow:0 0 10px rgba(0,0,0,0.8)}
+
+.lieu-features{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:2rem 0}
+@media (max-width:780px){.lieu-features{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:480px){.lieu-features{grid-template-columns:1fr}}
+.lieu-feat{background:rgba(30,24,16,.7);border:1px solid var(--gold-d);border-radius:4px;padding:1rem 1.2rem;display:flex;align-items:flex-start;gap:.7rem}
+.lieu-feat-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}
+.lieu-feat-text h4{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--gold);margin-bottom:.2rem}
+.lieu-feat-text p{font-size:.82rem;color:var(--parch-dk);line-height:1.4}
+
+.lac-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:2rem 0;border-radius:6px;overflow:hidden}
+.lac-gallery a{display:block;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--gold-d);border-radius:4px;position:relative;background:rgba(30,24,16,.8);transition:transform .3s,box-shadow .3s}
+.lac-gallery a:hover{transform:scale(1.02);box-shadow:0 0 20px rgba(201,168,76,0.3)}
+.lac-gallery img{width:100%;height:100%;object-fit:cover;display:block}
+.lac-gallery a:first-child{grid-column:1/3;aspect-ratio:8/3}
+.lac-gallery .caption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.85));color:var(--parch);font-family:'Cinzel',serif;font-size:.7rem;padding:1rem .8rem .5rem;letter-spacing:.05em}
+@media(max-width:600px){.lac-gallery{grid-template-columns:1fr}.lac-gallery a:first-child{grid-column:1;aspect-ratio:4/3}}
+
+.map-link{display:inline-flex;align-items:center;gap:.5rem;font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--gold);border:1px solid var(--gold-d);padding:.5rem 1.2rem;border-radius:3px;text-decoration:none;transition:background .2s;margin-top:.5rem}
+.map-link:hover{background:rgba(201,168,76,0.1)}
+
+/* --- Résidence du Lac d'Orient --- */
+.residence{display:grid;grid-template-columns:1.2fr 1fr;gap:1.6rem;margin:2.4rem 0;align-items:stretch}
+@media(max-width:780px){.residence{grid-template-columns:1fr}}
+.residence-gallery{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;border-radius:6px;overflow:hidden}
+.residence-gallery .res-img{aspect-ratio:4/3;background-size:cover;background-position:center;border:1px solid var(--gold-d);border-radius:4px}
+.residence-gallery .res-img.res-main{grid-column:1/3;aspect-ratio:16/7}
+.residence-info{background:linear-gradient(180deg,rgba(30,24,16,.85),rgba(20,16,10,.85));border:1px solid var(--gold-d);border-radius:6px;padding:1.4rem 1.6rem;display:flex;flex-direction:column;justify-content:space-between}
+.residence-info h3{font-family:'Cinzel',serif;color:var(--gold);font-size:1.05rem;margin-bottom:.6rem;letter-spacing:.05em}
+.residence-info p{font-size:.88rem;color:var(--parch-d);line-height:1.55;margin-bottom:.6rem}
+.tarif-table{width:100%;border-collapse:collapse;margin:.8rem 0;font-size:.85rem}
+.tarif-table th,.tarif-table td{padding:.5rem .6rem;text-align:left;border-bottom:1px solid rgba(201,168,76,0.2)}
+.tarif-table th{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;font-weight:600}
+.tarif-table td{color:var(--parch)}
+.tarif-table td.tarif-price{color:var(--gold-l);font-weight:600;text-align:right;white-space:nowrap}
+.alert-limited{background:rgba(180,80,40,0.12);border-left:3px solid #c87838;padding:.6rem .9rem;font-size:.82rem;color:var(--parch);border-radius:3px;margin:.8rem 0;line-height:1.45}
+.alert-limited strong{color:#e8a878}
+.residence-cta{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.8rem}
+.btn-reserve{display:inline-flex;align-items:center;gap:.4rem;font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;color:var(--bg);background:var(--gold);border:1px solid var(--gold-d);padding:.55rem 1.1rem;border-radius:3px;text-decoration:none;cursor:pointer;transition:filter .2s;letter-spacing:.05em}
+.btn-reserve:hover{filter:brightness(1.1)}
+.btn-reserve.secondary{background:transparent;color:var(--gold)}
+.btn-reserve.secondary:hover{background:rgba(201,168,76,0.1);filter:none}
+
+/* --- Compteur d'inscriptions tournoi (style aligné sur le bloc Résidence) --- */
+.insc-stock-wrap{background:linear-gradient(180deg,rgba(30,24,16,.85),rgba(20,16,10,.85));border:1px solid var(--gold-d);border-radius:6px;padding:1.4rem 1.5rem;margin:1.5rem 0;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+.insc-stock-wrap h4{font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;letter-spacing:.08em;margin-bottom:.3rem;text-align:center}
+.insc-stock-wrap .insc-stock-intro{text-align:center;font-size:.85rem;color:var(--parch-dk);font-style:italic;margin-bottom:1rem}
+.insc-stock{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:0}
+@media(max-width:600px){.insc-stock{grid-template-columns:1fr}}
+.insc-card{background:rgba(0,0,0,0.35);border:1px solid var(--gold-d);border-radius:5px;padding:1.1rem 1rem .9rem;text-align:center;transition:border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
+.insc-card.tight{border-color:#c87838;box-shadow:inset 0 0 0 1px rgba(200,120,56,0.3)}
+.insc-card.full{border-color:var(--red);background:rgba(168,32,32,0.14);box-shadow:inset 0 0 0 1px rgba(168,32,32,0.4)}
+.insc-card-label{font-family:'Cinzel',serif;font-size:.76rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:.3rem}
+.insc-card.full .insc-card-label{color:#ffb8b8}
+.insc-card-num{font-family:'Cinzel Decorative',cursive;font-size:2.4rem;color:var(--gold-l);line-height:1;margin:.3rem 0;text-shadow:0 0 18px rgba(232,201,106,0.25)}
+.insc-card.full .insc-card-num{color:var(--red);font-size:1.1rem;letter-spacing:.15em;text-transform:uppercase;text-shadow:none;padding:.4rem 0}
+.insc-card-sub{font-size:.78rem;color:var(--parch-d);margin:.3rem 0 .6rem}
+.insc-card-desc{font-size:.74rem;color:var(--parch-dk);font-style:italic;border-top:1px dotted rgba(201,168,76,0.2);padding-top:.5rem;margin-top:.3rem;line-height:1.4}
+.insc-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-top:.5rem}
+.insc-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold-l));transition:width .6s}
+.insc-card.tight .insc-bar-fill{background:linear-gradient(90deg,#a85a28,#e69b4e)}
+.insc-card.full .insc-bar-fill{background:var(--red)}
+.insc-warn{background:rgba(168,32,32,0.15);border:1px solid rgba(168,32,32,0.6);border-radius:4px;padding:.7rem 1rem;margin-bottom:1rem;font-size:.88rem;color:#ffd8a8;text-align:center}
+.insc-warn strong{color:#ffb8b8}
+.insc-allfull{background:rgba(168,32,32,0.2);border:2px solid var(--red);border-radius:6px;padding:1.6rem 1.4rem;margin:1.2rem 0;text-align:center}
+.insc-allfull h4{font-family:'Cinzel Decorative',cursive;color:#ffb8b8;font-size:1.3rem;margin-bottom:.6rem;letter-spacing:.1em}
+.insc-allfull p{color:var(--parch);font-size:.95rem;line-height:1.5}
+/* --- Refonte inscription : résumé conditions, stock fusionné dans les cartes, désistement repliable --- */
+.insc-summary{max-width:680px;margin:0 auto 1.8rem;background:rgba(15,12,9,.55);border:1px solid var(--gold-d);border-left:4px solid var(--gold);border-radius:6px;padding:.8rem 1.4rem;font-family:'Cinzel',serif}
+.insc-summary-row{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:.5rem 0;border-bottom:1px dotted rgba(201,168,76,.18);font-size:.84rem}
+.insc-summary-row:last-child{border-bottom:0}
+.insc-summary-row .lbl{color:var(--parch-d);letter-spacing:.03em}
+.insc-summary-row .val{color:var(--gold-l);font-weight:600;text-align:right}
+.insc-summary-row .val a{color:var(--gold-l)}
+.axis-stock{margin-top:1rem;padding-top:.8rem;border-top:1px dotted rgba(201,168,76,.25)}
+.axis-stock-cap{display:block;font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin-bottom:.3rem}
+.axis-stock .insc-card-num{font-family:'Cinzel Decorative',cursive;font-size:1.7rem;color:var(--gold-l);line-height:1;text-shadow:0 0 14px rgba(232,201,106,.25)}
+.axis-stock .insc-card-sub{font-size:.78rem;color:var(--parch-d);margin-left:.2rem}
+.insc-stock-caption{text-align:center;font-size:.78rem;color:var(--parch-dk);font-style:italic;margin:0 auto 1.4rem}
+.desist-more{margin-top:.5rem}
+.desist-more summary{cursor:pointer;color:var(--gold-l);font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:.04em;padding:.35rem 0;list-style:none}
+.desist-more summary::-webkit-details-marker{display:none}
+.desist-more summary::before{content:'\25B8  ';color:var(--gold-d)}
+.desist-more[open] summary::before{content:'\25BE  '}
+.desist-more p:first-of-type{margin-top:.8rem}
+
+/* --- Venez en famille --- */
+.famille-intro{text-align:center;font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);font-style:italic;line-height:1.7;max-width:720px;margin:2.4rem auto 1.2rem}
+.famille-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0 2rem}
+@media(max-width:780px){.famille-grid{grid-template-columns:1fr}}
+.famille-card{background:linear-gradient(180deg,rgba(30,24,16,.85),rgba(20,16,10,.85));border:1px solid var(--gold-d);border-radius:6px;padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.5rem;transition:transform .2s,box-shadow .2s,border-color .2s;text-decoration:none;color:inherit}
+.famille-card:hover{transform:translateY(-3px);border-color:var(--gold-l);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.famille-card-icon{font-size:1.8rem;line-height:1}
+.famille-card h4{font-family:'Cinzel',serif;color:var(--gold);font-size:.95rem;letter-spacing:.05em;margin:0}
+.famille-card p{font-size:.85rem;color:var(--parch-d);line-height:1.5;margin:0;flex:1}
+.famille-card .famille-cta{font-family:'Cinzel',serif;font-size:.74rem;color:var(--gold-l);letter-spacing:.08em;text-transform:uppercase;margin-top:.3rem}
+.famille-card .famille-badge{display:inline-block;background:rgba(168,32,32,0.2);border:1px solid rgba(168,32,32,0.6);color:#ffb8b8;font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .5rem;border-radius:2px;margin-left:.4rem;vertical-align:middle}
+
+.assoc-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem;max-width:700px;margin-left:auto;margin-right:auto}
+.partners-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
+.partner-card{background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:4px;padding:1.5rem;text-align:center;transition:transform .2s,box-shadow .2s}
+.partner-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.partner-card:first-child{background:linear-gradient(160deg,rgba(107,15,15,.45),rgba(42,8,8,.85));border:2px solid var(--gold);box-shadow:0 0 25px rgba(201,168,76,0.25),inset 0 0 15px rgba(201,168,76,0.08);position:relative}
+.partner-card:first-child::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;height:4px;background:linear-gradient(90deg,var(--gold-d),var(--gold-l),var(--gold-d))}
+.partner-card:first-child h3{color:var(--gold-l);font-size:1.2rem;text-shadow:0 0 15px var(--gold-glow)}
+.partner-card:first-child .partner-role{color:var(--gold-l);font-size:.7rem;letter-spacing:.25em}
+.partner-card h3{font-family:'Cinzel Decorative',cursive;font-size:1.05rem;color:var(--gold);margin-bottom:.5rem}
+.partner-card .partner-role{font-family:'Cinzel',serif;font-size:.65rem;font-weight:700;color:var(--gold-d);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.6rem}
+.partner-card p{font-size:.88rem;color:var(--parch-d);line-height:1.6}
+.army-badges{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:1.5rem 0}
+.army-badge{font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--parch-d);background:rgba(30,24,16,.8);border:1px solid var(--gold-d);border-radius:20px;padding:.3rem .8rem;letter-spacing:.05em}
+
+.price-card{max-width:500px;margin:0 auto 2rem;background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:2px solid var(--gold);border-radius:6px;padding:2.5rem 2rem;text-align:center;box-shadow:0 0 30px rgba(201,168,76,0.15),0 8px 30px rgba(0,0,0,0.5);position:relative;overflow:hidden}
+.price-card::before{content:'✦ TOUT COMPRIS ✦';position:absolute;top:1rem;right:0;background:var(--crimson);color:var(--gold);font-family:'Cinzel',serif;font-size:.6rem;font-weight:700;letter-spacing:.15em;padding:.3rem 1rem .3rem 1.5rem;clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%)}
+.price-amount{font-family:'Cinzel Decorative',cursive;font-size:3rem;color:var(--gold);text-shadow:0 0 20px var(--gold-glow);line-height:1}
+.price-unit{font-size:.9rem;color:var(--parch-dk);margin-bottom:1.5rem}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;max-width:1000px;margin:0 auto 2rem}
+@media (max-width:780px){.price-grid{grid-template-columns:1fr;max-width:480px}}
+.price-axe{background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.95));border:2px solid var(--gold-d);border-radius:6px;padding:1.8rem 1.3rem 1.5rem;text-align:center;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 24px rgba(0,0,0,0.45);transition:border-color .25s,transform .25s,box-shadow .25s}
+.price-axe:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 10px 32px rgba(201,168,76,0.15),0 8px 30px rgba(0,0,0,0.6)}
+.price-axe.featured{border-color:var(--gold);box-shadow:0 0 30px rgba(201,168,76,0.18),0 8px 30px rgba(0,0,0,0.55)}
+.price-axe.featured::before{content:'✦ FORMAT PHARE ✦';position:absolute;top:.9rem;right:0;background:var(--crimson);color:var(--gold);font-family:'Cinzel',serif;font-size:.55rem;font-weight:700;letter-spacing:.12em;padding:.28rem .9rem .28rem 1.4rem;clip-path:polygon(8px 0%,100% 0%,100% 100%,0% 100%)}
+.price-axe-icon{font-size:1.6rem;margin-bottom:.3rem}
+.price-axe-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--gold-l);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem}
+.price-axe-amount{font-family:'Cinzel Decorative',cursive;font-size:2.2rem;color:var(--gold);text-shadow:0 0 18px var(--gold-glow);line-height:1;margin-bottom:.2rem}
+.price-axe-unit{font-size:.78rem;color:var(--parch-dk);margin-bottom:1rem;font-style:italic}
+.price-axe-detail{font-size:.82rem;color:var(--parch-d);line-height:1.5;flex-grow:1;padding:.8rem 0;border-top:1px solid rgba(201,168,76,0.18);border-bottom:1px solid rgba(201,168,76,0.18)}
+.price-axe-cta{margin-top:.9rem;display:inline-flex;justify-content:center;align-items:center;gap:.4rem;background:linear-gradient(180deg,var(--gold),var(--gold-d));color:#1a0e08;font-family:'Cinzel',serif;font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;padding:.7rem 1.1rem;border-radius:4px;transition:filter .2s,transform .2s}
+.price-axe-cta:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.price-axe-cta.crim{background:linear-gradient(180deg,var(--crim-l),var(--crimson));color:var(--gold-l)}
+.price-axe-cta.crim:hover{filter:brightness(1.2)}
+.price-includes-row{max-width:780px;margin:0 auto 1rem;background:rgba(15,12,9,0.55);border:1px solid var(--gold-d);border-radius:5px;padding:1rem 1.4rem;font-size:.86rem;color:var(--parch-d);line-height:1.6;text-align:center}
+.price-includes-row strong{color:var(--gold-l)}
+.price-acc-note{max-width:780px;margin:0 auto 1.5rem;font-size:.82rem;color:#a8d896;padding:.7rem 1rem;background:rgba(24,40,20,0.4);border:1px solid rgba(74,122,62,0.45);border-radius:5px;text-align:center}
+.price-includes{list-style:none;padding:0;text-align:left;margin-bottom:1.5rem}
+.price-includes li{font-size:.88rem;color:var(--parch-d);padding:.35rem 0;border-bottom:1px solid rgba(201,168,76,0.1);display:flex;align-items:center;gap:.5rem}
+.price-includes li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0}
+.inscr-btns{display:flex;flex-direction:column;gap:1rem;align-items:center;margin-top:2rem}
+.btn-newrecruit{display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;background:transparent;color:var(--gold);border:2px solid var(--gold);cursor:pointer;padding:.8rem 2rem;border-radius:6px;text-decoration:none;letter-spacing:.08em;transition:background .2s,color .2s}
+.btn-newrecruit:hover{background:rgba(201,168,76,0.15)}
+.inscr-note{font-family:'IM Fell English',serif;font-size:.9rem;font-style:italic;color:var(--parch-dk);text-align:center;margin-top:1rem;line-height:1.6}
+.deadline-box{background:rgba(107,15,15,0.25);border:1px solid rgba(107,15,15,0.6);border-radius:4px;padding:1rem 1.5rem;text-align:center;margin:1.5rem 0;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch)}
+.deadline-box strong{color:var(--gold)}
+.desist-box{max-width:820px;margin:1.6rem auto;background:rgba(40,18,18,0.45);border:1px solid rgba(201,168,76,0.5);border-left:4px solid var(--gold-d);border-radius:6px;padding:1.4rem 1.6rem}
+.desist-box h4{font-family:'Cinzel',serif;color:var(--gold);font-size:1rem;text-align:center;margin:0 0 .9rem;letter-spacing:.05em}
+.desist-box .desist-key{display:block;text-align:center;font-family:'Cinzel',serif;font-size:.92rem;line-height:1.5;color:var(--gold);background:rgba(107,15,15,0.32);border:1px solid rgba(107,15,15,0.6);border-radius:4px;padding:.75rem 1rem;margin-bottom:.95rem}
+.desist-box p{font-family:'Lato',sans-serif;font-size:.95rem;line-height:1.7;color:var(--parch);margin:0 0 .7rem}
+.desist-box p:last-child{margin-bottom:0}
+.desist-box strong{color:var(--gold-l)}
+.desist-box a{color:var(--gold-l)}
+.btn-contact{display:inline-flex;align-items:center;gap:.4rem;background:none;border:1px solid var(--gold-d);border-radius:3px;cursor:pointer;font-family:'Cinzel',serif;font-size:.75rem;font-weight:600;color:var(--gold);padding:.3rem .8rem;letter-spacing:.05em;transition:background .2s}
+.btn-contact:hover{background:rgba(201,168,76,0.1)}
+
+.sponsor-intro{font-family:'IM Fell English',serif;font-size:1.05rem;color:var(--parch-d);line-height:1.8;text-align:center;font-style:italic;margin-bottom:2rem}
+.sponsor-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:2rem 0}
+.sponsor-tier{background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid;border-radius:4px;padding:1.5rem}
+.sponsor-tier.gold{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76,0.1)}.sponsor-tier.silver{border-color:#A0A8B0}.sponsor-tier.bronze{border-color:#C07840}
+.sponsor-tier h3{font-family:'Cinzel Decorative',cursive;font-size:1rem;margin-bottom:.3rem}
+.sponsor-tier.gold h3{color:var(--gold)}.sponsor-tier.silver h3{color:#D0D8E0}.sponsor-tier.bronze h3{color:#E09060}
+.sponsor-tier .price-tag{font-family:'Cinzel',serif;font-size:.75rem;font-weight:700;color:var(--parch-dk);margin-bottom:1rem;letter-spacing:.1em}
+.sponsor-tier ul{list-style:none;padding:0}
+.sponsor-tier ul li{font-size:.85rem;color:var(--parch-d);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,0.05);padding-left:1rem;position:relative}
+.sponsor-tier ul li::before{content:'▸';position:absolute;left:0;color:var(--gold-d)}
+.sponsor-contact{text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-size:.85rem;color:var(--parch-dk);line-height:2}
+
+/* ── PARTENAIRES CONFIRMÉS ── */
+.partner-tier{margin:2.5rem 0}
+.tier-head{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1.6rem}
+.tier-head::before,.tier-head::after{content:'';flex:1;max-width:140px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-d))}
+.tier-head::after{background:linear-gradient(90deg,var(--gold-d),transparent)}
+.tier-name{font-family:'Cinzel Decorative',cursive;font-size:1.15rem;letter-spacing:.05em;white-space:nowrap;color:#D8DDE4;text-shadow:0 0 16px rgba(200,210,224,.4)}
+.partner-tier .partner-card{background:linear-gradient(160deg,rgba(42,32,24,.9),rgba(23,18,16,.96));border:1px solid var(--gold-d);border-top:3px solid #C2CAD4;border-radius:6px;padding:2rem;display:flex;gap:2rem;align-items:center;box-shadow:0 8px 30px rgba(0,0,0,.5);transition:transform .2s,box-shadow .2s;text-decoration:none;text-align:left}
+.partner-tier .partner-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.6),0 0 22px rgba(200,210,224,.18)}
+.partner-tier.gold .partner-card{border:1px solid var(--gold);border-top:3px solid var(--gold);box-shadow:0 8px 30px rgba(0,0,0,.55),0 0 26px rgba(201,168,76,.16)}
+.partner-tier.gold .partner-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.65),0 0 30px var(--gold-glow)}
+.partner-tier.gold .tier-name{color:var(--gold-l);text-shadow:0 0 16px var(--gold-glow)}
+.partner-tier.gold .tier-head::before{background:linear-gradient(90deg,transparent,var(--gold))}
+.partner-tier.gold .tier-head::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.partner-tier.gold .partner-role{color:var(--gold-l)}
+.partner-logo img.logo-rabiots{max-height:150px}
+.partner-logo img.logo-fcw{max-height:150px}
+.partner-logo img.logo-cw{max-height:160px}
+.partner-logo img.logo-rge{max-height:90px}
+.partner-tier.institutionnel .partner-card{border-top:3px solid #E8EEF5}
+.partner-tier.institutionnel .tier-name{color:#E8EEF5}
+.partner-logo{flex:0 0 220px;display:flex;align-items:center;justify-content:center;padding:1rem;background:radial-gradient(ellipse at center,rgba(255,255,255,.05),transparent 70%)}
+.partner-logo img{max-width:100%;max-height:110px;object-fit:contain;filter:drop-shadow(0 2px 10px rgba(0,0,0,.6))}
+.partner-body{flex:1;min-width:0}
+.partner-body h3{font-family:'Cinzel Decorative',cursive;font-size:1.35rem;color:var(--gold);margin-bottom:.2rem}
+.partner-tier .partner-role{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C2CAD4;margin-bottom:.9rem;display:inline-flex;align-items:center;gap:.4rem}
+.partner-body p{font-size:.93rem;line-height:1.7;color:var(--parch-d);margin-bottom:.5rem}
+.partner-link{display:inline-block;margin-top:.8rem;font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;color:var(--gold);border-bottom:1px solid var(--gold-d);padding-bottom:1px;text-decoration:none;letter-spacing:.05em;transition:color .2s,border-color .2s}
+.partner-link:hover{color:var(--gold-l);border-bottom-color:var(--gold)}
+.partner-empty-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1.2rem;margin-top:1rem}
+.partner-empty{border:1.5px dashed var(--gold-d);border-radius:6px;padding:2.2rem 1.2rem;text-align:center;background:repeating-linear-gradient(135deg,rgba(201,168,76,.025),rgba(201,168,76,.025) 10px,transparent 10px,transparent 20px);transition:border-color .25s;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem}
+.partner-empty:hover{border-color:var(--gold)}
+.partner-empty .pe-icon{font-size:1.8rem;opacity:.5}
+.partner-empty .pe-title{font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:var(--parch-dk);letter-spacing:.1em;text-transform:uppercase}
+.partner-empty .pe-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:.82rem;color:var(--parch-dk)}
+.sponsor-strip{max-width:880px;margin:1.4rem auto 0;background:linear-gradient(160deg,rgba(42,32,24,.85),rgba(23,18,16,.95));border:1px solid var(--gold-d);border-radius:8px;padding:1rem 1.6rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;justify-content:center;text-align:center}
+.sponsor-strip:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,.5),0 0 18px var(--gold-glow);border-color:var(--gold)}
+.sponsor-strip-label{font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--parch-dk)}
+.sponsor-strip-logos{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap;justify-content:center}
+.sponsor-strip-logos img{height:44px;max-width:160px;object-fit:contain;opacity:.92;transition:opacity .2s}
+.sponsor-strip-logos img.logo-rabiots-strip{height:62px;max-width:none}
+.sponsor-strip-logos img.logo-fcw-strip{height:62px;max-width:none}
+.sponsor-strip-logos img.logo-cw-strip{height:64px;max-width:none}
+.sponsor-strip:hover .sponsor-strip-logos img{opacity:1}
+.sponsor-strip-arrow{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;color:var(--gold);letter-spacing:.08em}
+@media(max-width:600px){.partner-tier .partner-card{flex-direction:column;padding:1.5rem;text-align:center}.partner-logo{flex-basis:auto}.partner-tier .partner-role{justify-content:center}}
+
+footer{background:rgba(5,4,3,0.97);border-top:1px solid var(--gold-d);padding:2rem 1.5rem;text-align:center;position:relative;z-index:1}
+.footer-brand{font-family:'Uncial Antiqua',cursive;font-size:1rem;color:var(--gold);margin-bottom:.5rem;text-shadow:0 0 10px var(--gold-glow)}
+.footer-links{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin:.8rem 0}
+.footer-links button{background:none;border:none;cursor:pointer;font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;color:var(--parch-dk);letter-spacing:.08em;text-transform:uppercase;transition:color .2s;padding:.2rem .5rem}
+.footer-links button:hover{color:var(--gold)}
+footer p{font-size:.78rem;color:var(--parch-dk);margin-top:.3rem}
+
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+
+@media(max-width:600px){.nav-brand{display:none}.nav-links button{font-size:.65rem;padding:.65rem .5rem}.cd-unit{width:65px;height:78px}.cd-num{font-size:1.3rem}.section{padding:3rem 1rem}.scroll{padding:1.5rem 1.2rem}}
+
+.champ-section{background:linear-gradient(160deg,rgba(42,32,24,.6),rgba(23,18,16,.85));border:1px solid var(--gold-d);border-top:3px solid var(--gold);border-radius:4px;padding:1.6rem 1.2rem}
+.champ-section h3{font-family:'Cinzel',serif;font-size:1.15rem;color:var(--gold);letter-spacing:.15em;text-align:center;text-transform:uppercase;margin-bottom:.6rem;text-shadow:0 0 12px var(--gold-glow)}
+.champ-carousel-wrap{position:relative;overflow:hidden;mask-image:linear-gradient(90deg,transparent 0,black 6%,black 94%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0,black 6%,black 94%,transparent 100%)}
+.champ-carousel{display:flex;gap:14px;width:max-content;padding:8px 4px}
+.champ-carousel.scrolling{animation:champScroll 80s linear infinite}
+.champ-carousel-wrap:hover .champ-carousel.scrolling{animation-play-state:paused}
+@keyframes champScroll{0%{transform:translateX(0)}100%{transform:translateX(calc(-50% - 7px))}}
+.champ-card{flex-shrink:0;width:140px;background:linear-gradient(180deg,rgba(15,12,9,.85),rgba(10,8,6,.95));border:1px solid var(--gold-d);border-radius:4px;padding:10px 8px;text-align:center;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.champ-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 4px 16px var(--gold-glow)}
+.champ-card svg{width:70px;height:70px;background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.3);border-radius:3px;padding:4px;display:block;margin:0 auto}
+.champ-card .ch-name{font-family:'Cinzel',serif;font-weight:600;color:var(--gold);font-size:.82rem;margin-top:8px;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.champ-card .ch-region{font-size:.68rem;color:var(--parch-dk);margin-top:2px;letter-spacing:.05em}
+.champ-modal-overlay{position:fixed;inset:0;background:rgba(10,8,6,.88);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(3px)}
+.champ-modal-overlay.show{display:flex}
+.champ-modal{background:linear-gradient(160deg,rgba(23,18,16,.98),rgba(10,8,6,.99));border:2px solid var(--gold);border-radius:6px;padding:28px 24px;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 0 40px rgba(201,168,76,.35),0 10px 50px rgba(0,0,0,.85)}
+.champ-modal h2{font-family:'Cinzel Decorative',cursive;color:var(--gold);text-align:center;margin-bottom:12px;font-size:1.5rem;letter-spacing:.08em;text-shadow:0 0 16px var(--gold-glow)}
+.champ-modal .blason-display{text-align:center;margin:8px 0 16px}
+.champ-modal .blason-display svg{width:130px;height:130px;background:rgba(0,0,0,.3);border:2px solid var(--gold-d);border-radius:4px;padding:8px;display:block;margin:0 auto}
+.champ-modal .info-row{display:flex;gap:10px;margin:8px 0;font-size:.92rem;color:var(--parch)}
+.champ-modal .info-row .lbl{font-family:'Cinzel',serif;font-weight:600;font-size:.72rem;letter-spacing:.12em;color:var(--gold-d);text-transform:uppercase;min-width:90px;flex-shrink:0;padding-top:2px}
+.champ-modal .story{font-family:'IM Fell English',serif;font-style:italic;color:var(--parch);font-size:1rem;line-height:1.55;margin-top:16px;padding:14px 16px;background:rgba(0,0,0,.3);border-left:3px solid var(--gold);border-radius:3px;white-space:pre-wrap}
+.champ-modal .close-btn{display:block;margin:18px auto 0;padding:9px 26px;font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;background:rgba(30,24,16,.8);color:var(--parch);border:1px solid var(--gold-d);border-radius:3px;cursor:pointer;transition:background .15s,border-color .15s}
+.champ-modal .close-btn:hover{background:rgba(50,40,28,.9);border-color:var(--gold)}
+/* TEASER (bande-annonce) */
+.teaser-btn{position:relative;z-index:1;margin-top:1rem;display:inline-flex;align-items:center;gap:.6rem;font-family:'Cinzel',serif;font-size:.82rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);background:rgba(107,15,15,0.25);border:1px solid var(--gold-d);border-radius:3px;padding:.7rem 1.6rem;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s}
+.teaser-btn:hover{transform:scale(1.04);border-color:var(--gold);box-shadow:0 0 22px var(--gold-glow)}
+.teaser-btn svg{width:15px;height:15px;flex-shrink:0}
+.teaser-overlay{position:fixed;inset:0;background:rgba(10,8,6,.92);display:none;align-items:center;justify-content:center;z-index:10000;padding:20px;backdrop-filter:blur(4px)}
+.teaser-overlay.show{display:flex}
+.teaser-modal{position:relative;width:min(420px,92vw);max-height:92vh;aspect-ratio:9/16;border:2px solid var(--gold);border-radius:8px;overflow:hidden;box-shadow:0 0 45px rgba(201,168,76,.4),0 12px 55px rgba(0,0,0,.9);background:#000}
+.teaser-modal video{width:100%;height:100%;display:block;object-fit:cover;background:#000}
+.teaser-close{position:absolute;top:8px;right:8px;z-index:2;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;line-height:1;color:var(--parch);background:rgba(10,8,6,.7);border:1px solid var(--gold-d);border-radius:50%;cursor:pointer;transition:background .15s,border-color .15s}
+.teaser-close:hover{background:rgba(50,40,28,.95);border-color:var(--gold)}
+.teaser-unmute{position:absolute;left:50%;bottom:54px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:.5rem;font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bg);background:linear-gradient(135deg,var(--gold-l),var(--gold),var(--gold-d));border:none;border-radius:4px;padding:.6rem 1.2rem;cursor:pointer;box-shadow:0 0 22px var(--gold-glow),0 4px 14px rgba(0,0,0,.6);animation:cueBounce 2.2s ease-in-out infinite;z-index:3}
+.teaser-unmute svg{width:16px;height:16px}
+
+</style>
+</head>
+<body>
+<div id="particles"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">⚔ InterRégions 2026 — TOW</div>
+    <div class="nav-links">
+      <button onclick="showPage('accueil')" class="active" id="nav-accueil">Accueil</button>
+      <button onclick="showPage('sponsors')" id="nav-sponsors" class="nav-highlight">Sponsors</button>
+      <button onclick="showPage('format')" id="nav-format">Format &amp; Conquête</button>
+      <button onclick="showPage('lieu')" id="nav-lieu">Lieu</button>
+      <button onclick="showPage('association')" id="nav-association">Organisateurs</button>
+      <button onclick="showPage('inscriptions')" id="nav-inscriptions">Inscriptions</button>
+      <button onclick="location.href='encheres.html'" id="nav-encheres" class="nav-highlight">🔨 Enchères</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ACCUEIL -->
+<div class="page active" id="page-accueil">
+  <section class="hero">
+    <div class="ir-banner">
+      <h1 class="hero-logo-wrap"><img src="assets/logo-interregions.webp" class="hero-logo" alt="InterRégions 2026 — Grand Tournoi National · Warhammer: The Old World"></h1>
+      <div class="ir-flourish">⚜ Deuxième Édition ⚜</div>
+      <div class="hero-troyes">📍 TROYES</div>
+      <p class="hero-troyes-sub">🗓 <strong>7 &amp; 8 novembre 2026</strong> · Maison des Lacs, Mesnil-Saint-Père — Lac d'Orient (20 min de Troyes)</p>
+      <p class="ir-tagline" style="font-family:'Cinzel',serif;font-style:italic;color:var(--gold-l);font-size:1.05rem;letter-spacing:.04em;margin:.4rem 0 1rem;text-shadow:0 1px 2px rgba(0,0,0,0.6)">⚔ Viens défendre ta région dans un Risk géant national ⚔</p>
+      <p class="ir-orgs">Sous l'égide de la <strong>Fédération France The Old World<sup style="color:var(--gold-l);font-weight:700;">*</sup></strong><br>organisé par <strong><a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--gold-d)">Les Stratèges du Vieux Monde</a></strong> · Aube (10)</p>
+    </div>
+    <svg class="hero-divider" viewBox="0 0 320 20" fill="none"><line x1="0" y1="10" x2="120" y2="10" stroke="#8A6E2F" stroke-width="1"/><polygon points="130,10 140,4 150,10 140,16" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="155" y1="10" x2="160" y2="10" stroke="#C9A84C" stroke-width="1.5"/><path d="M160,3 L163,10 L160,17 L157,10 Z" fill="#C9A84C"/><line x1="160" y1="10" x2="165" y2="10" stroke="#C9A84C" stroke-width="1.5"/><polygon points="170,10 180,4 190,10 180,16" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="200" y1="10" x2="320" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+    <div class="hero-meta">
+      <div class="hero-badge">🗓 <span>7–8 Novembre 2026</span></div>
+      <div class="hero-badge">🏞 <span>Troyes · Mesnil-Saint-Père · Lac d'Orient</span></div>
+      <div class="hero-badge">⚔ <span>134 participants · 3 axes</span></div>
+    </div>
+
+    <button class="cta-btn" onclick="showPage('inscriptions')">Rejoindre l'Event</button>
+    <div><a href="encheres.html" class="hero-auction-link" style="display:inline-block;margin-top:1rem;font-family:'Cinzel',serif;font-size:.85rem;font-weight:600;letter-spacing:.06em;color:var(--gold-l);text-decoration:none;border:1px solid var(--gold-d);padding:.55rem 1rem;border-radius:3px;background:rgba(201,168,76,.08)">🔨 Vente aux enchères des décors · voir les résultats</a></div>
+    <a href="https://discord.gg/VTvnFqfvuF" target="_blank" class="hero-discord-link"><svg width="16" height="12" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>Rejoindre le Discord</a>
+    <div><button class="teaser-btn" onclick="openTeaser(true)" aria-label="Voir la bande-annonce"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Voir la bande-annonce</button></div>
+
+    <button class="scroll-cue" onclick="window.scrollBy({top:Math.round(window.innerHeight*0.82),behavior:'smooth'})" aria-label="Faire défiler vers le bas"><span>Découvrir l'événement</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+  </section>
+  <div style="max-width:1100px;margin:0 auto;padding:3rem 1.5rem">
+    <div class="reveal" style="text-align:center;margin-bottom:2.4rem">
+    <p class="countdown-label">✦ Compte à rebours ✦</p>
+    <div class="countdown">
+      <div class="cd-unit"><span class="cd-num" id="cd-j">--</span><span class="cd-lbl">Jours</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl">Heures</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl">Mins</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">Secs</span></div>
+    </div>
+    </div>
+    <div class="scroll reveal" style="text-align:center">
+      <h3>⚔ Bienvenue à l'InterRégions 2026 ⚔</h3>
+      <p>La <strong style="color:var(--gold)">Fédération France The Old World</strong> et <strong style="color:var(--gold)">Les Stratèges du Vieux Monde</strong> vous donnent rendez-vous pour la 2ᵉ édition de l'InterRégions <em>Warhammer: The Old World</em>, au bord du Lac d'Orient.</p>
+      <p>Trois axes sous le même toit : <strong style="color:var(--gold)">tournoi par équipes</strong> (80 joueurs), <strong style="color:var(--gold)">animation narrative</strong> par Nimp'Games (22) et <strong style="color:var(--gold)">jeu libre</strong> (32), dans la salle de 1 000 m² de la Maison des Lacs à Mesnil-Saint-Père.</p>
+      <p style="margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(201,168,76,0.2);font-size:.92rem;color:#a8d896">🎟 <strong>Entrée libre et gratuite</strong> pour les accompagnants et curieux, tout le week-end.</p>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:2rem;text-align:center;border:1px solid var(--gold-d);background:linear-gradient(180deg,rgba(201,168,76,0.04),rgba(0,0,0,0.2))">
+      <h3>🗺 La Conquête — un Risk géant national</h3>
+      <p>Chaque participant joue aussi une méta-partie de Risk sur la carte de France : 5 territoires à l'inscription, des frontières qui bougent à chaque ronde entre les 4 alliances.</p>
+      <button onclick="showPage('conquete')" class="cta-btn" style="margin-top:1rem">Découvrir la Conquête →</button>
+    </div>
+
+    <!-- BANDEAU SPONSORS → page Sponsors -->
+    <div class="sponsor-strip reveal" onclick="showPage('sponsors')" role="button" tabindex="0" title="Voir nos partenaires" onkeydown="if(event.key==='Enter'||event.key===' '){showPage('sponsors')}">
+      <span class="sponsor-strip-label">⚜ Avec le soutien de ⚜</span>
+      <div class="sponsor-strip-logos">
+        <img src="assets/LOGO_Horizontal_RVB.png" alt="Région Grand Est" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel,serif;font-size:1rem;font-weight:700;color:var(--white)\'&gt;RÉGION GRAND EST&lt;/span&gt;'">
+        <img src="assets/Logo-Boite-a-rabiots-detoure.png" class="logo-rabiots-strip" alt="La Boîte à Rabiots" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;LA BOÎTE À RABIOTS&lt;/span&gt;'">
+        <img src="assets/logo_fcw_detoure.png" class="logo-fcw-strip" alt="FCW Miniature" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;FCW MINIATURE&lt;/span&gt;'">
+        <img src="assets/Logo_custom_wargame_clair.png" class="logo-cw-strip" alt="Custom Wargame" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;CUSTOM WARGAME&lt;/span&gt;'">
+        <img src="assets/Logo Stratemats blanc.png" alt="Stratemats" onerror="this.outerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.1rem;color:var(--white)\'&gt;STRATEMATS&lt;/span&gt;'">
+      </div>
+      <span class="sponsor-strip-arrow">Nos partenaires →</span>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links">
+      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button>
+    </div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+    <p style="margin-top:.5rem">© 2026 Les Stratèges du Vieux Monde · Mesnil-Saint-Père, Aube (10)</p>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<!-- FORMAT -->
+<div class="page" id="page-format">
+  <div class="section">
+    <h2 class="section-title">Format &amp; Conquête</h2>
+    <p class="section-sub">⚔ Trois Axes · Une Méta-Partie · Une Communauté Nationale ⚔</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <p class="rules-intro">L'InterRégions 2026, organisée par la <strong>Fédération France The Old World<sup style="color:var(--gold-l);font-weight:700;">*</sup></strong> en partenariat avec l'association <strong>Les Stratèges du Vieux Monde</strong>, propose trois manières de vivre Warhammer: The Old World sur un même week-end. Chacun trouve sa place — compétiteur, conteur ou juste passionné.</p>
+
+    <div class="axes-grid reveal">
+      <div class="axe-card competitif">
+        <div class="axe-icon">⚔</div>
+        <div class="axe-title">Tournoi Compétitif</div>
+        <div class="axe-count">16 équipes · 80 joueurs</div>
+        <p class="axe-desc">Format par équipes de 5 joueurs, <strong>4 rondes</strong> intenses sur le week-end, listes ouvertes 2 000 points. Système de scoring officiel Guide du Jeu Égal (6-0).</p>
+        <ul>
+          <li>16 équipes × 5 joueurs</li>
+          <li><strong>4 rondes</strong> (samedi 2 + dimanche 2)</li>
+          <li>Listes ouvertes, 2 000 pts</li>
+          <li>Pairing capitaines à 5 tables</li>
+        </ul>
+        <button class="axe-cta" onclick="showPage('format-competitif')">Voir le détail compétitif →</button>
+      </div>
+      <div class="axe-card narratif">
+        <div class="axe-icon">📜</div>
+        <div class="axe-title">Animation Narrative</div>
+        <div class="axe-count">22 joueurs</div>
+        <p class="axe-desc">Tables dédiées au jeu narratif et immersif, animées par <strong>Nimp'Games</strong>. Scénarios sur mesure, mise en scène, expérience qualitative au-dessus du compétitif.</p>
+        <ul>
+          <li>Scénarios narratifs sur mesure</li>
+          <li>Tables thématiques décorées</li>
+          <li>Animation Nimp'Games</li>
+          <li>Pas de classement, expérience pure</li>
+          <li>Prix peinture & roleplay</li>
+        </ul>
+        <button class="axe-cta" onclick="showPage('format-narratif')">Voir le détail narratif →</button>
+      </div>
+      <div class="axe-card libre">
+        <div class="axe-icon">🎲</div>
+        <div class="axe-title">Jeu Libre</div>
+        <div class="axe-count">32 joueurs</div>
+        <p class="axe-desc">Espace ouvert pour parties amicales, démonstrations, initiation aux nouveaux venus. Responsable : Daem. Vos figurines, vos règles, votre rythme.</p>
+        <ul>
+          <li>Parties amicales tout format</li>
+          <li>Démonstrations & initiation</li>
+          <li>Tables disponibles tout le week-end</li>
+          <li>Responsable : Daem</li>
+          <li>Idéal accompagnateurs et débutants</li>
+        </ul>
+        <button class="axe-cta" onclick="showPage('format-libre')">Voir le détail jeu libre →</button>
+      </div>
+    </div>
+
+    <div class="stats-bar reveal">
+      <div class="stat"><div class="stat-num">5v5</div><div class="stat-lbl">Format compétitif</div></div>
+      <div class="stat"><div class="stat-num">134</div><div class="stat-lbl">Joueurs au total</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-lbl">Axes de jeu</div></div>
+      <div class="stat"><div class="stat-num">2j</div><div class="stat-lbl">de tournoi</div></div>
+    </div>
+
+    <p style="text-align:center;margin-top:2rem;color:var(--parch-dk);font-style:italic">Cliquez sur l'un des trois axes ci-dessus pour découvrir son fonctionnement détaillé, ses règles et son programme.</p>
+
+    <!-- BANDEAU CONQUETE (méta-partie commune aux 3 axes) -->
+    <div class="reveal" style="margin-top:3.5rem;position:relative;border:2px solid var(--gold);background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(15,15,15,0.6) 60%);padding:2rem 2.2rem;border-radius:6px;box-shadow:0 0 0 5px rgba(10,8,5,0.55), 0 0 0 6px var(--gold), 0 6px 24px rgba(0,0,0,0.5)">
+      <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:#0a0805;padding:0 .8rem;color:var(--gold);font-family:'Cinzel',serif;font-size:1.1rem;letter-spacing:.05em">⚜ La Méta-Partie ⚜</div>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center">
+        <div>
+          <h3 style="color:var(--gold-l);font-family:'Cinzel',serif;margin:0 0 .6rem;font-size:1.4rem">🗺 Conquête — un Risk géant à l'échelle de la France</h3>
+          <p style="margin:0 0 .8rem;line-height:1.7">
+            Au-dessus des trois axes, <strong style="color:var(--gold)">tous les participants prennent part à une partie géante de Risk</strong> sur la carte de France. Chaque champion défend sa région d'origine ; chaque victoire — qu'elle soit compétitive, narrative ou amicale — déplace les frontières des 4 alliances au fil des rondes.
+          </p>
+          <p style="margin:0;font-style:italic;color:var(--parch-dk);font-size:.92rem">
+            Île-de-France est zone neutre : les Parisiens rejoignent l'une des régions les moins peuplées.
+          </p>
+        </div>
+        <div style="text-align:center">
+          <button onclick="showPage('conquete')" class="cta-btn" style="white-space:nowrap">Découvrir →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<!-- FORMAT — pages détaillées par axe -->
+<div class="page" id="page-format-competitif">
+  <div class="section">
+    <h2 class="section-title">⚔ Tournoi Compétitif</h2>
+    <p class="section-sub">16 équipes · 80 joueurs · 4 rondes · 2 000 points</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <div class="format-tabs reveal">
+      <button class="fmt-tab active" onclick="showPage('format-competitif')">⚔ Compétitif</button>
+      <button class="fmt-tab" onclick="showPage('format-narratif')">📜 Narratif</button>
+      <button class="fmt-tab" onclick="showPage('format-libre')">🎲 Jeu Libre</button>
+    </div>
+
+    <div class="scroll reveal" style="text-align:center;margin-top:2rem">
+      <h3>⚔ L'âme de l'InterRégions</h3>
+      <p>Le tournoi compétitif est le cœur sportif de l'InterRégions 2026. Seize équipes nationales, quatre-vingts joueurs, <strong style="color:var(--gold)">4 rondes (4 parties)</strong> sur le week-end pour départager les meilleures formations francophones de Warhammer : The Old World. Le format hérité de la grande époque des InterRégions Battle, adapté à la nouvelle édition.</p>
+      <p style="margin-top:.8rem;font-size:.92rem;color:var(--parch-dk);font-style:italic">Les joueurs compétitifs qui le souhaitent peuvent <strong>jouer également des parties en Jeu Libre</strong> sur leurs créneaux libres — l'InterRégions reste un week-end de communauté avant tout.</p>
+    </div>
+
+    <div class="stats-bar reveal">
+      <div class="stat"><div class="stat-num">5v5</div><div class="stat-lbl">Format compétitif</div></div>
+      <div class="stat"><div class="stat-num">2 000</div><div class="stat-lbl">Points par liste</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">Rondes (parties)</div></div>
+      <div class="stat"><div class="stat-num">6-0</div><div class="stat-lbl">Système GJE</div></div>
+    </div>
+
+    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">Le Règlement Compétitif</h3>
+    <p class="section-sub">⚔ Codex des Batailles ⚔</p>
+
+    <p class="rules-intro">Le présent règlement s'applique au volet <strong>compétitif</strong> de l'InterRégions 2026. Il s'appuie sur les FAQ et Mises à Jour GW en vigueur à la date de blocage du format. Les volets narratif et jeu libre suivent leurs règles propres communiquées séparément.</p>
+
+    <div class="rule-highlight reveal" style="margin:0 0 1.5rem">⏳ <strong>Règlement temporaire.</strong> Dernière mise à jour le <strong>28 août 2026</strong> ; le règlement sera définitif au <strong>17 octobre 2026</strong>. D'ici là, seules des modifications mineures (de l'ordre de la clarification) restent possibles. Toute sortie de règles officielles après le <strong>09-10-2026</strong> ne sera pas prise en compte. Arbitrage présidé par <strong>JB Mondoloni</strong>.</div>
+
+    <div class="scroll reveal" style="border-color:var(--gold);background:linear-gradient(160deg,rgba(201,168,76,.10),rgba(122,26,26,.12))">
+      <h3 style="color:var(--gold)">⚡ En bref — l'essentiel</h3>
+      <ul>
+        <li><strong>Format :</strong> 16 équipes de 5, 4 rondes en ronde suisse, listes <strong>2 000 pts fixes</strong>.</li>
+        <li><strong>Quand &amp; où :</strong> 7–8 novembre 2026, Maison des Lacs, Mesnil-Saint-Père (Lac d'Orient).</li>
+        <li><strong>PAF :</strong> 65 € / joueur (325 € / équipe), 2 petits-déjeuners + 2 déjeuners (midi) inclus.</li>
+        <li><strong>Dates-clés :</strong> paiement 01-10 · listes 10-10 · verrouillage 16-10 · publication 27-10.</li>
+        <li><strong>Armées :</strong> 100 % peintes, WYSIWYG 80 %, restrictions Grand Melee &amp; Combined Arms modifié.</li>
+        <li><strong>Score :</strong> points de bataille 3-3 / 4-2 / 5-1 / 6-0 → jusqu'à <strong>30 points de classement</strong> par ronde.</li>
+      </ul>
+    </div>
+
+    <div style="text-align:center;margin:1.8rem 0 .4rem">
+      <a href="reglement-interregions-2026.pdf" target="_blank" rel="noopener" class="btn-newrecruit">📕 Télécharger le règlement complet (PDF)</a>
+    </div>
+    <p class="section-sub" style="margin-bottom:0;font-size:.72rem">Version intégrale et à jour · 16 pages · format A4 imprimable</p>
+
+    <div style="text-align:center;margin:1.4rem 0 .4rem">
+      <a href="faq-regles-interregions-2026.pdf" target="_blank" rel="noopener" class="btn-newrecruit">📖 Télécharger la FAQ de règles (PDF)</a>
+    </div>
+    <p class="section-sub" style="margin-bottom:0;font-size:.72rem">Rappels, précisions &amp; modifications · avec sources et exemples · version du 11/10/2026 · 20 pages</p>
+
+    <h3 class="section-title" style="font-size:1.3rem;margin-top:3rem;margin-bottom:.5rem">Programme du Week-end</h3>
+    <p class="section-sub">7 & 8 Novembre 2026 · 4 rondes · 4 parties</p>
+
+    <div class="programme-grid reveal">
+      <div class="round-card">
+        <div class="round-day">Vendredi 6 nov · soir</div>
+        <div class="round-title">Arrivée & Montage</div>
+        <div class="round-time">🌙 18h00 – 22h00</div>
+        <div class="round-desc">Accueil des participants, installation des 60 tables, briefing capitaines, vérification WYSIWYG.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Samedi 7 nov · matin</div>
+        <div class="round-title">Ronde I — Compétitif</div>
+        <div class="round-time">☀ 9h00 – 12h30</div>
+        <div class="round-desc">Café de bienvenue dès 8h30. Ouverture des hostilités. Narratif & Libre en parallèle.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Samedi 7 nov · midi</div>
+        <div class="round-title">Déjeuner & Pairing</div>
+        <div class="round-time">🍽 12h30 – 14h00</div>
+        <div class="round-desc">Déjeuner inclus dans la PAF. Annonce des appariements de la Ronde II.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Samedi 7 nov · après-midi</div>
+        <div class="round-title">Ronde II — Compétitif</div>
+        <div class="round-time">☀ 14h00 – 17h30</div>
+        <div class="round-desc">Soirée libre & convivialité au bord du lac. Restauration libre en village.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 nov · matin</div>
+        <div class="round-title">Ronde III — Compétitif</div>
+        <div class="round-time">☀ 9h00 – 12h30</div>
+        <div class="round-desc">Petit-déjeuner inclus dès 8h00. Reprise des hostilités. Narratif & Libre en parallèle.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 nov · midi</div>
+        <div class="round-title">Déjeuner & Pairing</div>
+        <div class="round-time">🍽 12h30 – 13h30</div>
+        <div class="round-desc">Déjeuner inclus. Annonce des appariements de la Ronde IV.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 nov · après-midi</div>
+        <div class="round-title">Ronde IV — Finale</div>
+        <div class="round-time">☀ 13h30 – 17h00</div>
+        <div class="round-desc">Dernière ronde décisive. Résolution du classement final.</div>
+      </div>
+      <div class="round-card">
+        <div class="round-day">Dimanche 8 nov · clôture</div>
+        <div class="round-title">Remise des Prix</div>
+        <div class="round-time">🏆 17h15 – 18h00</div>
+        <div class="round-desc">Cérémonie : champion compétitif, prix peinture, prix narratif & roleplay, mot de clôture Fédération.</div>
+      </div>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:1.5rem;background:linear-gradient(160deg,rgba(27,74,90,.35),rgba(15,37,48,.5));border-color:var(--teal-l)">
+      <h3 style="color:var(--teal-l)">🎲 Compétitif & Jeu Libre — passerelle ouverte</h3>
+      <p>L'InterRégions n'est pas qu'un week-end de pression sportive. Les joueurs compétitifs <strong>peuvent venir poser une partie de Jeu Libre</strong> sur leurs créneaux disponibles (vendredi soir, créneaux entre rondes si finis tôt, dimanche après les remises). De beaux décors, une partie amicale entre deux rondes ou en fin de tournoi pour décompresser — c'est aussi ça l'esprit InterRégions.</p>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:1.5rem">
+      <h3>🍽 Restauration</h3>
+      <p>La PAF (<strong>325 €</strong> par équipe en compétitif, <strong>65 €</strong> par joueur en jeu libre ou narratif) inclut <strong>l'inscription au tournoi</strong>, <strong>2 petits-déjeuners</strong> (samedi & dimanche matin), <strong>2 déjeuners</strong> (samedi & dimanche midi), ainsi qu'une <strong>bouteille d'eau</strong> et le <strong>café à volonté</strong> tout le week-end. Une <strong>buvette/snacking</strong> sera également ouverte avec bières, softs et barres chocolatées <em>(hors PAF, à régler sur place)</em>.</p>
+      <p>Le dîner du samedi soir est libre — restaurants et auberges sont disponibles à Mesnil-Saint-Père et autour du Lac d'Orient.</p>
+    </div>
+
+    <div style="text-align:center;margin-top:2rem">
+      <a href="https://www.newrecruit.eu/app/tournydetails/details?id=692b55e562dfaf774789302c" target="_blank" class="map-link">📋 Pack officiel complet sur NewRecruit</a>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<!-- AXE NARRATIF -->
+<div class="page" id="page-format-narratif">
+  <div class="section">
+    <h2 class="section-title">📜 Animation Narrative</h2>
+    <p class="section-sub">22 joueurs · animation Nimp'Games · scénarios immersifs</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <div class="format-tabs reveal">
+      <button class="fmt-tab" onclick="showPage('format-competitif')">⚔ Compétitif</button>
+      <button class="fmt-tab active" onclick="showPage('format-narratif')">📜 Narratif</button>
+      <button class="fmt-tab" onclick="showPage('format-libre')">🎲 Jeu Libre</button>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>📜 L'épopée narrative — un autre Vieux Monde</h3>
+      <p>Loin du fracas des points de victoire et de la pression du chronomètre, l'axe narratif de l'InterRégions 2026 propose <strong>une autre manière de jouer Warhammer : The Old World</strong>. Ici, on raconte des histoires.</p>
+      <p style="margin-top:.8rem">Chaque table est pensée comme une scène : décors thématiques, scénarios sur mesure, enjeux qui dépassent largement la victoire militaire. On y croise des sièges désespérés, des reliques convoitées, des duels d'honneur, des batailles de retraite où sauver ses troupes vaut plus que terrasser l'adversaire. Les listes d'armée sont taillées pour l'ambiance plus que pour l'optimisation, et les compositions « hors-méta » y sont les bienvenues — voire encouragées.</p>
+      <p style="margin-top:.8rem">Pas de classement final. Pas de scoring 6-0. Juste l'épopée, l'immersion, et la satisfaction de voir une partie devenir une histoire qu'on racontera longtemps.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🎬 Animé par Nimp'Games</h3>
+      <p>L'axe narratif est conçu et animé par <strong style="color:var(--gold)">Nimp'Games</strong>, créateurs de contenu Warhammer reconnus pour leur approche immersive et épique du hobby. Battle reports cinématographiques, scénarios narratifs, mises en scène léchées : ils ont fait du jeu narratif leur signature.</p>
+      <p style="margin-top:.8rem">Pour découvrir leur univers et leur ton avant l'événement, rendez-vous sur leur chaîne :</p>
+      <p style="margin-top:1rem;text-align:center">
+        <a href="https://www.youtube.com/@nimpgames" target="_blank" class="yt-btn">
+          <svg width="22" height="16" viewBox="0 0 24 17" fill="#FF0000" style="vertical-align:middle;margin-right:.5rem"><path d="M23.498 2.658a3.007 3.007 0 0 0-2.122-2.136C19.505.002 12 0 12 0S4.495.002 2.624.522A3.007 3.007 0 0 0 .502 2.658C0 4.541 0 8.5 0 8.5s0 3.959.502 5.842a3.007 3.007 0 0 0 2.122 2.136C4.495 16.998 12 17 12 17s7.505-.002 9.376-.522a3.007 3.007 0 0 0 2.122-2.136C24 12.459 24 8.5 24 8.5s0-3.959-.502-5.842zM9.546 12.123V4.877L15.818 8.5l-6.272 3.623z"/></svg>
+          youtube.com/@nimpgames
+        </a>
+      </p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>⚜ Ce qui vous attend</h3>
+      <ul>
+        <li><strong>Scénarios narratifs sur mesure</strong> écrits par Nimp'Games pour l'événement</li>
+        <li><strong>Tables thématiques décorées</strong> — sièges, ruines, ports, forêts hantées</li>
+        <li><strong>Animation continue</strong> par Nimp'Games le samedi et dimanche</li>
+        <li><strong>Pas de classement</strong> — l'expérience est l'objectif</li>
+        <li><strong>Prix peinture & roleplay</strong> attribués par les animateurs</li>
+        <li><strong>Listes flexibles</strong> — venez avec vos thèmes, vos ambiances, vos persos préférés</li>
+        <li><strong>Idéal pour ceux qui veulent jouer pour le plaisir de raconter</strong></li>
+      </ul>
+    </div>
+
+    <div style="text-align:center;margin:1.8rem 0 .4rem">
+      <a href="reglement-narratif-interregions-2026.pdf" target="_blank" rel="noopener" class="btn-newrecruit">📜 Télécharger le règlement narratif (PDF)</a>
+    </div>
+    <p class="section-sub" style="margin-bottom:0;font-size:.72rem">Version intégrale · 2 pages · format A4 imprimable</p>
+
+    <div class="scroll reveal" style="margin-top:1.5rem;text-align:center">
+      <h3>🎨 Une expérience qualitative au-dessus du compétitif</h3>
+      <p style="font-style:italic">Le narratif n'est pas un sous-format. C'est un autre angle — celui où le hobby retrouve son geste fondateur : raconter des histoires avec des figurines, des dés, et des amis autour de la table.</p>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<!-- AXE JEU LIBRE -->
+<div class="page" id="page-format-libre">
+  <div class="section">
+    <h2 class="section-title">🎲 Jeu Libre</h2>
+    <p class="section-sub">32 joueurs · de beaux décors · entre deux bières</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <div class="format-tabs reveal">
+      <button class="fmt-tab" onclick="showPage('format-competitif')">⚔ Compétitif</button>
+      <button class="fmt-tab" onclick="showPage('format-narratif')">📜 Narratif</button>
+      <button class="fmt-tab active" onclick="showPage('format-libre')">🎲 Jeu Libre</button>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:2rem;text-align:center">
+      <h3>🎲 Que du plaisir, que du fun</h3>
+      <p style="font-size:1.05rem;line-height:1.8">Jouer dans de beaux décors, avec des armées diverses et variées, quand vous voulez, <strong style="color:var(--gold)">entre deux bières</strong>. Aucune partie coupée. <strong>Que du plaisir et du fun.</strong></p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🍻 L'esprit du Jeu Libre</h3>
+      <p>Pas de chronomètre. Pas de classement. Pas de ronde imposée. L'axe Jeu Libre, c'est le hobby dans sa forme la plus simple et la plus joyeuse : on s'installe à une table, on déploie ses figurines, on joue, on rit, on remet ça.</p>
+      <p style="margin-top:.8rem">C'est aussi l'endroit où on retrouve les copains qu'on n'a pas vus depuis le dernier tournoi, où on initie un débutant à TOW, où on teste cette liste qu'on n'osait pas sortir en compétition, ou tout simplement où on prend le temps de finir tranquillement la partie sans le stress du tableau de scoring.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🎨 De beaux décors, des armées variées</h3>
+      <ul>
+        <li><strong>Tables disponibles tout le week-end</strong> — samedi & dimanche, vous gérez votre rythme</li>
+        <li><strong>Décors fournis</strong> par le <a href="https://www.facebook.com/groups/clubfigurinesdebonnelles/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--gold-d)">Club de Figurines de Bonnelles</a></li>
+        <li><strong>Armées entièrement peintes</strong> — toutes les figurines doivent être totalement peintes</li>
+        <li><strong>Format unique : 2 000 pts</strong> — scénarios spéciaux et parties à plusieurs joueurs possibles</li>
+        <li><strong>Parties amicales & démonstrations</strong> — initiation aux nouveaux venus assurée par les bénévoles</li>
+        <li><strong>Aucune partie coupée</strong> — vous prenez le temps qu'il faut</li>
+      </ul>
+    </div>
+
+    <div style="text-align:center;margin:1.8rem 0 .4rem">
+      <a href="reglement-jeu-libre-interregions-2026.pdf" target="_blank" rel="noopener" class="btn-newrecruit">🎲 Télécharger le règlement jeu libre (PDF)</a>
+    </div>
+    <p class="section-sub" style="margin-bottom:0;font-size:.72rem">Version intégrale · 6 pages · format A4 imprimable</p>
+
+    <div class="scroll reveal" style="text-align:center">
+      <h3>🍺 Pour qui ?</h3>
+      <p>Pour les <strong>accompagnateurs</strong> qui viennent avec un compétiteur et veulent jouer aussi.<br>
+      Pour les <strong>débutants</strong> qui veulent découvrir TOW dans une ambiance détendue.<br>
+      Pour les <strong>vétérans</strong> qui ont fait trop de tournois et veulent juste profiter.<br>
+      Pour <strong>tous ceux qui aiment Warhammer pour ce qu'il est</strong> — un beau jeu, entre amis, autour d'une table.</p>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<!-- CONQUETE -->
+<div class="page" id="page-conquete">
+  <style>
+    /* Grid 2x2 contraint */
+    #page-conquete .conq-alliances {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:1.8rem;
+      max-width:980px;
+      margin:0 auto;
+    }
+    @media (max-width:720px){
+      #page-conquete .conq-alliances { grid-template-columns:1fr; gap:1.5rem; }
+    }
+    /* Cadre stylisé d'une alliance */
+    #page-conquete .conq-card {
+      position:relative;
+      background:rgba(10,8,5,0.65);
+      padding:2.2rem 2rem 1.8rem;
+      border:2px solid var(--ally);
+      box-shadow:0 0 0 5px rgba(10,8,5,0.65), 0 0 0 6px var(--ally), 0 6px 24px rgba(0,0,0,0.5);
+    }
+    /* Cadre intérieur fin */
+    #page-conquete .conq-card::before{
+      content:'';
+      position:absolute;
+      inset:8px;
+      border:1px solid var(--ally);
+      opacity:.32;
+      pointer-events:none;
+    }
+    /* Ornement central en haut */
+    #page-conquete .conq-card::after{
+      content:'⚜';
+      position:absolute;
+      top:-15px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#0a0805;
+      color:var(--ally);
+      padding:0 .7rem;
+      font-size:1.3rem;
+      line-height:1;
+      letter-spacing:0;
+    }
+    /* Pseudo-coins en équerre subtils */
+    #page-conquete .conq-card .corner{
+      position:absolute; width:14px; height:14px;
+      border:0 solid var(--ally);
+      opacity:.75;
+      pointer-events:none;
+    }
+    #page-conquete .conq-card .corner.tl{ top:3px; left:3px;  border-width:2px 0 0 2px; }
+    #page-conquete .conq-card .corner.tr{ top:3px; right:3px; border-width:2px 2px 0 0; }
+    #page-conquete .conq-card .corner.bl{ bottom:3px; left:3px; border-width:0 0 2px 2px; }
+    #page-conquete .conq-card .corner.br{ bottom:3px; right:3px; border-width:0 2px 2px 0; }
+
+    #page-conquete .conq-card .ally-label{
+      color:var(--ally); font-family:'Cinzel',serif;
+      margin:0; font-size:.78rem; letter-spacing:.18em;
+      text-transform:uppercase; text-align:center;
+      opacity:.8;
+    }
+    #page-conquete .conq-card .ally-name{
+      color:var(--ally); font-family:'Cinzel',serif;
+      margin:.4rem 0 .6rem; font-size:1.55rem;
+      letter-spacing:.04em; text-align:center;
+      line-height:1.2;
+    }
+    #page-conquete .conq-card .ally-quote{
+      font-style:italic; color:var(--parch-dk);
+      margin:0 0 1.1rem; font-size:.92rem;
+      line-height:1.6; text-align:center;
+    }
+    #page-conquete .conq-card .ally-regions{
+      list-style:none; margin:0; padding:0;
+      font-size:.95rem; line-height:2; color:var(--parch);
+    }
+    #page-conquete .conq-card .ally-regions li{
+      position:relative; padding-left:1.4rem;
+    }
+    #page-conquete .conq-card .ally-regions li::before{
+      content:'◆'; position:absolute; left:0;
+      color:var(--ally); opacity:.85; font-size:.7rem; top:.3rem;
+    }
+    /* Divider décoratif sous le nom */
+    #page-conquete .conq-card .ally-divider{
+      display:block; width:60px; height:1px;
+      background:linear-gradient(90deg, transparent, var(--ally), transparent);
+      margin:0 auto 1rem;
+    }
+  </style>
+
+  <div class="section">
+    <h2 class="section-title">🗺 Conquête</h2>
+    <p class="section-sub">⚔ Un Risk géant à l'échelle de la France ⚔</p>
+
+    <!-- ============ INTRO ============ -->
+    <div class="scroll reveal" style="max-width:720px;margin:2rem auto;text-align:left;line-height:1.75">
+      <p style="font-size:1.05rem;margin:0 0 1rem">
+        En parallèle des trois axes de jeu, <strong style="color:var(--gold)">chaque participant prend part à une partie géante de Risk</strong> sur la carte de France.
+      </p>
+      <p style="margin:0">
+        À l'inscription, tu reçois ton <strong>blason personnalisé</strong> et <strong>5 territoires</strong> au cœur de ta région. À chaque ronde, tes victoires et défaites <strong>repoussent les frontières des 4 alliances</strong> qui se disputent le Vieux Monde.
+      </p>
+    </div>
+
+    <!-- ============ LES 4 ALLIANCES ============ -->
+    <h3 class="section-title" style="font-size:1.5rem;margin-top:4rem;text-align:center">⚜ Les 4 Alliances ⚜</h3>
+    <p class="section-sub" style="text-align:center;margin-bottom:2rem">22 régions partagées en 4 camps</p>
+
+    <div class="conq-alliances">
+
+      <!-- Alliance A : Sentinelles d'Argent -->
+      <div class="conq-card" style="--ally:#3b82f6">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <p class="ally-label">— Alliance A —</p>
+        <h3 class="ally-name">Les Sentinelles d'Argent</h3>
+        <span class="ally-divider"></span>
+        <p class="ally-quote">« De l'écume des falaises bretonnes jusqu'aux cimes alpines, les bannières d'azur veillent. Acier et glace, droiture et serments. »</p>
+        <ul class="ally-regions">
+          <li>Alsace</li>
+          <li>Bretagne</li>
+          <li>Basse-Normandie</li>
+          <li>Rhône-Alpes</li>
+          <li>Corse</li>
+        </ul>
+      </div>
+
+      <!-- Alliance B : Légions Cramoisies -->
+      <div class="conq-card" style="--ally:#dc2626">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <p class="ally-label">— Alliance B —</p>
+        <h3 class="ally-name">Les Légions Cramoisies</h3>
+        <span class="ally-divider"></span>
+        <p class="ally-quote">« Forgées sous le soleil ardent, des vignobles d'Aquitaine aux rivages méditerranéens. Leur étendard est le rubis, leur signature est la flamme. »</p>
+        <ul class="ally-regions">
+          <li>Aquitaine</li>
+          <li>Bourgogne</li>
+          <li>Midi-Pyrénées</li>
+          <li>Nord-Pas-de-Calais</li>
+          <li>Provence-Alpes-Côte d'Azur</li>
+        </ul>
+      </div>
+
+      <!-- Alliance C : Gardiens d'Émeraude -->
+      <div class="conq-card" style="--ally:#16a34a">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <p class="ally-label">— Alliance C —</p>
+        <h3 class="ally-name">Les Gardiens d'Émeraude</h3>
+        <span class="ally-divider"></span>
+        <p class="ally-quote">« Au cœur du Vieux Monde, là où la Loire épouse la Seine et où les forêts d'Auvergne murmurent leurs secrets — patience des fleuves, profondeur des bois. »</p>
+        <ul class="ally-regions">
+          <li>Auvergne</li>
+          <li>Centre</li>
+          <li>Franche-Comté</li>
+          <li>Haute-Normandie</li>
+          <li>Picardie</li>
+        </ul>
+      </div>
+
+      <!-- Alliance D : Hérauts d'Or -->
+      <div class="conq-card" style="--ally:#ca8a04">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <p class="ally-label">— Alliance D · la plus vaste —</p>
+        <h3 class="ally-name">Les Hérauts d'Or</h3>
+        <span class="ally-divider"></span>
+        <p class="ally-quote">« Six régions sous une seule bannière dorée. De Nantes à Metz, des marais Poitevins aux étangs du Languedoc — l'or des moissons et l'éclat du couchant. »</p>
+        <ul class="ally-regions">
+          <li>Champagne-Ardenne</li>
+          <li>Languedoc-Roussillon</li>
+          <li>Limousin</li>
+          <li>Lorraine</li>
+          <li>Pays de la Loire</li>
+          <li>Poitou-Charentes</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- ============ IDF ZONE NEUTRE ============ -->
+    <div style="max-width:720px;margin:2.5rem auto 0;background:rgba(15,15,15,0.45);border:1px solid var(--gold-d);border-radius:6px;padding:1.5rem 1.8rem;text-align:center">
+      <h3 style="color:var(--gold-l);font-family:'Cinzel',serif;margin:0;font-size:1.25rem">🏛 Île-de-France · Zone Neutre</h3>
+      <p style="margin:1rem 0 0;font-size:.98rem;line-height:1.75">
+        Paris est le <strong>cœur du Royaume</strong> et ne participe pas à la conquête.
+      </p>
+      <p style="margin:.6rem 0 0;font-size:.98rem;line-height:1.75">
+        <strong style="color:var(--gold)">Les Parisiens rejoignent l'une des régions les moins peuplées</strong> parmi les <strong>4 alliances</strong>, choisie à l'inscription — un mécanisme qui rééquilibre les camps en difficulté.
+      </p>
+    </div>
+
+    <!-- ============ MECANIQUE ============ -->
+    <h3 class="section-title" style="font-size:1.5rem;margin-top:4rem;text-align:center">⚔ Mécanique des batailles ⚔</h3>
+    <p class="section-sub" style="text-align:center;margin-bottom:2rem">Chaque partie compte · chaque territoire se gagne</p>
+
+    <div class="scroll reveal" style="max-width:720px;margin:0 auto;line-height:1.8">
+      <p style="margin:0 0 1rem">À chaque ronde, les résultats de tes parties (tous axes confondus) sont reportés sur la carte.</p>
+      <p style="margin:0 0 1rem"><strong style="color:var(--gold)">Quand tu remportes une partie, tu prends 1 territoire à ton adversaire.</strong> La cellule de son cluster la plus proche du tien passe à ta couleur — une frontière qui progresse géographiquement vers son camp.</p>
+      <p style="margin:0 0 1rem">Au fil des <strong>5 rondes</strong>, la carte se redessine en temps réel. L'<strong style="color:var(--gold)">alliance victorieuse</strong> est celle qui affiche le meilleur taux de victoires à la fin de l'événement : le nombre d'inscrits ne donne aucun avantage.</p>
+      <p style="margin:0;font-style:italic;color:var(--parch-dk);font-size:.92rem;border-top:1px solid var(--gold-d);padding-top:1rem">L'objectif n'est pas seulement de gagner ses parties — c'est aussi de défendre l'honneur de sa région et de tracer les nouvelles frontières du Vieux Monde aux côtés de ses alliés.</p>
+    </div>
+
+    <!-- ============ CARTE LIVE ============ -->
+    <h3 class="section-title" style="font-size:1.5rem;margin-top:4rem;text-align:center">🗺 Carte vivante</h3>
+    <p class="section-sub" style="text-align:center;margin-bottom:1.5rem">État courant des alliances · mis à jour au fil des inscriptions et des batailles</p>
+
+    <div style="max-width:1100px;margin:0 auto;border:1px solid var(--gold-d);border-radius:6px;overflow:hidden;background:#000">
+      <iframe src="carte-inscrits.html?embedded=1" style="width:100%;height:78vh;border:0;display:block" loading="lazy"></iframe>
+    </div>
+    <p style="text-align:center;margin-top:1rem">
+      <a href="carte-inscrits.html" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;border-bottom:1px dotted var(--gold-d)">→ Ouvrir la carte en plein écran</a>
+    </p>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links">
+      <button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button>
+    </div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+    <p style="margin-top:.5rem">© 2026 Les Stratèges du Vieux Monde · Mesnil-Saint-Père, Aube (10)</p>
+  </footer>
+</div>
+
+<!-- LIEU -->
+<div class="page" id="page-lieu">
+  <div class="section">
+    <h2 class="section-title">Le Lieu</h2>
+    <p class="section-sub">⚜ Maison des Lacs · Mesnil-Saint-Père · Lac d'Orient ⚜</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <!-- Vue aerienne reelle du Centre Sportif de l'Aube -->
+    <div class="lac-visual reveal" style="position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--gold-d);box-shadow:0 8px 30px rgba(0,0,0,0.6);margin-bottom:2rem">
+      <img src="mesnil_panorama_clean.png" alt="Vue aerienne du Centre Sportif de l'Aube - Cote Mesnil-Saint-Pere" style="width:100%;display:block;height:auto" loading="lazy" onerror="this.parentElement.innerHTML='<div style=&quot;height:280px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#1B4A5A,#0F2530);color:var(--parch-dk);font-family:Cinzel,serif;text-align:center;padding:1rem&quot;>Maison des Lacs<br><small>Mesnil-Saint-Père · Aube (10)</small></div>'">
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🏞 Un Cadre d'Exception</h3>
+      <p>Le tournoi se tiendra à la <strong>Maison des Lacs</strong> du Centre Sportif de l'Aube, à <strong>Mesnil-Saint-Père</strong>, village emblématique du Parc Naturel Régional de la Forêt d'Orient. Niché au bord du <strong>Lac d'Orient</strong> (3e plus grand lac artificiel de France), le site offre une salle multi-usages de <strong>1 000 m²</strong> — bien au-delà de nos besoins (750 m² cibles) — et un cadre lacustre exceptionnel.</p>
+      <p>À 25 km de Troyes, le village de 467 habitants conjugue port de plaisance, plage, sentiers de randonnée et patrimoine local. Un écrin parfait pour un week-end de jeu prolongé.</p>
+    </div>
+
+    <div class="lieu-features reveal">
+      <div class="lieu-feat"><span class="lieu-feat-icon">🏟</span><div class="lieu-feat-text"><h4>Salle 1 000 m²</h4><p>Multi-usages, capacité &gt; 60 tables, équipements sportifs intégrés</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🍽</span><div class="lieu-feat-text"><h4>Restauration</h4><p>2 petits-déj + 2 déjeuners + eau + café inclus PAF · buvette (bière/soft/snacks) hors PAF</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🛏</span><div class="lieu-feat-text"><h4>Hébergement sur place</h4><p>Résidence du Lac d'Orient — chambres limitées, <strong style="color:var(--gold-l)">à la demande</strong> · complétée par hôtels et gîtes à Mesnil-Saint-Père</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🚗</span><div class="lieu-feat-text"><h4>Accès & Parking</h4><p>Parking gratuit · 25 min de Troyes · A5/A26 à proximité</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🌲</span><div class="lieu-feat-text"><h4>Parc Naturel</h4><p>Forêt d'Orient · sentiers · plage · port de plaisance à 5 min</p></div></div>
+      <div class="lieu-feat"><span class="lieu-feat-icon">🎲</span><div class="lieu-feat-text"><h4>Espaces dédiés</h4><p>Tournoi compétitif · animation narrative · jeu libre · convivialité</p></div></div>
+    </div>
+
+    <p style="font-size:.78rem;color:var(--parch-dk);font-style:italic;text-align:center;margin-top:.5rem">Vue aérienne © VIP Studio 360 / Centre Sportif de l'Aube — l'événement aura lieu dans la salle multi-usages 1 000 m² du Centre Sportif.</p>
+
+    <!-- =========================== -->
+    <!-- Résidence du Lac d'Orient   -->
+    <!-- =========================== -->
+    <div class="residence reveal">
+      <div class="residence-gallery-wrap">
+        <div class="residence-gallery">
+          <div class="res-img res-main" style="background-image:url('https://www.centre-sportif-aube.fr/app/uploads/2025/12/Mesnil-facade.jpg')" role="img" aria-label="Façade de la Résidence du Lac d'Orient"></div>
+          <div class="res-img" style="background-image:url('assets/residence/chambre-double.jpg')" role="img" aria-label="Chambre double"></div>
+          <div class="res-img" style="background-image:url('assets/residence/detente.jpg')" role="img" aria-label="Espace détente"></div>
+        </div>
+        <p style="text-align:center;font-size:.78rem;color:var(--parch-dk);font-style:italic;margin-top:.5rem">
+          📷 <a href="https://www.centre-sportif-aube.fr/site-de-mesnil-saint-pere/la-residence-du-lac-dorient/" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Voir plus de photos sur le site du Centre Sportif</a>
+        </p>
+      </div>
+      <div class="residence-info">
+        <div>
+          <h3>🛏 Résidence du Lac d'Orient — sur place</h3>
+          <p>À deux pas de la salle de tournoi, la <strong style="color:var(--gold)">Résidence du Lac d'Orient</strong> propose des chambres confortables au sein même du Centre Sportif. Chaque chambre dispose d'une salle de bain privative avec WC séparés et WiFi gratuit.</p>
+
+          <table class="tarif-table" aria-label="Tarifs hébergement Résidence du Lac d'Orient">
+            <thead>
+              <tr><th>Type de chambre</th><th>Chambres</th><th>Capacité</th><th>Tarif chambre · 2 nuits</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Chambre <strong>simple</strong></td><td>1</td><td>1 pers</td><td class="tarif-price">60 €</td></tr>
+              <tr><td>Chambre <strong>double</strong></td><td>24</td><td>2 pers</td><td class="tarif-price">90 €</td></tr>
+              <tr><td>Chambre <strong>triple</strong></td><td>4</td><td>3 pers</td><td class="tarif-price">110 €</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:.78rem;color:var(--parch-dk);font-style:italic;margin-top:-.3rem">Tarifs <strong>par chambre entière</strong>, forfait <strong>2 nuits</strong> (vendredi 6 → dimanche 8 novembre 2026). Tu réserves la chambre, tu choisis ensuite avec qui la partager.</p>
+
+          <div class="alert-limited">
+            ⚠ <strong>Places limitées</strong> — La réservation se fait <strong>à la demande</strong>, dans l'ordre des inscriptions confirmées. Une fois la résidence complète, voir l'<a href="https://mesnil-saint-pere.com/decouvrir-sortir-bouger/annuaires-office-du-tourisme/" target="_blank" rel="noopener" style="color:var(--gold-l);text-decoration:underline">annuaire de l'Office de Tourisme</a> (hôtels, gîtes, chambres d'hôtes) ou les hôtels de Troyes (25 min).
+          </div>
+        </div>
+
+        <div class="residence-cta">
+          <a class="btn-reserve" href="reservation-chambre.html">⚜ Réserver une chambre</a>
+          <a class="btn-reserve secondary" href="https://www.centre-sportif-aube.fr/site-de-mesnil-saint-pere/la-residence-du-lac-dorient/" target="_blank" rel="noopener">🔗 Voir la résidence</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- Venez en famille            -->
+    <!-- =========================== -->
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>👨‍👩‍👧‍👦 Venez en Famille</h3>
+      <p class="famille-intro" style="margin-top:.4rem">
+        Pendant que vous bataillez sur les tables, vos proches profitent de la Champagne et du Parc Naturel. Voici quelques idées de sorties à proximité.
+      </p>
+
+      <div style="background:rgba(74,122,62,0.15);border:1px solid rgba(74,122,62,0.5);border-left:4px solid var(--green);border-radius:4px;padding:.9rem 1.2rem;margin:0 auto 1.5rem;max-width:720px;text-align:center;font-size:.92rem;color:var(--parch)">
+        🎟 <strong style="color:#a8d896">Entrée libre et gratuite pour les non-joueurs</strong> — accompagnants, famille, amis et curieux sont les bienvenus tout le week-end pour assister aux batailles, parcourir les tables et profiter de l'ambiance.
+      </div>
+
+      <div class="famille-grid">
+        <a class="famille-card" href="https://www.mcarthurglen.com/fr/outlets/fr/designer-outlet-troyes/" target="_blank" rel="noopener">
+          <span class="famille-card-icon">🛍</span>
+          <h4>Magasins d'usines · McArthurGlen Troyes</h4>
+          <p>Capitale française de l'outlet : plus de 100 marques à prix réduits. À 25 min de Mesnil-Saint-Père. Parfait pour une matinée shopping le samedi ou le dimanche.</p>
+          <span class="famille-cta">→ Voir l'outlet</span>
+        </a>
+
+        <a class="famille-card" href="https://www.nigloland.fr/" target="_blank" rel="noopener">
+          <span class="famille-card-icon">🎢</span>
+          <h4>Nigloland <span class="famille-badge">Halloween · exceptionnel</span></h4>
+          <p>Le 2e parc d'attractions de France, en mode Halloween en novembre — ambiance, décors et soirées nocturnes vraiment à part. À 40 min du tournoi.</p>
+          <span class="famille-cta">→ Découvrir Nigloland</span>
+        </a>
+
+        <a class="famille-card" href="https://www.troyeslachampagne.com/" target="_blank" rel="noopener">
+          <span class="famille-card-icon">🏛</span>
+          <h4>Visite de Troyes</h4>
+          <p>Cité médiévale en cœur de bouchon de champagne : maisons à pans de bois, ruelles pavées, musées, gastronomie. À 25 min, accessible en train.</p>
+          <span class="famille-cta">→ Troyes la Champagne</span>
+        </a>
+      </div>
+      <p style="text-align:center;font-size:.85rem;color:var(--parch-dk);margin-top:-.6rem">
+        Plus d'idées sortie sur l'<a href="https://mesnil-saint-pere.com/decouvrir-sortir-bouger/annuaires-office-du-tourisme/" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">annuaire de l'Office de Tourisme de Mesnil-Saint-Père</a>.
+      </p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>📍 Comment Nous Rejoindre</h3>
+      <p><strong style="color:var(--gold)">Maison des Lacs</strong> — Centre Sportif de l'Aube — Côté Lacs</p>
+      <p>10140 Mesnil-Saint-Père · Aube · Grand Est</p>
+      <p style="margin-top:.8rem"><strong>Depuis Paris</strong> : ~2h par l'A5 direction Troyes · sortie Lusigny-sur-Barse</p>
+      <p><strong>Depuis Troyes</strong> : 25 min par la D960 · gare SNCF de Troyes (puis covoiturage proposé)</p>
+      <p><strong>GPS</strong> : 48.2700° N · 4.3556° E (approximatif)</p>
+      <p style="margin-top:.8rem;color:var(--parch-dk);font-style:italic">Adresse précise et plan d'accès communiqués aux participants après confirmation.</p>
+    </div>
+    <div style="text-align:center;margin-top:1rem">
+      <a href="https://www.google.com/maps/search/Maison+des+Lacs+Mesnil-Saint-Père" target="_blank" class="map-link">🗺 Voir sur Google Maps</a>
+      <a href="https://www.centre-sportif-aube.fr/site-de-mesnil-saint-pere/" target="_blank" class="map-link">🏟 Centre Sportif de l'Aube</a>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<!-- ASSOCIATION -->
+<div class="page" id="page-association">
+  <div class="section">
+    <h2 class="section-title">Les Organisateurs</h2>
+    <p class="section-sub">⚔ Fédération France TOW<sup style="color:var(--gold-l);font-weight:700;">*</sup> × Stratèges du Vieux Monde × Nimp'Games ⚔</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <p class="assoc-intro">L'InterRégions 2026 est portée par trois acteurs complémentaires de la communauté Warhammer : The Old World francophone — la <strong>Fédération France The Old World<sup style="color:var(--gold-l);font-weight:700;">*</sup></strong> (porteur national & sportif), <strong>Les Stratèges du Vieux Monde</strong> (organisateur local & juridique) et <strong>Nimp'Games</strong> (animation narrative).</p>
+
+    <div class="partners-grid reveal">
+      <div class="partner-card">
+        <div class="partner-role">★ Porteur National ★</div>
+        <h3>Fédération France<br>The Old World</h3>
+        <p>Réseau national des joueurs et clubs Warhammer: The Old World. Apporte son réseau de bénévoles, son expertise compétitive et la légitimité historique héritée des grands InterRégions de Battle.</p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">Organisateur local</div>
+        <h3>Les Stratèges<br>du Vieux Monde</h3>
+        <p>Association loi 1901 basée à Ruvigny (Aube). Hôte de l'édition 2026, porte tous les contrats locaux (lieu, prestataires, assurance) et la responsabilité civile de l'événement. Responsable de l'axe Jeu Libre.</p>
+        <p style="margin-top:.8rem;text-align:center"><a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.1em;border-bottom:1px solid var(--gold-d);padding-bottom:2px">🌐 Découvrir l'association →</a></p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-role">Animation narrative</div>
+        <h3>Nimp'Games</h3>
+        <p>Intervenant spécialisé en jeu narratif Warhammer. Conçoit les scénarios, anime les tables thématiques et garantit une expérience immersive sur l'axe narratif.</p>
+      </div>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>⚜ Fédération France The Old World<sup style="color:var(--gold-l);font-weight:700;">*</sup></h3>
+      <p>Réseau national des clubs et joueurs <em>Warhammer: The Old World</em>. Héritière de l'esprit des grands <strong>InterRégions Battle</strong>.</p>
+      <p style="margin-top:.8rem">L'<strong>InterRégions 2026</strong> est un événement national hébergé pour cette saison par l'association Les Stratèges du Vieux Monde dans l'Aube.</p>
+      <p style="margin-top:.8rem">La Fédération est <strong>en cours de constitution</strong> : elle s'appuie sur cet événement pour réunir les moyens de réaliser sa vocation — <strong>promouvoir le jeu dans tous ses aspects, réunir les joueurs et aider les associations à faire vivre le hobby</strong>.</p>
+    </div>
+
+    <div class="scroll reveal">
+      <h3>🏰 Les Stratèges du Vieux Monde — Hôte 2026</h3>
+      <p>Basée à <strong>Ruvigny, Aube (10)</strong>, notre association loi 1901 rassemble des passionnés de jeux de figurines de tous niveaux. Nous organisons des soirées de jeu régulières, des tournois internes et participons aux événements de la communauté Warhammer francophone.</p>
+      <p style="margin-top:.8rem">Hôtes de l'<strong>InterRégions 2026</strong>, nous sommes fiers d'accueillir cette deuxième édition au cœur du Parc Naturel Régional de la Forêt d'Orient, en partenariat avec la Fédération France The Old World<sup style="color:var(--gold-l);font-weight:700;">*</sup>.</p>
+      <p style="margin-top:1.2rem;padding-top:.8rem;border-top:1px dashed var(--gold-d)">
+        <strong style="color:var(--gold)">📬 Nous rejoindre :</strong> passionné(e) de jeux de figurines dans l'Aube ?<br>
+        <a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600">🌐 Site officiel de l'asso</a>
+        &nbsp;·&nbsp; <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button>
+        &nbsp;·&nbsp; 💬 <a href="https://discord.gg/VTvnFqfvuF" target="_blank" style="color:#9BA8FF">Discord</a>
+        &nbsp;·&nbsp; 📍 Ruvigny, Aube (10)
+      </p>
+    </div>
+
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<!-- INSCRIPTIONS -->
+<div class="page" id="page-inscriptions">
+  <div class="section">
+    <h2 class="section-title">Inscriptions</h2>
+    <p class="section-sub">⚔ Rejoindre l'Event ⚔</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+
+    <!-- Résumé des conditions — visible AVANT de choisir un axe -->
+    <div class="insc-summary reveal">
+      <div class="insc-summary-row"><span class="lbl">Limite inscription &amp; paiement</span><span class="val">1er octobre 2026</span></div>
+      <div class="insc-summary-row"><span class="lbl">Limite envoi des listes (compétitif)</span><span class="val">10 octobre 2026 à 23h59</span></div>
+      <div class="insc-summary-row"><span class="lbl">Remboursement</span><span class="val">jusqu'au 8 septembre 2026 inclus · <a href="#desist-policy" onclick="var d=document.getElementById('desist-policy');if(d){d.open=true;}">voir la politique</a></span></div>
+    </div>
+
+    <div class="price-grid reveal">
+
+      <!-- 1) COMPÉTITIF · ÉQUIPES — prix + places fusionnés -->
+      <div class="price-axe insc-card" data-type="equipe">
+        <div class="price-axe-icon">⚔</div>
+        <div class="price-axe-title">Compétitif · Équipes</div>
+        <div class="price-axe-amount">325 €</div>
+        <div class="price-axe-unit">par <strong>équipe</strong> · soit 65 € / joueur</div>
+        <div class="price-axe-detail">
+          <strong style="color:var(--gold-l)">5 joueurs / équipe</strong> · 4 rondes · 2 000 pts.<br>
+          <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">Paiement groupé par le capitaine — la place de l'équipe entière est réservée d'un coup.</span>
+        </div>
+        <div class="axis-stock">
+          <span class="axis-stock-cap">Places restantes</span>
+          <span class="insc-card-num" id="insc-num-equipe">—</span><span class="insc-card-sub" id="insc-sub-equipe">/ 16 équipes</span>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-equipe" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- 2) JEU LIBRE -->
+      <div class="price-axe insc-card" data-type="jeu_libre">
+        <div class="price-axe-icon">🎲</div>
+        <div class="price-axe-title">Jeu Libre</div>
+        <div class="price-axe-amount">65 €</div>
+        <div class="price-axe-unit">par <strong>joueur</strong></div>
+        <div class="price-axe-detail">
+          Parties amicales · démonstrations · sans appariement.<br>
+          <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">Format souple — viens avec ta liste ou improvise sur place.</span><br>
+          <span style="font-size:.78rem;color:var(--parch-d)">Animation : <strong style="color:var(--gold)">Daem</strong></span>
+        </div>
+        <div class="axis-stock">
+          <span class="axis-stock-cap">Places restantes</span>
+          <span class="insc-card-num" id="insc-num-jeu_libre">—</span><span class="insc-card-sub" id="insc-sub-jeu_libre">/ 32 places</span>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-jeu_libre" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- 3) NARRATIF -->
+      <div class="price-axe insc-card" data-type="narratif">
+        <div class="price-axe-icon">📜</div>
+        <div class="price-axe-title">Narratif</div>
+        <div class="price-axe-amount">65 €</div>
+        <div class="price-axe-unit">par <strong>joueur</strong></div>
+        <div class="price-axe-detail">
+          Animation orchestrée par <strong style="color:var(--gold)">Nimp'Games</strong> · scénarios immersifs.<br>
+          <span style="color:var(--parch-dk);font-style:italic;font-size:.78rem">L'aventure prime sur la victoire.</span>
+        </div>
+        <div class="axis-stock">
+          <span class="axis-stock-cap">Places restantes</span>
+          <span class="insc-card-num" id="insc-num-narratif">—</span><span class="insc-card-sub" id="insc-sub-narratif">/ 22 places</span>
+          <div class="insc-bar"><div class="insc-bar-fill" id="insc-bar-narratif" style="width:0%"></div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="insc-stock-caption reveal">Places mises à jour en temps réel · attribuées dans l'ordre des paiements confirmés.</p>
+
+    <div class="reveal" style="max-width:820px;margin:0 auto 1.2rem;text-align:center;font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.04em;color:var(--parch-d)">
+      ⚜ L'équipe organisatrice — Organisation : <strong style="color:var(--gold-l)">JSL</strong> · Arbitrage : <strong style="color:var(--gold-l)">JB Warfo</strong> · Finances : <strong style="color:var(--gold-l)">-DK-</strong>
+    </div>
+
+    <div class="price-includes-row reveal">
+      <strong>✦ Tout compris :</strong> 2 jours d'événement · 2 petits-déjeuners · 2 déjeuners · bouteille d'eau · café à volonté.<br>
+      <span style="font-size:.8rem;color:var(--parch-dk)">Buvette ouverte le week-end (bière, soft, barres chocolatées) — <em>hors PAF</em>.</span>
+      <br><span style="font-size:.78rem;color:var(--parch-dk);font-style:italic">Détail complet dans le formulaire de paiement.</span>
+    </div>
+
+    <div class="price-acc-note reveal">
+      🎟 <strong>Accompagnants : entrée libre et gratuite</strong> — la PAF concerne uniquement les joueurs.
+    </div>
+
+    <div class="desist-box reveal">
+      <h4>⚠ Politique de désinscription &amp; remboursement</h4>
+      <span class="desist-key">Remboursement possible uniquement jusqu'à 60 jours avant l'événement<br>— soit jusqu'au <strong style="color:var(--gold-l)">8 septembre 2026 inclus</strong>.</span>
+      <details class="desist-more" id="desist-policy">
+        <summary>Lire la politique complète</summary>
+        <p>Au-delà de cette date, les sommes versées (inscription et PAF) ne pourront plus être remboursées, quel que soit le motif.</p>
+        <p>Un désistement, même de bonne foi, pose d'<strong>énormes problèmes logistiques</strong>. Il déséquilibre les <strong>appariements</strong> — les équipes de 5, les tables 5v5 et les rondes par alliances reposent sur un effectif complet, et une place vacante pénalise toute une équipe et son adversaire. Il fragilise aussi l'<strong>équilibre financier</strong> d'un projet entièrement associatif&nbsp;: la salle, la restauration et les prestataires sont réservés et engagés des mois à l'avance, sur la base du nombre d'inscrits.</p>
+        <p>En cas d'empêchement, préviens-nous <strong>le plus tôt possible</strong>&nbsp;: une place libérée à temps peut profiter à un joueur en <a href="inscription-tournoi.html">liste d'attente</a>. Merci de votre compréhension.</p>
+      </details>
+    </div>
+
+    <div class="payment-section reveal" style="margin-top:2rem">
+      <!-- Warnings par catégorie pleine (injectés par JS) -->
+      <div id="insc-warnings"></div>
+
+      <!-- CTA principal unique vers le tunnel d'inscription -->
+      <div id="insc-payment-wrap" style="text-align:center;margin-top:.5rem">
+        <a href="inscription-tournoi.html" class="btn-reserve" style="display:inline-flex;font-size:.95rem;padding:.95rem 1.8rem">
+          ⚔ Accéder au formulaire d'inscription
+        </a>
+        <p style="margin-top:.8rem;font-size:.82rem;color:var(--parch-dk);font-style:italic">
+          Formulaire en 2 étapes — choix de l'axe, réservation de la place, puis paiement AssoConnect. Tu recevras un email de confirmation avec le lien pour <strong style="color:var(--gold-d)">forger ton champion</strong>.
+        </p>
+      </div>
+
+      <!-- Message "tout complet" — caché par défaut, affiché si remaining = 0 partout -->
+      <div id="insc-allfull-box" class="insc-allfull" hidden>
+        <h4>🔒 Inscriptions complètes</h4>
+        <p>Les <strong>16 équipes</strong>, les <strong>32 places de jeu libre</strong> et les <strong>22 places narratif</strong> sont toutes prises.</p>
+        <p style="margin-top:.6rem">Tu peux te mettre en <strong>liste d'attente</strong> via le <a href="https://discord.gg/VTvnFqfvuF" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a> — on libère parfois des places suite à des désistements.</p>
+      </div>
+    </div>
+
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>🏨 Hébergement</h3>
+      <p>L'hébergement <strong>n'est pas inclus</strong> dans la PAF. Plusieurs options à proximité :</p>
+      <ul>
+        <li><strong style="color:var(--gold)">Résidence du Lac d'Orient — sur place</strong> : 29 chambres (1 simple 60€ · 24 doubles 90€ · 4 triples 110€) — tarif par <em>chambre entière</em>, forfait 2 nuits. <strong>Places limitées, à la demande</strong> — <a href="reservation-chambre.html" style="color:var(--gold-l);text-decoration:underline">réserver une chambre</a> ou voir détail sur la <a href="#" onclick="showPage('lieu');return false;" style="color:var(--gold-l);text-decoration:underline">page Lieu</a>.</li>
+        <li><strong>Hôtels, gîtes & chambres d'hôtes</strong> à Mesnil-Saint-Père et autour du Lac d'Orient — voir l'<a href="https://mesnil-saint-pere.com/decouvrir-sortir-bouger/annuaires-office-du-tourisme/" target="_blank" rel="noopener" style="color:var(--gold-l);text-decoration:underline">annuaire de l'Office de Tourisme</a></li>
+        <li><strong>Camping</strong> au bord du lac (saisonnier)</li>
+        <li><strong>Hôtels Troyes</strong> à 25 min en voiture (~85€/nuit)</li>
+      </ul>
+      <p style="margin-top:.8rem;font-size:.85rem;color:var(--parch-dk)">Une page dédiée avec liens directs sera communiquée aux inscrits.</p>
+    </div>
+
+    <a href="https://discord.gg/VTvnFqfvuF" target="_blank" class="discord-banner" style="display:inline-flex;margin-top:1.5rem">
+      <svg width="18" height="14" viewBox="0 0 71 55" fill="#9BA8FF"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.4.9a40 40 0 0 0-1.8 3.6 54.3 54.3 0 0 0-16.2 0A38 38 0 0 0 25.6.9 58.5 58.5 0 0 0 10.8 5C1.6 18.6-.9 31.8.3 44.8a59 59 0 0 0 17.9 9 42.3 42.3 0 0 0 3.7-6 38.3 38.3 0 0 1-5.8-2.8l1.4-1.1a42.1 42.1 0 0 0 35.9 0l1.4 1.1a38.3 38.3 0 0 1-5.8 2.8 42.6 42.6 0 0 0 3.7 6 58.8 58.8 0 0 0 17.9-9C72 29.8 68.1 16.7 60.1 4.9ZM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2c3.5 0 6.5 3.3 6.4 7.2 0 3.9-2.9 7.1-6.4 7.1Zm23.6 0c-3.5 0-6.4-3.2-6.4-7.1s2.8-7.2 6.4-7.2 6.4 3.3 6.4 7.2c0 3.9-2.9 7.1-6.4 7.1Z"/></svg>
+      Questions ? Rejoignez le Discord
+    </a>
+
+    <!-- CAROUSEL DES CHAMPIONS DÉJÀ INSCRITS -->
+    <div class="champ-section reveal" style="margin-top:3rem">
+      <h3>⚜ Joueurs Déjà Inscrits ⚜</h3>
+      <p id="champ-count-text" style="text-align:center;color:var(--parch-d);font-style:italic;margin-bottom:1rem;font-family:'IM Fell English',serif;font-size:1.05rem">Chargement des joueurs…</p>
+      <div class="champ-carousel-wrap">
+        <div class="champ-carousel" id="champ-carousel"></div>
+      </div>
+      <p style="text-align:center;margin-top:1.2rem;font-size:.95rem">
+        <a href="carte-inscrits.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-d);padding-bottom:2px">🗺 Voir la carte complète des joueurs →</a>
+      </p>
+    </div>
+
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<!-- SPONSORS -->
+<div class="page" id="page-sponsors">
+  <div class="section">
+    <h2 class="section-title">Nos Partenaires</h2>
+    <p class="section-sub">⚜ Soutenir l'Event ⚜</p>
+    <svg class="ornament" viewBox="0 0 480 20" fill="none"><line x1="0" y1="10" x2="190" y2="10" stroke="#8A6E2F" stroke-width="1"/><path d="M195,10 L200,5 L210,10 L200,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><path d="M237,2 L240,10 L237,18 L234,10 Z" fill="#C9A84C" opacity=".7"/><line x1="240" y1="2" x2="240" y2="18" stroke="#C9A84C" stroke-width="1.5"/><path d="M243,10 L250,5 L260,10 L250,15 Z" fill="none" stroke="#C9A84C" stroke-width="1"/><line x1="265" y1="10" x2="480" y2="10" stroke="#8A6E2F" stroke-width="1"/></svg>
+    <p class="sponsor-intro">L'<strong>InterRégions 2026</strong> réunit 134 passionnés de Warhammer pour un week-end inoubliable au cœur du Parc Naturel Régional de la Forêt d'Orient. Deuxième édition sous l'étendard The Old World, l'événement s'inscrit dans l'héritage des grands InterRégions de l'âge d'or de Battle. Associez votre nom à cet événement national de référence.</p>
+    <!-- PARTENAIRES INSTITUTIONNELS -->
+    <div class="partner-tier institutionnel reveal">
+      <div class="tier-head"><span class="tier-name">🏛 Partenaires institutionnels 🏛</span></div>
+
+      <a href="https://www.grandest.fr/" target="_blank" rel="noopener" class="partner-card">
+        <div class="partner-logo">
+          <img src="assets/LOGO_Horizontal_RVB.png" alt="Logo Région Grand Est" class="logo-rge" onerror="this.parentElement.innerHTML='&lt;span style=\'font-family:Cinzel,serif;font-size:1.4rem;font-weight:700;color:var(--white)\'&gt;RÉGION GRAND EST&lt;/span&gt;'">
+        </div>
+        <div class="partner-body">
+          <h3>Région Grand Est</h3>
+          <span class="partner-role">🏛 Partenaire institutionnel</span>
+          <p>L'<strong>InterRégions 2026</strong> est soutenu par la <strong>Région Grand Est</strong> au titre de son dispositif de soutien à la vie associative de proximité (<strong>DIVA'P</strong>).</p>
+          <span class="partner-link">Découvrir la Région Grand Est →</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- PARTENAIRES CONFIRMÉS -->
+    <div class="partner-tier gold reveal">
+      <div class="tier-head"><span class="tier-name">⚜ Mécène Dragon d'Or ⚜</span></div>
+
+      <a href="https://laboitearabiots.com/" target="_blank" rel="noopener" class="partner-card">
+        <div class="partner-logo">
+          <img src="assets/Logo-Boite-a-rabiots-detoure.png" alt="Logo La Boîte à Rabiots" class="logo-rabiots" onerror="this.parentElement.innerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.6rem;color:var(--white)\'&gt;LA BOÎTE À RABIOTS&lt;/span&gt;'">
+        </div>
+        <div class="partner-body">
+          <h3>La Boîte à Rabiots</h3>
+          <span class="partner-role">⚜ Mécène Dragon d'Or · Partenaire impression 3D</span>
+          <p>Boutique spécialisée dans l'<strong>impression 3D pour le jeu de figurines</strong>, La Boîte à Rabiots conçoit et imprime <strong>figurines, décors et pièces détachées</strong> — les fameux « rabiots » — pour <em>Warhammer</em> et l'ensemble des univers du hobby : heroic fantasy, science-fiction, historique, Fantasy Football, jeux de rôle, bustes en résine, socles et décors de toutes échelles. Un savoir-faire au service des joueurs, avec un large catalogue, des accessoires hobby et la <strong>personnalisation sur mesure</strong>.</p>
+          <p><strong style="color:var(--gold-l)">Partenaire Or de l'InterRégions 2026</strong>, La Boîte à Rabiots soutient l'événement, le <strong>tournoi compétitif par équipes</strong> et le format <strong>« Risk géant » à l'échelle de la France</strong>. La boutique est présente sur place avec son <strong>stand</strong> tout le week-end : figurines, décors, accessoires et conseils pour habiller vos tables et garnir vos armées.</p>
+          <span class="partner-link">Découvrir La Boîte à Rabiots →</span>
+        </div>
+      </a>
+
+      <a href="https://www.etsy.com/shop/FantasyConflictWs" target="_blank" rel="noopener" class="partner-card" style="margin-top:1.5rem">
+        <div class="partner-logo">
+          <img src="assets/logo_fcw_detoure.png" alt="Logo FCW Miniature" class="logo-fcw" onerror="this.parentElement.innerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.6rem;color:var(--white)\'&gt;FCW MINIATURE&lt;/span&gt;'">
+        </div>
+        <div class="partner-body">
+          <h3>FCW Miniature</h3>
+          <span class="partner-role">⚜ Mécène Dragon d'Or · Partenaire figurines 3D</span>
+          <p>Atelier de <strong>figurines imprimées en 3D</strong> (Fantasy – Conflict Workshop), FCW Miniature produit armées et décors de qualité professionnelle, <strong>compatibles 28/32 mm</strong> avec vos grands univers de batailles fantasy. Impression en fines couches pour un maximum de détails, avec un vaste catalogue couvrant toutes les factions — Royaume Arthurien, Hommes-Bêtes, Nains, Morts-Vivants, Elfes, Orques & Gobelins et bien plus — ainsi que socles, plateaux de mouvement et accessoires.</p>
+          <p><strong style="color:var(--gold-l)">Partenaire Or de l'InterRégions 2026</strong>, FCW Miniature soutient l'ensemble de l'événement. Boutique <em>Star Seller</em> reconnue pour sa qualité et son sérieux (4,9/5), elle tiendra un <strong>stand</strong> sur place pour présenter et faire découvrir ses gammes tout au long du week-end.</p>
+          <span class="partner-link">Découvrir FCW Miniature →</span>
+        </div>
+      </a>
+
+      <a href="https://www.customwargame.com/" target="_blank" rel="noopener" class="partner-card" style="margin-top:1.5rem">
+        <div class="partner-logo">
+          <img src="assets/Logo_custom_wargame_clair.png" alt="Logo Custom Wargame" class="logo-cw" onerror="this.parentElement.innerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.6rem;color:var(--white)\'&gt;CUSTOM WARGAME&lt;/span&gt;'">
+        </div>
+        <div class="partner-body">
+          <h3>Custom Wargame</h3>
+          <span class="partner-role">⚜ Mécène Dragon d'Or · Partenaire équipement de jeu</span>
+          <p>Atelier belge spécialisé dans l'<strong>équipement de jeu sur mesure</strong> pour le wargame : tapis de jeu (gamemats), <strong>kits personnalisés</strong>, objective markers, accessoires de table, décors et coffrets de jeu de rôle. Chaque pièce est <strong>découpée au laser, assemblée à la main et finie en bois 3 mm</strong> — durable, soignée et entièrement personnalisable selon vos visuels (« votre univers, votre style, votre jeu »). Custom Wargame propose aussi des gammes dédiées à <em>Age of Sigmar</em> et <em>The Old World</em>.</p>
+          <p><strong style="color:var(--gold-l)">Partenaire Or de l'InterRégions 2026</strong>, Custom Wargame soutient les <strong>quatre axes de l'événement</strong> — tournoi compétitif, animation narrative, jeu libre et la Conquête (« Risk ») — par la fourniture de ses <strong>Kits Épiques</strong>.</p>
+          <span class="partner-link">Découvrir Custom Wargame →</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="partner-tier reveal">
+      <div class="tier-head"><span class="tier-name">🗡 Chevalier Argent</span></div>
+
+      <a href="https://www.stratemats.com/" target="_blank" rel="noopener" class="partner-card">
+        <div class="partner-logo">
+          <img src="assets/Logo Stratemats blanc.png" alt="Logo Stratemats" onerror="this.parentElement.innerHTML='&lt;span style=\'font-family:Cinzel Decorative,cursive;font-size:1.6rem;color:var(--white)\'&gt;STRATEMATS&lt;/span&gt;'">
+        </div>
+        <div class="partner-body">
+          <h3>Stratemats</h3>
+          <span class="partner-role">⚜ Chevalier Argent · Partenaire tapis de jeu</span>
+          <p>Fabricant français de <strong>tapis de jeu (battlemats) en néoprène</strong>, Stratemats crée des surfaces originales et très détaillées pour tous les jeux de figurines et de plateau — une fabrication <strong>100 % Made in France</strong> reconnue dans la communauté wargame pour sa qualité d'impression et sa finition.</p>
+          <p>Leur catalogue couvre de nombreux univers — <em>The Old World</em>, batailles fantasy médiévales, sci-fi, Fantasy Football, combat naval — du format 2x2 au 6x4 feet, avec option de grilles carrées ou hexagonales. Stratemats est partenaire officiel de l'InterRégions 2026.</p>
+          <span class="partner-link">Découvrir Stratemats →</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- SPONSORS À VENIR -->
+    <div class="partner-tier reveal">
+      <div class="tier-head"><span class="tier-name" style="color:var(--parch-dk);font-size:1rem">✦ Prochains partenaires ✦</span></div>
+      <div class="partner-empty-grid">
+        <div class="partner-empty"><span class="pe-icon">🛡</span><span class="pe-title">Sponsor bientôt révélé</span><span class="pe-sub">Bientôt dévoilé</span></div>
+        <div class="partner-empty"><span class="pe-icon">🛡</span><span class="pe-title">Sponsor bientôt révélé</span><span class="pe-sub">Bientôt dévoilé</span></div>
+        <div class="partner-empty"><span class="pe-icon">🛡</span><span class="pe-title">Sponsor bientôt révélé</span><span class="pe-sub">Bientôt dévoilé</span></div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Cinzel Decorative',cursive;color:var(--gold);text-align:center;margin:3rem 0 .3rem;font-size:1.25rem">⚜ Devenir partenaire ⚜</h3>
+    <p class="section-sub" style="margin-bottom:1.5rem">Nos formules de soutien</p>
+    <div class="sponsor-tiers reveal">
+      <div class="sponsor-tier gold">
+        <h3>⚜ Mécène Dragon d'Or</h3>
+        <div class="price-tag">À PARTIR DE 500 €</div>
+        <ul>
+          <li>Logo grand format sur la bannière d'entrée</li>
+          <li>Mentions sur toutes les communications</li>
+          <li>Stand ou table d'exposition pendant l'event</li>
+          <li>Présentation orale lors de la remise des prix</li>
+          <li>Logo sur les lots remis aux vainqueurs</li>
+          <li>Repas pris en charge (petits-déjeuners, déjeuners samedi et dimanche)</li>
+        </ul>
+      </div>
+      <div class="sponsor-tier silver">
+        <h3>🗡 Chevalier Argent</h3>
+        <div class="price-tag">À PARTIR DE 200 €</div>
+        <ul>
+          <li>Logo sur la bannière de salle</li>
+          <li>Mention sur le site et le Discord</li>
+          <li>Flyers ou goodies dans les lots participants</li>
+          <li>Remerciements lors de la remise des prix</li>
+        </ul>
+      </div>
+      <div class="sponsor-tier bronze">
+        <h3>🛡 Écuyer du Bronze</h3>
+        <div class="price-tag">À PARTIR DE 80 €</div>
+        <ul>
+          <li>Mention sur le site web officiel</li>
+          <li>Mention sur le Discord de l'association</li>
+          <li>Remerciements lors de la remise des lots</li>
+        </ul>
+      </div>
+    </div>
+    <div class="scroll reveal" style="margin-top:2rem">
+      <h3>🎁 Partenariat en Nature</h3>
+      <p><em>L'hébergement des bénévoles est pris en charge par l'association.</em> Vos contributions en nature viennent enrichir l'événement et seront mises en avant avec mention de votre enseigne :</p>
+      <ul>
+        <li>Lots dotation : figurines, peintures, décors de jeu, accessoires</li>
+        <li>Bons d'achat boutique ou abonnements</li>
+      </ul>
+    </div>
+    <div class="sponsor-contact reveal">
+      <p>Pour toute demande de partenariat :</p>
+      <p><strong style="color:var(--gold)">Jean-Sébastien Lefèvre</strong> — Président, <a href="https://tow-troyes.netlify.app/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px dotted var(--gold-d)">Les Stratèges du Vieux Monde</a></p>
+      <p><button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+      <p>💬 <a href="https://discord.gg/VTvnFqfvuF" target="_blank" style="color:#9BA8FF">discord.gg/VTvnFqfvuF</a></p>
+      <p style="margin-top:1rem;font-style:italic;color:var(--parch-dk)">"Chaque soutien contribue à forger la légende de cet événement."</p>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">⚔ InterRégions 2026 — The Old World ⚔</div>
+    <div class="footer-links"><button onclick="showPage('accueil')">Accueil</button><button onclick="showPage('sponsors')">Sponsors</button><button onclick="showPage('format')">Format &amp; Conquête</button><button onclick="showPage('lieu')">Lieu</button><button onclick="showPage('association')">Organisateurs</button><button onclick="showPage('inscriptions')">Inscriptions</button></div>
+    <p>Contact : <button class="btn-contact" onclick="openMail('contact')">✉ Nous écrire</button></p>
+
+    <p class="fed-asterisk" style="font-size:.72rem;color:var(--parch-dk);margin-top:1rem;font-style:italic;text-align:center">
+      <sup style="color:var(--gold-l);font-weight:700">*</sup> Fédération France The Old World — association en cours de création
+    </p>
+  </footer>
+</div>
+
+<script>
+const _em = {
+  contact: ['elladriel','hotmail','com'],
+  arbitre: ['jb','warhammer-forum','com']
+};
+function openMail(key) {
+  const p = _em[key];
+  window.location.href = 'mailto:' + p[0] + '@' + p[1] + '.' + p[2];
+}
+function copyMail(key, btn) {
+  const p = _em[key];
+  const addr = p[0] + '@' + p[1] + '.' + p[2];
+  navigator.clipboard.writeText(addr).then(function() {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✓ Copié !';
+    btn.style.background = 'rgba(80,180,80,0.2)';
+    btn.style.borderColor = 'rgba(80,180,80,0.6)';
+    setTimeout(function(){ btn.innerHTML = orig; btn.style.background = ''; btn.style.borderColor = ''; }, 2000);
+  });
+}
+
+/* ── PAGE NAVIGATION ── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  const navBtn = document.getElementById('nav-' + id);
+  if (navBtn) navBtn.classList.add('active');
+  window.scrollTo(0, 0);
+  observeReveals();
+}
+
+/* ── COUNTDOWN ── */
+const target = new Date('2026-11-07T08:30:00').getTime();
+function updateCountdown() {
+  const now = Date.now();
+  const diff = target - now;
+  if (diff <= 0) {
+    ['cd-j','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '0');
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-j').textContent = d;
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+/* ── REVEAL ON SCROLL ── */
+function observeReveals() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+}
+observeReveals();
+
+/* ── RUNES PARTICLES ── */
+const runes = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛜ','ᛞ','ᛟ'];
+const partCtr = document.getElementById('particles');
+function spawnRune() {
+  const r = document.createElement('div');
+  r.className = 'rune';
+  r.textContent = runes[Math.floor(Math.random() * runes.length)];
+  r.style.left = Math.random() * 100 + 'vw';
+  r.style.bottom = '-3rem';
+  r.style.fontSize = (Math.random() * 1.2 + 0.8) + 'rem';
+  r.style.animationDuration = (Math.random() * 15 + 15) + 's';
+  partCtr.appendChild(r);
+  setTimeout(() => r.remove(), 30000);
+}
+setInterval(spawnRune, 2500);
+for (let i = 0; i < 6; i++) setTimeout(spawnRune, i * 500);
+
+/* ============================================================
+   CAROUSEL DES CHAMPIONS — fetch Supabase + auto-scroll + modal
+   ============================================================ */
+(function loadSupabaseAndChampions() {
+  const SUPABASE_URL = 'https://tmyphldcpukoqkuxlxas.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_uXTbiRn25hHhF8hMmNMwkg_LafhGlsc';
+
+  // Constantes héraldiques (copie minimale)
+  const SHIELD_SHAPES = {
+    heater: { path:'M -10 -12 L 10 -12 L 10 -2 Q 10 8 0 14 Q -10 8 -10 -2 Z' },
+    kite:   { path:'M -8 -12 L 8 -12 L 8 0 Q 8 11 0 16 Q -8 11 -8 0 Z' },
+    round:  { path:'M 0 -12 A 12 12 0 1 1 -0.001 -12 Z' },
+    banner: { path:'M -10 -13 L 10 -13 L 10 9 L 0 14 L -10 9 Z' },
+    square: { path:'M -11 -11 L 11 -11 L 11 11 L -11 11 Z' }
+  };
+  const CHARGES = {
+    none:'', fleur:'⚜', cross:'✚', crossPattee:'✠', star5:'★', star6:'✶',
+    star8:'✱', sparkle:'✦', sun:'☉', moon:'☽', anchor:'⚓', hammer:'⚒',
+    swords:'⚔', scales:'⚖', flag:'⚑', crown:'♛', diamond:'◆', triangle:'▲',
+    circle:'●', spiral:'❀', bolt:'⚡', flame:'🜂', skull:'☠'
+  };
+
+  function escapeHTML(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function renderBlason(b, cx, cy, size) {
+    if (!b) return '';
+    const shape = SHIELD_SHAPES[b.shape] || SHIELD_SHAPES.heater;
+    const f = b.field || { type:'plain', color1:'#b13a3a', color2:'#ececec' };
+    const ch = b.charge || { type:'none', color:'#e7c878' };
+    const c1 = f.color1, c2 = f.color2;
+    const id = 'cl_' + Math.random().toString(36).slice(2, 9);
+    let inner = '';
+    switch (f.type) {
+      case 'plain': inner = `<rect x="-14" y="-14" width="28" height="32" fill="${c1}"/>`; break;
+      case 'per_pale': inner = `<rect x="-14" y="-14" width="14" height="32" fill="${c1}"/><rect x="0" y="-14" width="14" height="32" fill="${c2}"/>`; break;
+      case 'per_fess': inner = `<rect x="-14" y="-14" width="28" height="14" fill="${c1}"/><rect x="-14" y="0" width="28" height="18" fill="${c2}"/>`; break;
+      case 'quartered': inner = `<rect x="-14" y="-14" width="14" height="14" fill="${c1}"/><rect x="0" y="-14" width="14" height="14" fill="${c2}"/><rect x="-14" y="0" width="14" height="18" fill="${c2}"/><rect x="0" y="0" width="14" height="18" fill="${c1}"/>`; break;
+      case 'per_bend': inner = `<rect x="-14" y="-14" width="28" height="32" fill="${c1}"/><polygon points="-14,18 14,-14 14,18" fill="${c2}"/>`; break;
+      default: inner = `<rect x="-14" y="-14" width="28" height="32" fill="${c1}"/>`;
+    }
+    const glyph = CHARGES[ch.type] || '';
+    const chargeSvg = glyph ? `<text x="0" y="3" text-anchor="middle" font-size="13" font-family="Arial,sans-serif" fill="${ch.color}" paint-order="stroke" stroke="#1a0a04" stroke-width="0.6">${glyph}</text>` : '';
+    return `<g transform="translate(${cx},${cy}) scale(${size})"><defs><clipPath id="${id}"><path d="${shape.path}"/></clipPath></defs><g clip-path="url(#${id})">${inner}</g>${chargeSvg}<path d="${shape.path}" fill="none" stroke="#1a0a04" stroke-width="1.1"/></g>`;
+  }
+
+  // Charge Supabase JS (CDN), puis fetch les champions
+  const sbScript = document.createElement('script');
+  sbScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  sbScript.onload = async () => {
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // -------- Compteur d'inscriptions tournoi (RPC get_inscription_stock) --------
+    loadInscriptionStock(sb);
+
+    const { data, error } = await sb.from('champions_public').select('*').order('created_at', { ascending: false });
+    const countText = document.getElementById('champ-count-text');
+    const carousel = document.getElementById('champ-carousel');
+    if (error || !data) {
+      countText.textContent = 'Impossible de charger les champions.';
+      return;
+    }
+    if (data.length === 0) {
+      countText.innerHTML = `Aucun joueur inscrit pour l'instant — <strong style="color:var(--gold)">sois le premier !</strong>`;
+      carousel.innerHTML = '';
+      return;
+    }
+    countText.innerHTML = `<strong style="color:var(--gold)">${data.length}</strong> joueur${data.length > 1 ? 's' : ''} ${data.length > 1 ? 'ont' : 'a'} déjà rejoint la guerre`;
+
+    // Si peu de champions, on ne fait pas défiler ; sinon on duplique pour boucle infinie
+    const items = data.length >= 6 ? [...data, ...data] : data;
+    const trackClass = data.length >= 6 ? 'champ-carousel scrolling' : 'champ-carousel';
+    carousel.className = trackClass;
+    carousel.innerHTML = items.map((ch, i) => `
+      <div class="champ-card" data-id="${escapeHTML(ch.id)}-${i}">
+        <svg viewBox="-22 -22 44 44">${renderBlason(ch.blason, 0, 0, 1.6)}</svg>
+        <div class="ch-name">${escapeHTML(ch.pseudo)}</div>
+        <div class="ch-region">${escapeHTML(ch.region)}</div>
+      </div>
+    `).join('');
+    // Click handlers
+    carousel.querySelectorAll('.champ-card').forEach((card, i) => {
+      card.addEventListener('click', () => openChampModal(items[i]));
+    });
+  };
+  sbScript.onerror = () => {
+    document.getElementById('champ-count-text').textContent = 'Carousel indisponible (Supabase non joignable).';
+  };
+  document.head.appendChild(sbScript);
+
+  // Modal helpers (exposées globalement)
+  window.openChampModal = function(ch) {
+    const overlay = document.getElementById('champ-modal-overlay');
+    const content = document.getElementById('champ-modal-content');
+    content.innerHTML = `
+      <h2>${escapeHTML(ch.pseudo)}</h2>
+      <div class="blason-display">
+        <svg viewBox="-22 -22 44 44">${renderBlason(ch.blason, 0, 0, 1.6)}</svg>
+      </div>
+      ${ch.faction ? `<div class="info-row"><span class="lbl">Faction</span><span>${escapeHTML(ch.faction)}</span></div>` : ''}
+      <div class="info-row"><span class="lbl">Région</span><span>${escapeHTML(ch.region)}${ch.is_parisian_redistributed ? ' <em style="color:#A82020;font-size:.85em">(parisien redistribué)</em>' : ''}</span></div>
+      ${ch.story ? `<div class="story">${escapeHTML(ch.story)}</div>` : '<div style="font-style:italic;color:var(--parch-dk);text-align:center;margin-top:12px;font-family:\'IM Fell English\',serif">Ce champion garde son histoire pour lui…</div>'}
+      <button class="close-btn" onclick="closeChampModal()">Fermer</button>
+    `;
+    overlay.classList.add('show');
+  };
+  window.closeChampModal = function() {
+    document.getElementById('champ-modal-overlay').classList.remove('show');
+  };
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeChampModal();
+  });
+
+  // =========================================================================
+  // Compteur d'inscriptions live (page Inscriptions)
+  // =========================================================================
+  const INSC_LABELS = {
+    equipe:    { name: '⚔ Compétitif · Équipes', unit: 'équipes' },
+    jeu_libre: { name: '🎲 Jeu Libre',           unit: 'places' },
+    narratif:  { name: '📜 Narratif',            unit: 'places' },
+  };
+
+  async function loadInscriptionStock(sb) {
+    try {
+      const { data, error } = await sb.rpc('get_inscription_stock');
+      if (error) { console.warn('get_inscription_stock', error); return; }
+      const stockByType = Object.fromEntries((data || []).map(r => [r.inscription_type, r]));
+      const warnings = [];
+      let allFull = true;
+
+      ['equipe', 'jeu_libre', 'narratif'].forEach(type => {
+        const row = stockByType[type];
+        if (!row) return;
+        const remaining = row.remaining;
+        const capacity  = row.capacity;
+        const numEl = document.getElementById('insc-num-' + type);
+        const subEl = document.getElementById('insc-sub-' + type);
+        const barEl = document.getElementById('insc-bar-' + type);
+        const card  = document.querySelector('.insc-card[data-type="' + type + '"]');
+        if (!numEl || !card) return;
+
+        const label = INSC_LABELS[type];
+        const pctTaken = Math.min(100, Math.round((row.taken / capacity) * 100));
+
+        if (remaining <= 0) {
+          numEl.textContent = 'COMPLET';
+          subEl.textContent = capacity + ' / ' + capacity + ' ' + label.unit;
+          card.classList.add('full');
+          warnings.push(`<div class="insc-warn">🚫 <strong>${label.name} — COMPLET</strong> · Cette catégorie est pleine, ne sélectionne pas cette option lors du paiement. Liste d'attente possible via le <a href="https://discord.gg/VTvnFqfvuF" target="_blank" rel="noopener" style="color:#9BA8FF">Discord</a>.</div>`);
+        } else {
+          allFull = false;
+          numEl.textContent = remaining;
+          subEl.textContent = '/ ' + capacity + ' ' + label.unit;
+          if (remaining <= 3) card.classList.add('tight');
+        }
+        barEl.style.width = pctTaken + '%';
+      });
+
+      document.getElementById('insc-warnings').innerHTML = warnings.join('');
+
+      // Hard cap : si TOUT est plein, on cache l'iframe et on affiche le message "complet"
+      if (allFull) {
+        const wrap = document.getElementById('insc-payment-wrap');
+        if (wrap) wrap.hidden = true;
+        const box  = document.getElementById('insc-allfull-box');
+        if (box) box.hidden = false;
+      }
+    } catch (e) {
+      console.warn('loadInscriptionStock failed', e);
+    }
+  }
+})();
+</script>
+
+<!-- MODAL — détail champion (carousel inscriptions) -->
+<div class="champ-modal-overlay" id="champ-modal-overlay" onclick="if(event.target===this)closeChampModal()">
+  <div class="champ-modal" id="champ-modal-content"></div>
+</div>
+
+<!-- MODAL bande-annonce teaser -->
+<div class="teaser-overlay" id="teaser-overlay" onclick="if(event.target===this)closeTeaser()">
+  <div class="teaser-modal">
+    <button class="teaser-close" onclick="closeTeaser()" aria-label="Fermer la bande-annonce">✕</button>
+    <video id="teaser-video" controls playsinline preload="auto" poster="assets/teaser-poster.jpg">
+      <source src="assets/teaser-interregions-dynamique.mp4" type="video/mp4">
+    </video>
+    <button class="teaser-unmute" id="teaser-unmute" onclick="teaserUnmute()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>Activer le son</button>
+  </div>
+</div>
+<script>
+(function(){
+  var o=document.getElementById("teaser-overlay"),v=document.getElementById("teaser-video"),um=document.getElementById("teaser-unmute");
+  window.openTeaser=function(sound){o.classList.add("show");document.body.style.overflow="hidden";try{v.currentTime=0;}catch(e){}if(sound){v.muted=false;v.loop=false;if(um)um.style.display="none";}else{v.muted=true;v.loop=true;if(um)um.style.display="";}v.play().catch(function(){});};
+  window.closeTeaser=function(){o.classList.remove("show");document.body.style.overflow="";v.pause();};
+  window.teaserUnmute=function(){v.muted=false;v.loop=false;try{v.currentTime=0;}catch(e){}if(um)um.style.display="none";v.play().catch(function(){});};
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&o.classList.contains("show"))closeTeaser();});
+  function teaserSeen(){return document.cookie.indexOf("ir_teaser_seen=1")!==-1;}
+  function teaserMarkSeen(){var d=new Date();d.setTime(d.getTime()+30*24*60*60*1000);document.cookie="ir_teaser_seen=1;expires="+d.toUTCString()+";path=/;SameSite=Lax";}
+  window.addEventListener("load",function(){if(teaserSeen())return;teaserMarkSeen();setTimeout(function(){openTeaser(false);},700);});
+})();
+</script>
+
+<!-- AssoConnect — script loader pour l'embed paiement (data-collect-id en page Inscriptions) -->
+<script src="https://les-strateges-du-vieux-monde.assoconnect.com/public/build/js/iframe.js"></script>
+
+</body>
+</html>
